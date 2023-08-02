@@ -1,0 +1,104 @@
+<html class="hd-res">
+
+<head>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>__TITLE__</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/promise-polyfill/8.3.0/polyfill.min.js"
+    integrity="sha512-310GmPyrxvjHYxcTy7HdjCN7EYL9ou4DldEiu1oABpNFUcEbPfcESbQ+4lZBIAsYb2KuKjJpvWaDxQUINj4I8A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    if (typeof Object.assign != 'function') {
+      Object.assign = function (target) {
+        'use strict';
+        if (target == null) {
+          throw new TypeError('Cannot convert undefined or null to object');
+        }
+
+        target = Object(target);
+        for (var index = 1; index < arguments.length; index++) {
+          var source = arguments[index];
+          if (source != null) {
+            for (var key in source) {
+              if (Object.prototype.hasOwnProperty.call(source, key)) {
+                target[key] = source[key];
+              }
+            }
+          }
+        }
+        return target;
+      };
+    }
+  </script>
+  <script src="./__SCRIPT__"></script>
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./colours.css" />
+  <link rel="stylesheet" href="./__STYLE__" />
+</head>
+
+<body class="white-0 black-1000-bg">
+  <!-- <div class="event-log-contents"></div> -->
+  <div id="overlay"></div>
+  <div id="popup"></div>
+
+  <main id="app" class="app-wrapper black-1000-bg">
+    <div id="nav" class="nav-wrapper collapsed"></div>
+    <div id="main" class="main-wrapper"></div>
+  </main>
+
+  <script>
+    function boot() {
+      window.crt.main();
+      document.removeEventListener("DOMContentLoaded", boot)
+    }
+
+    document.addEventListener("DOMContentLoaded", boot);
+  </script>
+  <!-- <script>
+    (function (logger) {
+    console.old = console.log;
+      console.old('logger', logger);
+
+      var newLines = [];
+
+      console.log = function () {
+      var output = "", arg, i;
+
+        var lineItems = [];
+        
+        for (i = 0; i < arguments.length; i++) { arg=arguments[i]; var lineItem=document.createElement('span');
+          lineItem.className="log-" + (typeof arg); var lineItemText=arg; if ( typeof arg==="object" && typeof JSON==="object"
+          && typeof JSON.stringify==="function" ) {
+            lineItemText = JSON.stringify(arg);
+          }
+
+          lineItem.textContent = lineItemText;
+          lineItems.push(lineItem);
+        }
+
+        var pre = document.createElement('pre')
+
+        for (var j = 0; j < lineItems.length; j++) {
+          var li = lineItems[j];
+          pre.appendChild(li);
+
+          newLines.unshift(pre);
+        }
+
+        logger.innerHTML = '';
+
+        for (var k = 0; k < newLines.length; k++) {
+          var nl = newLines[k];
+          logger.appendChild(nl);
+        }
+
+        console.old.apply(undefined, arguments);
+      };
+    })(document.getElementsByClassName("event-log-contents")[0]);
+</script> -->
+</body>
+
+
+</html>

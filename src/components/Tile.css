@@ -1,0 +1,22 @@
+.tile {
+  width: 20rem;
+  height: 11.25rem;
+  display: inline-block;
+  background-color: #5e00ff;
+  color: white;
+  font-size: 2rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.tile>span {
+  display: inline-block;
+  left: 50%;
+  position: relative;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+:global(a.focused) .tile {
+  background-color: #ff6700;
+}
