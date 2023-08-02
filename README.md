@@ -1,5 +1,8 @@
 # crt
-A simple single page app. Very old school, for very old school TV devices.
+A simple single page app. Very old school, for very old school TV devices. 
+
+## name
+crt stands for Cathode Ray Tube. An old television technology. It seemed fitting.
 
 ## commands
 `npm run dev` 
