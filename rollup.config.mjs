@@ -49,7 +49,7 @@ const copyPlugin = copy({
           .toString()
           .replace('__STYLE__', 'bundle.iife.css')
           .replace('__SCRIPT__', 'bundle.iife.js')
-          .replace('__TITLE__', 'Simple SPA app');
+          .replace('__TITLE__', 'CRT app');
       }
     },
   ]
