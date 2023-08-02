@@ -1,0 +1,101 @@
+/* onscreen logger */
+.event-log-contents {
+  padding: 1rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: greenyellow;
+  width: 800px;
+  height: 500px;
+  overflow: hidden;
+  z-index: 1000;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.event-log-contents .log-string {}
+
+.event-log-contents .log-number {
+  color: white;
+}
+
+html {
+  font-size: 16px;
+}
+
+@media screen and (min-width: 1920px) {
+  html {
+    font-size: 24px;
+  }
+}
+
+body {
+  font-family: "open-sans", arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* reset */
+a,
+button {
+  outline: none;
+  text-decoration: none;
+}
+
+ol,
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+h1,
+h2 {
+  margin: 0;
+  padding: 0;
+  font-size: reset;
+}
+
+/* main app frame */
+.app-wrapper {
+  width: 100%;
+  height: 100%;
+  max-width: 1280px;
+  max-height: 720px;
+  overflow: hidden;
+  position: absolute;
+}
+
+@media screen and (min-width: 1920px) {
+  .app-wrapper {
+    max-width: 1920px;
+    max-height: 1080px;
+  
+}
+}
+
+/* viewport */
+.main-wrapper {
+  position: absolute;
+  left: 6.25rem;
+  padding: 0 1rem;
+  width: 73.75rem;
+  height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.nav-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 18.75rem;
+  height: 100%;
+  -o-transition: width 250ms cubic-bezier(.54, .77, .79, 1.04);
+  -webkit-transition: width 250ms cubic-bezier(.54, .77, .79, 1.04);
+    transition: width 250ms cubic-bezier(.54, .77, .79, 1.04);
+  z-index: 100;
+}
+
+.nav-wrapper.collapsed {
+  width: 6.25rem;
+}

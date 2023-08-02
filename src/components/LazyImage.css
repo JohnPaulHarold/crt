@@ -1,0 +1,8 @@
+.lazyImage {
+  opacity: 0;
+  transition: opacity 250ms ease;
+}
+
+.lazyImage:global(.loaded) {
+  opacity: 1;
+}

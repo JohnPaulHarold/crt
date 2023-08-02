@@ -1,0 +1,28 @@
+.mainNav {
+  display: block;
+  padding-top: 5rem;
+}
+
+.mainNav li {
+  margin-bottom: 1rem;
+}
+
+.mainNav a {
+  padding: 0.5rem;
+  width: 100%;
+  display: block;
+  box-sizing: border-box;
+  border-radius: 0 1rem 1rem 0;
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.mainNav :global(a.focused) {
+  color: #000;
+  background-color: #ffde2b;
+}
+
+.mainNav>div {
+  display: block;
+}

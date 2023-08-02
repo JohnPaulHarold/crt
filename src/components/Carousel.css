@@ -1,0 +1,66 @@
+.carousel {
+  display: block;
+  margin-bottom: 2rem;
+}
+
+.carouselTitle {
+  font-weight: bold;
+  font-size: 1.62rem;
+  margin-bottom: 1rem;
+}
+
+.carouselInner {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  min-height: 180px;
+}
+
+.orientVertical .carouselInner {
+  height: 100%;
+}
+
+.orientHorizontal .carouselInner {
+  height: auto;
+}
+
+.transition {
+  -webkit-transition: -webkit-transform 250ms cubic-bezier(0.42, 0, 0.58, 1);
+  transition: transform 0.25s cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+.orientVertical .transitionNoTransform {
+  -webkit-transition: top 250ms cubic-bezier(0.42, 0, 0.58, 1);
+  transition: top 0.25s cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+.orientHorizontal .transitionNoTransform {
+  -webkit-transition: left 250ms cubic-bezier(0.42, 0, 0.58, 1);
+  transition: left 0.25s cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+.carouselSlider {
+  position: relative;
+  white-space: nowrap;
+}
+
+.carouselSlider>a {
+  display: inline-block;
+  width: auto;
+  height: auto;
+  margin-right: 20px;
+}
+
+.orientVertical>.carouselSlider {
+  width: 100%;
+}
+
+.orientVertical>.carouselSlider>a {
+  display: block;
+  margin-right: 0;
+}
+
+.orientHorizontal>.carouselSlider {
+  white-space: nowrap;
+  width: 100%;
+}
