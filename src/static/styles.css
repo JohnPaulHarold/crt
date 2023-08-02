@@ -41,6 +41,7 @@ body {
 /* reset */
 a,
 button {
+    border: none;
     outline: none;
     text-decoration: none;
 }

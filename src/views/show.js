@@ -1,26 +1,25 @@
 /**
  * @typedef {import('../declarations/types').ViewOptions} ViewOptions
  */
-import { div, h1, p } from '../libs/makeElement';
+import { a, div, h1, p } from '../libs/makeElement';
 import { BaseView } from '../libs/baseView';
 import { checkImages } from '../libs/indolence';
 
 import { LazyImage } from '../components/LazyImage';
+import { Grid } from '../components/Grid';
+import { Button } from '../components/Button';
+import { Carousel } from '../components/Carousel';
 
-// import Logo from "";
+import { Orientation } from '../enums/Orientation';
+
+import Logo from '../assets/Public_Domain_Mark_button.svg.png';
+
+import { showData } from '../stubData/showData';
 
 import s from './show.css';
-
-const showData = {
-    id: 'TV1234567',
-    title: 'Ring 4',
-    description:
-        "Call me Ishmael. Some years ago--never mind how long precisely--having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world. It is a way I have of driving off the spleen and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people's hats off--then, I account it high time to get to sea as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the ship. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the ocean with me.",
-    rating: 'PG',
-    related: {
-        suggestions: [],
-    },
-};
+import { handleKeyDown, registerCustomFocusHandler } from '../navigation';
+import { assertKey } from '../utils/keys';
+import { Direction } from '../enums/Direction';
 
 /**
  * @extends BaseView
@@ -35,6 +34,11 @@ export class Show extends BaseView {
         this.info = options.params;
         this.search = options.search;
 
+        // whether we are focused on the bottom rails or not
+        // if we're not, we want to show the description, buttons
+        // if we are then we hide them
+        this.belowFold = false;
+
         this.showName =
             this.search.name && typeof this.search.name === 'string'
                 ? decodeURI(this.search.name)
@@ -47,11 +51,63 @@ export class Show extends BaseView {
                 decodeURI(this.showName).replace(' ', '') +
                 '/1280/720',
         });
+
+        registerCustomFocusHandler(this.customHandleKeyDown.bind(this));
+    }
+
+    fetchData() {}
+
+    animateFold() {
+        const logoEl = document.querySelector(`.${s.showLogo}`);
+        const overlayEl = document.querySelector(`.${s.showOverlay}`);
+
+        if (!this.belowFold) {
+            if (overlayEl instanceof HTMLElement) {
+                overlayEl.style.opacity = "0";
+            }
+            if (logoEl instanceof HTMLElement) {
+                logoEl.style.opacity = "0.5";
+            }
+        } else {
+            if (overlayEl instanceof HTMLElement) {
+                overlayEl.style.opacity = "1";
+            }
+            if (logoEl instanceof HTMLElement) {
+                logoEl.style.opacity = "1";
+            }
+        }
+    }
+
+    /**
+     * @param {KeyboardEvent} event
+     */
+    customHandleKeyDown(event) {
+        console.log(`[${this.id}][customHandleKeyDown]`, event, this.belowFold);
+        console.log(`[${this.id}][customHandleKeyDown]`, this.belowFold);
+
+        const navEl =
+            event.target &&
+            event.target instanceof HTMLElement &&
+            event.target.id.match(/nav/);
+        const isUpOrDown = assertKey(event, [Direction.UP, Direction.DOWN]);
+
+
+        if (isUpOrDown && this.scope && !navEl) {
+            this.animateFold();
+            handleKeyDown(event, this.scope);
+            this.belowFold = !this.belowFold;
+            // we will also need to load any images
+            // this is horrible, and it would be much, much, much better to 
+            // use IntersectionObserver
+            this.scope && checkImages(this.scope, 200);
+        } else {
+            handleKeyDown(event);
+        }
     }
 
     viewDidLoad() {
-        const scope = document.getElementById(this.id);
-        scope && checkImages(scope);
+        this.scope = document.getElementById(this.id);
+        this.scope && checkImages(this.scope);
     }
 
     render() {
@@ -59,11 +115,41 @@ export class Show extends BaseView {
             { className: 'view', id: this.id },
             // full bleed image
             this.bleedImage,
-            div(
-                { className: s.showOverlay },
-                h1({ className: s.showTitle }, 'Show ' + this.showName),
-                LazyImage({ src: Logo, className: 'show-logo' }),
-                p({}, 'description')
+            LazyImage({ src: Logo, className: s.showLogo }),
+            Carousel(
+                {
+                    id: 'showCarousel',
+                    orientation: Orientation.VERTICAL,
+                    childQuery: `.${s.showOverlay}, .${s.suggestions}`,
+                    blockExit: 'up right down',
+                },
+                [
+                    div(
+                        { className: s.showOverlay },
+                        h1({ className: s.showTitle }, 'Show ' + this.showName),
+                        p(
+                            { className: s.showDescription },
+                            showData.description
+                        ),
+                        div(
+                            { className: s.buttonRow + ' lrud-container' },
+                            Button({ id: 'play', text: 'PLAY' }),
+                            Button({ id: 'play-trailer', text: 'TRAILER' })
+                        )
+                    ),
+                    Grid(
+                        { className: s.suggestions, columns: 4 },
+                        showData.related.suggestions.map((suggestion) =>
+                            a(
+                                { id: suggestion.id },
+                                LazyImage({
+                                    id: suggestion.id,
+                                    src: suggestion.imageUrl,
+                                })
+                            )
+                        )
+                    ),
+                ]
             )
         );
     }

@@ -17,6 +17,7 @@ import { Tile } from '../components/Tile';
 import { Orientation } from '../enums/Orientation';
 import { AdditionalKeys } from '../enums/AdditionalKeys';
 import { Spinner } from '../components/Spinner';
+import { focusInto } from '../navigation';
 
 /**
  * @extends BaseView
@@ -31,6 +32,14 @@ export class Home extends BaseView {
     }
 
     destructor() {}
+
+    /**
+     * 
+     * @param {HTMLElement} el 
+     */
+    focusPage(el) {
+        focusInto(el);
+    }
 
     listenToCarousels() {
         if (this.carousels) {
@@ -118,7 +127,10 @@ export class Home extends BaseView {
 
         if (target && this.data) {
             target.innerHTML = '';
-            target.appendChild(this.buildCarousels(this.data));
+            const el = this.buildCarousels(this.data)
+            target.appendChild(el);
+
+            this.focusPage(el);
         }
     }
 

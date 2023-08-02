@@ -124,8 +124,13 @@ export interface StoreType {
     unlisten: (id: string) => void;
 }
 
+export interface ButtonProps extends BaseComponentProps {
+    text?: string;
+    icon?: string;
+    iconPosition?: 'left' | 'right' | 'top' | 'bottom';
+}
+
 export interface GridProps extends BaseComponentProps {
-    data: any;
     columns: number;
 }
 
