@@ -3,6 +3,7 @@
  */
 import { animations } from "../config/animations";
 import { div, h2, section } from "../libs/makeElement";
+import { cx } from "../utils/cx";
 import { toTitleCase } from "../utils/toTitleCase";
 
 import s from './Carousel.css';
@@ -18,13 +19,22 @@ export const Carousel = (props, children) => {
     ? animations.transforms 
       ? s.transition 
       : s.transitionNoTransform 
-    : '' 
+    : '';
+    const sectionCx = cx(
+      s.carousel,
+      props.className || '',
+      s[orientation]
+    );
+    const sliderCx = cx(
+      s.carouselSlider,
+      transitions
+    );
 
   return (
     section(
       {
         id: props.id,
-        className: `${s.carousel} ${props.className || ''} ${s[orientation]}`,
+        className: sectionCx,
         dataset: {
           blockExit: props.blockExit
         }
@@ -32,7 +42,7 @@ export const Carousel = (props, children) => {
       props.title && h2({ className: s.carouselTitle }, props.title),
       div(
         {
-          className: s.carouselSlider + " " + transitions,
+          className: sliderCx,
           dataset: {
             deadseaOrientation: props.orientation,
             deadseaChildQuery: props.childQuery || '',
