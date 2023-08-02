@@ -5,7 +5,6 @@ import url from '@rollup/plugin-url';
 import postcss from 'rollup-plugin-postcss';
 import postcssModules from 'postcss-modules';
 
-import serve from 'rollup-plugin-serve'
 import copy from 'rollup-plugin-copy'
 
 import pkg from './package.json' assert { type: 'json' };
@@ -15,6 +14,8 @@ const extensions = [
 ];
 
 const name = 'crt';
+
+console.log('[NODE_ENV] ', process.env.NODE_ENV);
 
 const urlPlugin = url({
   // Where to put files
@@ -107,9 +108,9 @@ export default {
         'src/**/*',
       ],
     }),
-    serve({
-      open: true,
-      contentBase: 'dist'
-    })
+    // serve({
+    //   open: true,
+    //   contentBase: 'dist'
+    // })
   ]
 };
