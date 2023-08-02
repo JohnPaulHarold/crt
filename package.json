@@ -6,9 +6,10 @@
   "module": "dist/bundle.esm.js",
   "browser": "dist/bundle.iife.js",
   "scripts": {
-    "dev": "rollup -c -w",
+    "nuke": "node scripts/nuke.js",
+    "dev": "rollup -c rollup.dev.mjs -w",
     "serve": "cd dist && python -m SimpleHTTPServer 3500",
-    "build": "rollup -c",
+    "build": "rm -rf dist && rollup -c rollup.config.mjs",
     "test": "echo \"Error: no test specified\" && exit 1",
     "typecheck": "npx tsc"
   },
