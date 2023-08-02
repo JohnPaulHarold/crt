@@ -13,6 +13,7 @@ import { FormExample } from './views/formExample.js';
 import { Canivideo } from './views/canivideo.js';
 import { Diff } from './views/diff.js';
 import { Popupdemo } from './views/popupdemo.js';
+import { Hbbtv } from './views/hbbtv.js';
 
 import { BaseView } from './libs/baseView.js';
 import { Hashish } from './libs/hashish.js';
@@ -68,6 +69,12 @@ export const routes = [
         title: 'Form example',
         id: 'formexample',
         viewClass: FormExample,
+    },
+    {
+        pattern: '/hbbtv',
+        title: 'HbbTV',
+        id: 'hbbtv',
+        viewClass: Hbbtv,
     },
 ];
 

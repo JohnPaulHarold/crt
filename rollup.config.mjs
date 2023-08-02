@@ -42,7 +42,7 @@ const copyPlugin = copy({
             dest: 'dist/',
         },
         {
-            src: 'src/static/polyfills/*.js',
+            src: 'src/static/**/*.js',
             dest: 'dist/',
         },
         {
