@@ -12,7 +12,8 @@
     "build": "rm -rf dist && rollup -c rollup.config.mjs",
     "test": "echo \"Error: no test specified\" && exit 1",
     "typecheck": "npx tsc",
-    "lint:js": "npx eslint src/"
+    "lint:js": "npx eslint src/",
+    "lint:prettier": "npx prettier . --write"
   },
   "author": "jp",
   "license": "Apache-2.0",
@@ -26,6 +27,7 @@
     "eslint": "^8.46.0",
     "postcss": "^8.4.27",
     "postcss-modules": "^6.0.0",
+    "prettier": "3.0.0",
     "rollup": "^3.2.3",
     "rollup-plugin-copy": "^3.4.0",
     "rollup-plugin-postcss": "^4.0.2",
