@@ -37,8 +37,9 @@ function appendArray(el, children) {
             appendArray(el, child);
         } else if (child instanceof window.Element) {
             el.appendChild(child);
-        } else if (typeof child === 'string') {
-            appendText(el, child);
+        } else if (typeof child === 'string' || typeof child === 'number') {
+            // cast the child to a string if passed a number
+            appendText(el, child + '');
         }
     });
 }

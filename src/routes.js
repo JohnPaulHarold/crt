@@ -10,6 +10,8 @@ import { Home } from './views/home.js';
 import { Search } from './views/search.js';
 import { Show } from './views/show.js';
 import { FormExample } from './views/formExample.js';
+import { Clock } from './views/clock.js';
+
 import { Canivideo } from './views/canivideo.js';
 import { Diff } from './views/diff.js';
 import { Popupdemo } from './views/popupdemo.js';
@@ -50,6 +52,12 @@ export const routes = [
         pattern: '/show/{showId}',
         id: 'show',
         viewClass: Show,
+    },
+    {
+        pattern: '/clock',
+        title: 'Clock',
+        id: 'clock',
+        viewClass: Clock,
     },
     {
         pattern: '/popupdemo',
