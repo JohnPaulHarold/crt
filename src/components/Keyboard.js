@@ -4,6 +4,7 @@
  */
 
 import { button, div } from "../libs/makeElement"
+import { cx } from "../utils/cx";
 
 import s from './Keyboard.css';
 /**
@@ -12,10 +13,16 @@ import s from './Keyboard.css';
  * @returns {HTMLElement}
  */
 const KeyButton = (props) => {
+  const buttonCx = cx(
+    'keyboard-key',
+    s.keyboardKey,
+    typeof props.width === "number" && s['w' + props.width]
+  );
+
   return (
     button(
       {
-        className: "keyboard-key " + s.keyboardKey + (typeof props.width === "number" ? ` ${s['w' + props.width]}` : ''),
+        className: buttonCx,
         dataset: {
           keyValue: props.value
         }
