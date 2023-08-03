@@ -69,7 +69,10 @@ export class Canivideo extends BaseView {
 
     if (target && this.data) {
       target.innerHTML = "";
-      target.appendChild(Codec({ data: this.data }));
+      target.appendChild(h1("CAN I VIDEO?"));
+      Object.keys(this.data).map((key) => {
+        target?.appendChild(Codec({ data: this.data[key], codec: key }));
+      });
     }
   }
 

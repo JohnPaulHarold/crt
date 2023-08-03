@@ -150,4 +150,7 @@ export type ContainerType =
 
 export type Codec = { title: string; contentType: string };
 
-export type CodecProps = { data: Record<string, any> };
+export type CodecProps = { data: Record<string, any>; codec: string };
+
+export type DrmSupportsProps = { data: Record<string, any>; drmType: string };
+export type DrmSupportsLevelsProps = { data: Record<string, any> };
