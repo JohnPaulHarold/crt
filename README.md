@@ -16,3 +16,9 @@ builds the app, outputting to `/dist`
 `npm run typecheck`
 
 checks types. Note: types are currently expressed as JSDoc types
+
+## License
+`crt` is copyright (c) 2021-present John-Paul Harold <johnpaul.harold@gmail.com> and the contributors.
+
+`crt` is free software, licensed under the Apache License, Version 2.0. See the
+[`LICENSE`](LICENSE) file for more details.
