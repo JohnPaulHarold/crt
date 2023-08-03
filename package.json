@@ -1,7 +1,7 @@
 {
   "name": "crt",
   "version": "1.0.0",
-  "description": "",
+  "description": "TV UI helpers",
   "main": "dist/bundle.cjs.js",
   "module": "dist/bundle.esm.js",
   "browser": "dist/bundle.iife.js",
@@ -13,8 +13,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "typecheck": "npx tsc"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "jp",
+  "license": "Apache-2.0",
   "devDependencies": {
     "@babel/core": "^7.19.6",
     "@babel/preset-env": "^7.19.4",
