@@ -1,5 +1,5 @@
-import { Orientation } from '../enums/Orientation';
-import { BaseView } from '../libs/baseView';
+import { Orientation } from "../enums/Orientation";
+import { BaseView } from "../libs/baseView";
 
 export interface Outlet {
   id: string;
@@ -9,8 +9,8 @@ export interface AppOutlets {
   [index: string]: Outlet;
 }
 
-export type RouteParams = Record<string, string | number | boolean>
-export type RouteSearch = Record<string, string | number | boolean>
+export type RouteParams = Record<string, string | number | boolean>;
+export type RouteSearch = Record<string, string | number | boolean>;
 
 export interface Route {
   default?: boolean;
@@ -24,15 +24,15 @@ export interface Route {
 export interface ViewOptions {
   title?: string;
   id: string;
-  params: RouteParams
-  search: RouteSearch
+  params: RouteParams;
+  search: RouteSearch;
 }
 
 export interface NavViewOptions extends ViewOptions {
   navItems: NavItem[];
 }
 
-export type StylesRecord = Record<string, string>
+export type StylesRecord = Record<string, string>;
 
 export interface RailItem {
   title: string;
@@ -42,7 +42,7 @@ export interface RailItem {
 export interface RailData {
   title?: string;
   id: string;
-  orientation?: Orientation
+  orientation?: Orientation;
   items: RailItem[];
 }
 export interface PageData {
@@ -51,7 +51,7 @@ export interface PageData {
   items: RailData[];
 }
 export interface TileDataItem {
-  url: string
+  url: string;
 }
 
 interface BaseComponentProps {
@@ -61,7 +61,7 @@ interface BaseComponentProps {
 
 export interface SimpleCarouselProps extends BaseComponentProps {
   id: string;
-  data: RailData
+  data: RailData;
   blockExit?: string;
 }
 
@@ -95,16 +95,16 @@ export interface KeyProps extends KeyboardKey {
 }
 
 export interface KeyboardProps {
-  keyMap: Array<Array<KeyboardKey>>
+  keyMap: Array<Array<KeyboardKey>>;
 }
 
 export interface NavItem {
-  id: string,
-  title?: string,
-  href: string
+  id: string;
+  title?: string;
+  href: string;
 }
 
-type ListenerCallback = (payload: any) => void
+type ListenerCallback = (payload: any) => void;
 
 interface ListenerPayload {
   type: string;
@@ -141,4 +141,13 @@ export interface SpinnerProps extends BaseComponentProps {
 // props: Record<string, any>
 // textOrArray: any
 // children: ?
-export type ShorthandMakeElement = (...args: any[]) => HTMLElement
+export type ShorthandMakeElement = (...args: any[]) => HTMLElement;
+
+export type ContainerType =
+  | "video/mp4"
+  | "video/webm"
+  | "application/vnd.apple.mpegurl";
+
+export type Codec = { title: string; contentType: string };
+
+export type CodecProps = { data: Record<string, any> };

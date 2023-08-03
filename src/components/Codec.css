@@ -1,0 +1,28 @@
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  width: 100%;
+}
+
+.box {
+  border: 1px dashed white;
+  padding: 0.4rem;
+  float: left;
+  width: 100%;
+}
+
+.halfbox {
+  border: 1px dashed white;
+  padding: 0.4rem;
+  width: 50%;
+  float: left;
+}
+
+.thirdbox {
+  border: 1px dashed white;
+  padding: 0.4rem;
+  width: 33.33%;
+  float: left;
+}

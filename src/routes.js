@@ -4,12 +4,13 @@
  * @typedef {import('./declarations/types.js').RouteParams} RouteParams
  * @typedef {import('./declarations/types.js').RouteSearch} RouteSearch
  */
-import { BaseView } from './libs/baseView.js';
+import { BaseView } from "./libs/baseView.js";
 
-import { Home } from './views/home.js';
-import { Search } from './views/search.js';
+import { Home } from "./views/home.js";
+import { Search } from "./views/search.js";
 // import { Show } from './views/show.js';
-import { appOutlets } from './main.js';
+import { appOutlets } from "./main.js";
+import { Canivideo } from "./views/canivideo.js";
 
 /** @type {BaseView} */
 let _currentView;
@@ -17,12 +18,12 @@ let _currentView;
 let _nextView;
 
 /**
- * 
- * @param {BaseView} nextView 
+ *
+ * @param {BaseView} nextView
  */
 function loadView(nextView) {
   const mainViewElement = document.getElementById(appOutlets.main.id);
-  _nextView = nextView
+  _nextView = nextView;
   mainViewElement && _nextView.attach(mainViewElement);
 
   if (_currentView) {
@@ -34,8 +35,8 @@ function loadView(nextView) {
 }
 
 /**
- * 
- * @param {{ route: Route, params: RouteParams, search: RouteSearch }} matchedRoute 
+ *
+ * @param {{ route: Route, params: RouteParams, search: RouteSearch }} matchedRoute
  * @returns {void}
  */
 export function handleViewChange(matchedRoute) {
@@ -44,10 +45,10 @@ export function handleViewChange(matchedRoute) {
     id: matchedRoute.route.id,
     title: matchedRoute.route.title,
     params: matchedRoute.params,
-    search: matchedRoute.search
+    search: matchedRoute.search,
   };
 
-  loadView(new View(viewOptions))
+  loadView(new View(viewOptions));
 
   return;
 }
@@ -67,18 +68,25 @@ export const routes = [
   //   handler: handleViewChange
   // },
   {
-    pattern: '/home',
+    pattern: "/home",
     title: "Home",
-    id: 'home',
+    id: "home",
     default: true,
     viewClass: Home,
-    handler: handleViewChange
+    handler: handleViewChange,
   },
   {
-    pattern: '/search',
+    pattern: "/search",
     title: "Search",
-    id: 'search',
+    id: "search",
     viewClass: Search,
-    handler: handleViewChange
+    handler: handleViewChange,
+  },
+  {
+    pattern: "/canivideo",
+    title: "Can I video?",
+    id: "canivideo",
+    viewClass: Canivideo,
+    handler: handleViewChange,
   },
 ];

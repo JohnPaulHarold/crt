@@ -57,7 +57,7 @@ export class Show extends BaseView {
         this.bleedImage,
         div({ className: s.showOverlay },
           h1({ className: s.showTitle }, "Show " + this.showName),
-          LazyImage({ src: Logo, className: 'show-logo' }),
+          LazyImage({ src: 'Logo', className: 'show-logo' }),
           p({}, "description")
         )
       )
