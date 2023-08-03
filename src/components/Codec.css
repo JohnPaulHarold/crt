@@ -2,8 +2,30 @@
   box-sizing: border-box;
 }
 
+/* Alert Red - Light */
+.invalid {
+  background-color: #e84545;
+}
+
+/* Alert Red - Dark */
+.red-dark-alert-bg {
+  background-color: #de1c22;
+}
+
+/* Alert Green - Dark */
+.valid {
+  background-color: #0e9c0e;
+}
+
+/* Success Green - Light */
+.green-dark-success-bg {
+  background-color: #0b750b;
+}
+
 .container {
-  width: 100%;
+  width: 50%;
+  border: 1px solid purple;
+  float: left;
 }
 
 .box {
