@@ -1,5 +1,5 @@
-import { Orientation } from "../enums/Orientation";
-import { BaseView } from "../libs/baseView";
+import { Orientation } from '../enums/Orientation';
+import { BaseView } from '../libs/baseView';
 
 export interface Outlet {
   id: string;
@@ -143,10 +143,7 @@ export interface SpinnerProps extends BaseComponentProps {
 // children: ?
 export type ShorthandMakeElement = (...args: any[]) => HTMLElement;
 
-export type ContainerType =
-  | "video/mp4"
-  | "video/webm"
-  | "application/vnd.apple.mpegurl";
+export type ContainerType = 'video/mp4' | 'video/webm' | 'application/vnd.apple.mpegurl';
 
 export type Codec = { title: string; contentType: string };
 

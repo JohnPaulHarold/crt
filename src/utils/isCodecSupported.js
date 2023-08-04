@@ -1,7 +1,7 @@
-const video = document.createElement("video");
+const video = document.createElement('video');
 
 /**
- * @param {string} codec 
+ * @param {string} codec
  */
 export function isCodecSupported(codec) {
   return {
