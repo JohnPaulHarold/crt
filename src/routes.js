@@ -4,13 +4,13 @@
  * @typedef {import('./declarations/types.js').RouteParams} RouteParams
  * @typedef {import('./declarations/types.js').RouteSearch} RouteSearch
  */
-import { BaseView } from "./libs/baseView.js";
+import { BaseView } from './libs/baseView.js';
 
-import { Home } from "./views/home.js";
-import { Search } from "./views/search.js";
+import { Home } from './views/home.js';
+import { Search } from './views/search.js';
 // import { Show } from './views/show.js';
-import { appOutlets } from "./main.js";
-import { Canivideo } from "./views/canivideo.js";
+import { appOutlets } from './main.js';
+import { Canivideo } from './views/canivideo.js';
 
 /** @type {BaseView} */
 let _currentView;
@@ -68,24 +68,24 @@ export const routes = [
   //   handler: handleViewChange
   // },
   {
-    pattern: "/home",
-    title: "Home",
-    id: "home",
+    pattern: '/home',
+    title: 'Home',
+    id: 'home',
     default: true,
     viewClass: Home,
     handler: handleViewChange,
   },
   {
-    pattern: "/search",
-    title: "Search",
-    id: "search",
+    pattern: '/search',
+    title: 'Search',
+    id: 'search',
     viewClass: Search,
     handler: handleViewChange,
   },
   {
-    pattern: "/canivideo",
-    title: "Can I video?",
-    id: "canivideo",
+    pattern: '/canivideo',
+    title: 'Can I video?',
+    id: 'canivideo',
     viewClass: Canivideo,
     handler: handleViewChange,
   },

@@ -1,11 +1,11 @@
 /**
  * @typedef {import('../declarations/types').DrmSupportsProps} DrmSupportsProps
  */
-import { div } from "../libs/makeElement";
-import { cx } from "../utils/cx";
-import { getValidationClass } from "../utils/getValidationClass";
-import s from "./Codec.css";
-import { DrmSupportsLevels } from "./DrmSupportsLevels";
+import { div } from '../libs/makeElement';
+import { cx } from '../utils/cx';
+import { getValidationClass } from '../utils/getValidationClass';
+import s from './Codec.css';
+import { DrmSupportsLevels } from './DrmSupportsLevels';
 
 /**
  *
@@ -21,6 +21,6 @@ export const DrmSupports = ({ data, drmType }) =>
       drmType,
       DrmSupportsLevels({
         data: data[drmType].drm?.securityLevels,
-      })
-    )
+      }),
+    ),
   );
