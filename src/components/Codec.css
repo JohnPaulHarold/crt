@@ -12,11 +12,16 @@
   background-color: #0e9c0e;
 }
 
+*:focus {
+  border: 6px solid orange;
+}
+
 .container {
-  border: 3px solid purple;
-  margin: 10px;
-  width: 50%;
+  border: 3px solid white;
+  margin: 10px 0;
+  width: 100%;
   display: inline-block;
+  overflow: hidden;
 }
 
 .box {
