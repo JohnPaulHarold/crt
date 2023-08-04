@@ -1,40 +1,40 @@
 {
-  "name": "crt",
-  "version": "1.0.0",
-  "description": "TV UI helpers",
-  "main": "dist/bundle.cjs.js",
-  "module": "dist/bundle.esm.js",
-  "browser": "dist/bundle.iife.js",
-  "scripts": {
-    "nuke": "node scripts/nuke.js",
-    "dev": "rollup -c rollup.dev.mjs -w",
-    "serve": "cd dist && python -m SimpleHTTPServer 3500",
-    "build": "rm -rf dist && rollup -c rollup.config.mjs",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "typecheck": "npx tsc",
-    "lint:js": "npx eslint src/",
-    "lint:prettier": "npx prettier . --write"
-  },
-  "author": "jp",
-  "license": "Apache-2.0",
-  "devDependencies": {
-    "@babel/core": "^7.19.6",
-    "@babel/preset-env": "^7.19.4",
-    "@rollup/plugin-babel": "^6.0.2",
-    "@rollup/plugin-commonjs": "^25.0.3",
-    "@rollup/plugin-node-resolve": "^15.0.1",
-    "@rollup/plugin-url": "^8.0.1",
-    "eslint": "^8.46.0",
-    "postcss": "^8.4.27",
-    "postcss-modules": "^6.0.0",
-    "prettier": "3.0.1",
-    "rollup": "^3.2.3",
-    "rollup-plugin-copy": "^3.4.0",
-    "rollup-plugin-postcss": "^4.0.2",
-    "rollup-plugin-serve": "^2.0.2",
-    "typescript": "^5.1.6"
-  },
-  "dependencies": {
-    "@bbc/tv-lrud-spatial": "^0.0.2"
-  }
+    "name": "crt",
+    "version": "1.0.0",
+    "description": "TV UI helpers",
+    "main": "dist/bundle.cjs.js",
+    "module": "dist/bundle.esm.js",
+    "browser": "dist/bundle.iife.js",
+    "scripts": {
+        "nuke": "node scripts/nuke.js",
+        "dev": "rollup -c rollup.dev.mjs -w",
+        "serve": "cd dist && python -m SimpleHTTPServer 3500",
+        "build": "rm -rf dist && rollup -c rollup.config.mjs",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "typecheck": "npx tsc",
+        "lint:js": "npx eslint src/",
+        "lint:prettier": "npx prettier . --write"
+    },
+    "author": "jp",
+    "license": "Apache-2.0",
+    "devDependencies": {
+        "@babel/core": "^7.19.6",
+        "@babel/preset-env": "^7.19.4",
+        "@rollup/plugin-babel": "^6.0.2",
+        "@rollup/plugin-commonjs": "^25.0.3",
+        "@rollup/plugin-node-resolve": "^15.0.1",
+        "@rollup/plugin-url": "^8.0.1",
+        "eslint": "^8.46.0",
+        "postcss": "^8.4.27",
+        "postcss-modules": "^6.0.0",
+        "prettier": "3.0.1",
+        "rollup": "^3.2.3",
+        "rollup-plugin-copy": "^3.4.0",
+        "rollup-plugin-postcss": "^4.0.2",
+        "rollup-plugin-serve": "^2.0.2",
+        "typescript": "^5.1.6"
+    },
+    "dependencies": {
+        "@bbc/tv-lrud-spatial": "^0.0.2"
+    }
 }
