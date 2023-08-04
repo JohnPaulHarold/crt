@@ -31,33 +31,38 @@ export class Canivideo extends BaseView {
     VideoTypes.forEach((type) => {
       Codecs.forEach((codec) => {
         const typeAndCodec = type + codec.contentType;
-        this.data[typeAndCodec] = { type };
         const { mse, video } = isCodecSupported(typeAndCodec);
-        this.data[typeAndCodec].mse = mse;
-        this.data[typeAndCodec].video = video;
-        this.data[typeAndCodec].supported = !!mse || !!video;
-        this.data[typeAndCodec][DrmType.WIDEVINE] = {};
-        this.data[typeAndCodec][DrmType.PLAYREADY] = {};
-        this.data[typeAndCodec][DrmType.FAIRPLAY] = {};
+        this.data[typeAndCodec] = {
+          type,
+          mse,
+          video,
+          [DrmType.WIDEVINE]: {},
+          [DrmType.PLAYREADY]: {},
+          [DrmType.FAIRPLAY]: {},
+        };
+
         this.data[typeAndCodec][DrmType.WIDEVINE].drm = getDrm(
           DrmType.WIDEVINE,
           typeAndCodec
         )?.then((res) => (this.data[typeAndCodec][DrmType.WIDEVINE].drm = res));
+
         this.data[typeAndCodec][DrmType.PLAYREADY].drm = getDrm(
           DrmType.PLAYREADY,
           typeAndCodec
         )?.then(
           (res) => (this.data[typeAndCodec][DrmType.PLAYREADY].drm = res)
         );
+
         this.data[typeAndCodec][DrmType.FAIRPLAY].drm = getDrm(
           DrmType.FAIRPLAY,
           typeAndCodec
         )?.then((res) => (this.data[typeAndCodec][DrmType.FAIRPLAY].drm = res));
+
         Promise.allSettled([
           this.data[typeAndCodec][DrmType.WIDEVINE].drm,
           this.data[typeAndCodec][DrmType.PLAYREADY].drm,
           this.data[typeAndCodec][DrmType.FAIRPLAY].drm,
-        ]).then((res) => {
+        ]).then((_) => {
           this.updateRender();
         });
       });
