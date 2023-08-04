@@ -1,5 +1,4 @@
-// currently, this can only be imported as CJS.
-const { getNextFocus } = require('@bbc/tv-lrud-spatial');
+import { getNextFocus } from '@bbc/tv-lrud-spatial';
 
 import { getLocationHashValue } from './utils/getLocationHashValue';
 import { scrollAction } from './libs/deadSea';
