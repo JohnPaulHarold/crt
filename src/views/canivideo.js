@@ -5,7 +5,6 @@
  */
 import { Carousel } from "../components/Carousel";
 import { Codec } from "../components/Codec";
-import { Spinner } from "../components/Spinner";
 import { Codecs } from "../enums/Codecs";
 import { DrmType } from "../enums/DrmType";
 import { Orientation } from "../enums/Orientation";
