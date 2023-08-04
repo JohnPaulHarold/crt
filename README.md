@@ -21,6 +21,10 @@ checks types. Note: types are currently expressed as JSDoc types
 
 runs eslint on `src/`. Currently this script is informative only, and does not block builds, or commits.
 
+`npm run lint:prettier`
+
+does a `prettier` pass, writing the changes.
+
 ## License
 `crt` is copyright (c) 2021-present John-Paul Harold <johnpaul.harold@gmail.com> and the contributors.
 
