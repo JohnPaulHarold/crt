@@ -3,135 +3,136 @@
  * @typedef {import('../declarations/types').PageData} PageData
  */
 
-import { a, div } from "../libs/makeElement";
-import { BaseView } from "../libs/baseView";
+import { a, div } from '../libs/makeElement';
+import { BaseView } from '../libs/baseView';
 
-import { pageData } from "../stubData/pageData";
+import { pageData } from '../stubData/pageData';
 
-import { handleKeydownOnElement } from "../utils/handleKeydownOnElement";
-import { assertKey } from "../utils/keys";
+import { handleKeydownOnElement } from '../utils/handleKeydownOnElement';
+import { assertKey } from '../utils/keys';
 
-import { Carousel } from "../components/Carousel"
-import { Tile } from "../components/Tile";
+import { Carousel } from '../components/Carousel';
+import { Tile } from '../components/Tile';
 
 import { Orientation } from '../enums/Orientation';
-import { AdditionalKeys } from "../enums/AdditionalKeys";
-import { Spinner } from "../components/Spinner";
+import { AdditionalKeys } from '../enums/AdditionalKeys';
+import { Spinner } from '../components/Spinner';
 
 /**
  * @extends BaseView
  */
 export class Home extends BaseView {
-  /**
-   * @param {ViewOptions} options
-   */
-  constructor(options) {
-    super(options);
-    this.fetchData();
-  }
-
-  destructor() {
-
-  }
-
-  listenToCarousels() {
-    if (this.carousels) {
-      this.keyHandleCleanup = handleKeydownOnElement(
-        this.carousels,
-        this.handleKeyboard.bind(this)
-      )
+    /**
+     * @param {ViewOptions} options
+     */
+    constructor(options) {
+        super(options);
+        this.fetchData();
     }
-  }
 
-  /**
-   * 
-   * @param {KeyboardEvent} event 
-   */
-  handleKeyboard(event) {
-    if (event.target instanceof HTMLAnchorElement && assertKey(event, AdditionalKeys.ENTER)) {
-      const keyPressValue = event.target.href;
-      window.location.href = keyPressValue;
+    destructor() {}
+
+    listenToCarousels() {
+        if (this.carousels) {
+            this.keyHandleCleanup = handleKeydownOnElement(
+                this.carousels,
+                this.handleKeyboard.bind(this)
+            );
+        }
     }
-  }
 
-  /**
-   * 
-   * @param {PageData} data 
-   * @returns {HTMLElement}
-   */
-  buildCarousels(data) {
-    this.carousels = Carousel(
-      {
-        id: data.id,
-        orientation: Orientation.VERTICAL,
-        childQuery: `#${data.id} .home-carousel`,
-        blockExit: 'up down right'
-      },
-      data.items.map((rail) => (
-        Carousel(
-          {
-            id: rail.id,
-            title: rail.title,
-            className: 'home-carousel',
-            orientation: Orientation.HORIZONTAL,
-            blockExit: 'right'
-          },
-          rail.items.map((railItem) => (
-            a(
-              { dataset: { external: true }, href: railItem.url, id: railItem.id },
-              Tile(railItem)
+    /**
+     *
+     * @param {KeyboardEvent} event
+     */
+    handleKeyboard(event) {
+        if (
+            event.target instanceof HTMLAnchorElement &&
+            assertKey(event, AdditionalKeys.ENTER)
+        ) {
+            const keyPressValue = event.target.href;
+            window.location.href = keyPressValue;
+        }
+    }
+
+    /**
+     *
+     * @param {PageData} data
+     * @returns {HTMLElement}
+     */
+    buildCarousels(data) {
+        this.carousels = Carousel(
+            {
+                id: data.id,
+                orientation: Orientation.VERTICAL,
+                childQuery: `#${data.id} .home-carousel`,
+                blockExit: 'up down right',
+            },
+            data.items.map((rail) =>
+                Carousel(
+                    {
+                        id: rail.id,
+                        title: rail.title,
+                        className: 'home-carousel',
+                        orientation: Orientation.HORIZONTAL,
+                        blockExit: 'right',
+                    },
+                    rail.items.map((railItem) =>
+                        a(
+                            {
+                                dataset: { external: true },
+                                href: railItem.url,
+                                id: railItem.id,
+                            },
+                            Tile(railItem)
+                        )
+                    )
+                )
             )
-          )),
-        )
-      )),
-    );
+        );
 
-    this.listenToCarousels();
+        this.listenToCarousels();
 
-    return this.carousels
-  }
-
-  fetchData() {
-    setTimeout(() => {
-      this.data = pageData;
-      this.updateRender();
-    }, 3000);
-
-    return
-  }
-
-  /**
-   * updateRender
-   * @param {HTMLElement} [el] 
-   */
-  updateRender(el) {
-    let target = document.getElementById(this.id);
-
-    if (el) {
-      target = el;
+        return this.carousels;
     }
 
-    if (target) {
-      target.innerHTML = '';
-      target.appendChild(this.render());
-    }
-  }
+    fetchData() {
+        setTimeout(() => {
+            this.data = pageData;
+            this.updateRender();
+        }, 3000);
 
-  render() {
-    if (!this.data) {
-      return (
-        div(
-          { className: 'view', id: this.id },
-          Spinner({ message: "Hold on!" })
-        )
-      )
+        return;
     }
 
-    return (
-      div(
-        { className: 'view', id: this.id },
-        this.buildCarousels(this.data),
-      )
-    )
-  }
+    /**
+     * updateRender
+     * @param {HTMLElement} [el]
+     */
+    updateRender(el) {
+        let target = document.getElementById(this.id);
+
+        if (el) {
+            target = el;
+        }
+
+        if (target) {
+            target.innerHTML = '';
+            target.appendChild(this.render());
+        }
+    }
+
+    render() {
+        if (!this.data) {
+            return div(
+                { className: 'view', id: this.id },
+                Spinner({ message: 'Hold on!' })
+            );
+        }
+
+        return div(
+            { className: 'view', id: this.id },
+            this.buildCarousels(this.data)
+        );
+    }
 }

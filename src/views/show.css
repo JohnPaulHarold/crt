@@ -1,11 +1,11 @@
 .showBleedImage {
-  position: absolute;
+    position: absolute;
 }
 
 .showOverlay {
-  position: relative;
+    position: relative;
 }
 
 .showTitle {
-  font-size: 4rem;
+    font-size: 4rem;
 }
