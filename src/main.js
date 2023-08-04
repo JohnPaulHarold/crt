@@ -1,12 +1,17 @@
 /**
  * @typedef {import('./declarations/types.js').AppOutlets} AppOutlets
  */
+import dotenv from 'dotenv'
 
 import { initOutlets, appOutlets } from './outlets.js';
 import { NotificationsService } from './libs/notifications.js';
 import { initNavigation } from './navigation.js';
 import { initRouting, routes } from './routes.js';
 import { MainNav } from './views/mainNav.js';
+
+dotenv.config();
+
+console.log('[main] ', process.env);
 
 /**
  * @name main
