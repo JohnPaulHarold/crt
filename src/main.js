@@ -8,34 +8,34 @@ import { initNavigation } from './navigation.js';
 import { routes } from './routes.js';
 
 export const appOutlets = {
-  main: { id: "main" },
-  nav: { id: "nav" }
-}
+    main: { id: 'main' },
+    nav: { id: 'nav' },
+};
 
 export function main() {
-  initAppShell(appOutlets);
-  initNavigation();
+    initAppShell(appOutlets);
+    initNavigation();
 
-  new Hashish(routes);
+    new Hashish(routes);
 }
 
 /**
- * 
- * @param {AppOutlets} outlets 
+ *
+ * @param {AppOutlets} outlets
  */
 function initAppShell(outlets) {
-  const navEl = document.getElementById(outlets.nav.id)
+    const navEl = document.getElementById(outlets.nav.id);
 
-  const menuItems = routes.filter((route) => Boolean(route.title));
+    const menuItems = routes.filter((route) => Boolean(route.title));
 
-  const navItems = menuItems.map((route) => ({
-    id: `nav-${route.id.toLowerCase()}`,
-    title: route.title,
-    href: `#/${route.id.toLowerCase()}`
-  }))
+    const navItems = menuItems.map((route) => ({
+        id: `nav-${route.id.toLowerCase()}`,
+        title: route.title,
+        href: `#/${route.id.toLowerCase()}`,
+    }));
 
-  navEl && navEl.appendChild(
-    Nav({ id: 'main-nav', navItems, blockExit: 'down left up' })
-  )
+    navEl &&
+        navEl.appendChild(
+            Nav({ id: 'main-nav', navItems, blockExit: 'down left up' })
+        );
 }
-
