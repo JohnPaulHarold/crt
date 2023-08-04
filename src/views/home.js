@@ -11,10 +11,10 @@ import { pageData } from "../stubData/pageData";
 import { handleKeydownOnElement } from "../utils/handleKeydownOnElement";
 import { assertKey } from "../utils/keys";
 
-import { Carousel } from "../components/Carousel"
+import { Carousel } from "../components/Carousel";
 import { Tile } from "../components/Tile";
 
-import { Orientation } from '../enums/Orientation';
+import { Orientation } from "../enums/Orientation";
 import { AdditionalKeys } from "../enums/AdditionalKeys";
 import { Spinner } from "../components/Spinner";
 
@@ -30,33 +30,34 @@ export class Home extends BaseView {
     this.fetchData();
   }
 
-  destructor() {
-
-  }
+  destructor() {}
 
   listenToCarousels() {
     if (this.carousels) {
       this.keyHandleCleanup = handleKeydownOnElement(
         this.carousels,
         this.handleKeyboard.bind(this)
-      )
+      );
     }
   }
 
   /**
-   * 
-   * @param {KeyboardEvent} event 
+   *
+   * @param {KeyboardEvent} event
    */
   handleKeyboard(event) {
-    if (event.target instanceof HTMLAnchorElement && assertKey(event, AdditionalKeys.ENTER)) {
+    if (
+      event.target instanceof HTMLAnchorElement &&
+      assertKey(event, AdditionalKeys.ENTER)
+    ) {
       const keyPressValue = event.target.href;
       window.location.href = keyPressValue;
     }
   }
 
   /**
-   * 
-   * @param {PageData} data 
+   *
+   * @param {PageData} data
    * @returns {HTMLElement}
    */
   buildCarousels(data) {
@@ -65,30 +66,34 @@ export class Home extends BaseView {
         id: data.id,
         orientation: Orientation.VERTICAL,
         childQuery: `#${data.id} .home-carousel`,
-        blockExit: 'up down right'
+        blockExit: "up down right",
       },
-      data.items.map((rail) => (
+      data.items.map((rail) =>
         Carousel(
           {
             id: rail.id,
             title: rail.title,
-            className: 'home-carousel',
+            className: "home-carousel",
             orientation: Orientation.HORIZONTAL,
-            blockExit: 'right'
+            blockExit: "right",
           },
-          rail.items.map((railItem) => (
+          rail.items.map((railItem) =>
             a(
-              { dataset: { external: true }, href: railItem.url, id: railItem.id },
+              {
+                dataset: { external: true },
+                href: railItem.url,
+                id: railItem.id,
+              },
               Tile(railItem)
             )
-          )),
+          )
         )
-      )),
+      )
     );
 
     this.listenToCarousels();
 
-    return this.carousels
+    return this.carousels;
   }
 
   fetchData() {
@@ -97,12 +102,12 @@ export class Home extends BaseView {
       this.updateRender();
     }, 3000);
 
-    return
+    return;
   }
 
   /**
    * updateRender
-   * @param {HTMLElement} [el] 
+   * @param {HTMLElement} [el]
    */
   updateRender(el) {
     let target = document.getElementById(this.id);
@@ -112,26 +117,22 @@ export class Home extends BaseView {
     }
 
     if (target) {
-      target.innerHTML = '';
+      target.innerHTML = "";
       target.appendChild(this.render());
     }
   }
 
   render() {
     if (!this.data) {
-      return (
-        div(
-          { className: 'view', id: this.id },
-          Spinner({ message: "Hold on!" })
-        )
-      )
+      return div(
+        { className: "view", id: this.id },
+        Spinner({ message: "Hold on!" })
+      );
     }
 
-    return (
-      div(
-        { className: 'view', id: this.id },
-        this.buildCarousels(this.data),
-      )
-    )
+    return div(
+      { className: "view", id: this.id },
+      this.buildCarousels(this.data)
+    );
   }
 }

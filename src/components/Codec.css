@@ -2,23 +2,15 @@
   box-sizing: border-box;
 }
 
-/* Alert Red - Light */
 .invalid {
   background-color: #e84545;
 }
 
-/* Alert Green - Dark */
 .valid {
   background-color: #0e9c0e;
 }
 
-*:focus {
-  border: 6px solid orange;
-}
-
 .container {
-  border: 3px solid white;
-  margin: 10px 0;
   width: 100%;
   display: inline-block;
   overflow: hidden;
@@ -26,13 +18,12 @@
 
 .box {
   padding: 3px;
-  border: 1px solid white;
+  margin: 3px;
   clear: left;
 }
 
 .levelbox {
   padding: 3px;
-  border: 1px solid white;
-  width: 25%;
+  margin-right: 3px;
   float: left;
 }

@@ -3,15 +3,19 @@
  * @typedef {import('../declarations/types').ViewOptions} ViewOptions
  * @typedef {import('../declarations/types').Codec} Codec
  */
+import { Carousel } from "../components/Carousel";
 import { Codec } from "../components/Codec";
 import { Spinner } from "../components/Spinner";
 import { Codecs } from "../enums/Codecs";
 import { DrmType } from "../enums/DrmType";
+import { Orientation } from "../enums/Orientation";
 import { VideoTypes } from "../enums/VideoTypes";
 import { BaseView } from "../libs/baseView";
-import { div, h1, h2, section } from "../libs/makeElement";
+import { a, div, h1, h2, section } from "../libs/makeElement";
 import { getDrm } from "../utils/drm";
 import { isCodecSupported } from "../utils/isCodecSupported";
+
+import s from "./canivideo.css";
 
 /**
  * @extends BaseView
@@ -68,7 +72,6 @@ export class Canivideo extends BaseView {
           this.data[type][typeAndCodec][DrmType.PLAYREADY].drm,
           this.data[type][typeAndCodec][DrmType.FAIRPLAY].drm,
         ]).then((_) => {
-          console.log(this.data);
           this.updateRender();
         });
       });
@@ -85,7 +88,9 @@ export class Canivideo extends BaseView {
         target?.appendChild(h2(type));
         Object.keys(this.data[type]).forEach((codec) => {
           target?.appendChild(
-            Codec({ data: this.data[type][codec], codec, type })
+            a({ href: "#", className: s.codec }, [
+              Codec({ data: this.data[type][codec], codec, type }),
+            ])
           );
         });
       });
@@ -96,7 +101,14 @@ export class Canivideo extends BaseView {
     return div(
       { className: "view", id: this.id },
       h1("CAN I VIDEO?"),
-      Spinner({ message: "Crunching..." })
+      Spinner({ message: "Crunching..." }),
+      Carousel(
+        {
+          id: "codecs-carousel",
+          orientation: Orientation.VERTICAL,
+        },
+        []
+      )
     );
   }
 }
