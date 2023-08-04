@@ -5,5 +5,5 @@
  * @returns {Array<T>}
  */
 export function collectionToArray(collection) {
-  return Array.prototype.slice.call(collection);
+    return Array.prototype.slice.call(collection);
 }

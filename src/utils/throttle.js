@@ -2,19 +2,19 @@
 let throttlePause;
 
 /**
- * 
- * @param {Function} callback 
- * @param {number} time 
+ *
+ * @param {Function} callback
+ * @param {number} time
  * @param {any[]} args
  * @returns {void}
  */
 export const throttle = (callback, time, args) => {
-  if (throttlePause) return;
+    if (throttlePause) return;
 
-  throttlePause = true;
+    throttlePause = true;
 
-  setTimeout(() => {
-    callback(...args);
-    throttlePause = false;
-  }, time);
+    setTimeout(() => {
+        callback(...args);
+        throttlePause = false;
+    }, time);
 };

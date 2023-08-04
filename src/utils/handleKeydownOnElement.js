@@ -8,9 +8,9 @@
  * @param {keydownCallback} callback
  */
 export function handleKeydownOnElement(el, callback) {
-  el.addEventListener('keydown', callback);
+    el.addEventListener('keydown', callback);
 
-  return function () {
-    el.removeEventListener('keydown', callback);
-  };
+    return function () {
+        el.removeEventListener('keydown', callback);
+    };
 }
