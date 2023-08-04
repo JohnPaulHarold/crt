@@ -17,6 +17,10 @@ builds the app, outputting to `/dist`
 
 checks types. Note: types are currently expressed as JSDoc types
 
+`npm run lint:js`
+
+runs eslint on `src/`. Currently this script is informative only, and does not block builds, or commits.
+
 ## License
 `crt` is copyright (c) 2021-present John-Paul Harold <johnpaul.harold@gmail.com> and the contributors.
 
