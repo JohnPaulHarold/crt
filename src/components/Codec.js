@@ -7,7 +7,8 @@ import { DrmType } from "../enums/DrmType";
 
 import s from "./Codec.css";
 import { DrmSupports } from "./DrmSupports";
-import { getClassesWithFeature } from "../utils/getClassesWithFeature";
+import { getValidationClass } from "../utils/getValidationClass";
+import { cx } from "../utils/cx";
 
 /**
  *
@@ -19,18 +20,18 @@ export const Codec = ({ data, codec }) => {
     { className: s.container },
     div(
       {
-        className: getClassesWithFeature(!!data.mse || !!data.video, s.box, s),
+        className: cx(s.box, getValidationClass(!!data.mse || !!data.video, s)),
       },
       h2(codec),
       div(
         {
-          className: getClassesWithFeature(data.mse, s.box, s),
+          className: cx(s.box, getValidationClass(data.mse, s)),
         },
         "MSE"
       ),
       div(
         {
-          className: getClassesWithFeature(data.video, s.box, s),
+          className: cx(s.box, getValidationClass(data.video, s)),
         },
         "<video />"
       )

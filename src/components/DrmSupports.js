@@ -2,7 +2,8 @@
  * @typedef {import('../declarations/types').DrmSupportsProps} DrmSupportsProps
  */
 import { div } from "../libs/makeElement";
-import { getClassesWithFeature } from "../utils/getClassesWithFeature";
+import { cx } from "../utils/cx";
+import { getValidationClass } from "../utils/getValidationClass";
 import s from "./Codec.css";
 import { DrmSupportsLevels } from "./DrmSupportsLevels";
 
@@ -14,7 +15,7 @@ import { DrmSupportsLevels } from "./DrmSupportsLevels";
 export const DrmSupports = ({ data, drmType }) =>
   div(
     {
-      className: getClassesWithFeature(data[drmType].drm?.supported, s.box, s),
+      className: cx(s.box, getValidationClass(data[drmType].drm?.supported, s)),
     },
     div(
       drmType,
