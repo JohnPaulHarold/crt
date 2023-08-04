@@ -43,6 +43,7 @@ export class Canivideo extends BaseView {
           video,
           [DrmType.WIDEVINE]: {},
           [DrmType.PLAYREADY]: {},
+          [DrmType.PLAYREADY_LEGACY]: {},
           [DrmType.FAIRPLAY]: {},
         };
 
@@ -60,6 +61,14 @@ export class Canivideo extends BaseView {
           (res) => (this.data[type][typeAndCodec][DrmType.PLAYREADY].drm = res)
         );
 
+        this.data[type][typeAndCodec][DrmType.PLAYREADY_LEGACY].drm = getDrm(
+          DrmType.PLAYREADY_LEGACY,
+          typeAndCodec
+        )?.then(
+          (res) =>
+            (this.data[type][typeAndCodec][DrmType.PLAYREADY_LEGACY].drm = res)
+        );
+
         this.data[type][typeAndCodec][DrmType.FAIRPLAY].drm = getDrm(
           DrmType.FAIRPLAY,
           typeAndCodec
@@ -70,6 +79,7 @@ export class Canivideo extends BaseView {
         Promise.allSettled([
           this.data[type][typeAndCodec][DrmType.WIDEVINE].drm,
           this.data[type][typeAndCodec][DrmType.PLAYREADY].drm,
+          this.data[type][typeAndCodec][DrmType.PLAYREADY_LEGACY].drm,
           this.data[type][typeAndCodec][DrmType.FAIRPLAY].drm,
         ]).then((_) => {
           const el = document.querySelector("#codecs-carousel .slider");

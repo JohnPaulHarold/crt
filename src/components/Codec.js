@@ -38,6 +38,7 @@ export const Codec = ({ data, codec }) => {
     ),
     DrmSupports({ data, drmType: DrmType.WIDEVINE }),
     DrmSupports({ data, drmType: DrmType.PLAYREADY }),
+    DrmSupports({ data, drmType: DrmType.PLAYREADY_LEGACY }),
     DrmSupports({ data, drmType: DrmType.FAIRPLAY })
   );
 };
