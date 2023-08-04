@@ -72,14 +72,19 @@ export class Canivideo extends BaseView {
           this.data[type][typeAndCodec][DrmType.PLAYREADY].drm,
           this.data[type][typeAndCodec][DrmType.FAIRPLAY].drm,
         ]).then((_) => {
-          this.updateRender();
+          const el = document.querySelector("#codecs-carousel .slider");
+          el instanceof HTMLElement && this.updateRender(el);
         });
       });
     });
   }
 
-  updateRender() {
-    let target = document.getElementById(this.id);
+  /**
+   *
+   * @param {HTMLElement} targetEl
+   */
+  updateRender(targetEl) {
+    let target = targetEl || document.getElementById(this.id);
 
     if (target && this.data) {
       target.innerHTML = "";
@@ -100,8 +105,6 @@ export class Canivideo extends BaseView {
   render() {
     return div(
       { className: "view", id: this.id },
-      h1("CAN I VIDEO?"),
-      Spinner({ message: "Crunching..." }),
       Carousel(
         {
           id: "codecs-carousel",

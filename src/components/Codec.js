@@ -21,19 +21,19 @@ export const Codec = ({ data, codec }) => {
       {
         className: getClassesWithFeature(!!data.mse || !!data.video, s.box, s),
       },
-      h2(codec)
-    ),
-    div(
-      {
-        className: getClassesWithFeature(data.mse, s.box, s),
-      },
-      "MSE"
-    ),
-    div(
-      {
-        className: getClassesWithFeature(data.video, s.box, s),
-      },
-      "<video />"
+      h2(codec),
+      div(
+        {
+          className: getClassesWithFeature(data.mse, s.box, s),
+        },
+        "MSE"
+      ),
+      div(
+        {
+          className: getClassesWithFeature(data.video, s.box, s),
+        },
+        "<video />"
+      )
     ),
     DrmSupports({ data, drmType: DrmType.WIDEVINE }),
     DrmSupports({ data, drmType: DrmType.PLAYREADY }),
