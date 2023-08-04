@@ -1,4 +1,4 @@
 export const animations = {
-  transforms: true,
-  transitions: true,
+    transforms: true,
+    transitions: true,
 };
