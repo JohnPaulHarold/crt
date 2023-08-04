@@ -13,17 +13,13 @@ import { DrmSupportsLevels } from "./DrmSupportsLevels";
  */
 export const DrmSupports = ({ data, drmType }) =>
   div(
+    {
+      className: getClassesWithFeature(data[drmType].drm?.supported, s.box, s),
+    },
     div(
-      {
-        className: getClassesWithFeature(
-          data[drmType].drm?.supported,
-          s.thirdbox,
-          s
-        ),
-      },
-      drmType
-    ),
-    DrmSupportsLevels({
-      data: data[drmType].drm?.securityLevels,
-    })
+      drmType,
+      DrmSupportsLevels({
+        data: data[drmType].drm?.securityLevels,
+      })
+    )
   );

@@ -9,7 +9,7 @@ import { Codecs } from "../enums/Codecs";
 import { DrmType } from "../enums/DrmType";
 import { VideoTypes } from "../enums/VideoTypes";
 import { BaseView } from "../libs/baseView";
-import { div, h1, h2 } from "../libs/makeElement";
+import { div, h1, h2, section } from "../libs/makeElement";
 import { getDrm } from "../utils/drm";
 import { isCodecSupported } from "../utils/isCodecSupported";
 
@@ -29,10 +29,11 @@ export class Canivideo extends BaseView {
 
   getData() {
     VideoTypes.forEach((type) => {
+      this.data[type] = {};
       Codecs.forEach((codec) => {
         const typeAndCodec = type + codec.contentType;
         const { mse, video } = isCodecSupported(typeAndCodec);
-        this.data[typeAndCodec] = {
+        this.data[type][typeAndCodec] = {
           type,
           mse,
           video,
@@ -41,28 +42,33 @@ export class Canivideo extends BaseView {
           [DrmType.FAIRPLAY]: {},
         };
 
-        this.data[typeAndCodec][DrmType.WIDEVINE].drm = getDrm(
+        this.data[type][typeAndCodec][DrmType.WIDEVINE].drm = getDrm(
           DrmType.WIDEVINE,
           typeAndCodec
-        )?.then((res) => (this.data[typeAndCodec][DrmType.WIDEVINE].drm = res));
+        )?.then(
+          (res) => (this.data[type][typeAndCodec][DrmType.WIDEVINE].drm = res)
+        );
 
-        this.data[typeAndCodec][DrmType.PLAYREADY].drm = getDrm(
+        this.data[type][typeAndCodec][DrmType.PLAYREADY].drm = getDrm(
           DrmType.PLAYREADY,
           typeAndCodec
         )?.then(
-          (res) => (this.data[typeAndCodec][DrmType.PLAYREADY].drm = res)
+          (res) => (this.data[type][typeAndCodec][DrmType.PLAYREADY].drm = res)
         );
 
-        this.data[typeAndCodec][DrmType.FAIRPLAY].drm = getDrm(
+        this.data[type][typeAndCodec][DrmType.FAIRPLAY].drm = getDrm(
           DrmType.FAIRPLAY,
           typeAndCodec
-        )?.then((res) => (this.data[typeAndCodec][DrmType.FAIRPLAY].drm = res));
+        )?.then(
+          (res) => (this.data[type][typeAndCodec][DrmType.FAIRPLAY].drm = res)
+        );
 
         Promise.allSettled([
-          this.data[typeAndCodec][DrmType.WIDEVINE].drm,
-          this.data[typeAndCodec][DrmType.PLAYREADY].drm,
-          this.data[typeAndCodec][DrmType.FAIRPLAY].drm,
+          this.data[type][typeAndCodec][DrmType.WIDEVINE].drm,
+          this.data[type][typeAndCodec][DrmType.PLAYREADY].drm,
+          this.data[type][typeAndCodec][DrmType.FAIRPLAY].drm,
         ]).then((_) => {
+          console.log(this.data);
           this.updateRender();
         });
       });
@@ -75,8 +81,13 @@ export class Canivideo extends BaseView {
     if (target && this.data) {
       target.innerHTML = "";
       target.appendChild(h1("CAN I VIDEO?"));
-      Object.keys(this.data).map((key) => {
-        target?.appendChild(Codec({ data: this.data[key], codec: key }));
+      Object.keys(this.data).forEach((type) => {
+        target?.appendChild(h2(type));
+        Object.keys(this.data[type]).forEach((codec) => {
+          target?.appendChild(
+            Codec({ data: this.data[type][codec], codec, type })
+          );
+        });
       });
     }
   }

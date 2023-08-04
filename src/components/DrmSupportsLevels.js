@@ -28,23 +28,24 @@ export const DrmSupportsLevels = ({ data }) => {
 
   return !!l1 || !!l2 || !!l3
     ? div(
+        { style: { overflow: "hidden" } },
         div(
           {
-            className: getClassesWithFeature(l1, s.thirdbox, s),
+            className: getClassesWithFeature(l1, s.levelbox, s),
           },
           "L1"
         ),
 
         div(
           {
-            className: getClassesWithFeature(l2, s.thirdbox, s),
+            className: getClassesWithFeature(l2, s.levelbox, s),
           },
           "L2"
         ),
 
         div(
           {
-            className: getClassesWithFeature(l3, s.thirdbox, s),
+            className: getClassesWithFeature(l3, s.levelbox, s),
           },
           "L3"
         )
