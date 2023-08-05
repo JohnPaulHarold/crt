@@ -4,7 +4,7 @@ A simple single page app. Very old school, for very old school TV devices.
 
 ## name
 
-crt stands for Cathode Ray Tube. An old television technology. It seemed fitting.
+`crt` stands for [Cathode-ray Tube](https://en.wikipedia.org/wiki/Cathode-ray_tube). An old television technology. It seemed fitting.
 
 ## commands
 
