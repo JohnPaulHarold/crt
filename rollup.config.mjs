@@ -9,6 +9,7 @@ import terser from '@rollup/plugin-terser';
 // postcss
 import postcss from 'rollup-plugin-postcss';
 import autoprefixer from 'autoprefixer';
+import dotenv from "rollup-plugin-dotenv"
 
 import bundleWorker from 'rollup-plugin-bundle-worker';
 import copy from 'rollup-plugin-copy';
@@ -93,6 +94,7 @@ export default {
 
     plugins: [
         resolve({ extensions }),
+        dotenv(),
         commonjs({ transformMixedEsModules: true }),
         urlPlugin,
         copyPlugin,

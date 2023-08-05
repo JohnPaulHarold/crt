@@ -10,7 +10,6 @@ import { initRouting, routes } from './routes.js';
 import { MainNav } from './views/mainNav.js';
 
 dotenv.config();
-
 console.log('[main] ', process.env);
 
 /**
