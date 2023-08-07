@@ -116,9 +116,9 @@ export class Home extends BaseView {
             target = el;
         }
 
-        if (target) {
+        if (target && this.data) {
             target.innerHTML = '';
-            target.appendChild(this.render());
+            target.appendChild(this.buildCarousels(this.data));
         }
     }
 
@@ -132,7 +132,6 @@ export class Home extends BaseView {
 
         return div(
             { className: 'view', id: this.id },
-            this.buildCarousels(this.data)
         );
     }
 }
