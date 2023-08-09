@@ -8,7 +8,7 @@ import { BaseView } from './libs/baseView.js';
 
 import { Home } from './views/home.js';
 import { Search } from './views/search.js';
-// import { Show } from './views/show.js';
+import { Show } from './views/show.js';
 import { appOutlets } from './main.js';
 
 /** @type {BaseView} */
@@ -54,12 +54,12 @@ export function handleViewChange(matchedRoute) {
 
 /** @type {Array<import('./declarations/types.js').Route>} */
 export const routes = [
-    // {
-    //   pattern: '/show/{showId}',
-    //   id: 'show',
-    //   viewClass: Show,
-    //   handler: handleViewChange
-    // },
+    {
+        pattern: '/show/{showId}',
+        id: 'show',
+        viewClass: Show,
+        handler: handleViewChange,
+    },
     // {
     //   pattern: '/show/{showId}/episode/{id}',
     //   id: 'nested',

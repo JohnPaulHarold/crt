@@ -116,7 +116,7 @@ export class Search extends BaseView {
             /** @type {RailItem[]} */
             let filteredResults = [];
 
-            if (Boolean(this.searchTerm.length)) {
+            if (this.searchTerm.length > 0) {
                 filteredResults = searchData.filter((d) => {
                     const normalisedName = d.title.toLowerCase();
 
@@ -128,7 +128,7 @@ export class Search extends BaseView {
                 });
             }
 
-            if (Boolean(filteredResults.length)) {
+            if (filteredResults.length > 0) {
                 const newResults = Carousel(
                     {
                         id: 'search-results-list',

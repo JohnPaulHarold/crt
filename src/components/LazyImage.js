@@ -17,7 +17,10 @@ export const LazyImage = (props) => {
             fallback: '',
             loaded: false,
         },
-        className: s.lazyImage + (props.className ? ' ' + props.className : ''),
-        src: props.src,
+        className:
+            'lazy-image ' +
+            s.lazyImage +
+            (props.className ? ' ' + props.className : ''),
+        src: props.src
     });
 };

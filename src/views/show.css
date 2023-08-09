@@ -4,8 +4,50 @@
 
 .showOverlay {
     position: relative;
+    max-width: 50%;
+}
+
+.showLogo {
+    position: relative;
+    transform: scale(1);
+    transform-origin: left top;
+    transition: transform 250ms ease;
+    height: 10rem;
+}
+
+.showLogo:global(.min) {
+    transform: scale(0.25);
 }
 
 .showTitle {
     font-size: 4rem;
+}
+
+.showDescription {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.buttonRow {
+}
+
+.suggestions {
+    position: relative;
+    margin-top: 10rem;
+}
+
+.suggestions :global(.lazy-image) {
+    width: 16rem;
+    height: 9rem;
+    margin: 0 1rem 1rem 0;
+    border: 0.2rem solid transparent;
+    border-radius: 0.5rem;
+}
+
+.suggestions a:global(.focused) :global(.lazy-image) {
+    border: 0.2rem solid #ffde2b;
 }

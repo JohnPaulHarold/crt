@@ -16,17 +16,22 @@ const name = 'crt';
 console.log('[NODE_ENV] ', process.env.NODE_ENV);
 
 const urlPlugin = url({
-    // Where to put files
-    destDir: 'dist/assets/',
-    // Path to put infront of files (in code)
-    publicPath:
-        process.env.NODE_ENV === 'development'
-            ? 'http://localhost:10001/dist/assets/'
-            : './assets/',
-    // File name once copied
-    fileName: '[name][extname]',
-    // Kinds of files to process
-    include: ['**/*.svg', '**/*.png', '**/*.gif', '**/*.jpg', '**/*.jpeg'],
+  // Where to put files
+  destDir: 'dist/assets/',
+  // Path to put infront of files (in code)
+  publicPath: process.env.NODE_ENV === "development"
+    ? 'http://localhost:10001/assets/'
+    : './assets/',
+  // File name once copied
+  fileName: '[name][extname]',
+  // Kinds of files to process
+  include: [
+    '**/*.svg',
+    '**/*.png',
+    '**/*.gif',
+    '**/*.jpg',
+    '**/*.jpeg',
+  ]
 });
 
 const copyPlugin = copy({
@@ -81,27 +86,25 @@ export default {
         },
     ],
 
-    plugins: [
-        resolve({ extensions }),
-        commonjs({ transformMixedEsModules: true }),
-        urlPlugin,
-        copyPlugin,
-        postcss({
-            modules: true,
-            getExportNamed: false,
-            getExport(id) {
-                return cssExportMap[id];
-            },
-            extract: true,
-        }),
-        babel({
-            extensions,
-            babelHelpers: 'bundled',
-            include: ['src/**/*'],
-        }),
-        // serve({
-        //   open: true,
-        //   contentBase: 'dist'
-        // })
-    ],
+  plugins: [
+    resolve({ extensions }),
+    commonjs({ transformMixedEsModules: true }),
+    urlPlugin,
+    copyPlugin,
+    postcss({
+      modules: true,
+      getExportNamed: false,
+      getExport(id) {
+        return cssExportMap[id];
+      },
+      extract: true,
+    }),
+    babel({
+      extensions,
+      babelHelpers: 'bundled',
+      include: [
+        'src/**/*',
+      ],
+    }),
+  ]
 };
