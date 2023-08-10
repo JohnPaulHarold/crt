@@ -5,21 +5,23 @@ import { a, div, h1, p } from '../libs/makeElement';
 import { BaseView } from '../libs/baseView';
 import { checkImages } from '../libs/indolence';
 
+import { assertKey } from '../utils/keys';
+
 import { LazyImage } from '../components/LazyImage';
 import { Grid } from '../components/Grid';
 import { Button } from '../components/Button';
 import { Carousel } from '../components/Carousel';
 
 import { Orientation } from '../enums/Orientation';
+import { Direction } from '../enums/Direction';
 
-import Logo from '../assets/Public_Domain_Mark_button.svg.png';
+import { handleKeyDown, registerCustomFocusHandler } from '../navigation';
 
 import { showData } from '../stubData/showData';
 
+import Logo from '../assets/Public_Domain_Mark_button.svg.png';
+
 import s from './show.css';
-import { handleKeyDown, registerCustomFocusHandler } from '../navigation';
-import { assertKey } from '../utils/keys';
-import { Direction } from '../enums/Direction';
 
 /**
  * @extends BaseView
@@ -63,17 +65,17 @@ export class Show extends BaseView {
 
         if (!this.belowFold) {
             if (overlayEl instanceof HTMLElement) {
-                overlayEl.style.opacity = "0";
+                overlayEl.style.opacity = '0';
             }
             if (logoEl instanceof HTMLElement) {
-                logoEl.style.opacity = "0.5";
+                logoEl.style.opacity = '0.5';
             }
         } else {
             if (overlayEl instanceof HTMLElement) {
-                overlayEl.style.opacity = "1";
+                overlayEl.style.opacity = '1';
             }
             if (logoEl instanceof HTMLElement) {
-                logoEl.style.opacity = "1";
+                logoEl.style.opacity = '1';
             }
         }
     }
@@ -91,13 +93,12 @@ export class Show extends BaseView {
             event.target.id.match(/nav/);
         const isUpOrDown = assertKey(event, [Direction.UP, Direction.DOWN]);
 
-
         if (isUpOrDown && this.scope && !navEl) {
             this.animateFold();
             handleKeyDown(event, this.scope);
             this.belowFold = !this.belowFold;
             // we will also need to load any images
-            // this is horrible, and it would be much, much, much better to 
+            // this is horrible, and it would be much, much, much better to
             // use IntersectionObserver
             this.scope && checkImages(this.scope, 200);
         } else {

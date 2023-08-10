@@ -1,3 +1,7 @@
+/**
+ * @typedef {import('./libs/baseView.js')} BaseViewInstance
+ */
+
 import { Orientation } from '../enums/Orientation';
 import { BaseView } from '../libs/baseView';
 
@@ -14,15 +18,11 @@ export type RouteSearch = Record<string, string | number | boolean>;
 
 export interface Route {
     default?: boolean;
+    exact?: boolean;
     pattern: string;
     title?: string;
     id: string;
-    viewClass: typeof BaseView;
-    handler: ({
-        route: Route,
-        params: RouteParams,
-        search: RouteSearch,
-    }) => void;
+    viewClass: BaseViewInstance;
 }
 
 export interface ViewOptions {

@@ -34,8 +34,8 @@ export class Home extends BaseView {
     destructor() {}
 
     /**
-     * 
-     * @param {HTMLElement} el 
+     *
+     * @param {HTMLElement} el
      */
     focusPage(el) {
         focusInto(el);
@@ -127,7 +127,7 @@ export class Home extends BaseView {
 
         if (target && this.data) {
             target.innerHTML = '';
-            const el = this.buildCarousels(this.data)
+            const el = this.buildCarousels(this.data);
             target.appendChild(el);
 
             this.focusPage(el);
@@ -142,8 +142,6 @@ export class Home extends BaseView {
             );
         }
 
-        return div(
-            { className: 'view', id: this.id },
-        );
+        return div({ className: 'view', id: this.id });
     }
 }
