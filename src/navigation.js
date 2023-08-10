@@ -109,7 +109,7 @@ export function handleKeyDown(event, scope) {
 
 function clearFocus() {
     const els = document.querySelectorAll('.focused');
-    els.forEach(el => el.classList.remove('focused'));
+    els.forEach((el) => el.classList.remove('focused'));
 }
 /**
  *
@@ -278,6 +278,7 @@ export function focusInto(scopeEl) {
 
         if (nextFocus) {
             moveFocus(nextFocus);
+            lastFocus = nextFocus;
         }
     }
 }

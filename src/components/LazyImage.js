@@ -21,6 +21,6 @@ export const LazyImage = (props) => {
             'lazy-image ' +
             s.lazyImage +
             (props.className ? ' ' + props.className : ''),
-        src: props.src
+        src: props.src,
     });
 };

@@ -2,53 +2,91 @@
  * @typedef {import('../declarations/types').Route} Route
  * @typedef {import('../declarations/types').RouteParams} RouteParams
  * @typedef {import('../declarations/types').RouteSearch} RouteSearch
+ * @typedef {{ pattern: string, params: RouteParams, search: RouteSearch }} HandlerArgs
  */
 
 import { parseSearchParams } from '../utils/parseSearchParams';
 
 export class Hashish {
-    /**
-     *
-     * @param {Array<Route>} routes
-     */
-    constructor(routes) {
-        this.routes = routes;
+    constructor() {
+        /** @type { {[index: string]: { callback: (arg0: HandlerArgs) => void, exact: boolean}} } */
+        this.handlers = {};
 
-        this.currentView = null;
-        this.nextView = null;
+        this.setupListeners();
+        this.init();
+    }
 
+    setupListeners() {
         window.addEventListener(
             'hashchange',
             this.locationHashChanged.bind(this)
         );
+    }
 
-        if (location.hash) {
-            /** @type {HashChangeEvent|CustomEvent} */
-            let hashChangeEvent;
+    init() {
+        /** @type {HashChangeEvent|CustomEvent} */
+        let hashChangeEvent;
 
-            try {
-                /** @type {HashChangeEvent} */
-                hashChangeEvent = new HashChangeEvent('hashchange', {
+        // we try/catch here because some older browsers do not support
+        // `HashChangeEvent` constructor
+        try {
+            /** @type {HashChangeEvent} */
+            hashChangeEvent = new HashChangeEvent('hashchange', {
+                newURL: location.href,
+            });
+        } catch (error) {
+            /** @type {CustomEvent} */
+            hashChangeEvent = new CustomEvent('hashchange', {
+                detail: {
                     newURL: location.href,
-                });
-            } catch (error) {
-                /** @type {CustomEvent} */
-                hashChangeEvent = new CustomEvent('hashchange', {
-                    detail: {
-                        newURL: location.href,
-                    },
-                });
-            }
-
-            this.navigateTo(hashChangeEvent);
-        } else {
-            // get the "default" and navigate to that
-            this.routes.forEach((route) => {
-                if (route.default) {
-                    location.hash = '/' + route.id;
-                }
+                },
             });
         }
+
+        this.navigateTo(hashChangeEvent);
+    }
+
+    /**
+     *
+     * @param {string} hashRoute
+     * @returns
+     */
+    stripHash(hashRoute) {
+        return hashRoute.replace('#', '');
+    }
+
+    /**
+     *
+     * @param {string|Route} pathObject
+     * @param {(handler: HandlerArgs) => void} handler
+     */
+    registerRoute(pathObject, handler) {
+        let path = '';
+        let exact = false;
+        if (typeof pathObject === 'string') {
+            path = pathObject;
+        } else {
+            path = pathObject.pattern;
+            exact = Boolean(pathObject.exact);
+        }
+
+        this.handlers[path] = {
+            callback: handler,
+            exact,
+        };
+
+        // then quickly check if our newly added route matches
+        const matchedRoute = this.matchRoute(location.href);
+        if (matchedRoute) {
+            this.init();
+        }
+    }
+
+    /**
+     * @param {string} path
+     */
+    unregisterRoute(path) {
+        delete this.handlers[path];
     }
 
     /**
@@ -62,30 +100,37 @@ export class Hashish {
     /**
      *
      * @param {string} url
-     * @returns {{ route: Route, params: RouteParams, search: RouteSearch } | undefined}
+     * @returns {{ pattern: string, params: RouteParams, search: RouteSearch } | undefined}
      */
     matchRoute(url) {
-        // strip out the searchParams if they are there
+        const path = url.replace(location.origin, '');
+        // could be `/` or `/#/foo`
+        const route = path === '/' ? path : path.split('#')[1];
 
-        const [routeUrl, paramsString] = url.split('?');
+        // strip out the searchParams if they are there
+        const [routeUrl, paramsString] = route.split('?');
+        const handlers = this.handlers;
 
         let matched;
 
-        for (let i = 0, l = this.routes.length; i < l; i++) {
-            const route = this.routes[i];
-
-            // an early check for paramless routes
-            if ('/' + url === route.pattern) {
+        // note: pattern will be without the hash, such as `/` or `/foo`
+        for (const pattern in handlers) {
+            if (routeUrl === pattern) {
                 matched = {
-                    route,
+                    pattern,
                     params: {},
                     search: {},
                 };
+
                 break;
             }
 
+            if (handlers[pattern].exact) {
+                continue;
+            }
+
             const routeMatcher = new RegExp(
-                route.pattern.replace(/({[^}]*(\w+)[^}]*})/g, '([\\w-]+)')
+                pattern.replace(/({[^}]*(\w+)[^}]*})/g, '([\\w-]+)')
             );
             const match = routeUrl.match(routeMatcher);
 
@@ -94,14 +139,20 @@ export class Hashish {
             }
 
             if (match.index === 0) {
-                const variables = route.pattern.match(/({[^}]*(\w+)[^}]*})/g);
-                const [newRoute, routeId] = match;
+                const variables = pattern.match(/({[^}]*(\w+)[^}]*})/g);
+                const matchedVariables = match.slice(1);
+                /** @type { {[index: string]: string } } */
+                const params = {};
+
+                variables?.forEach((variable, i) => {
+                    // strip the brackets
+                    const hashless = variable.replace(/{|}/g, '');
+                    params[hashless] = matchedVariables[i];
+                });
 
                 matched = {
-                    route,
-                    params: {
-                        routeId: routeId,
-                    },
+                    pattern,
+                    params: params,
                     search: parseSearchParams(paramsString),
                 };
 
@@ -121,8 +172,6 @@ export class Hashish {
             return;
         }
 
-        /** @type {string} */
-        let nextRoute;
         let evt;
 
         if (event instanceof HashChangeEvent) {
@@ -133,29 +182,12 @@ export class Hashish {
 
         const { newURL } = evt || {};
 
-        let route = newURL;
-
-        if (route) {
-            let origin = location.origin;
-
-            if (!origin) {
-                origin = location.protocol + '//' + location.host;
-            }
-
-            nextRoute = route.replace(origin + '/', '').replace('#', '');
-        } else {
-            nextRoute = location.hash.replace('#', '');
-        }
-
         try {
-            // need to find the matching route
-            const matchedRoute = this.matchRoute(nextRoute);
+            const matchedRoute = this.matchRoute(newURL);
 
-            if (!matchedRoute) {
-                throw new Error('no matched route');
+            if (matchedRoute) {
+                this.handlers[matchedRoute.pattern].callback(matchedRoute);
             }
-
-            matchedRoute.route.handler(matchedRoute);
         } catch (error) {
             console.error('[Router] failed to load view component', error);
         }

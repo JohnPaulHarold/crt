@@ -1,8 +1,6 @@
 import { Orientation } from '../enums/Orientation';
 
 import { collectionToArray } from '../utils/collectionToArray';
-import { getElementChain } from '../utils/getElementChain';
-import { getIntersection } from '../utils/getIntersection';
 import { getOrientationFromKeyCode } from '../utils/keys';
 
 /**
@@ -21,36 +19,6 @@ function getScrollEl(el, keyCode) {
     }
 
     return getScrollEl(el.parentElement, keyCode);
-}
-
-/**
- *
- * @param {Array<Element|ParentNode|Node>} elementArray
- * @returns {number}
- */
-function getActiveChild(elementArray) {
-    let currentIndex = -1;
-
-    if (!document.activeElement) {
-        return currentIndex;
-    }
-
-    currentIndex = elementArray.indexOf(document.activeElement);
-
-    // if the activeElement is a direct child, just return that
-    if (currentIndex > -1) {
-        return currentIndex;
-    }
-
-    const elChain = getElementChain(document.activeElement);
-    const intersection = getIntersection(elChain, elementArray);
-
-    if (intersection.length > 0) {
-        const el = intersection[0];
-        return elementArray.indexOf(el);
-    }
-
-    return currentIndex;
 }
 
 /**
