@@ -27,6 +27,14 @@ export function setLrudScope(newScope) {
 }
 
 /**
+ *
+ * @returns {HTMLElement=}
+ */
+export function getLastFocus() {
+    return lastFocus;
+}
+
+/**
  * @name registerCustomFocusHandler
  * @description exists in case you need to override the default handling
  * @param {(event: KeyboardEvent) => void} func
@@ -115,7 +123,7 @@ function clearFocus() {
  *
  * @param {HTMLElement} el
  */
-function focus(el) {
+export function focus(el) {
     el.classList.add('focused');
 
     focusWithoutScrolling(el);
@@ -195,6 +203,7 @@ function handleOtherKey(event) {
  */
 function handleBack(event) {
     event.preventDefault();
+    console.log('[navigation][handleBack] event', event);
 }
 
 /**
@@ -203,6 +212,8 @@ function handleBack(event) {
  */
 function handleEnter(event) {
     event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
     if (
         event.target &&
         event.target instanceof HTMLAnchorElement &&
@@ -281,4 +292,18 @@ export function focusInto(scopeEl) {
             lastFocus = nextFocus;
         }
     }
+}
+
+/**
+ * @name isElementFocused
+ * @param {string} id DOM element id
+ */
+export function isElementFocused(id) {
+    const focusableEl = document.getElementById(id);
+
+    if (focusableEl && focusableEl.classList.contains('focused')) {
+        return true;
+    }
+
+    return false;
 }

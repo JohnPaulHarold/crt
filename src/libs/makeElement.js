@@ -142,3 +142,5 @@ export const ul = (...args) => makeElement('ul', args[0], ...args.slice(1));
 export const li = (...args) => makeElement('li', args[0], ...args.slice(1));
 /** @type {ShorthandMakeElement}  */
 export const img = (...args) => makeElement('img', args[0], ...args.slice(1));
+/** @type {ShorthandMakeElement}  */
+export const form = (...args) => makeElement('form', args[0], ...args.slice(1));
