@@ -70,8 +70,8 @@ function setData(el, dataset) {
 /**
  * makeElement
  * @param {string} type
- * @param {string | Record<string, any> | HTMLElement} textOrPropsOrChild
- * @param  {HTMLElement[]} otherChildren
+ * @param {string | Record<string, any> | HTMLElement | HTMLElement[]} textOrPropsOrChild
+ * @param {HTMLElement[]} otherChildren
  * @see {@link https://david-gilbertson.medium.com/how-i-converted-my-react-app-to-vanillajs-and-whether-or-not-it-was-a-terrible-idea-4b14b1b2faff}
  *
  * @returns {HTMLElement}
