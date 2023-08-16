@@ -9,7 +9,7 @@ import s from './Grid.css';
 /**
  *
  * @param {GridProps} props
- * @param {HTMLElement | HTMLElement[]} children
+ * @param {HTMLElement[]} children
  * @returns {HTMLElement}
  */
 export const Grid = (props, children) => {

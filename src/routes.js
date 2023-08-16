@@ -14,6 +14,7 @@ import { appOutlets } from './main.js';
 
 import { BaseView } from './libs/baseView.js';
 import { Hashish } from './libs/hashish.js';
+import { Diff } from './views/diff.js';
 
 /** @type {BaseViewInstance} */
 let _currentView;
@@ -89,6 +90,12 @@ export const routes = [
         title: 'Search',
         id: 'search',
         viewClass: Search,
+    },
+    {
+        pattern: '/diff',
+        title: 'Diff',
+        id: 'diff',
+        viewClass: Diff,
     },
     {
         pattern: '/show/{showId}',

@@ -1,7 +1,7 @@
 /**
  * collectionToArray
  * @template T
- * @param {HTMLCollection|NodeList} collection
+ * @param {HTMLCollection|NodeList|NamedNodeMap} collection
  * @returns {Array<T>}
  */
 export function collectionToArray(collection) {
