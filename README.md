@@ -28,6 +28,14 @@ runs eslint on `src/`. Currently this script is informative only, and does not b
 
 does a `prettier` pass, writing the changes.
 
+`npm run test`
+
+runs through tests, watching by default. This command uses [Vitest](https://vitest.dev/).
+
+`npm run coverage`
+
+creates a code coverage report. Currently found in `/coverage/index.html`
+
 ## License
 
 `crt` is copyright (c) 2021-present John-Paul Harold <johnpaul.harold@gmail.com> and the contributors.

@@ -1,8 +1,8 @@
-const { exec } = require('child_process');
+import { exec } from 'child_process';
 
 const targets = ['node_modules/', 'dist'].join(' ');
 
-exec(`rm -rf ${targets}`, (error, stdout, stderr) => {
+exec(`rm -rf ${targets}`, (error, _, stderr) => {
     if (error) {
         console.log(`[nuked] error: ${error.message}`);
         return;
