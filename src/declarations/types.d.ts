@@ -70,11 +70,12 @@ export interface SimpleCarouselProps extends BaseComponentProps {
 }
 
 export interface CarouselProps extends BaseComponentProps {
-    id: string;
-    title?: string;
-    orientation: Orientation;
-    childQuery?: string;
     blockExit?: string;
+    childQuery?: string;
+    id: string;
+    orientation: Orientation;
+    startOffset?: number;
+    title?: string;
 }
 
 export interface NavProps {
