@@ -33,7 +33,7 @@ let formAttsNoVal = ['checked', 'selected'];
 /**
  * Convert a template string into HTML DOM nodes
  * @param {string} str The template string
- * @return {Node} The template HTML
+ * @return {HTMLElement} The template HTML
  */
 export function stringToHTML(str) {
     // Create document
