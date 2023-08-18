@@ -18,9 +18,13 @@ const READY_STATE = {
 };
 
 /**
+ * @typedef {"GET"|"POST"|"PUT"|"PATCH"|"DELETE"|"HEAD"|"OPTIONS"} HttpMethod
+ */
+
+/**
  * @template T
  * @param {Object} options
- * @param {string} [options.method] REST method
+ * @param {HttpMethod} [options.method] REST method
  * @param {string} options.url url
  * @param {XMLHttpRequestResponseType} [options.type] expected responseType
  * @param {Record<string, string>} [options.headers] optional headers
