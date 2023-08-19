@@ -37,6 +37,7 @@ export function registerPopup(popupEl, handler) {
             popupsOutlet.classList.remove('open');
             setLrudScope();
             handler('close');
+            popupsOutlet.removeChild(popupEl);
             cleanup();
         },
     };

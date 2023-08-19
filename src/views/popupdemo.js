@@ -46,7 +46,9 @@ export class Popupdemo extends BaseView {
         this.popup = registerPopup(dialogEl, handler);
     }
 
-    destructor() {}
+    destructor() {
+        
+    }
 
     viewDidLoad() {
         this.viewEl.addEventListener('keydown', (e) => {
