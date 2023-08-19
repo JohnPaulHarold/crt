@@ -56,13 +56,11 @@ function findScrollableFromFocusEl(el, scrollables) {
  * @param {number[]} offsets
  * @param {number} scrollableIndex
  * @param {number} startOffset
+ * @param {number} visible
  */
-function calculateOffset(offsets, scrollableIndex, startOffset) {
-    const zeroLength = offsets.length - 1;
-    const doubleOffset = startOffset * 2;
-
-    if ((scrollableIndex - doubleOffset) >= zeroLength - doubleOffset) {
-        return offsets[zeroLength - doubleOffset];
+function calculateOffset(offsets, scrollableIndex, startOffset, visible) {
+    if ((scrollableIndex) >= offsets.length - visible) {
+        return offsets[offsets.length - (visible + startOffset)];
     }
 
     return offsets[Math.max(0, scrollableIndex - startOffset)];
@@ -82,11 +80,12 @@ export function scrollAction(el, keyCode, useTransforms) {
         // todo: either tell the type system to always expect an id, or generate one for it.
         const scrollId = scrollEl.dataset.deadseaId || '';
         const orientation = scrollEl.dataset.deadseaOrientation;
+        const visible = parseInt(scrollEl.dataset.deadseaVisible || '', 10) || 0;
         const qs = scrollEl.dataset.deadseaChildQuery;
         const startOffset = parseInt(
             scrollEl.dataset.deadseaStartOffset || '',
             10
-        );
+        ) || 0;
         const offsetProp =
             orientation === Orientation.HORIZONTAL ? 'offsetLeft' : 'offsetTop';
         const scrollables = qs
@@ -108,7 +107,8 @@ export function scrollAction(el, keyCode, useTransforms) {
         const newOffset = calculateOffset(
             offsetCache[scrollId],
             scrollableIndex,
-            startOffset
+            startOffset,
+            visible
         );
 
         if (scrollableIndex >= startOffset) {

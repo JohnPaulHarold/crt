@@ -36,6 +36,7 @@ export const Carousel = (props, children) => {
             {
                 className: sliderCx,
                 dataset: {
+                    deadseaVisible: props.visible,
                     deadseaId: props.id,
                     deadseaStartOffset: props.startOffset || 0,
                     deadseaOrientation: props.orientation,

@@ -72,6 +72,7 @@ export interface CarouselProps extends BaseComponentProps {
     orientation: Orientation;
     startOffset?: number;
     title?: string;
+    visible?: 3;
 }
 
 export interface NavProps {
