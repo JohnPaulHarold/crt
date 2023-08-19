@@ -5,12 +5,8 @@
 import { Orientation } from '../enums/Orientation';
 import { BaseView } from '../libs/baseView';
 
-export interface Outlet {
-    id: string;
-}
-
 export interface AppOutlets {
-    [index: string]: Outlet;
+    [index: string]: HTMLElement;
 }
 
 export type RouteParams = Record<string, string | number | boolean>;
@@ -127,6 +123,7 @@ export interface StoreType {
 
 export interface ButtonProps extends BaseComponentProps {
     text?: string;
+    theme?: 'ghost' | 'none';
     icon?: string;
     iconPosition?: 'left' | 'right' | 'top' | 'bottom';
 }
@@ -145,6 +142,10 @@ export interface LazyImageProps extends BaseComponentProps {
 
 export interface SpinnerProps extends BaseComponentProps {
     message?: string;
+}
+
+export interface DialogProps extends BaseComponentProps {
+    title?: string;
 }
 
 // note:

@@ -119,7 +119,7 @@ export class Home extends BaseView {
      * @param {HTMLElement} [el]
      */
     updateRender(el) {
-        let target = document.getElementById(this.id);
+        let target = this.viewEl;
 
         if (el) {
             target = el;

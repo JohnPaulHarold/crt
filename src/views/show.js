@@ -84,9 +84,6 @@ export class Show extends BaseView {
      * @param {KeyboardEvent} event
      */
     customHandleKeyDown(event) {
-        console.log(`[${this.id}][customHandleKeyDown]`, event, this.belowFold);
-        console.log(`[${this.id}][customHandleKeyDown]`, this.belowFold);
-
         const navEl =
             event.target &&
             event.target instanceof HTMLElement &&
@@ -107,8 +104,8 @@ export class Show extends BaseView {
     }
 
     viewDidLoad() {
-        this.scope = document.getElementById(this.id);
-        this.scope && checkImages(this.scope);
+        this.scope = this.viewEl;
+        checkImages(this.scope);
     }
 
     render() {

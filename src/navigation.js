@@ -15,12 +15,8 @@ let _scope = undefined;
 let lastFocus;
 let _handleKeyDown = handleKeyDown;
 
-// todo: remove
-// @ts-ignore
-window.getNextFocus = getNextFocus;
-
 /**
- * @param {HTMLElement | undefined} newScope
+ * @param {HTMLElement} [newScope]
  */
 export function setLrudScope(newScope) {
     _scope = newScope;
@@ -99,13 +95,12 @@ export function handleKeyDown(event, scope) {
             nextFocus = getNextFocus(
                 /** @type {HTMLElement} */ (event.target),
                 event.keyCode,
-                scope
+                _scope
             );
         }
 
         if (nextFocus) {
             moveFocus(nextFocus, event, lastFocus);
-            _scope = undefined;
             lastFocus = nextFocus;
         }
 
