@@ -85,7 +85,6 @@ export class Home extends BaseView {
                         className: 'home-carousel',
                         orientation: Orientation.HORIZONTAL,
                         blockExit: 'right',
-                        startOffset: 1
                     },
                     rail.items.map((railItem) =>
                         a(

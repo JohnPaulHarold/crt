@@ -11,7 +11,7 @@ export const pageData = {
         (env) => ({
             title: env,
             id: env.toLowerCase().replace(' ', ''),
-            items: ['0A', '0B', '0C', '0D', '0E', '0F', '10', '11', '12', '13', '14', '15'].map((inst) => ({
+            items: ['0A', '0B', '0C', '0D', '0E', '0F'].map((inst) => ({
                 id: [env.toLowerCase().replace(' ', ''), inst].join('-'),
                 title: [env, inst].join(' '),
                 url: `https://www.google.com/search?q=${encodeURI(env)}`,

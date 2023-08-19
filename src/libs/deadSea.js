@@ -58,13 +58,6 @@ function findScrollableFromFocusEl(el, scrollables) {
  * @param {number} startOffset
  */
 function calculateOffset(offsets, scrollableIndex, startOffset) {
-    const zeroLength = offsets.length - 1;
-    const doubleOffset = startOffset * 2;
-
-    if ((scrollableIndex - doubleOffset) >= zeroLength - doubleOffset) {
-        return offsets[zeroLength - doubleOffset];
-    }
-
     return offsets[Math.max(0, scrollableIndex - startOffset)];
 }
 
