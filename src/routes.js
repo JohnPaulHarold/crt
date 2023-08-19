@@ -15,6 +15,7 @@ import { appOutlets } from './main.js';
 import { BaseView } from './libs/baseView.js';
 import { Hashish } from './libs/hashish.js';
 import { Diff } from './views/diff.js';
+import { Popupdemo } from './views/popupdemo.js';
 
 /** @type {BaseViewInstance} */
 let _currentView;
@@ -36,7 +37,7 @@ export function initRouting() {
  * @param {BaseViewInstance} nextView
  */
 function loadView(nextView) {
-    const mainViewElement = document.getElementById(appOutlets.main.id);
+    const mainViewElement = appOutlets['main'];
     _nextView = nextView;
 
     if (mainViewElement && _nextView instanceof BaseView) {
@@ -101,5 +102,11 @@ export const routes = [
         pattern: '/show/{showId}',
         id: 'show',
         viewClass: Show,
+    },
+    {
+        pattern: '/popupdemo',
+        title: 'Popup Demo',
+        id: 'popupdemo',
+        viewClass: Popupdemo,
     },
 ];

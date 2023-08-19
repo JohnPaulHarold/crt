@@ -61,25 +61,21 @@ export class Diff extends BaseView {
     }
 
     viewDidLoad() {
-        const el = document.getElementById(this.id);
+        this.viewEl.addEventListener('keydown', (e) => {
+            e.preventDefault();
 
-        if (el) {
-            el.addEventListener('keydown', (e) => {
-                e.preventDefault();
-
-                if (
-                    e.target &&
-                    e.target instanceof HTMLElement &&
-                    assertKey(e, AdditionalKeys.ENTER)
-                ) {
-                    if (e.target.id === 'add-lyric') {
-                        this.state.lyricCount++;
-                    } else {
-                        this.state.lyricCount--;
-                    }
+            if (
+                e.target &&
+                e.target instanceof HTMLElement &&
+                assertKey(e, AdditionalKeys.ENTER)
+            ) {
+                if (e.target.id === 'add-lyric') {
+                    this.state.lyricCount++;
+                } else {
+                    this.state.lyricCount--;
                 }
-            });
-        }
+            }
+        });
     }
 
     /**
@@ -88,11 +84,9 @@ export class Diff extends BaseView {
      */
     updateDiff(newState) {
         const vdom = this.getTemplate();
-        const dom = document.getElementById(this.id);
+        const dom = this.viewEl;
 
-        if (dom) {
-            diff(vdom, dom);
-        }
+        diff(vdom, dom);
 
         if (newState.lyricCount < 1 && dom) {
             focusInto(dom);

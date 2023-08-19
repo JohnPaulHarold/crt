@@ -1,3 +1,5 @@
+import { div } from './makeElement';
+
 /**
  * @constructor
  */
@@ -6,7 +8,16 @@ export class BaseView {
      * @param {import("../declarations/types").ViewOptions} options
      */
     constructor({ id }) {
+        /**
+         * @type {string}
+         * @public
+         */
         this.id = id;
+        /**
+         * @type {HTMLElement}
+         * @public
+         */
+        this.viewEl;
 
         this.viewWillLoad();
     }
@@ -52,6 +63,8 @@ export class BaseView {
      */
     attach(el) {
         const viewContentEl = this.render();
+        this.viewEl = viewContentEl;
+
         el.appendChild(viewContentEl);
         // this timeout forces the viewDidLoad to the ext tick
         // giving time for the DOM to be updated.
@@ -67,8 +80,8 @@ export class BaseView {
         this.viewWillUnload();
         this.destructor();
 
-        const el = document.getElementById(this.id);
-        el && el.parentElement && el.parentElement.removeChild(el);
+        this.viewEl.parentElement &&
+            this.viewEl.parentElement.removeChild(this.viewEl);
 
         this.viewDidUnload();
     }
@@ -78,6 +91,11 @@ export class BaseView {
      *@returns {HTMLElement}
      */
     render() {
-        return document.createElement('div');
+        const el = div({
+            className: 'view',
+            id: this.id,
+        });
+
+        return el;
     }
 }

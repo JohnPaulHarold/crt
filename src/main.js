@@ -6,12 +6,27 @@ import { Nav } from './components/Nav.js';
 import { initNavigation } from './navigation.js';
 import { initRouting, routes } from './routes.js';
 
-export const appOutlets = {
-    main: { id: 'main' },
-    nav: { id: 'nav' },
-};
+// todo: could these be acquired as part of bootstrap process
+// injected into each BaseView class?
+/** @type {AppOutlets} */
+export const appOutlets = {};
+
+/**
+ *
+ * @param {string[]} outletIds
+ */
+function initOutlets(outletIds) {
+    outletIds.forEach((id) => {
+        const el = document.getElementById(id);
+
+        if (el) {
+            appOutlets[id] = el;
+        }
+    });
+}
 
 export function main() {
+    initOutlets(['main', 'nav', 'popups']);
     initAppShell(appOutlets);
     initNavigation();
     initRouting();
@@ -22,7 +37,7 @@ export function main() {
  * @param {AppOutlets} outlets
  */
 function initAppShell(outlets) {
-    const navEl = document.getElementById(outlets.nav.id);
+    const navEl = outlets['nav'];
 
     const menuItems = routes.filter((route) => Boolean(route.title));
 

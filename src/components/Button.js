@@ -13,7 +13,7 @@ import s from './Button.css';
 export const Button = (props) => {
     return button(
         {
-            className: `${s.button} ${props.className || ''}`,
+            className: `${s.button} ${props.className || ''} ${props.theme || ''}`,
             id: props.id,
         },
         span({ className: s.buttonText }, props.text)

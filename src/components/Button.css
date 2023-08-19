@@ -10,3 +10,8 @@
     color: #000;
     background-color: #ffde2b;
 }
+
+.button:global(.none.focused) {
+    color: inherit;
+    background-color: inherit;
+}
