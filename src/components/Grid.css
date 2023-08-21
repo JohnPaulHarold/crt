@@ -1,0 +1,7 @@
+gridRow {
+    display: block;
+}
+
+.gridRow > a {
+    display: inline-block;
+}

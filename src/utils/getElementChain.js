@@ -4,13 +4,13 @@
  * @returns {Array<Element|ParentNode|Node>}
  */
 export function getElementChain(target) {
-  let a = target;
-  const els = [];
+    let a = target;
+    const els = [];
 
-  while (target && a && a.parentNode) {
-    els.unshift(a);
-    a = a.parentNode;
-  }
+    while (target && a && a.parentNode) {
+        els.unshift(a);
+        a = a.parentNode;
+    }
 
-  return els;
+    return els;
 }

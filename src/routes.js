@@ -3,90 +3,117 @@
  * @typedef {import('./declarations/types.js').Route} Route
  * @typedef {import('./declarations/types.js').RouteParams} RouteParams
  * @typedef {import('./declarations/types.js').RouteSearch} RouteSearch
+ * @typedef {import('./libs/baseView.js')} BaseViewInstance
  */
-import { BaseView } from './libs/baseView.js';
 
 import { Home } from './views/home.js';
 import { Search } from './views/search.js';
-// import { Show } from './views/show.js';
+import { Show } from './views/show.js';
+
 import { appOutlets } from './main.js';
 import { Canivideo } from './views/canivideo.js';
 
-/** @type {BaseView} */
+import { BaseView } from './libs/baseView.js';
+import { Hashish } from './libs/hashish.js';
+import { Diff } from './views/diff.js';
+import { Popupdemo } from './views/popupdemo.js';
+
+/** @type {BaseViewInstance} */
 let _currentView;
-/** @type {BaseView | null} */
+/** @type {BaseViewInstance | null} */
 let _nextView;
 
-/**
- *
- * @param {BaseView} nextView
- */
-function loadView(nextView) {
-  const mainViewElement = document.getElementById(appOutlets.main.id);
-  _nextView = nextView;
-  mainViewElement && _nextView.attach(mainViewElement);
+export function initRouting() {
+    const router = new Hashish();
 
-  if (_currentView) {
-    _currentView.detach();
-  }
-
-  _currentView = _nextView;
-  _nextView = null;
+    routes.forEach((route) => {
+        router.registerRoute(route, (routeInfo) => {
+            handleViewChange(route, routeInfo);
+        });
+    });
 }
 
 /**
  *
- * @param {{ route: Route, params: RouteParams, search: RouteSearch }} matchedRoute
+ * @param {BaseViewInstance} nextView
+ */
+function loadView(nextView) {
+    const mainViewElement = appOutlets['main'];
+    _nextView = nextView;
+
+    if (mainViewElement && _nextView instanceof BaseView) {
+        _nextView.attach(mainViewElement);
+    }
+
+    if (_currentView instanceof BaseView) {
+        _currentView.detach();
+    }
+
+    _currentView = _nextView;
+    _nextView = null;
+}
+
+/**
+ * @param {Route} route
+ * @param {{ params: RouteParams, search: RouteSearch }} routeInfo
  * @returns {void}
  */
-export function handleViewChange(matchedRoute) {
-  const View = matchedRoute.route.viewClass;
-  const viewOptions = {
-    id: matchedRoute.route.id,
-    title: matchedRoute.route.title,
-    params: matchedRoute.params,
-    search: matchedRoute.search,
-  };
+export function handleViewChange(route, routeInfo) {
+    const View = route.viewClass;
+    const viewOptions = {
+        id: route.id,
+        title: route.title,
+        params: routeInfo.params,
+        search: routeInfo.search,
+    };
 
-  loadView(new View(viewOptions));
+    loadView(new View(viewOptions));
 
-  return;
+    return;
 }
 
 /** @type {Array<import('./declarations/types.js').Route>} */
 export const routes = [
-  // {
-  //   pattern: '/show/{showId}',
-  //   id: 'show',
-  //   viewClass: Show,
-  //   handler: handleViewChange
-  // },
-  // {
-  //   pattern: '/show/{showId}/episode/{id}',
-  //   id: 'nested',
-  //   viewClass: Show,
-  //   handler: handleViewChange
-  // },
-  {
-    pattern: '/home',
-    title: 'Home',
-    id: 'home',
-    default: true,
-    viewClass: Home,
-    handler: handleViewChange,
-  },
-  {
-    pattern: '/search',
-    title: 'Search',
-    id: 'search',
-    viewClass: Search,
-    handler: handleViewChange,
-  },
-  {
-    pattern: '/canivideo',
-    title: 'Can I video?',
-    id: 'canivideo',
-    viewClass: Canivideo,
-    handler: handleViewChange,
-  },
+    // {
+    //   pattern: '/show/{showId}/episode/{id}',
+    //   id: 'nested',
+    //   viewClass: Show,
+    // },
+    {
+        pattern: '/',
+        exact: true,
+        title: 'Home',
+        id: 'home',
+        default: true,
+        viewClass: Home,
+    },
+    {
+        pattern: '/search',
+        title: 'Search',
+        id: 'search',
+        viewClass: Search,
+    },
+    {
+        pattern: '/diff',
+        title: 'Diff',
+        id: 'diff',
+        viewClass: Diff,
+    },
+    {
+        pattern: '/show/{showId}',
+        id: 'show',
+        viewClass: Show,
+    },
+    {
+        pattern: '/popupdemo',
+        title: 'Popup Demo',
+        id: 'popupdemo',
+        viewClass: Popupdemo,
+    },
+    {
+        pattern: '/canivideo',
+        title: 'Can I video?',
+        id: 'canivideo',
+        viewClass: Canivideo,
+    },
 ];

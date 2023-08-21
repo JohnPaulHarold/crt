@@ -1,0 +1,17 @@
+.button {
+    background: none;
+    color: #aaa;
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    font-weight: bold;
+}
+
+.button:global(.focused) {
+    color: #000;
+    background-color: #ffde2b;
+}
+
+.button:global(.none.focused) {
+    color: inherit;
+    background-color: inherit;
+}

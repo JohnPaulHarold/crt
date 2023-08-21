@@ -2,158 +2,194 @@
  * @typedef {import('../declarations/types').Route} Route
  * @typedef {import('../declarations/types').RouteParams} RouteParams
  * @typedef {import('../declarations/types').RouteSearch} RouteSearch
+ * @typedef {{ pattern: string, params: RouteParams, search: RouteSearch }} HandlerArgs
  */
 
-import { parseSearchParams } from "../utils/parseSearchParams";
+import { parseSearchParams } from '../utils/parseSearchParams';
 
 export class Hashish {
-  /**
-   * 
-   * @param {Array<Route>} routes 
-   */
-  constructor(routes) {
-    this.routes = routes;
+    constructor() {
+        /** @type { {[index: string]: { callback: (arg0: HandlerArgs) => void, exact: boolean}} } */
+        this.handlers = {};
 
-    this.currentView = null;
-    this.nextView = null;
-
-    window.addEventListener('hashchange', this.locationHashChanged.bind(this));
-
-    if (location.hash) {
-      /** @type {HashChangeEvent|CustomEvent} */
-      let hashChangeEvent;
-
-      try {
-        /** @type {HashChangeEvent} */
-        hashChangeEvent = new HashChangeEvent('hashchange', {
-          newURL: location.href,
-        })
-      } catch (error) {
-        /** @type {CustomEvent} */
-        hashChangeEvent = new CustomEvent('hashchange', {
-          detail: {
-            newURL: location.href,
-          }
-
-        })
-      }
-
-      this.navigateTo(hashChangeEvent);
-    } else {
-      // get the "default" and navigate to that
-      this.routes.forEach((route) => {
-        if (route.default) {
-          location.hash = "/" + route.id;
-        }
-      })
+        this.setupListeners();
+        this.init();
     }
-  }
 
-  /**
-   * 
-   * @param {HashChangeEvent} event 
-   */
-  locationHashChanged(event) {
-    this.navigateTo(event)
-  }
+    setupListeners() {
+        window.addEventListener(
+            'hashchange',
+            this.locationHashChanged.bind(this)
+        );
+    }
 
-  /**
-   * 
-   * @param {string} url 
-   * @returns {{ route: Route, params: RouteParams, search: RouteSearch } | undefined}
-   */
-  matchRoute(url) {
-    // strip out the searchParams if they are there
+    init() {
+        /** @type {HashChangeEvent|CustomEvent} */
+        let hashChangeEvent;
 
-    const [routeUrl, paramsString] = url.split('?');
-
-    let matched;
-
-    for (let i = 0, l = this.routes.length; i < l; i++) {
-      const route = this.routes[i];
-
-      // an early check for paramless routes
-      if ("/" + url === route.pattern) {
-        matched = {
-          route,
-          params: {},
-          search: {}
+        // we try/catch here because some older browsers do not support
+        // `HashChangeEvent` constructor
+        try {
+            /** @type {HashChangeEvent} */
+            hashChangeEvent = new HashChangeEvent('hashchange', {
+                newURL: location.href,
+            });
+        } catch (error) {
+            /** @type {CustomEvent} */
+            hashChangeEvent = new CustomEvent('hashchange', {
+                detail: {
+                    newURL: location.href,
+                },
+            });
         }
-        break;
-      }
 
-      const routeMatcher = new RegExp(route.pattern.replace(/({[^}]*(\w+)[^}]*})/g, '([\\w-]+)'));
-      const match = routeUrl.match(routeMatcher);
+        this.navigateTo(hashChangeEvent);
+    }
 
-      if (!match) {
-        continue;
-      }
+    /**
+     *
+     * @param {string} hashRoute
+     * @returns
+     */
+    stripHash(hashRoute) {
+        return hashRoute.replace('#', '');
+    }
 
-      if (match.index === 0) {
-        const variables = route.pattern.match(/({[^}]*(\w+)[^}]*})/g);
-        const [newRoute, routeId] = match;
+    /**
+     *
+     * @param {string|Route} pathObject
+     * @param {(handler: HandlerArgs) => void} handler
+     */
+    registerRoute(pathObject, handler) {
+        let path = '';
+        let exact = false;
+        if (typeof pathObject === 'string') {
+            path = pathObject;
+        } else {
+            path = pathObject.pattern;
+            exact = Boolean(pathObject.exact);
+        }
 
-        matched = {
-          route,
-          params: {
-            routeId: routeId
-          },
-          search: parseSearchParams(paramsString)
+        this.handlers[path] = {
+            callback: handler,
+            exact,
         };
 
-        break;
-      }
+        // then quickly check if our newly added route matches
+        const matchedRoute = this.matchRoute(location.href);
+        if (matchedRoute) {
+            this.init();
+        }
     }
 
-    return matched;
-  }
-
-  /**
-   * 
-   * @param {HashChangeEvent|CustomEvent|undefined} event 
-   */
-  navigateTo(event) {
-    if (!event) {
-      return;
+    /**
+     * @param {string} path
+     */
+    unregisterRoute(path) {
+        delete this.handlers[path];
     }
 
-    /** @type {string} */
-    let nextRoute;
-    let evt;
-
-    if (event instanceof HashChangeEvent) {
-      evt = event;
-    } else {
-      evt = event.detail;
+    /**
+     *
+     * @param {HashChangeEvent} event
+     */
+    locationHashChanged(event) {
+        this.navigateTo(event);
     }
 
-    const { newURL } = evt || {};
+    /**
+     *
+     * @param {string} url
+     * @returns {{ pattern: string, params: RouteParams, search: RouteSearch } | undefined}
+     */
+    matchRoute(url) {
+        const path = url.replace(location.origin, '');
+        // could be `/` or `/#/foo`
+        const route = path === '/' ? path : path.split('#')[1];
 
-    let route = newURL;
+        // strip out the searchParams if they are there
+        const [routeUrl, paramsString] = route.split('?');
+        const handlers = this.handlers;
 
-    if (route) {
-      let origin = location.origin;
+        let matched;
 
-      if (!origin) {
-        origin = location.protocol + "//" + location.host;
-      }
+        // note: pattern will be without the hash, such as `/` or `/foo`
+        for (const pattern in handlers) {
+            if (routeUrl === pattern) {
+                matched = {
+                    pattern,
+                    params: {},
+                    search: {},
+                };
 
-      nextRoute = route.replace(origin + '/', '').replace('#', '')
-    } else {
-      nextRoute = location.hash.replace('#', '')
+                break;
+            }
+
+            if (handlers[pattern].exact) {
+                continue;
+            }
+
+            const routeMatcher = new RegExp(
+                pattern.replace(/({[^}]*(\w+)[^}]*})/g, '([\\w-]+)')
+            );
+            const match = routeUrl.match(routeMatcher);
+
+            if (!match) {
+                continue;
+            }
+
+            if (match.index === 0) {
+                const variables = pattern.match(/({[^}]*(\w+)[^}]*})/g);
+                const matchedVariables = match.slice(1);
+                /** @type { {[index: string]: string } } */
+                const params = {};
+
+                variables?.forEach((variable, i) => {
+                    // strip the brackets
+                    const hashless = variable.replace(/{|}/g, '');
+                    params[hashless] = matchedVariables[i];
+                });
+
+                matched = {
+                    pattern,
+                    params: params,
+                    search: parseSearchParams(paramsString),
+                };
+
+                break;
+            }
+        }
+
+        return matched;
     }
 
-    try {
-      // need to find the matching route
-      const matchedRoute = this.matchRoute(nextRoute);
+    /**
+     *
+     * @param {HashChangeEvent|CustomEvent|undefined} event
+     */
+    navigateTo(event) {
+        if (!event) {
+            return;
+        }
 
-      if (!matchedRoute) {
-        throw new Error('no matched route');
-      }
+        let evt;
 
-      matchedRoute.route.handler(matchedRoute);
-    } catch (error) {
-      console.error('[Router] failed to load view component', error);
+        if (event instanceof HashChangeEvent) {
+            evt = event;
+        } else {
+            evt = event.detail;
+        }
+
+        const { newURL } = evt || {};
+
+        try {
+            const matchedRoute = this.matchRoute(newURL);
+
+            if (matchedRoute) {
+                this.handlers[matchedRoute.pattern].callback(matchedRoute);
+            }
+        } catch (error) {
+            console.error('[Router] failed to load view component', error);
+        }
     }
-  }
 }

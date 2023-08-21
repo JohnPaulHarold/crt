@@ -14,29 +14,35 @@ import s from './Carousel.css';
  * @returns {HTMLElement}
  */
 export const Carousel = (props, children) => {
-  const orientation = `orient${toTitleCase(props.orientation)}`;
-  const transitions = animations.transitions ? (animations.transforms ? s.transition : s.transitionNoTransform) : '';
-  const sectionCx = cx(s.carousel, props.className || '', s[orientation]);
-  const sliderCx = cx('slider', s.carouselSlider, transitions);
+    const orientation = `orient${toTitleCase(props.orientation)}`;
+    const transitions = animations.transitions
+        ? animations.transforms
+            ? s.transition
+            : s.transitionNoTransform
+        : '';
+    const sectionCx = cx(s.carousel, props.className || '', s[orientation]);
+    const sliderCx = cx(s.carouselSlider, transitions);
 
-  return section(
-    {
-      id: props.id,
-      className: sectionCx,
-      dataset: {
-        blockExit: props.blockExit,
-      },
-    },
-    props.title && h2({ className: s.carouselTitle }, props.title),
-    div(
-      {
-        className: sliderCx,
-        dataset: {
-          deadseaOrientation: props.orientation,
-          deadseaChildQuery: props.childQuery || '',
+    return section(
+        {
+            id: props.id,
+            className: sectionCx,
+            dataset: {
+                blockExit: props.blockExit,
+            },
         },
-      },
-      children,
-    ),
-  );
+        props.title && h2({ className: s.carouselTitle }, props.title),
+        div(
+            {
+                className: sliderCx,
+                dataset: {
+                    deadseaId: props.id,
+                    deadseaStartOffset: props.startOffset || 0,
+                    deadseaOrientation: props.orientation,
+                    deadseaChildQuery: props.childQuery || '',
+                },
+            },
+            children
+        )
+    );
 };

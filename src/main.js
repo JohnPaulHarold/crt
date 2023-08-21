@@ -2,40 +2,53 @@
  * @typedef {import('./declarations/types.js').AppOutlets} AppOutlets
  */
 
-import { Hashish } from './libs/hashish.js';
 import { Nav } from './components/Nav.js';
 import { initNavigation } from './navigation.js';
-import { routes } from './routes.js';
+import { initRouting, routes } from './routes.js';
 
-export const appOutlets = {
-  main: { id: "main" },
-  nav: { id: "nav" }
+// todo: could these be acquired as part of bootstrap process
+// injected into each BaseView class?
+/** @type {AppOutlets} */
+export const appOutlets = {};
+
+/**
+ *
+ * @param {string[]} outletIds
+ */
+function initOutlets(outletIds) {
+    outletIds.forEach((id) => {
+        const el = document.getElementById(id);
+
+        if (el) {
+            appOutlets[id] = el;
+        }
+    });
 }
 
 export function main() {
-  initAppShell(appOutlets);
-  initNavigation();
-
-  new Hashish(routes);
+    initOutlets(['main', 'nav', 'popups']);
+    initAppShell(appOutlets);
+    initNavigation();
+    initRouting();
 }
 
 /**
- * 
- * @param {AppOutlets} outlets 
+ * @name initAppShell
+ * @param {AppOutlets} outlets
  */
 function initAppShell(outlets) {
-  const navEl = document.getElementById(outlets.nav.id)
+    const navEl = outlets['nav'];
 
-  const menuItems = routes.filter((route) => Boolean(route.title));
+    const menuItems = routes.filter((route) => Boolean(route.title));
 
-  const navItems = menuItems.map((route) => ({
-    id: `nav-${route.id.toLowerCase()}`,
-    title: route.title,
-    href: `#/${route.id.toLowerCase()}`
-  }))
+    const navItems = menuItems.map((route) => ({
+        id: `nav-${route.id.toLowerCase()}`,
+        title: route.title,
+        href: `#${route.pattern.toLowerCase()}`,
+    }));
 
-  navEl && navEl.appendChild(
-    Nav({ id: 'main-nav', navItems, blockExit: 'down left up' })
-  )
+    navEl &&
+        navEl.appendChild(
+            Nav({ id: 'main-nav', navItems, blockExit: 'down left up' })
+        );
 }
-

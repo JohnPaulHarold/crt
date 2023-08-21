@@ -2,24 +2,37 @@
  * @typedef {import('../declarations/types').GridProps} GridProps
  */
 
-import { a, div } from "../libs/makeElement";
-import { Tile } from "./Tile";
+import { div, section } from '../libs/makeElement';
+
+import s from './Grid.css';
 
 /**
- * 
- * @param {GridProps} props 
- * @returns {Element}
+ *
+ * @param {GridProps} props
+ * @param {HTMLElement[]} children
+ * @returns {HTMLElement}
  */
-export const Grid = (props) => {
-  const id = "episde123";
+export const Grid = (props, children) => {
+    /**
+     * @type {HTMLElement[]}
+     */
+    const gridRows = [];
 
-  return (
-    div(
-      { className: 'grid' }, "Grid",
-      a(
-        { href: "#/episode/S123", id },
-        Tile({ id, title: "S123" })
-      )
-    )
-  )
-}
+    /**
+     * @type {HTMLElement}
+     */
+    let rowEl;
+    let rowCount = 0;
+
+    children.forEach((c, i) => {
+        if (i % props.columns === 0) {
+            rowEl = div({ className: s.gridRow + ' row' + rowCount });
+            gridRows.push(rowEl);
+            rowCount++;
+        }
+
+        rowEl && rowEl.appendChild(c);
+    });
+
+    return section({ className: 'grid ' + props.className || '' }, gridRows);
+};
