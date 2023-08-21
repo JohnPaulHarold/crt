@@ -7,23 +7,14 @@
 
 import { parseSearchParams } from '../utils/parseSearchParams';
 
-export class Hashish {
-    constructor() {
-        /** @type { {[index: string]: { callback: (arg0: HandlerArgs) => void, exact: boolean}} } */
-        this.handlers = {};
+export const Hashish = (function () {
+    /** @type { {[index: string]: { callback: (arg0: HandlerArgs) => void, exact: boolean}} } */
+    const handlers = {};
 
-        this.setupListeners();
-        this.init();
-    }
+    setupListeners();
+    init();
 
-    setupListeners() {
-        window.addEventListener(
-            'hashchange',
-            this.locationHashChanged.bind(this)
-        );
-    }
-
-    init() {
+    function init() {
         /** @type {HashChangeEvent|CustomEvent} */
         let hashChangeEvent;
 
@@ -43,58 +34,37 @@ export class Hashish {
             });
         }
 
-        this.navigateTo(hashChangeEvent);
+        navigateTo(hashChangeEvent);
     }
 
     /**
      *
-     * @param {string} hashRoute
-     * @returns
+     * @param {HashChangeEvent|CustomEvent|undefined} event
      */
-    stripHash(hashRoute) {
-        return hashRoute.replace('#', '');
-    }
+    function navigateTo(event) {
+        if (!event) {
+            return;
+        }
 
-    /**
-     *
-     * @param {string|Route} pathObject
-     * @param {(handler: HandlerArgs) => void} handler
-     */
-    registerRoute(pathObject, handler) {
-        let path = '';
-        let exact = false;
-        if (typeof pathObject === 'string') {
-            path = pathObject;
+        let evt;
+
+        if (event instanceof HashChangeEvent) {
+            evt = event;
         } else {
-            path = pathObject.pattern;
-            exact = Boolean(pathObject.exact);
+            evt = event.detail;
         }
 
-        this.handlers[path] = {
-            callback: handler,
-            exact,
-        };
+        const { newURL } = evt || {};
 
-        // then quickly check if our newly added route matches
-        const matchedRoute = this.matchRoute(location.href);
-        if (matchedRoute) {
-            this.init();
+        try {
+            const matchedRoute = matchRoute(newURL);
+
+            if (matchedRoute) {
+                handlers[matchedRoute.pattern].callback(matchedRoute);
+            }
+        } catch (error) {
+            console.error('[Router] failed to load view component', error);
         }
-    }
-
-    /**
-     * @param {string} path
-     */
-    unregisterRoute(path) {
-        delete this.handlers[path];
-    }
-
-    /**
-     *
-     * @param {HashChangeEvent} event
-     */
-    locationHashChanged(event) {
-        this.navigateTo(event);
     }
 
     /**
@@ -102,14 +72,13 @@ export class Hashish {
      * @param {string} url
      * @returns {{ pattern: string, params: RouteParams, search: RouteSearch } | undefined}
      */
-    matchRoute(url) {
+    function matchRoute(url) {
         const path = url.replace(location.origin, '');
         // could be `/` or `/#/foo`
         const route = path === '/' ? path : path.split('#')[1];
 
         // strip out the searchParams if they are there
         const [routeUrl, paramsString] = route.split('?');
-        const handlers = this.handlers;
 
         let matched;
 
@@ -163,33 +132,56 @@ export class Hashish {
         return matched;
     }
 
+    function setupListeners() {
+        window.addEventListener('hashchange', locationHashChanged);
+    }
+
     /**
      *
-     * @param {HashChangeEvent|CustomEvent|undefined} event
+     * @param {HashChangeEvent} event
+     * @todo isn't this a bit pointless?
      */
-    navigateTo(event) {
-        if (!event) {
-            return;
-        }
+    function locationHashChanged(event) {
+        navigateTo(event);
+    }
 
-        let evt;
-
-        if (event instanceof HashChangeEvent) {
-            evt = event;
+    /**
+     *
+     * @param {string|Route} pathObject
+     * @param {(handler: HandlerArgs) => void} handler
+     */
+    function registerRoute(pathObject, handler) {
+        let path = '';
+        let exact = false;
+        if (typeof pathObject === 'string') {
+            path = pathObject;
         } else {
-            evt = event.detail;
+            path = pathObject.pattern;
+            exact = Boolean(pathObject.exact);
         }
 
-        const { newURL } = evt || {};
+        handlers[path] = {
+            callback: handler,
+            exact,
+        };
 
-        try {
-            const matchedRoute = this.matchRoute(newURL);
+        // then quickly check if our newly added route matches
+        const matchedRoute = matchRoute(location.href);
 
-            if (matchedRoute) {
-                this.handlers[matchedRoute.pattern].callback(matchedRoute);
-            }
-        } catch (error) {
-            console.error('[Router] failed to load view component', error);
+        if (matchedRoute) {
+            init();
         }
     }
-}
+
+    /**
+     * @param {string} path
+     */
+    function unregisterRoute(path) {
+        delete handlers[path];
+    }
+
+    return {
+        registerRoute,
+        unregisterRoute,
+    };
+})();
