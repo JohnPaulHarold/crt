@@ -44,6 +44,7 @@ const lyrics = [
  * @typedef {Object} DiffState
  * @property {number} lyricCount
  */
+
 /**
  * @extends BaseView
  */

@@ -1,5 +1,4 @@
 import { AdditionalKeys } from '../enums/AdditionalKeys';
-import { appOutlets } from '../main';
 import { focusInto, setLrudScope } from '../navigation';
 import { handleKeydownOnElement } from './handleKeydownOnElement';
 
@@ -7,10 +6,10 @@ import { handleKeydownOnElement } from './handleKeydownOnElement';
  * @name registerPopup
  * @param {HTMLElement} popupEl
  * @param {(id: string) => void} handler
+ * @param {HTMLElement} outlet
  * @returns {{open: () => void, close: () => void}}
  */
-export function registerPopup(popupEl, handler) {
-    const popupsOutlet = appOutlets['popups'];
+export function registerPopup(popupEl, handler, outlet) {
     /** @type { (event: KeyboardEvent) => void }  */
     const popupCallback = (event) => {
         if (event.target instanceof HTMLElement) {
@@ -25,19 +24,19 @@ export function registerPopup(popupEl, handler) {
     const api = {
         // creator wants to open the popup
         open: () => {
-            popupsOutlet.appendChild(popupEl);
+            outlet.appendChild(popupEl);
 
-            popupsOutlet.classList.add('open');
+            outlet.classList.add('open');
             setLrudScope(popupEl);
             focusInto(popupEl);
             handler('open');
         },
         // creator wants to manually close the popup
         close: () => {
-            popupsOutlet.classList.remove('open');
+            outlet.classList.remove('open');
             setLrudScope();
             handler('close');
-            popupsOutlet.removeChild(popupEl);
+            outlet.removeChild(popupEl);
             cleanup();
         },
     };

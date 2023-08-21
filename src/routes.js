@@ -10,66 +10,13 @@ import { Home } from './views/home.js';
 import { Search } from './views/search.js';
 import { Show } from './views/show.js';
 
-import { appOutlets } from './main.js';
-
 import { BaseView } from './libs/baseView.js';
 import { Hashish } from './libs/hashish.js';
+
 import { Diff } from './views/diff.js';
 import { Popupdemo } from './views/popupdemo.js';
 
-/** @type {BaseViewInstance} */
-let _currentView;
-/** @type {BaseViewInstance | null} */
-let _nextView;
-
-export function initRouting() {
-    const router = new Hashish();
-
-    routes.forEach((route) => {
-        router.registerRoute(route, (routeInfo) => {
-            handleViewChange(route, routeInfo);
-        });
-    });
-}
-
-/**
- *
- * @param {BaseViewInstance} nextView
- */
-function loadView(nextView) {
-    const mainViewElement = appOutlets['main'];
-    _nextView = nextView;
-
-    if (mainViewElement && _nextView instanceof BaseView) {
-        _nextView.attach(mainViewElement);
-    }
-
-    if (_currentView instanceof BaseView) {
-        _currentView.detach();
-    }
-
-    _currentView = _nextView;
-    _nextView = null;
-}
-
-/**
- * @param {Route} route
- * @param {{ params: RouteParams, search: RouteSearch }} routeInfo
- * @returns {void}
- */
-export function handleViewChange(route, routeInfo) {
-    const View = route.viewClass;
-    const viewOptions = {
-        id: route.id,
-        title: route.title,
-        params: routeInfo.params,
-        search: routeInfo.search,
-    };
-
-    loadView(new View(viewOptions));
-
-    return;
-}
+import { appOutlets } from './main.js';
 
 /** @type {Array<import('./declarations/types.js').Route>} */
 export const routes = [
@@ -110,3 +57,62 @@ export const routes = [
         viewClass: Popupdemo,
     },
 ];
+
+/** @type {BaseViewInstance} */
+let _currentView;
+/** @type {BaseViewInstance | null} */
+let _nextView;
+
+/**
+ * @name initRouting
+ */
+export function initRouting() {
+    const router = new Hashish();
+
+    routes.forEach((route) => {
+        router.registerRoute(route, (routeInfo) => {
+            handleViewChange(route, routeInfo);
+        });
+    });
+}
+
+/**
+ * @name loadView
+ * @param {BaseViewInstance} nextView
+ */
+function loadView(nextView) {
+    const mainViewElement = appOutlets['main'];
+    _nextView = nextView;
+
+    if (mainViewElement && _nextView instanceof BaseView) {
+        _nextView.attach(mainViewElement);
+    }
+
+    if (_currentView instanceof BaseView) {
+        _currentView.detach();
+    }
+
+    _currentView = _nextView;
+    _nextView = null;
+}
+
+/**
+ * @typedef {{ params: RouteParams, search: RouteSearch }} RouteInfo
+ * @name handleViewChange
+ * @param {Route} route
+ * @param {RouteInfo} routeInfo
+ * @returns {void}
+ */
+function handleViewChange(route, routeInfo) {
+    const View = route.viewClass;
+    const viewOptions = {
+        id: route.id,
+        title: route.title,
+        params: routeInfo.params,
+        search: routeInfo.search,
+    };
+
+    loadView(new View(viewOptions));
+
+    return;
+}
