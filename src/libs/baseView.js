@@ -1,3 +1,4 @@
+import { removeElement } from '../utils/removeElement';
 import { div } from './makeElement';
 
 /**
@@ -13,6 +14,7 @@ export class BaseView {
          * @public
          */
         this.id = id;
+
         /**
          * @type {HTMLElement}
          * @public
@@ -41,7 +43,7 @@ export class BaseView {
      *
      */
     viewDidLoad() {
-        // console.log('[BaseView][viewDidLoad]');
+        // console.log(`[${this.id}][viewDidLoad]`);
     }
 
     /**
@@ -66,11 +68,12 @@ export class BaseView {
         this.viewEl = viewContentEl;
 
         el.appendChild(viewContentEl);
-        // this timeout forces the viewDidLoad to the ext tick
+
+        // this timeout forces the viewDidLoad to the next tick
         // giving time for the DOM to be updated.
         // feels like a hack...
         // ideally, using MutationObserver would be better for this
-        setTimeout(() => this.viewDidLoad(), 0);
+        setTimeout(this.viewDidLoad.bind(this), 0);
     }
 
     /**
@@ -80,8 +83,7 @@ export class BaseView {
         this.viewWillUnload();
         this.destructor();
 
-        this.viewEl.parentElement &&
-            this.viewEl.parentElement.removeChild(this.viewEl);
+        removeElement(this.viewEl);
 
         this.viewDidUnload();
     }

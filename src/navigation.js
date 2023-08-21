@@ -23,11 +23,16 @@ export function setLrudScope(newScope) {
 }
 
 /**
- *
- * @returns {HTMLElement=}
+ * @name getLastFocus
+ * @returns { {el: HTMLElement, id: string|null} | undefined }
  */
 export function getLastFocus() {
-    return lastFocus;
+    if (!lastFocus) return;
+
+    return {
+        el: lastFocus,
+        id: lastFocus.getAttribute('id'),
+    };
 }
 
 /**
@@ -52,8 +57,6 @@ export function registerCustomFocusHandler(func) {
  */
 export function handleKeyDown(event, scope) {
     event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
 
     if (scope) {
         _scope = scope;
@@ -207,8 +210,7 @@ function handleBack(event) {
  */
 function handleEnter(event) {
     event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
+
     if (
         event.target &&
         event.target instanceof HTMLAnchorElement &&
@@ -253,7 +255,7 @@ export function initNavigation() {
     const initialFocus = getNextFocus();
 
     if (initialFocus) {
-        focus(initialFocus);
+        moveFocus(initialFocus);
         lastFocus = initialFocus;
     }
 }
@@ -301,4 +303,17 @@ export function isElementFocused(id) {
     }
 
     return false;
+}
+
+export function getCurrentFocus() {
+    const focusableEl = document.querySelector('.focused');
+
+    if (!focusableEl) return;
+
+    if (focusableEl) {
+        return {
+            el: focusableEl,
+            id: focusableEl.getAttribute('id'),
+        };
+    }
 }

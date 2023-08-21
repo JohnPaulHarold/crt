@@ -31,10 +31,8 @@ export class Home extends BaseView {
         this.fetchData();
     }
 
-    destructor() {}
-
     /**
-     *
+     * @name focusPage
      * @param {HTMLElement} el
      */
     focusPage(el) {

@@ -10,6 +10,7 @@ import { AdditionalKeys } from '../enums/AdditionalKeys';
 
 import { BaseView } from '../libs/baseView';
 import { div, p } from '../libs/makeElement';
+import { appOutlets } from '../main';
 
 import { focusInto } from '../navigation';
 
@@ -43,12 +44,10 @@ export class Popupdemo extends BaseView {
 
         const handler = this.handlePopup.bind(this);
 
-        this.popup = registerPopup(dialogEl, handler);
+        this.popup = registerPopup(dialogEl, handler, appOutlets.popups);
     }
 
-    destructor() {
-        
-    }
+    destructor() {}
 
     viewDidLoad() {
         this.viewEl.addEventListener('keydown', (e) => {
