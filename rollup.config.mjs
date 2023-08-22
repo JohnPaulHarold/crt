@@ -6,6 +6,7 @@ import postcss from 'rollup-plugin-postcss';
 import postcssModules from 'postcss-modules';
 import terser from '@rollup/plugin-terser';
 
+import bundleWorker from 'rollup-plugin-bundle-worker';
 import copy from 'rollup-plugin-copy';
 
 import pkg from './package.json' assert { type: 'json' };
@@ -97,6 +98,7 @@ export default {
             },
             extract: true,
         }),
+        bundleWorker(),
         babel({
             extensions,
             babelHelpers: 'bundled',

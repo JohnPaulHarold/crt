@@ -34,6 +34,7 @@
         "postcss-modules": "^6.0.0",
         "prettier": "3.0.3",
         "rollup": "^3.29.2",
+        "rollup-plugin-bundle-worker": "github:JohnPaulHarold/rollup-plugin-bundle-worker",
         "rollup-plugin-copy": "^3.5.0",
         "rollup-plugin-postcss": "^4.0.2",
         "rollup-plugin-serve": "^2.0.2",

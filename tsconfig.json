@@ -9,5 +9,5 @@
         "skipLibCheck": true,
         "esModuleInterop": true
     },
-    "include": ["src/**/*.js", "src/**/*.d.ts"]
+    "include": ["src/**/*.js", "src/**/*.d.ts", "workers/request.js"]
 }
