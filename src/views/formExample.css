@@ -22,6 +22,7 @@
     -webkit-transition: -webkit-transform 250ms ease;
     -webkit-transform: translateY(200%);
     transition: transform 250ms ease;
+    -webkit-transform: translateY(200%);
     transform: translateY(200%);
     width: 100%;
     background: rgba(0, 0, 0, 0.7);

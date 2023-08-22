@@ -1,3 +1,4 @@
+// @ts-ignore
 const HTTPStatus = {
     OK: 200,
     ACCEPTED: 202,
@@ -38,7 +39,11 @@ export function request(options) {
                 xhr.status >= HTTPStatus.OK &&
                 xhr.status < HTTPStatus.MULTIPLE_CHOICES
             ) {
-                resolve(xhr.response);
+                let processed = xhr.response;
+                if (options.type === 'json' && typeof xhr.response === 'string') {
+                    processed = JSON.parse(xhr.response)
+                }
+                resolve(processed);
             } else {
                 reject({
                     status: xhr.status,
