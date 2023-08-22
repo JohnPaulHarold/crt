@@ -73,7 +73,8 @@ export const Hashish = (function () {
      * @returns {{ pattern: string, params: RouteParams, search: RouteSearch } | undefined}
      */
     function matchRoute(url) {
-        const path = url.replace(location.origin, '');
+        // location.origin don't work on old browser
+        const path = url.replace(location.protocol + '//' + location.host, '');
         // could be `/` or `/#/foo`
         const route = path === '/' ? path : path.split('#')[1];
 

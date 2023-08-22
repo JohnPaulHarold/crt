@@ -8,6 +8,7 @@ import { AdditionalKeys } from './enums/AdditionalKeys';
 import { Direction } from './enums/Direction';
 import { throttle } from './utils/throttle';
 import { animations } from './config/animations';
+import { collectionToArray } from '../utils/collectionToArray';
 
 /** @type {HTMLElement|undefined} */
 let _scope = undefined;
@@ -115,7 +116,7 @@ export function handleKeyDown(event, scope) {
 
 function clearFocus() {
     const els = document.querySelectorAll('.focused');
-    els.forEach((el) => el.classList.remove('focused'));
+    collectionToArray(els).forEach((el) => el.classList.remove('focused'));
 }
 /**
  *
