@@ -8,7 +8,7 @@ import { AdditionalKeys } from './enums/AdditionalKeys';
 import { Direction } from './enums/Direction';
 import { throttle } from './utils/throttle';
 import { animations } from './config/animations';
-import { collectionToArray } from '../utils/collectionToArray';
+import { collectionToArray } from './utils/collectionToArray';
 
 /** @type {HTMLElement|undefined} */
 let _scope = undefined;
