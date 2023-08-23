@@ -15,7 +15,6 @@ import { Hashish } from './libs/hashish.js';
 
 import { Diff } from './views/diff.js';
 import { Popupdemo } from './views/popupdemo.js';
-import { collectionToArray } from './utils/collectionToArray';
 
 import { appOutlets } from './main.js';
 
