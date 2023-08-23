@@ -22,7 +22,7 @@
  * @typedef {{[index: string]: string} & HTMLElement} IndexedHTMLElement
  */
 
-import { collectionToArray } from '../utils/collectionToArray';
+import { collectionToArray } from '../utils/dom/collectionToArray';
 
 // Form fields and attributes that can be modified by users
 // They also have implicit values that make it hard to know if they were changed by the user or developer

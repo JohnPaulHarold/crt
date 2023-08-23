@@ -2,13 +2,13 @@ import { getNextFocus } from '@bbc/tv-lrud-spatial';
 
 import { getLocationHashValue } from './utils/getLocationHashValue';
 import { scrollAction } from './libs/deadSea';
-import { getDataFromEl } from './utils/getDataFromEl';
+import { getDataFromEl } from './utils/dom/getDataFromEl';
 import { assertKey } from './utils/keys';
 import { AdditionalKeys } from './enums/AdditionalKeys';
 import { Direction } from './enums/Direction';
 import { throttle } from './utils/throttle';
 import { animations } from './config/animations';
-import { collectionToArray } from './utils/collectionToArray';
+import { collectionToArray } from './utils/dom/collectionToArray';
 
 /** @type {HTMLElement|undefined} */
 let _scope = undefined;

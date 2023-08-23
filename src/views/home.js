@@ -8,7 +8,7 @@ import { BaseView } from '../libs/baseView';
 
 import { pageData } from '../stubData/pageData';
 
-import { handleKeydownOnElement } from '../utils/handleKeydownOnElement';
+import { handleKeydownOnElement } from '../utils/dom/handleKeydownOnElement';
 import { assertKey } from '../utils/keys';
 
 import { Carousel } from '../components/Carousel';
