@@ -4,6 +4,7 @@
 
 import { BaseView } from '../libs/baseView';
 import { Nav } from '../components/Nav';
+import { collectionToArray } from '../utils/collectionToArray';
 
 /**
  * @typedef {Object} DiffState
@@ -47,7 +48,7 @@ export class MainNav extends BaseView {
     updateActive() {
         const hash = location.hash;
         const els = this.viewEl.querySelectorAll('[href]');
-        els.forEach((el) => el.classList.remove('active'));
+        collectionToArray(els).forEach((el) => el.classList.remove('active'));
         const elToFocus = this.viewEl.querySelector('[href="' + hash + '"]');
         elToFocus && elToFocus.classList.add('active');
     }

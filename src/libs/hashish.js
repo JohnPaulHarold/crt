@@ -73,7 +73,8 @@ export const Hashish = (function () {
      * @returns {{ pattern: string, params: RouteParams, search: RouteSearch } | undefined}
      */
     function matchRoute(url) {
-        const path = url.replace(location.origin, '');
+        // location.origin don't work on old browser
+        const path = url.replace(location.protocol + '//' + location.host, '');
         // could be `/` or `/#/foo`
         const route = path === '/' ? path : path.split('#')[1];
 
@@ -108,12 +109,12 @@ export const Hashish = (function () {
             }
 
             if (match.index === 0) {
-                const variables = pattern.match(/({[^}]*(\w+)[^}]*})/g);
+                const variables = pattern.match(/({[^}]*(\w+)[^}]*})/g) || [];
                 const matchedVariables = match.slice(1);
                 /** @type { {[index: string]: string } } */
                 const params = {};
 
-                variables?.forEach((variable, i) => {
+                variables.forEach((variable, i) => {
                     // strip the brackets
                     const hashless = variable.replace(/{|}/g, '');
                     params[hashless] = matchedVariables[i];
