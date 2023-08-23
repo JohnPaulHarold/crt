@@ -109,12 +109,12 @@ export const Hashish = (function () {
             }
 
             if (match.index === 0) {
-                const variables = pattern.match(/({[^}]*(\w+)[^}]*})/g);
+                const variables = pattern.match(/({[^}]*(\w+)[^}]*})/g) || [];
                 const matchedVariables = match.slice(1);
                 /** @type { {[index: string]: string } } */
                 const params = {};
 
-                variables?.forEach((variable, i) => {
+                variables.forEach((variable, i) => {
                     // strip the brackets
                     const hashless = variable.replace(/{|}/g, '');
                     params[hashless] = matchedVariables[i];
