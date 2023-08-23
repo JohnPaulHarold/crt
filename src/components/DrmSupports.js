@@ -13,14 +13,20 @@ import { DrmSupportsLevels } from './DrmSupportsLevels';
  * @returns {Element}
  */
 export const DrmSupports = ({ data, drmType }) =>
-  div(
-    {
-      className: cx(s.box, getValidationClass(data[drmType].drm?.supported, s)),
-    },
     div(
-      drmType,
-      DrmSupportsLevels({
-        data: data[drmType].drm?.securityLevels,
-      }),
-    ),
-  );
+        {
+            className: cx(
+                s.box,
+                getValidationClass(
+                    data[drmType].drm && data[drmType].drm.supported,
+                    s
+                )
+            ),
+        },
+        div(
+            drmType,
+            DrmSupportsLevels({
+                data: data[drmType].drm && data[drmType].drm.securityLevels,
+            })
+        )
+    );

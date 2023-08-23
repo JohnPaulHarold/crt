@@ -5,7 +5,10 @@ const video = document.createElement('video');
  */
 export function isCodecSupported(codec) {
     return {
-        mse: window?.MediaSource?.isTypeSupported?.(codec),
+        mse:
+            window.MediaSource &&
+            window.MediaSource.isTypeSupported &&
+            window.MediaSource.isTypeSupported(codec),
         video: !!video.canPlayType(codec),
     };
 }

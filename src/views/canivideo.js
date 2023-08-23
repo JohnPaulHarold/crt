@@ -49,7 +49,7 @@ export class Canivideo extends BaseView {
                 this.data[type][typeAndCodec][DrmType.WIDEVINE].drm = getDrm(
                     DrmType.WIDEVINE,
                     typeAndCodec
-                )?.then(
+                ).then(
                     (res) =>
                         (this.data[type][typeAndCodec][DrmType.WIDEVINE].drm =
                             res)
@@ -58,14 +58,14 @@ export class Canivideo extends BaseView {
                 this.data[type][typeAndCodec][DrmType.PLAYREADY].drm = getDrm(
                     DrmType.PLAYREADY,
                     typeAndCodec
-                )?.then(
+                ).then(
                     (res) =>
                         (this.data[type][typeAndCodec][DrmType.PLAYREADY].drm =
                             res)
                 );
 
                 this.data[type][typeAndCodec][DrmType.PLAYREADY_LEGACY].drm =
-                    getDrm(DrmType.PLAYREADY_LEGACY, typeAndCodec)?.then(
+                    getDrm(DrmType.PLAYREADY_LEGACY, typeAndCodec).then(
                         (res) =>
                             (this.data[type][typeAndCodec][
                                 DrmType.PLAYREADY_LEGACY
@@ -75,7 +75,7 @@ export class Canivideo extends BaseView {
                 this.data[type][typeAndCodec][DrmType.FAIRPLAY].drm = getDrm(
                     DrmType.FAIRPLAY,
                     typeAndCodec
-                )?.then(
+                ).then(
                     (res) =>
                         (this.data[type][typeAndCodec][DrmType.FAIRPLAY].drm =
                             res)
@@ -105,17 +105,18 @@ export class Canivideo extends BaseView {
             target.innerHTML = '';
             target.appendChild(h1('CAN I VIDEO?'));
             Object.keys(this.data).forEach((type) => {
-                target?.appendChild(h2(type));
+                target && target.appendChild(h2(type));
                 Object.keys(this.data[type]).forEach((codec) => {
-                    target?.appendChild(
-                        a({ href: '#', className: s.codec }, [
-                            Codec({
-                                data: this.data[type][codec],
-                                codec,
-                                type,
-                            }),
-                        ])
-                    );
+                    target &&
+                        target.appendChild(
+                            a({ href: '#', className: s.codec }, [
+                                Codec({
+                                    data: this.data[type][codec],
+                                    codec,
+                                    type,
+                                }),
+                            ])
+                        );
                 });
             });
         }
