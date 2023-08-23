@@ -14,7 +14,7 @@ export const Hashish = (function () {
 
     /**
      * 
-     * @param {string} baseUrl 
+     * @param {string} path 
      */
     function config(path) {
         baseUrl = path;

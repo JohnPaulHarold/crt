@@ -1,6 +1,6 @@
 import { Orientation } from '../enums/Orientation';
 
-import { collectionToArray } from '../utils/collectionToArray';
+import { collectionToArray } from '../utils/dom/collectionToArray';
 import { getOrientationFromKeyCode } from '../utils/keys';
 
 /** @type { {[index: string]: number[]} } */

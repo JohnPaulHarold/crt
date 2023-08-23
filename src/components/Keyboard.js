@@ -4,7 +4,7 @@
  */
 
 import { button, div } from '../libs/makeElement';
-import { cx } from '../utils/cx';
+import { cx } from '../utils/dom/cx';
 
 import s from './Keyboard.css';
 /**
