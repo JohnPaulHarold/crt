@@ -1,12 +1,12 @@
 import { getNextFocus } from '@bbc/tv-lrud-spatial';
 
-import { getLocationHashValue } from './utils/getLocationHashValue';
+import { getLocationHashValue } from './utils/dom/getLocationHashValue';
 import { scrollAction } from './libs/deadSea';
 import { getDataFromEl } from './utils/dom/getDataFromEl';
 import { assertKey } from './utils/keys';
 import { AdditionalKeys } from './enums/AdditionalKeys';
 import { Direction } from './enums/Direction';
-import { throttle } from './utils/throttle';
+import { throttle } from './utils/function/throttle';
 import { animations } from './config/animations';
 import { collectionToArray } from './utils/dom/collectionToArray';
 

@@ -5,7 +5,7 @@
  * @typedef {{ pattern: string, params: RouteParams, search: RouteSearch }} HandlerArgs
  */
 
-import { parseSearchParams } from '../utils/parseSearchParams';
+import { parseSearchParams } from '../utils/dom/parseSearchParams';
 
 export const Hashish = (function () {
     /** @type { {[index: string]: { callback: (arg0: HandlerArgs) => void, exact: boolean}} } */
