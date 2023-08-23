@@ -9,9 +9,9 @@ import { keyMap } from '../config/keyMap';
 
 import { searchData } from '../stubData/searchData';
 
-import { getDataFromEl } from '../utils/getDataFromEl';
+import { getDataFromEl } from '../utils/dom/getDataFromEl';
 import { assertKey } from '../utils/keys';
-import { handleKeydownOnElement } from '../utils/handleKeydownOnElement';
+import { handleKeydownOnElement } from '../utils/dom/handleKeydownOnElement';
 
 import { AdditionalKeys } from '../enums/AdditionalKeys';
 import { Orientation } from '../enums/Orientation';

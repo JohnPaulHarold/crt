@@ -12,7 +12,7 @@ import { assertKey } from '../utils/keys';
 
 import { AdditionalKeys } from '../enums/AdditionalKeys';
 import { focusInto, isElementFocused } from '../navigation';
-import { createReactive } from '../utils/createReactive';
+import { createReactive } from '../utils/object/createReactive';
 
 const lyrics = [
     'All men have secrets and here is mine',
