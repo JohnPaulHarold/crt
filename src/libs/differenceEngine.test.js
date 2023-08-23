@@ -70,6 +70,36 @@ describe('differenceEngine', () => {
         });
     });
 
+    test('it removes class tokens', () => {
+        const existing = stringToHTML(`
+            <div class="x y z"></div>
+        `);
+
+        const template = stringToHTML(`
+            <div class="x y"></div>
+        `);
+
+        diff(template, existing);
+
+        expect(existing).toEqual(template);
+        expect(existing.querySelector('.z')).toBeFalsy();
+    });
+
+    test('it adds class tokens', () => {
+        const existing = stringToHTML(`
+            <div class="x y"></div>
+        `);
+
+        const template = stringToHTML(`
+            <div class="x y z"></div>
+        `);
+
+        diff(template, existing);
+
+        expect(existing).toEqual(template);
+        expect(existing.querySelector('.z')).toBeTruthy();
+    });
+
     test('it adds nodes', () => {
         const existing = stringToHTML(`
             <div class="x">

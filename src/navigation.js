@@ -8,6 +8,7 @@ import { AdditionalKeys } from './enums/AdditionalKeys';
 import { Direction } from './enums/Direction';
 import { throttle } from './utils/throttle';
 import { animations } from './config/animations';
+import { collectionToArray } from './utils/collectionToArray';
 
 /** @type {HTMLElement|undefined} */
 let _scope = undefined;
@@ -23,11 +24,16 @@ export function setLrudScope(newScope) {
 }
 
 /**
- *
- * @returns {HTMLElement=}
+ * @name getLastFocus
+ * @returns { {el: HTMLElement, id: string|null} | undefined }
  */
 export function getLastFocus() {
-    return lastFocus;
+    if (!lastFocus) return;
+
+    return {
+        el: lastFocus,
+        id: lastFocus.getAttribute('id'),
+    };
 }
 
 /**
@@ -52,8 +58,6 @@ export function registerCustomFocusHandler(func) {
  */
 export function handleKeyDown(event, scope) {
     event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
 
     if (scope) {
         _scope = scope;
@@ -112,7 +116,7 @@ export function handleKeyDown(event, scope) {
 
 function clearFocus() {
     const els = document.querySelectorAll('.focused');
-    els.forEach((el) => el.classList.remove('focused'));
+    collectionToArray(els).forEach((el) => el.classList.remove('focused'));
 }
 /**
  *
@@ -207,8 +211,7 @@ function handleBack(event) {
  */
 function handleEnter(event) {
     event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
+
     if (
         event.target &&
         event.target instanceof HTMLAnchorElement &&
@@ -253,7 +256,7 @@ export function initNavigation() {
     const initialFocus = getNextFocus();
 
     if (initialFocus) {
-        focus(initialFocus);
+        moveFocus(initialFocus);
         lastFocus = initialFocus;
     }
 }
@@ -301,4 +304,17 @@ export function isElementFocused(id) {
     }
 
     return false;
+}
+
+export function getCurrentFocus() {
+    const focusableEl = document.querySelector('.focused');
+
+    if (!focusableEl) return;
+
+    if (focusableEl) {
+        return {
+            el: focusableEl,
+            id: focusableEl.getAttribute('id'),
+        };
+    }
 }

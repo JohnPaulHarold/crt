@@ -24,8 +24,8 @@ export interface Route {
 export interface ViewOptions {
     title?: string;
     id: string;
-    params: RouteParams;
-    search: RouteSearch;
+    params?: RouteParams;
+    search?: RouteSearch;
 }
 
 export interface NavViewOptions extends ViewOptions {
@@ -75,9 +75,9 @@ export interface CarouselProps extends BaseComponentProps {
 }
 
 export interface NavProps {
-    navItems: NavItem[];
-    id: string;
     blockExit?: string;
+    id: string;
+    navItems: NavItem[];
 }
 
 export interface TileProps {

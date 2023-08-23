@@ -4,7 +4,7 @@
  */
 
 import { a, li, nav, ol } from '../libs/makeElement';
-import { store } from '../state/pubsub';
+import { cx } from '../utils/cx';
 
 import s from './Nav.css';
 
@@ -14,54 +14,37 @@ import s from './Nav.css';
  * @returns
  */
 export const Nav = (props) => {
-    let el = null;
-
     /**
-     *
+     * @name buildNavItem
      * @param {NavItem} param0
      * @returns
      */
     const buildNavItem = ({ id, title, href }) => {
-        return li({}, a({ href, id }, title || href));
-    };
-
-    /**
-     *
-     * @param {NavProps} _props
-     * @returns
-     */
-    const render = (_props) => {
-        return nav(
-            {
-                id: 'main-nav',
-                className: s.mainNav,
-                dataset: {
-                    blockExit: _props.blockExit,
+        return li(
+            {},
+            a(
+                {
+                    href,
+                    id,
                 },
-            },
-            ol(undefined, _props.navItems.map(buildNavItem))
+                title || href
+            )
         );
     };
 
-    /**
-     * @typedef {Object} Payload
-     * @property {string} type
-     *
-     * @param {Payload} payload
-     */
-    const listenToState = (payload) => {
-        // todo: leave the wrappers alone if possible
-        const el = document.querySelector('.nav-wrapper');
-        if (payload.type === 'active' && el) {
-            el.classList.remove('collapsed');
-        } else if (payload.type === 'inactive' && el) {
-            el.classList.add('collapsed');
-        }
-    };
+    const navCx = cx(
+        s.mainNav,
+        'collapsed' // start closed
+    );
 
-    store.listen(props.id, listenToState);
-
-    el = render(props);
-
-    return el;
+    return nav(
+        {
+            className: navCx,
+            id: props.id || 'nav-component',
+            dataset: {
+                blockExit: props.blockExit,
+            },
+        },
+        ol(undefined, props.navItems.map(buildNavItem))
+    );
 };
