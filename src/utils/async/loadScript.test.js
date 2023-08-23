@@ -9,43 +9,43 @@ import { loadScript } from './loadScript';
 // these "work", in the sense a script tag is added to the DOM
 // but for a reason unknown, asserting the async behaviours of the promise is failing
 describe('loadScript', () => {
-  test.skip('it tries to load a script, errors, does not attach it to the DOM', async () => {
-    expect.assertions(2);
-  
-    const url = 'http://path/to/file.js';
-    try {
-      await loadScript(url, 'js');
-    } catch (error) {
-      const assert = document.head.querySelector('script');
+    test.skip('it tries to load a script, errors, does not attach it to the DOM', async () => {
+        expect.assertions(2);
 
-      expect(assert).toBeFalsy();
-    }
-  });
+        const url = 'http://path/to/file.js';
+        try {
+            await loadScript(url, 'js');
+        } catch (error) {
+            const assert = document.head.querySelector('script');
 
-  test.skip('it loads a stylesheet, attaches it to the DOM', async () => {
-    expect.assertions(2);
-  
-    const url = 'http://path/to/file.css';
-    await loadScript(url, 'css');
+            expect(assert).toBeFalsy();
+        }
+    });
 
-    const assert = document.head.querySelector('link');
+    test.skip('it loads a stylesheet, attaches it to the DOM', async () => {
+        expect.assertions(2);
 
-    expect(assert).toBeTruthy();
-    if (assert) {
-      expect(assert.getAttribute('href')).toEqual(url);
-    }
-  });
+        const url = 'http://path/to/file.css';
+        await loadScript(url, 'css');
 
-  test('it does not load the same resource, if already present', () => {
-    expect.assertions(1);
+        const assert = document.head.querySelector('link');
 
-    const url = 'http://path/to/file.js';
-    document.head.innerHTML = `<script src="${url}"></script>`
+        expect(assert).toBeTruthy();
+        if (assert) {
+            expect(assert.getAttribute('href')).toEqual(url);
+        }
+    });
 
-    loadScript(url, 'js');
+    test('it does not load the same resource, if already present', () => {
+        expect.assertions(1);
 
-    const assert = document.head.querySelectorAll('script');
+        const url = 'http://path/to/file.js';
+        document.head.innerHTML = `<script src="${url}"></script>`;
 
-    expect(assert.length).toBe(1);
-  });
+        loadScript(url, 'js');
+
+        const assert = document.head.querySelectorAll('script');
+
+        expect(assert.length).toBe(1);
+    });
 });

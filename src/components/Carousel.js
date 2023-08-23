@@ -40,6 +40,7 @@ export const Carousel = (props, children) => {
                     deadseaStartOffset: props.startOffset || 0,
                     deadseaOrientation: props.orientation,
                     deadseaChildQuery: props.childQuery || '',
+                    backStop: props.backStop || '',
                 },
             },
             children

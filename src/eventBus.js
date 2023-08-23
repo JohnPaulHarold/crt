@@ -23,6 +23,7 @@ EventBus.prototype = {
      * @memberof EventBus#
      * @param {string} type
      * @param {EventListenerOrEventListenerObject} listener
+     * @todo implement the "once" concept
      */
     once: function (type, listener) {
         this.eventTarget.addEventListener(type, listener);
