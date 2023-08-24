@@ -86,7 +86,7 @@ function getWidevine(contentType) {
                 })
             )
         )
-        .catch((e) => console.error(e));
+        .catch((e) => console.log(e));
 }
 
 /**
