@@ -10,6 +10,8 @@ import { Home } from './views/home.js';
 import { Search } from './views/search.js';
 import { Show } from './views/show.js';
 
+import { Canivideo } from './views/canivideo.js';
+
 import { BaseView } from './libs/baseView.js';
 import { Hashish } from './libs/hashish.js';
 
@@ -55,6 +57,12 @@ export const routes = [
         title: 'Popup Demo',
         id: 'popupdemo',
         viewClass: Popupdemo,
+    },
+    {
+        pattern: '/canivideo',
+        title: 'Can I video?',
+        id: 'canivideo',
+        viewClass: Canivideo,
     },
 ];
 

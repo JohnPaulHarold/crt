@@ -1,0 +1,9 @@
+.codec {
+  color: white;
+  display: block;
+  margin: 6px 0;
+}
+
+.codec:focus {
+  border: 3px solid #ffffff;
+}

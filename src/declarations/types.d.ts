@@ -153,3 +153,22 @@ export interface DialogProps extends BaseComponentProps {
 // textOrArray: any
 // children: ?
 export type ShorthandMakeElement = (...args: any[]) => HTMLElement;
+
+export type ContainerType =
+    | 'video/mp4'
+    | 'video/webm'
+    | 'application/vnd.apple.mpegurl';
+
+export type Codec = { title: string; contentType: string };
+
+export type CodecProps = {
+    data: Record<string, any>;
+    codec: string;
+    type: string;
+    title: string;
+};
+
+export type DrmSupportsProps = { data: Record<string, any>; drmType: string };
+export type DrmSupportsLevelsProps = {
+    data: any[];
+};

@@ -1,0 +1,29 @@
+* {
+  box-sizing: border-box;
+}
+
+.invalid {
+  background-color: #e84545;
+}
+
+.valid {
+  background-color: #0e9c0e;
+}
+
+.container {
+  width: 100%;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.box {
+  padding: 3px;
+  margin: 3px;
+  clear: left;
+}
+
+.levelbox {
+  padding: 3px;
+  margin-right: 3px;
+  float: left;
+}

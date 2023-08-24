@@ -72,7 +72,7 @@ export const Hashish = (function () {
                 handlers[matchedRoute.pattern].callback(matchedRoute);
             }
         } catch (error) {
-            console.error('[Router] failed to load view component', error);
+            console.log('[Router] failed to load view component', error);
         }
     }
 
