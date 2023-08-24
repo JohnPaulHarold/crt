@@ -1,4 +1,4 @@
-import { collectionToArray } from '../utils/collectionToArray';
+import { collectionToArray } from '../utils/dom/collectionToArray';
 
 /**
  *

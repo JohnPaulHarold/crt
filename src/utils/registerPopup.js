@@ -1,6 +1,6 @@
 import { AdditionalKeys } from '../enums/AdditionalKeys';
 import { focusInto, setLrudScope } from '../navigation';
-import { handleKeydownOnElement } from './handleKeydownOnElement';
+import { handleKeydownOnElement } from './dom/handleKeydownOnElement';
 
 /**
  * @name registerPopup

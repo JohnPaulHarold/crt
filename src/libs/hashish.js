@@ -5,14 +5,23 @@
  * @typedef {{ pattern: string, params: RouteParams, search: RouteSearch }} HandlerArgs
  */
 
-import { parseSearchParams } from '../utils/parseSearchParams';
+import { parseSearchParams } from '../utils/dom/parseSearchParams';
 
 export const Hashish = (function () {
     /** @type { {[index: string]: { callback: (arg0: HandlerArgs) => void, exact: boolean}} } */
     const handlers = {};
+    let baseUrl = '';
 
-    setupListeners();
-    init();
+    /**
+     * 
+     * @param {string} path 
+     */
+    function config(path) {
+        baseUrl = path;
+
+        setupListeners();
+        init();
+    }
 
     function init() {
         /** @type {HashChangeEvent|CustomEvent} */
@@ -76,7 +85,7 @@ export const Hashish = (function () {
         // location.origin don't work on old browser
         const path = url.replace(location.protocol + '//' + location.host, '');
         // could be `/` or `/#/foo`
-        const route = path === '/' ? path : path.split('#')[1];
+        const route = path === baseUrl ? '/' : path.split('#')[1];
 
         // strip out the searchParams if they are there
         const [routeUrl, paramsString] = route.split('?');
@@ -182,6 +191,7 @@ export const Hashish = (function () {
     }
 
     return {
+        config,
         registerRoute,
         unregisterRoute,
     };

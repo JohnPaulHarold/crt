@@ -3,8 +3,8 @@
  */
 import { animations } from '../config/animations';
 import { div, h2, section } from '../libs/makeElement';
-import { cx } from '../utils/cx';
-import { toTitleCase } from '../utils/toTitleCase';
+import { cx } from '../utils/dom/cx';
+import { toTitleCase } from '../utils/string/toTitleCase';
 
 import s from './Carousel.css';
 /**

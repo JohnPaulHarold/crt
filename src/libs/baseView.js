@@ -1,4 +1,4 @@
-import { removeElement } from '../utils/removeElement';
+import { removeElement } from '../utils/dom/removeElement';
 import { div } from './makeElement';
 
 /**

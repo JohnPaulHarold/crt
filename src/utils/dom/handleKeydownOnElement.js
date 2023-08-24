@@ -3,7 +3,7 @@
  * @param {KeyboardEvent} event
  */
 
-import { assertKey } from './keys';
+import { assertKey } from '../keys';
 
 /**
  * @param {HTMLElement} el

@@ -3,7 +3,7 @@
  */
 
 import { div, span } from '../libs/makeElement';
-import { cx } from '../utils/cx';
+import { cx } from '../utils/dom/cx';
 
 import s from './Spinner.css';
 /**

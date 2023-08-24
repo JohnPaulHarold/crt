@@ -4,7 +4,7 @@
 
 import { BaseView } from '../libs/baseView';
 import { Nav } from '../components/Nav';
-import { collectionToArray } from '../utils/collectionToArray';
+import { collectionToArray } from '../utils/dom/collectionToArray';
 
 /**
  * @typedef {Object} DiffState

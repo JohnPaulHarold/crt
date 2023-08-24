@@ -75,6 +75,8 @@ let _nextView;
  * @name initRouting
  */
 export function initRouting() {
+    Hashish.config(location.pathname);
+
     routes.forEach((route) => {
         Hashish.registerRoute(route, (routeInfo) => {
             handleViewChange(route, routeInfo);
