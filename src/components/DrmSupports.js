@@ -2,7 +2,7 @@
  * @typedef {import('../declarations/types').DrmSupportsProps} DrmSupportsProps
  */
 import { div } from '../libs/makeElement';
-import { cx } from '../utils/cx';
+import { cx } from '../utils/dom/cx';
 import { getValidationClass } from '../utils/getValidationClass';
 import s from './Codec.css';
 import { DrmSupportsLevels } from './DrmSupportsLevels';

@@ -165,6 +165,7 @@ export type CodecProps = {
     data: Record<string, any>;
     codec: string;
     type: string;
+    title: string;
 };
 
 export type DrmSupportsProps = { data: Record<string, any>; drmType: string };

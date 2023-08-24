@@ -2,7 +2,7 @@
  * @typedef {import('../declarations/types').DrmSupportsLevelsProps} DrmSupportsLevelsProps
  */
 import { div } from '../libs/makeElement';
-import { cx } from '../utils/cx';
+import { cx } from '../utils/dom/cx';
 import { getValidationClass } from '../utils/getValidationClass';
 import s from './Codec.css';
 
@@ -12,34 +12,9 @@ import s from './Codec.css';
  * @returns {Element}
  */
 export const DrmSupportsLevels = ({ data }) => {
-    var _data, _data2, _data3;
-    var l1 =
-        (_data = data) === null ||
-        _data === void 0 ||
-        (_data = _data.find(function (level) {
-            return level.name === 'L1';
-        })) === null ||
-        _data === void 0
-            ? void 0
-            : _data.supported;
-    var l2 =
-        (_data2 = data) === null ||
-        _data2 === void 0 ||
-        (_data2 = _data2.find(function (level) {
-            return level.name === 'L2';
-        })) === null ||
-        _data2 === void 0
-            ? void 0
-            : _data2.supported;
-    var l3 =
-        (_data3 = data) === null ||
-        _data3 === void 0 ||
-        (_data3 = _data3.find(function (level) {
-            return level.name === 'L3';
-        })) === null ||
-        _data3 === void 0
-            ? void 0
-            : _data3.supported;
+    const l1 = getLevelSupport(data, 'L1');
+    const l2 = getLevelSupport(data, 'L2');
+    const l3 = getLevelSupport(data, 'L3');
 
     return !!l1 || !!l2 || !!l3
         ? div(
@@ -67,3 +42,21 @@ export const DrmSupportsLevels = ({ data }) => {
           )
         : div('');
 };
+
+/**
+ *
+ * @param {any[]} data
+ * @param {string} levelName
+ * @returns {boolean}
+ */
+function getLevelSupport(data, levelName) {
+    let _data;
+    return (_data = data) === null ||
+        _data === void 0 ||
+        (_data = _data.find(function (level) {
+            return level.name === levelName;
+        })) === null ||
+        _data === void 0
+        ? void 0
+        : _data.supported;
+}

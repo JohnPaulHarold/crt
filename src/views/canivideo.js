@@ -37,6 +37,7 @@ export class Canivideo extends BaseView {
                 const typeAndCodec = type + codec.contentType;
                 const { mse, video } = isCodecSupported(typeAndCodec);
                 this.data[type][typeAndCodec] = {
+                    title: codec.title,
                     type,
                     mse,
                     video,
@@ -114,6 +115,7 @@ export class Canivideo extends BaseView {
                                     data: this.data[type][codec],
                                     codec,
                                     type,
+                                    title: this.data[type][codec].title,
                                 }),
                             ])
                         );
