@@ -37,8 +37,8 @@ export class Popupdemo extends BaseView {
                     { className: 'my-popup-text' },
                     'Hey, I have something to tell you...'
                 ),
-                Button({ text: 'OK', id: 'btn-ok' }),
-                Button({ text: 'Cancel', id: 'btn-cancel' }),
+                Button({ id: 'btn-ok' }, 'OK'),
+                Button({ id: 'btn-cancel' }, 'Cancel'),
             ]
         );
 
@@ -95,10 +95,12 @@ export class Popupdemo extends BaseView {
     render() {
         return div(
             { className: 'view', id: this.id },
-            Button({
-                text: 'Show Popup',
-                id: 'btn-show-popup',
-            })
+            Button(
+                {
+                    id: 'btn-show-popup',
+                },
+                'Show Popup'
+            )
         );
     }
 }

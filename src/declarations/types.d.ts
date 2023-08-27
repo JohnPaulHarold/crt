@@ -56,7 +56,8 @@ export interface TileDataItem {
 
 interface BaseComponentProps {
     id?: string;
-    className?: sring;
+    className?: string;
+    dataset?: Record<string, string>;
 }
 
 export interface SimpleCarouselProps extends BaseComponentProps {
@@ -73,6 +74,7 @@ export interface CarouselProps extends BaseComponentProps {
     startOffset?: number;
     title?: string;
     backStop?: string;
+    scrollStartQuery?: string;
 }
 
 export interface NavProps {
@@ -108,9 +110,14 @@ export interface NavItem {
 
 export interface ButtonProps extends BaseComponentProps {
     text?: string;
-    theme?: 'ghost' | 'none';
+    ghost?: boolean;
     icon?: string;
     iconPosition?: 'left' | 'right' | 'top' | 'bottom';
+}
+
+export interface HeadingProps extends BaseComponentProps {
+    level?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+    colour?: 'primary' | 'secondary' | 'highlight' | 'disabled' | 'error';
 }
 
 export interface GridProps extends BaseComponentProps {

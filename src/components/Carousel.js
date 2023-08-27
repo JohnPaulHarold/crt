@@ -2,11 +2,12 @@
  * @typedef {import('../declarations/types').CarouselProps} CarouselProps
  */
 import { animations } from '../config/animations';
-import { div, h2, section } from '../libs/makeElement';
+import { div, section } from '../libs/makeElement';
 import { cx } from '../utils/dom/cx';
 import { toTitleCase } from '../utils/string/toTitleCase';
 
 import s from './Carousel.css';
+import { Heading } from './Heading';
 /**
  *
  * @param {CarouselProps} props
@@ -31,7 +32,8 @@ export const Carousel = (props, children) => {
                 blockExit: props.blockExit,
             },
         },
-        props.title && h2({ className: s.carouselTitle }, props.title),
+        props.title &&
+            Heading({ level: 'h2', className: s.carouselTitle }, props.title),
         div(
             {
                 className: sliderCx,
@@ -40,6 +42,7 @@ export const Carousel = (props, children) => {
                     deadseaStartOffset: props.startOffset || 0,
                     deadseaOrientation: props.orientation,
                     deadseaChildQuery: props.childQuery || '',
+                    deadseaScrollStartQuery: props.scrollStartQuery || '',
                     backStop: props.backStop || '',
                 },
             },

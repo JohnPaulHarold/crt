@@ -1,7 +1,7 @@
 /**
  * @typedef {import('../declarations/types').ViewOptions} ViewOptions
  */
-import { a, div, h1, p } from '../libs/makeElement';
+import { a, div, p } from '../libs/makeElement';
 import { BaseView } from '../libs/baseView';
 import { checkImages } from '../libs/indolence';
 
@@ -22,6 +22,7 @@ import { showData } from '../stubData/showData';
 import Logo from '../assets/Public_Domain_Mark_button.svg.png';
 
 import s from './show.css';
+import { Heading } from '../components/Heading';
 
 /**
  * @extends BaseView
@@ -41,10 +42,15 @@ export class Show extends BaseView {
         // if we are then we hide them
         this.belowFold = false;
 
-        this.showName =
-            this.search.name && typeof this.search.name === 'string'
-                ? decodeURI(this.search.name)
-                : '';
+        this.showName = '';
+
+        if (
+            this.search &&
+            this.search.name &&
+            typeof this.search.name === 'string'
+        ) {
+            this.showName = decodeURI(this.search.name);
+        }
 
         this.bleedImage = LazyImage({
             className: s.showBleedImage,
@@ -124,15 +130,18 @@ export class Show extends BaseView {
                 [
                     div(
                         { className: s.showOverlay },
-                        h1({ className: s.showTitle }, 'Show ' + this.showName),
+                        Heading(
+                            { level: 'h1', className: s.showTitle },
+                            'Show ' + this.showName
+                        ),
                         p(
                             { className: s.showDescription },
                             showData.description
                         ),
                         div(
                             { className: s.buttonRow + ' lrud-container' },
-                            Button({ id: 'play', text: 'PLAY' }),
-                            Button({ id: 'play-trailer', text: 'TRAILER' })
+                            Button({ id: 'play' }, 'PLAY'),
+                            Button({ id: 'play-trailer' }, 'TRAILER')
                         )
                     ),
                     Grid(

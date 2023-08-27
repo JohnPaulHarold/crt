@@ -74,6 +74,7 @@ function doTheHardWork(scrollEl, useTransforms) {
     const orientation = scrollEl.dataset.deadseaOrientation;
     const qs = scrollEl.dataset.deadseaChildQuery;
     const startOffset = parseInt(scrollEl.dataset.deadseaStartOffset || '', 10);
+    const startQs = scrollEl.dataset.deadseaScrollStartQuery;
     const offsetProp =
         orientation === Orientation.HORIZONTAL ? 'offsetLeft' : 'offsetTop';
     const scrollables = qs
@@ -84,6 +85,14 @@ function doTheHardWork(scrollEl, useTransforms) {
             ? findScrollableFromFocusEl(focusedEl, scrollables)[1]
             : 0;
 
+    const startEl = startQs && document.querySelector(startQs);
+    let startElOffsetInPx = 0;
+    if (startEl instanceof HTMLElement) {
+        // const coords = startEl.getBoundingClientRect();
+
+        startElOffsetInPx = startEl[offsetProp];
+    }
+
     // get all the offsets and cache them against the id of the carousel
     if (!offsetCache[scrollId]) {
         // generate the slot
@@ -91,7 +100,8 @@ function doTheHardWork(scrollEl, useTransforms) {
         // loop through and add the offsets
         for (let i = 0, l = scrollables.length; i < l; i++) {
             const s = scrollables[i];
-            offsetCache[scrollId].push(s[offsetProp]);
+            const value = s[offsetProp] - startElOffsetInPx;
+            offsetCache[scrollId].push(value);
         }
     }
 

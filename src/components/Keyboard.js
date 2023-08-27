@@ -3,8 +3,9 @@
  * @typedef {import('../declarations/types').KeyProps} KeyProps
  */
 
-import { button, div } from '../libs/makeElement';
+import { div } from '../libs/makeElement';
 import { cx } from '../utils/dom/cx';
+import { Button } from './Button';
 
 import s from './Keyboard.css';
 /**
@@ -19,7 +20,7 @@ const KeyButton = (props) => {
         typeof props.width === 'number' && s['w' + props.width]
     );
 
-    return button(
+    return Button(
         {
             className: buttonCx,
             dataset: {

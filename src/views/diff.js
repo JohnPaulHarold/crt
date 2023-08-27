@@ -105,19 +105,25 @@ export class Diff extends BaseView {
                 .slice(0, this.state.lyricCount)
                 .map((lyric) => p({ className: 'lyric-line' }, lyric)),
             this.state.lyricCount < lyrics.length &&
-                Button({
-                    className: isElementFocused('add-lyric') ? 'focused' : '',
-                    id: 'add-lyric',
-                    text: 'Add line',
-                }),
+                Button(
+                    {
+                        className: isElementFocused('add-lyric')
+                            ? 'focused'
+                            : '',
+                        id: 'add-lyric',
+                    },
+                    'Add line'
+                ),
             this.state.lyricCount > 0 &&
-                Button({
-                    className: isElementFocused('remove-lyric')
-                        ? 'focused'
-                        : '',
-                    id: 'remove-lyric',
-                    text: 'Remove line',
-                })
+                Button(
+                    {
+                        className: isElementFocused('remove-lyric')
+                            ? 'focused'
+                            : '',
+                        id: 'remove-lyric',
+                    },
+                    'Remove line'
+                )
         );
     }
 

@@ -130,6 +130,14 @@ export const h1 = (...args) => makeElement('h1', args[0], ...args.slice(1));
 /** @type {ShorthandMakeElement}  */
 export const h2 = (...args) => makeElement('h2', args[0], ...args.slice(1));
 /** @type {ShorthandMakeElement}  */
+export const h3 = (...args) => makeElement('h3', args[0], ...args.slice(1));
+/** @type {ShorthandMakeElement}  */
+export const h4 = (...args) => makeElement('h4', args[0], ...args.slice(1));
+/** @type {ShorthandMakeElement}  */
+export const h5 = (...args) => makeElement('h5', args[0], ...args.slice(1));
+/** @type {ShorthandMakeElement}  */
+export const h6 = (...args) => makeElement('h6', args[0], ...args.slice(1));
+/** @type {ShorthandMakeElement}  */
 export const header = (...args) =>
     makeElement('header', args[0], ...args.slice(1));
 /** @type {ShorthandMakeElement}  */
