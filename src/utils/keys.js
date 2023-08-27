@@ -30,12 +30,25 @@ const keyCodeMap = {
 };
 
 /**
- * getDirectionFromCode
+ * @name getDirectionFromCode
  * @param {number} keyCode
  * @returns {Direction}
  */
 export function getDirectionFromKeyCode(keyCode) {
     return keyCodeMap[keyCode];
+}
+
+/**
+ *
+ * @param {Direction} direction
+ * @returns
+ */
+export function getOrientationFromDirection(direction) {
+    if ([Direction.LEFT, Direction.RIGHT].indexOf(direction) > -1) {
+        return Orientation.HORIZONTAL;
+    }
+
+    return Orientation.VERTICAL;
 }
 
 /**

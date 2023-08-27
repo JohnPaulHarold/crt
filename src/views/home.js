@@ -13,11 +13,37 @@ import { assertKey } from '../utils/keys';
 
 import { Carousel } from '../components/Carousel';
 import { Tile } from '../components/Tile';
+import { Spinner } from '../components/Spinner';
 
 import { Orientation } from '../enums/Orientation';
 import { AdditionalKeys } from '../enums/AdditionalKeys';
-import { Spinner } from '../components/Spinner';
+
 import { focusInto } from '../navigation';
+import { appOutlets } from '../main';
+
+/**
+ *
+ * @param {HTMLElement|null} el
+ * @returns {HTMLElement=}
+ */
+function findNextBackStop(el) {
+    if (!el) {
+        return;
+    }
+
+    if (el.dataset.backStop) {
+        const firstChild = el.children[0];
+        if (
+            firstChild.classList.contains('focused') ||
+            firstChild.querySelector('.focused')
+        ) {
+            return findNextBackStop(el.parentElement);
+        }
+        return el;
+    }
+
+    return findNextBackStop(el.parentElement);
+}
 
 /**
  * @extends BaseView
@@ -29,6 +55,7 @@ export class Home extends BaseView {
     constructor(options) {
         super(options);
         this.fetchData();
+        this.listenForBack();
     }
 
     /**
@@ -37,6 +64,32 @@ export class Home extends BaseView {
      */
     focusPage(el) {
         focusInto(el);
+    }
+
+    listenForBack() {
+        window.addEventListener('keydown', this.handleBack.bind(this));
+    }
+
+    /**
+     *
+     * @param {KeyboardEvent} event
+     */
+    handleBack(event) {
+        if (assertKey(event, AdditionalKeys.BACKSPACE)) {
+            const target = event.target;
+
+            if (target instanceof HTMLElement) {
+                const nextBack = findNextBackStop(target);
+
+                if (nextBack) {
+                    focusInto(nextBack);
+                } else {
+                    // focus into the menu
+                    const navEl = appOutlets['nav'];
+                    focusInto(navEl);
+                }
+            }
+        }
     }
 
     listenToCarousels() {
@@ -74,6 +127,7 @@ export class Home extends BaseView {
                 orientation: Orientation.VERTICAL,
                 childQuery: `#${data.id} .home-carousel`,
                 blockExit: 'up down right',
+                backStop: 'viewStart',
             },
             data.items.map((rail) =>
                 Carousel(
@@ -83,6 +137,7 @@ export class Home extends BaseView {
                         className: 'home-carousel',
                         orientation: Orientation.HORIZONTAL,
                         blockExit: 'right',
+                        backStop: 'viewStart',
                     },
                     rail.items.map((railItem) =>
                         a(
@@ -107,7 +162,7 @@ export class Home extends BaseView {
         setTimeout(() => {
             this.data = pageData;
             this.updateRender();
-        }, 3000);
+        }, 500);
 
         return;
     }

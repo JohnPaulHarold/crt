@@ -10,14 +10,19 @@ import { parseSearchParams } from '../utils/dom/parseSearchParams';
 export const Hashish = (function () {
     /** @type { {[index: string]: { callback: (arg0: HandlerArgs) => void, exact: boolean}} } */
     const handlers = {};
-    let baseUrl = '';
+    let basePath = '';
+    let hashSymbol = '#';
 
     /**
-     * 
-     * @param {string} path 
+     *
+     * @param {string} path
+     * @param {string} [hash]
      */
-    function config(path) {
-        baseUrl = path;
+    function config(path, hash) {
+        basePath = path;
+        if (hash) {
+            hashSymbol = hash;
+        }
 
         setupListeners();
         init();
@@ -47,8 +52,9 @@ export const Hashish = (function () {
     }
 
     /**
-     *
+     * @name navigateTo
      * @param {HashChangeEvent|CustomEvent|undefined} event
+     * @todo could probably change the signature to a URL rather than Event
      */
     function navigateTo(event) {
         if (!event) {
@@ -78,6 +84,21 @@ export const Hashish = (function () {
 
     /**
      *
+     * @param {string} routeUrl
+     * @param {string} pattern
+     * @returns {RegExpMatchArray | null}
+     */
+    function getMatchFromPattern(routeUrl, pattern) {
+        const routeMatcher = new RegExp(
+            pattern.replace(/({[^}]*(\w+)[^}]*})/g, '([\\w-]+)')
+        );
+        const match = routeUrl.match(routeMatcher);
+
+        return match;
+    }
+
+    /**
+     *
      * @param {string} url
      * @returns {{ pattern: string, params: RouteParams, search: RouteSearch } | undefined}
      */
@@ -85,7 +106,7 @@ export const Hashish = (function () {
         // location.origin don't work on old browser
         const path = url.replace(location.protocol + '//' + location.host, '');
         // could be `/` or `/#/foo`
-        const route = path === baseUrl ? '/' : path.split('#')[1];
+        const route = path === basePath ? '/' : path.split(hashSymbol)[1];
 
         // strip out the searchParams if they are there
         const [routeUrl, paramsString] = route.split('?');
@@ -108,10 +129,7 @@ export const Hashish = (function () {
                 continue;
             }
 
-            const routeMatcher = new RegExp(
-                pattern.replace(/({[^}]*(\w+)[^}]*})/g, '([\\w-]+)')
-            );
-            const match = routeUrl.match(routeMatcher);
+            const match = getMatchFromPattern(routeUrl, pattern);
 
             if (!match) {
                 continue;
@@ -155,28 +173,36 @@ export const Hashish = (function () {
         navigateTo(event);
     }
 
+    function buildHref() {
+        // all the more fun because location.origin doesn't always exist
+        return location.protocol + '//' + location.host + location.pathname;
+    }
+
     /**
      *
      * @param {string|Route} pathObject
      * @param {(handler: HandlerArgs) => void} handler
      */
     function registerRoute(pathObject, handler) {
-        let path = '';
+        let pattern = '';
         let exact = false;
         if (typeof pathObject === 'string') {
-            path = pathObject;
+            pattern = pathObject;
         } else {
-            path = pathObject.pattern;
+            pattern = pathObject.pattern;
             exact = Boolean(pathObject.exact);
         }
 
-        handlers[path] = {
+        // add the handler with the pattern as the path
+        handlers[pattern] = {
             callback: handler,
             exact,
         };
 
-        // then quickly check if our newly added route matches
-        const matchedRoute = matchRoute(location.href);
+        // then quickly check if our newly added pattern matches the current url
+        // if so, we can load up the view
+
+        const matchedRoute = getMatchFromPattern(location.href, pattern);
 
         if (matchedRoute) {
             init();

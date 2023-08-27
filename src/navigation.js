@@ -1,6 +1,5 @@
 import { getNextFocus } from '@bbc/tv-lrud-spatial';
 
-import { getLocationHashValue } from './utils/dom/getLocationHashValue';
 import { scrollAction } from './libs/deadSea';
 import { getDataFromEl } from './utils/dom/getDataFromEl';
 import { assertKey } from './utils/keys';
@@ -9,6 +8,7 @@ import { Direction } from './enums/Direction';
 import { throttle } from './utils/function/throttle';
 import { animations } from './config/animations';
 import { collectionToArray } from './utils/dom/collectionToArray';
+import { PubSub } from './state/PubSub';
 
 /** @type {HTMLElement|undefined} */
 let _scope = undefined;
@@ -51,6 +51,8 @@ export function registerCustomFocusHandler(func) {
     };
 }
 
+export const navigationBus = new PubSub();
+
 /**
  * @name handleKeyDown
  * @param {KeyboardEvent} event
@@ -88,7 +90,7 @@ export function handleKeyDown(event, scope) {
             if (lastFocus instanceof HTMLElement) {
                 // if we've stored the last focus, use it
                 // lastFocus.focus();
-                focus(lastFocus);
+                moveFocus(lastFocus);
                 nextFocus = getNextFocus(lastFocus, event.keyCode, _scope);
             } else {
                 // we have no real starting point, so assume we're starting anew,
@@ -104,7 +106,11 @@ export function handleKeyDown(event, scope) {
         }
 
         if (nextFocus) {
-            moveFocus(nextFocus, event, lastFocus);
+            if (lastFocus) {
+                emitMoveEvent(lastFocus, nextFocus);
+            }
+
+            moveFocus(nextFocus, lastFocus);
             lastFocus = nextFocus;
         }
 
@@ -112,6 +118,30 @@ export function handleKeyDown(event, scope) {
     }
 
     handleOtherKey(event);
+}
+
+export const NavigationEvents = {
+    MOVE: 'lrud:move',
+};
+
+/**
+ *
+ * @param {HTMLElement} last
+ * @param {HTMLElement} next
+ */
+function emitMoveEvent(last, next) {
+    const [lastC] = getElementContainer(last);
+    const [nextC] = getElementContainer(next);
+
+    navigationBus.emit(NavigationEvents.MOVE, {
+        type: NavigationEvents.MOVE,
+        detail: {
+            lastElement: last,
+            nextElement: next,
+            lastContainer: lastC,
+            nextContainer: nextC,
+        },
+    });
 }
 
 function clearFocus() {
@@ -139,10 +169,9 @@ function blur(el) {
 
 /**
  * @param {HTMLElement} toEl
- * @param {KeyboardEvent} [event]
  * @param {HTMLElement} [fromEl]
  */
-function moveFocus(toEl, event, fromEl) {
+export function moveFocus(toEl, fromEl) {
     if (fromEl) {
         blur(fromEl);
     } else {
@@ -151,10 +180,8 @@ function moveFocus(toEl, event, fromEl) {
 
     focus(toEl);
 
-    if (event) {
-        const useTransforms = animations.transforms;
-        scrollAction(toEl, event.keyCode, useTransforms);
-    }
+    const useTransforms = animations.transforms;
+    scrollAction(toEl, useTransforms);
 }
 
 /**
@@ -189,6 +216,31 @@ const focusWithoutScrolling = function (el) {
 };
 
 /**
+ *
+ * @param {HTMLElement} target
+ * @returns {HTMLElement[]}
+ */
+function getElementContainer(target) {
+    let a = target;
+    const els = [];
+
+    while (target && a && a.parentElement) {
+        els.unshift(a);
+        a = a.parentElement;
+        if (
+            a.nodeName === 'SECTION' ||
+            a.nodeName === 'NAV' ||
+            (a instanceof HTMLElement && a.classList.contains('lrud-container'))
+        ) {
+            els.unshift(a);
+            break;
+        }
+    }
+
+    return els;
+}
+
+/**
  * handleOtherKey
  * @param {KeyboardEvent} event
  */
@@ -202,7 +254,6 @@ function handleOtherKey(event) {
  */
 function handleBack(event) {
     event.preventDefault();
-    console.log('[navigation][handleBack] event', event);
 }
 
 /**
@@ -222,10 +273,7 @@ function handleEnter(event) {
             return handleExternal(event.target.href);
         }
 
-        // todo: pointless? `hash` exists on the `a` tag
-        const target = getLocationHashValue(event.target.href);
-
-        target && handleNav(target);
+        event.target.hash && handleNav(event.target.hash);
     }
 }
 

@@ -1,18 +1,27 @@
-/**
- * @typedef {import('../declarations/types').StoreType} StoreType
- */
+export function PubSub() {
+    /**
+     * @type { {[index: string]: any[]} }
+     */
+    this.listeners = {};
+}
 
-/** @type {StoreType} */
-export const store = {
-    listeners: {},
-
+PubSub.prototype = {
+    /**
+     *
+     * @param {*} payload
+     */
     broadcast(payload) {
         Object.keys(this.listeners).forEach((key) => {
-            this.triggerListener(key, payload);
+            this.emit(key, payload);
         });
     },
 
-    triggerListener(id, payload) {
+    /**
+     *
+     * @param {string} id
+     * @param {*} payload
+     */
+    emit(id, payload) {
         const callbacks = this.listeners[id];
 
         if (callbacks && callbacks.length) {
@@ -20,7 +29,12 @@ export const store = {
         }
     },
 
-    listen(id, callback) {
+    /**
+     *
+     * @param {string} id
+     * @param {*} callback
+     */
+    on(id, callback) {
         if (!callback || typeof callback !== 'function') {
             console.warn(
                 `You must pass a function as the second argument to store.listen()`
@@ -35,7 +49,7 @@ export const store = {
      *
      * @param {string} id
      */
-    unlisten(id) {
+    off(id) {
         if (this.listeners[id]) {
             delete this.listeners[id];
         }

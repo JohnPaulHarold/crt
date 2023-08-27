@@ -72,6 +72,7 @@ export interface CarouselProps extends BaseComponentProps {
     orientation: Orientation;
     startOffset?: number;
     title?: string;
+    backStop?: string;
 }
 
 export interface NavProps {
@@ -103,22 +104,6 @@ export interface NavItem {
     id: string;
     title?: string;
     href: string;
-}
-
-type ListenerCallback = (payload: any) => void;
-
-interface ListenerPayload {
-    type: string;
-    nextIndex?: number;
-    offset?: number;
-    direction?: Direction;
-}
-export interface StoreType {
-    listeners: Record<string, ListenerCallback[]>;
-    broadcast: (payload: any) => void;
-    triggerListener: (id: string, payload: ListenerPayload) => void;
-    listen: (id: string, callback: any) => void;
-    unlisten: (id: string) => void;
 }
 
 export interface ButtonProps extends BaseComponentProps {
