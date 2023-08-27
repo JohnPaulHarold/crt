@@ -2,8 +2,16 @@
     color: white;
     display: block;
     margin: 6px 0;
+    border: 3px solid transparent;
 }
 
 .codec:focus {
     border: 3px solid #ffffff;
+}
+
+.videoType {
+    display: block;
+    background: #5d5d5d;
+    padding: 2%;
+    border-radius: 1rem;
 }

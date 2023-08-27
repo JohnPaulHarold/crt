@@ -5,12 +5,16 @@
  */
 import { Carousel } from '../components/Carousel';
 import { Codec } from '../components/Codec';
+import { Heading } from '../components/Heading';
+
 import { Codecs } from '../enums/Codecs';
 import { DrmType } from '../enums/DrmType';
 import { Orientation } from '../enums/Orientation';
 import { VideoTypes } from '../enums/VideoTypes';
+
 import { BaseView } from '../libs/baseView';
-import { a, div, h1, h2, section } from '../libs/makeElement';
+import { a, div } from '../libs/makeElement';
+
 import { getDrm } from '../utils/drm';
 import { isCodecSupported } from '../utils/isCodecSupported';
 
@@ -87,7 +91,7 @@ export class Canivideo extends BaseView {
                     this.data[type][typeAndCodec][DrmType.PLAYREADY].drm,
                     this.data[type][typeAndCodec][DrmType.PLAYREADY_LEGACY].drm,
                     this.data[type][typeAndCodec][DrmType.FAIRPLAY].drm,
-                ]).then((_) => {
+                ]).then(() => {
                     const el = document.querySelector('#codecs-carousel > div');
                     el instanceof HTMLElement && this.updateRender(el);
                 });
@@ -104,22 +108,39 @@ export class Canivideo extends BaseView {
 
         if (target && this.data) {
             target.innerHTML = '';
-            target.appendChild(h1('CAN I VIDEO?'));
+            // target.appendChild(Heading({level: 'h1'}, 'CAN I VIDEO?'));
             Object.keys(this.data).forEach((type) => {
-                target && target.appendChild(h2(type));
-                Object.keys(this.data[type]).forEach((codec) => {
-                    target &&
-                        target.appendChild(
-                            a({ href: '#', className: s.codec }, [
-                                Codec({
-                                    data: this.data[type][codec],
-                                    codec,
-                                    type,
-                                    title: this.data[type][codec].title,
-                                }),
-                            ])
-                        );
-                });
+                const videoTypeEl = div(
+                    { className: s.videoType },
+                    Heading({ level: 'h2' }, type),
+                    Object.keys(this.data[type]).map((codec) => {
+                        return a({ href: '#', className: s.codec }, [
+                            Codec({
+                                data: this.data[type][codec],
+                                codec,
+                                type,
+                                title: this.data[type][codec].title,
+                            }),
+                        ]);
+                    })
+                );
+
+                target && target.appendChild(videoTypeEl);
+
+                // target && target.appendChild(Heading({ level: 'h2' }, type));
+                // Object.keys(this.data[type]).forEach((codec) => {
+                //     target &&
+                //         target.appendChild(
+                //             a({ href: '#', className: s.codec }, [
+                //                 Codec({
+                //                     data: this.data[type][codec],
+                //                     codec,
+                //                     type,
+                //                     title: this.data[type][codec].title,
+                //                 }),
+                //             ])
+                //         );
+                // });
             });
         }
     }
@@ -127,10 +148,14 @@ export class Canivideo extends BaseView {
     render() {
         return div(
             { className: 'view', id: this.id },
+            Heading({ level: 'h1' }, 'CAN I VIDEO?'),
             Carousel(
                 {
                     id: 'codecs-carousel',
                     orientation: Orientation.VERTICAL,
+                    blockExit: 'right up down',
+                    childQuery: `.${s.codec}`,
+                    scrollStartQuery: `.${s.codec}`,
                 },
                 []
             )

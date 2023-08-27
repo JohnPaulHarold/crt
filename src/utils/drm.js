@@ -5,7 +5,7 @@ import { DrmType } from '../enums/DrmType';
 import { KeySystem } from '../enums/KeySystem';
 
 /**
- * isKeySystemSupported
+ * @name isKeySystemSupported
  * @param {KeySystem} keySystem
  * @param {string} contentType
  * @param {string} robustness
@@ -34,7 +34,7 @@ function isKeySystemSupported(keySystem, contentType, robustness = '') {
 }
 
 /**
- * getWidevine
+ * @name getWidevine
  * @param {string} contentType
  */
 function getWidevine(contentType) {
@@ -86,11 +86,13 @@ function getWidevine(contentType) {
                 })
             )
         )
-        .catch((e) => console.log(e));
+        .catch((e) => {
+            console.log('[getWidevine] failed', e);
+        });
 }
 
 /**
- * getPlayreadyLegacy
+ * @name getPlayreadyLegacy
  * @param {string} contentType
  */
 function getPlayreadyLegacy(contentType) {
@@ -105,7 +107,7 @@ function getPlayreadyLegacy(contentType) {
 }
 
 /**
- * getPlayready
+ * @name getPlayready
  * @param {string} contentType
  */
 function getPlayready(contentType) {
@@ -147,7 +149,7 @@ function getPlayready(contentType) {
 }
 
 /**
- * getFairplay
+ * @name getFairplay
  * @param {string} contentType
  */
 function getFairplay(contentType) {
@@ -162,7 +164,7 @@ function getFairplay(contentType) {
 }
 
 /**
- * getDrm
+ * @namegetDrm
  * @param {DrmType} type
  * @param {string} contentType
  */
@@ -176,5 +178,7 @@ export function getDrm(type, contentType) {
             return getPlayreadyLegacy(contentType);
         case DrmType.FAIRPLAY:
             return getFairplay(contentType);
+        default:
+            throw Error('NO DRM TYPE');
     }
 }

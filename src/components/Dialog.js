@@ -2,10 +2,11 @@
  * @typedef {import('../declarations/types').DialogProps} DialogProps
  */
 
-import { div, h1 } from '../libs/makeElement';
+import { div } from '../libs/makeElement';
 import { Button } from './Button';
 
 import s from './Dialog.css';
+import { Heading } from './Heading';
 /**
  *
  * @param {DialogProps} props
@@ -17,13 +18,23 @@ export function Dialog(props, children) {
         { id: props.id, className: s.dialog },
         div(
             { className: s.dialogTitleContainer },
-            Button({
-                id: 'dialog-close',
-                className: s.dialogClose,
-                theme: 'none',
-                text: 'X',
-            }),
-            props.title ? h1({ className: s.dialogTitle }, props.title) : ''
+            Button(
+                {
+                    id: 'dialog-close',
+                    className: s.dialogClose,
+                    theme: 'none',
+                },
+                'X'
+            ),
+            props.title
+                ? Heading(
+                      {
+                          level: 'h1',
+                          className: s.dialogTitle,
+                      },
+                      props.title
+                  )
+                : ''
         ),
         div({ className: s.dialogContent }, children)
     );
