@@ -1,6 +1,7 @@
 import { Orientation } from '../enums/Orientation';
 
 import { collectionToArray } from '../utils/dom/collectionToArray';
+import { getDataFromEl } from '../utils/dom/getDataFromEl';
 
 /** @type { {[index: string]: number[]} } */
 const offsetCache = {};
@@ -14,8 +15,6 @@ const focusedQuery = '.focused';
  */
 function getScrollEl(el) {
     if (!el || !el.parentElement) return;
-
-    // const orientation = getOrientationFromDirection(direction)
 
     if (el.dataset.deadseaOrientation) {
         return el;
@@ -70,26 +69,28 @@ function doTheHardWork(scrollEl, useTransforms) {
     // todo: either tell the type system to always expect an id, or generate one for it.
     const focusedEl = document.querySelector(focusedQuery);
 
-    const scrollId = scrollEl.dataset.deadseaId || '';
-    const orientation = scrollEl.dataset.deadseaOrientation;
-    const qs = scrollEl.dataset.deadseaChildQuery;
-    const startOffset = parseInt(scrollEl.dataset.deadseaStartOffset || '', 10);
-    const startQs = scrollEl.dataset.deadseaScrollStartQuery;
+    const scrollId = getDataFromEl(scrollEl, 'deadseaId') || '';
+    const orientation = getDataFromEl(scrollEl, 'deadseaOrientation');
+    const qs = getDataFromEl(scrollEl, 'deadseaChildQuery') || '';
+    const startOffset = getDataFromEl(scrollEl, 'deadseaStartOffset') || 0;
+    const startQs = getDataFromEl(scrollEl, 'deadseaScrollStartQuery') || '';
     const offsetProp =
         orientation === Orientation.HORIZONTAL ? 'offsetLeft' : 'offsetTop';
-    const scrollables = qs
-        ? collectionToArray(document.querySelectorAll(qs))
-        : collectionToArray(scrollEl.children);
+    const scrollables =
+        qs && typeof qs === 'string'
+            ? collectionToArray(document.querySelectorAll(qs))
+            : collectionToArray(scrollEl.children);
     const scrollableIndex =
         focusedEl instanceof HTMLElement
             ? findScrollableFromFocusEl(focusedEl, scrollables)[1]
             : 0;
 
-    const startEl = startQs && document.querySelector(startQs);
+    const startEl =
+        startQs &&
+        typeof startQs === 'string' &&
+        document.querySelector(startQs);
     let startElOffsetInPx = 0;
     if (startEl instanceof HTMLElement) {
-        // const coords = startEl.getBoundingClientRect();
-
         startElOffsetInPx = startEl[offsetProp];
     }
 

@@ -2,12 +2,18 @@
  *
  * @param {HTMLElement} el
  * @param {string} dataProp
- * @returns {string=}
+ * @returns {*}
  */
 export function getDataFromEl(el, dataProp) {
-    if (el.dataset && el.dataset[dataProp]) {
-        return el.dataset[dataProp];
+    const value = el.dataset && el.dataset[dataProp];
+
+    if (typeof value === 'string') {
+        try {
+            return JSON.parse(value);
+        } catch (error) {
+            return value;
+        }
     }
 
-    return;
+    return '';
 }

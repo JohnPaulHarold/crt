@@ -10,6 +10,7 @@ import { pageData } from '../stubData/pageData';
 
 import { handleKeydownOnElement } from '../utils/dom/handleKeydownOnElement';
 import { assertKey } from '../utils/keys';
+import { getDataFromEl } from '../utils/dom/getDataFromEl';
 
 import { Carousel } from '../components/Carousel';
 import { Tile } from '../components/Tile';
@@ -31,7 +32,7 @@ function findNextBackStop(el) {
         return;
     }
 
-    if (el.dataset.backStop) {
+    if (getDataFromEl(el, 'backStop')) {
         const firstChild = el.children[0];
         if (
             firstChild.classList.contains('focused') ||
