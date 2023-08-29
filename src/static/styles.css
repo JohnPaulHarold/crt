@@ -88,6 +88,14 @@ h2 {
     box-sizing: border-box;
 }
 
+#notifications {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    width: 100%;
+}
+
 #popups {
     display: none;
     position: fixed;
@@ -96,7 +104,7 @@ h2 {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 9000;
+    z-index: 2000;
 }
 
 #popups.open {

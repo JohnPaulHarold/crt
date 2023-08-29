@@ -1,0 +1,17 @@
+.view {
+    height: 100%;
+}
+
+.myForm {
+    background: #363636;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    position: relative;
+    left: 50%;
+    width: 60%;
+    padding: 1rem;
+}
+
+.myForm > div {
+    margin-bottom: 1rem;
+}

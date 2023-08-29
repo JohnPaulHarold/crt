@@ -3,7 +3,18 @@
  * @typedef {import('../declarations/types').ShorthandMakeElement} ShorthandMakeElement
  */
 
-const attributeExceptions = ['role'];
+const attributeExceptions = [
+    'role',
+    'd',
+    'r',
+    'cx',
+    'cy',
+    'width',
+    'height',
+    'viewBox',
+    'fill',
+    'for',
+];
 
 /**
  * appendText
@@ -94,7 +105,7 @@ export function makeElement(type, textOrPropsOrChild, ...otherChildren) {
                     setData(el, value);
                 } else if (propName === 'style') {
                     setStyles(el, value);
-                } else if (value) {
+                } else if (typeof value === 'number' || value) {
                     // @ts-ignore fixme
                     el[propName] = value;
                 }
@@ -152,3 +163,29 @@ export const li = (...args) => makeElement('li', args[0], ...args.slice(1));
 export const img = (...args) => makeElement('img', args[0], ...args.slice(1));
 /** @type {ShorthandMakeElement}  */
 export const form = (...args) => makeElement('form', args[0], ...args.slice(1));
+/** @type {ShorthandMakeElement}  */
+export const label = (...args) =>
+    makeElement('label', args[0], ...args.slice(1));
+/** @type {ShorthandMakeElement}  */
+export const fieldset = (...args) =>
+    makeElement('fieldset', args[0], ...args.slice(1));
+/** @type {ShorthandMakeElement}  */
+export const legend = (...args) =>
+    makeElement('legend', args[0], ...args.slice(1));
+
+/** @type {ShorthandMakeElement}  */
+export const input = (...args) =>
+    makeElement('input', args[0], ...args.slice(1));
+
+// function input() {
+//     const args = collectionToArray(arguments);
+//     const propsOrChild = args[0];
+//     const otherChildren = Array.prototype.slice.call(args, 1);
+
+//     return makeElement.apply(
+//         undefined,
+//         'input',
+//         propsOrChild,
+//         otherChildren
+//     )
+// }
