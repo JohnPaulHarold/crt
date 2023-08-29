@@ -3,6 +3,7 @@
  */
 
 import { EventBus } from './eventBus.js';
+import { NotificationsService } from './libs/notifications.js';
 import { initNavigation } from './navigation.js';
 import { initRouting, routes } from './routes.js';
 import { MainNav } from './views/mainNav.js';
@@ -37,10 +38,15 @@ export function main() {
     // todo: we could lessen this hardcoding, by using data-attrs
     // ie: <div data-outlet="nav"/>
     // document.querySelectorAll('[data-outlet=*]')
-    initOutlets(['main', 'nav', 'popups']);
+    initOutlets(['main', 'nav', 'popups', 'notifications']);
     initAppShell(appOutlets);
     initNavigation();
     initRouting();
+    initNotifications();
+}
+
+function initNotifications() {
+    NotificationsService.outlet = appOutlets.notifications;
 }
 
 /**

@@ -115,6 +115,10 @@ export interface ButtonProps extends BaseComponentProps {
     iconPosition?: 'left' | 'right' | 'top' | 'bottom';
 }
 
+export interface NotificationProps extends BaseComponentProps {
+    message: string;
+}
+
 export interface HeadingProps extends BaseComponentProps {
     level?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
     colour?: 'primary' | 'secondary' | 'highlight' | 'disabled' | 'error';
@@ -122,6 +126,14 @@ export interface HeadingProps extends BaseComponentProps {
 
 export interface GridProps extends BaseComponentProps {
     columns: number;
+}
+
+export interface CheckboxProps extends BaseComponentProps {
+    label: string;
+}
+
+export interface TextInputProps extends BaseComponentProps {
+    label: string;
 }
 
 export interface SpinnerProps extends BaseComponentProps {

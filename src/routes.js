@@ -9,14 +9,13 @@
 import { Home } from './views/home.js';
 import { Search } from './views/search.js';
 import { Show } from './views/show.js';
-
+import { FormExample } from './views/formExample.js';
 import { Canivideo } from './views/canivideo.js';
+import { Diff } from './views/diff.js';
+import { Popupdemo } from './views/popupdemo.js';
 
 import { BaseView } from './libs/baseView.js';
 import { Hashish } from './libs/hashish.js';
-
-import { Diff } from './views/diff.js';
-import { Popupdemo } from './views/popupdemo.js';
 
 import { appOutlets } from './main.js';
 
@@ -63,6 +62,12 @@ export const routes = [
         title: 'Can I video?',
         id: 'canivideo',
         viewClass: Canivideo,
+    },
+    {
+        pattern: '/formexample',
+        title: 'Form example',
+        id: 'formexample',
+        viewClass: FormExample,
     },
 ];
 

@@ -1,0 +1,33 @@
+.checkbox label {
+    display: block;
+    position: relative;
+    padding-left: 2rem;
+    outline: none;
+}
+
+.checkbox label input[type='checkbox'] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.checkbox label span {
+    position: absolute;
+    border: 0.2rem solid #a8a8a8;
+    /* position to the free space in <label> */
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    background-color: #2c2c2c;
+    transition: 0.3s background-color; /* slight transition */
+}
+
+.checkbox label:global(.focused) span {
+    border: 0.2rem solid #ffde2b;
+}
+
+.checkbox label input:checked ~ span {
+    background-color: #ffde2b;
+}
