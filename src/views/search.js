@@ -9,7 +9,7 @@ import { keyMap } from '../config/keyMap';
 
 import { searchData } from '../stubData/searchData';
 
-import { getDataFromEl } from '../utils/dom/getDataFromEl';
+import { $dataGet } from '../utils/dom/$dataGet';
 import { assertKey } from '../utils/keys';
 import { handleKeydownOnElement } from '../utils/dom/handleKeydownOnElement';
 
@@ -66,7 +66,7 @@ export class Search extends BaseView {
             event.target instanceof HTMLElement &&
             assertKey(event, AdditionalKeys.ENTER)
         ) {
-            const keyPressValue = getDataFromEl(event.target, 'keyValue');
+            const keyPressValue = $dataGet(event.target, 'keyValue');
 
             if (typeof keyPressValue === 'string') {
                 this.updateSearchInput(keyPressValue);

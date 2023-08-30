@@ -3,14 +3,14 @@
  */
 
 import { describe, expect, test } from 'vitest';
-import { getDataFromEl } from './getDataFromEl';
+import { $dataGet } from './$dataGet';
 
-describe('getDataFromEl', () => {
+describe('$dataGet', () => {
     test('it will return boolean value of data-prop from HTMLElement', () => {
         const mockEl = document.createElement('div');
         mockEl.dataset.boolean = 'true';
 
-        const assert = getDataFromEl(mockEl, 'boolean');
+        const assert = $dataGet(mockEl, 'boolean');
 
         expect(assert).toEqual(true);
     });
@@ -19,7 +19,7 @@ describe('getDataFromEl', () => {
         const mockEl = document.createElement('div');
         mockEl.dataset.complex = '{"x": 1, "y": true, "z": "test"}';
 
-        const assert = getDataFromEl(mockEl, 'complex');
+        const assert = $dataGet(mockEl, 'complex');
 
         expect(assert).toEqual({
             x: 1,
@@ -32,7 +32,7 @@ describe('getDataFromEl', () => {
         const mockEl = document.createElement('div');
         mockEl.dataset.number = '1';
 
-        const assert = getDataFromEl(mockEl, 'number');
+        const assert = $dataGet(mockEl, 'number');
 
         expect(assert).toEqual(1);
     });
@@ -41,7 +41,7 @@ describe('getDataFromEl', () => {
         const mockEl = document.createElement('div');
         mockEl.dataset.number = '1';
 
-        const assert = getDataFromEl(mockEl, 'noprop');
+        const assert = $dataGet(mockEl, 'noprop');
 
         expect(assert).toBe('');
     });

@@ -1,7 +1,7 @@
 import { getNextFocus } from '@bbc/tv-lrud-spatial';
 
 import { scrollAction } from './libs/deadSea';
-import { getDataFromEl } from './utils/dom/getDataFromEl';
+import { $dataGet } from './utils/dom/$dataGet';
 import { assertKey } from './utils/keys';
 import { AdditionalKeys } from './enums/AdditionalKeys';
 import { Direction } from './enums/Direction';
@@ -268,7 +268,7 @@ function handleEnter(event) {
         event.target instanceof HTMLAnchorElement &&
         event.target.nodeName === 'A'
     ) {
-        if (getDataFromEl(event.target, 'external')) {
+        if ($dataGet(event.target, 'external')) {
             // it is an external link
             return handleExternal(event.target.href);
         }

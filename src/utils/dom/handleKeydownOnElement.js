@@ -11,13 +11,19 @@ import { assertKey } from '../keys';
  * @param {string[]} [allowedKeys]
  */
 export function handleKeydownOnElement(el, callback, allowedKeys) {
-    el.addEventListener('keydown', (e) => {
+    /**
+     * @name func
+     * @param {KeyboardEvent} e 
+     */
+    function func(e) {
         if ((allowedKeys && assertKey(e, allowedKeys)) || !allowedKeys) {
             callback(e);
         }
-    });
+    }
 
-    return function () {
-        el.removeEventListener('keydown', (e) => callback(e));
+    el.addEventListener('keydown', func);
+
+    return () => {
+        el.removeEventListener('keydown', func);
     };
 }
