@@ -15,3 +15,24 @@
 .myForm > div {
     margin-bottom: 1rem;
 }
+
+.keyboardDrawer {
+    position: absolute;
+    transition: transform 250ms ease;
+    transform: translateY(200%);
+    width: 100%;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.keyboardDrawer:global(.active) {
+    transform: translateY(0%);
+}
+
+.output {
+    position: absolute;
+    right: 0;
+    top: 0;
+    left: auto;
+    background: #363636;
+    color: white;
+}

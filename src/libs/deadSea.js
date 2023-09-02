@@ -1,7 +1,7 @@
 import { Orientation } from '../enums/Orientation';
 
 import { collectionToArray } from '../utils/dom/collectionToArray';
-import { getDataFromEl } from '../utils/dom/getDataFromEl';
+import { $dataGet } from '../utils/dom/$dataGet';
 
 /** @type { {[index: string]: number[]} } */
 const offsetCache = {};
@@ -69,11 +69,11 @@ function doTheHardWork(scrollEl, useTransforms) {
     // todo: either tell the type system to always expect an id, or generate one for it.
     const focusedEl = document.querySelector(focusedQuery);
 
-    const scrollId = getDataFromEl(scrollEl, 'deadseaId') || '';
-    const orientation = getDataFromEl(scrollEl, 'deadseaOrientation');
-    const qs = getDataFromEl(scrollEl, 'deadseaChildQuery') || '';
-    const startOffset = getDataFromEl(scrollEl, 'deadseaStartOffset') || 0;
-    const startQs = getDataFromEl(scrollEl, 'deadseaScrollStartQuery') || '';
+    const scrollId = $dataGet(scrollEl, 'deadseaId') || '';
+    const orientation = $dataGet(scrollEl, 'deadseaOrientation');
+    const qs = $dataGet(scrollEl, 'deadseaChildQuery') || '';
+    const startOffset = $dataGet(scrollEl, 'deadseaStartOffset') || 0;
+    const startQs = $dataGet(scrollEl, 'deadseaScrollStartQuery') || '';
     const offsetProp =
         orientation === Orientation.HORIZONTAL ? 'offsetLeft' : 'offsetTop';
     const scrollables =

@@ -4,7 +4,7 @@
  * @param {string} dataProp
  * @returns {*}
  */
-export function getDataFromEl(el, dataProp) {
+export function $dataGet(el, dataProp) {
     const value = el.dataset && el.dataset[dataProp];
 
     if (typeof value === 'string') {

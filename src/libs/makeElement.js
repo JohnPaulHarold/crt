@@ -177,6 +177,9 @@ export const legend = (...args) =>
 export const input = (...args) =>
     makeElement('input', args[0], ...args.slice(1));
 
+/** @type {ShorthandMakeElement}  */
+export const pre = (...args) => makeElement('pre', args[0], ...args.slice(1));
+
 // function input() {
 //     const args = collectionToArray(arguments);
 //     const propsOrChild = args[0];

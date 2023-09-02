@@ -5,6 +5,7 @@
     margin-right: 1rem;
     outline: none;
     height: 2rem;
+    color: #fff;
 }
 
 .textInput input:global(.focused) {
