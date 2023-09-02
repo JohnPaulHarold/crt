@@ -13,7 +13,7 @@ import { assertKey } from '../keys';
 export function handleKeydownOnElement(el, callback, allowedKeys) {
     /**
      * @name func
-     * @param {KeyboardEvent} e 
+     * @param {KeyboardEvent} e
      */
     function func(e) {
         if ((allowedKeys && assertKey(e, allowedKeys)) || !allowedKeys) {
