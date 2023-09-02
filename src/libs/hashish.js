@@ -173,6 +173,7 @@ export const Hashish = (function () {
         navigateTo(event);
     }
 
+    // eslint-disable-next-line no-unused-vars
     function buildHref() {
         // all the more fun because location.origin doesn't always exist
         return location.protocol + '//' + location.host + location.pathname;
