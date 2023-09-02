@@ -15,7 +15,8 @@
         "nuke": "node scripts/nuke.js",
         "serve": "cd dist && python -m SimpleHTTPServer 3500",
         "test": "vitest",
-        "typecheck": "npx tsc"
+        "typecheck": "npx tsc",
+        "ssr": "nodemon server/index.js"
     },
     "author": "jp",
     "license": "Apache-2.0",
@@ -31,6 +32,7 @@
         "autoprefixer": "^10.4.16",
         "eslint": "^8.50.0",
         "jsdom": "^22.1.0",
+        "nodemon": "^3.0.1",
         "postcss": "^8.4.29",
         "prettier": "3.0.3",
         "rollup": "^3.29.2",
