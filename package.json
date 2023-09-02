@@ -40,6 +40,6 @@
         "vitest": "^0.34.1"
     },
     "dependencies": {
-        "@bbc/tv-lrud-spatial": "^0.0.2"
+        "@bbc/tv-lrud-spatial": "^0.0.5"
     }
 }
