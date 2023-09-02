@@ -8,6 +8,8 @@ import { initNavigation } from './navigation.js';
 import { initRouting, routes } from './routes.js';
 import { MainNav } from './views/mainNav.js';
 
+export * as utils from './utils';
+
 /**
  * @name main
  */

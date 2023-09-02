@@ -9,9 +9,9 @@ import { BaseView } from '../libs/baseView';
 import { pageData } from '../stubData/pageData';
 
 import { handleKeydownOnElement } from '../utils/dom/handleKeydownOnElement';
+import { findNextBackStop }from '../utils/dom/findNextBackStop';
 import { assertKey } from '../utils/keys';
-import { $dataGet } from '../utils/dom/$dataGet';
-
+ 
 import { Carousel } from '../components/Carousel';
 import { Tile } from '../components/Tile';
 import { Spinner } from '../components/Spinner';
@@ -24,30 +24,6 @@ import { appOutlets } from '../outlets';
 import { normaliseEventTarget } from '../utils/dom/normaliseEventTarget';
 
 /**
- *
- * @param {HTMLElement|null} el
- * @returns {HTMLElement=}
- */
-function findNextBackStop(el) {
-    if (!el) {
-        return;
-    }
-
-    if ($dataGet(el, 'backStop')) {
-        const firstChild = el.children[0];
-        if (
-            firstChild.classList.contains('focused') ||
-            firstChild.querySelector('.focused')
-        ) {
-            return findNextBackStop(el.parentElement);
-        }
-        return el;
-    }
-
-    return findNextBackStop(el.parentElement);
-}
-
-/**
  * @extends BaseView
  */
 export class Home extends BaseView {
@@ -57,7 +33,7 @@ export class Home extends BaseView {
     constructor(options) {
         super(options);
         this.fetchData();
-        this.listenForBack();
+        this.listenForBack()
     }
 
     /**
