@@ -13,10 +13,9 @@ export function $dataSet(el, dataProp, value) {
     // if the value is complex
     const type = typeof value;
 
-    if (type === "string") {
-        el.dataset[dataProp] = value + "";
+    if (type === 'string') {
+        el.dataset[dataProp] = value + '';
     } else {
         el.dataset[dataProp] = JSON.stringify(value);
     }
-
 }

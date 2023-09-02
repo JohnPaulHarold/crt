@@ -171,14 +171,22 @@ export class FormExample extends BaseView {
             switch (keyPressValue) {
                 case 'EXIT':
                     if (inputName) {
-                        const prevValue = this.activeInput && $dataGet(this.activeInput, 'prevValue')
+                        const prevValue =
+                            this.activeInput &&
+                            $dataGet(this.activeInput, 'prevValue');
                         this.formState[inputName] = prevValue || '';
                     }
                     this.closeKeyboard();
                     break;
                 case 'ENTER':
                     // set the new prevValue on the input
-                    inputName && this.activeInput && $dataSet(this.activeInput, 'prevValue', this.formState[inputName])
+                    inputName &&
+                        this.activeInput &&
+                        $dataSet(
+                            this.activeInput,
+                            'prevValue',
+                            this.formState[inputName]
+                        );
                     this.closeKeyboard();
                     break;
                 case 'DEL':
@@ -208,10 +216,10 @@ export class FormExample extends BaseView {
                 // store the current value, in case we cancel
                 // and need to restore
                 $dataSet(
-                    this.activeInput, 
-                    'prevValue', 
+                    this.activeInput,
+                    'prevValue',
                     this.formState[this.activeInput.name]
-                )
+                );
 
                 // show the keyboard
                 this.keyboard.classList.add('active');
