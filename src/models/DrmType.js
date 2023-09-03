@@ -1,4 +1,8 @@
-/** @enum {string} */
+/**
+ * @name DrmType
+ * @readonly
+ * @enum {string}
+ */
 export const DrmType = {
     WIDEVINE: 'WIDEVINE',
     PLAYREADY: 'PLAYREADY',

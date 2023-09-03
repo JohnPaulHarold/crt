@@ -1,4 +1,4 @@
-import { Orientation } from '../enums/Orientation';
+import { Orientation } from '../models/Orientation';
 
 import { collectionToArray } from '../utils/dom/collectionToArray';
 import { $dataGet } from '../utils/dom/$dataGet';

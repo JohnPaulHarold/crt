@@ -1,4 +1,8 @@
-/** @enum {string} */
+/**
+ * @name AdditionalKeys
+ * @readonly
+ * @enum {string}
+ */
 export const AdditionalKeys = {
     ENTER: 'enter',
     BACKSPACE: 'backspace',

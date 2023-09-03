@@ -10,7 +10,7 @@ import { Button } from '../components/Button';
 
 import { assertKey } from '../utils/keys';
 
-import { AdditionalKeys } from '../enums/AdditionalKeys';
+import { AdditionalKeys } from '../models/AdditionalKeys';
 import { focusInto, isElementFocused } from '../navigation';
 import { createReactive } from '../utils/object/createReactive';
 

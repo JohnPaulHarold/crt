@@ -7,10 +7,10 @@ import { Carousel } from '../components/Carousel';
 import { Codec } from '../components/Codec';
 import { Heading } from '../components/Heading';
 
-import { Codecs } from '../enums/Codecs';
-import { DrmType } from '../enums/DrmType';
-import { Orientation } from '../enums/Orientation';
-import { VideoTypes } from '../enums/VideoTypes';
+import { Codecs } from '../models/Codecs';
+import { DrmType } from '../models/DrmType';
+import { Orientation } from '../models/Orientation';
+import { VideoTypes } from '../models/VideoTypes';
 
 import { BaseView } from '../libs/baseView';
 import { a, div } from '../libs/makeElement';

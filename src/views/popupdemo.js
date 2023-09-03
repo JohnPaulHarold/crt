@@ -6,7 +6,7 @@
 import { Button } from '../components/Button';
 import { Dialog } from '../components/Dialog';
 
-import { AdditionalKeys } from '../enums/AdditionalKeys';
+import { AdditionalKeys } from '../models/AdditionalKeys';
 
 import { BaseView } from '../libs/baseView';
 import { div, p } from '../libs/makeElement';

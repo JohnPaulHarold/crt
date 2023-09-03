@@ -13,8 +13,8 @@ import { $dataGet } from '../utils/dom/$dataGet';
 import { assertKey } from '../utils/keys';
 import { handleKeydownOnElement } from '../utils/dom/handleKeydownOnElement';
 
-import { AdditionalKeys } from '../enums/AdditionalKeys';
-import { Orientation } from '../enums/Orientation';
+import { AdditionalKeys } from '../models/AdditionalKeys';
+import { Orientation } from '../models/Orientation';
 
 import { Keyboard } from '../components/Keyboard';
 import { Carousel } from '../components/Carousel';

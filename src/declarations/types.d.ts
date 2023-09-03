@@ -2,7 +2,7 @@
  * @typedef {import('./libs/baseView.js')} BaseViewInstance
  */
 
-import { Orientation } from '../enums/Orientation';
+import { Orientation } from '../models/Orientation';
 import { BaseView } from '../libs/baseView';
 
 export interface AppOutlets {

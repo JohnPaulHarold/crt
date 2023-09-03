@@ -1,4 +1,4 @@
-import { AdditionalKeys } from '../enums/AdditionalKeys';
+import { AdditionalKeys } from '../models/AdditionalKeys';
 import { focusInto, setLrudScope } from '../navigation';
 import { handleKeydownOnElement } from './dom/handleKeydownOnElement';
 
