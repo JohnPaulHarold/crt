@@ -16,8 +16,8 @@ import { Carousel } from '../components/Carousel';
 import { Tile } from '../components/Tile';
 import { Spinner } from '../components/Spinner';
 
-import { Orientation } from '../enums/Orientation';
-import { AdditionalKeys } from '../enums/AdditionalKeys';
+import { Orientation } from '../models/Orientation';
+import { AdditionalKeys } from '../models/AdditionalKeys';
 
 import { focusInto } from '../navigation';
 import { appOutlets } from '../main';

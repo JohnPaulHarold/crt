@@ -3,7 +3,7 @@
  */
 
 import { div, h2 } from '../libs/makeElement';
-import { DrmType } from '../enums/DrmType';
+import { DrmType } from '../models/DrmType';
 
 import s from './Codec.css';
 import { DrmSupports } from './DrmSupports';

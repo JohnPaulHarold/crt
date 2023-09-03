@@ -2,7 +2,7 @@
  * @typedef {import('../declarations/types').ViewOptions} ViewOptions
  */
 
-import { AdditionalKeys } from '../enums/AdditionalKeys';
+import { AdditionalKeys } from '../models/AdditionalKeys';
 
 import { keyMap } from '../config/qwertyKeyMap';
 

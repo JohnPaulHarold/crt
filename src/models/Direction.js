@@ -1,4 +1,8 @@
-/** @enum {string} */
+/**
+ * @name Direction
+ * @readonly
+ * @enum {string}
+ */
 export const Direction = {
     LEFT: 'left',
     RIGHT: 'right',

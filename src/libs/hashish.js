@@ -104,6 +104,7 @@ export const Hashish = (function () {
      */
     function matchRoute(url) {
         // location.origin don't work on old browser
+
         const path = url.replace(location.protocol + '//' + location.host, '');
         // could be `/` or `/#/foo`
         const route = path === basePath ? '/' : path.split(hashSymbol)[1];

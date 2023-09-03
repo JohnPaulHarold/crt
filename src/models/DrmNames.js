@@ -1,6 +1,10 @@
 import { DrmType } from './DrmType';
 
-/** @enum {string} */
+/**
+ * @name DrmType
+ * @readonly
+ * @enum {string}
+ */
 export const DrmNames = {
     [DrmType.WIDEVINE]: 'Google Widevine',
     [DrmType.PLAYREADY]: 'Microsoft PlayReady',

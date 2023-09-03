@@ -1,6 +1,6 @@
-import { AdditionalKeys } from '../enums/AdditionalKeys';
-import { Direction } from '../enums/Direction';
-import { Orientation } from '../enums/Orientation';
+import { AdditionalKeys } from '../models/AdditionalKeys';
+import { Direction } from '../models/Direction';
+import { Orientation } from '../models/Orientation';
 
 const _left = Direction.LEFT;
 const _right = Direction.RIGHT;

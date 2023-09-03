@@ -12,8 +12,8 @@ import { Grid } from '../components/Grid';
 import { Button } from '../components/Button';
 import { Carousel } from '../components/Carousel';
 
-import { Orientation } from '../enums/Orientation';
-import { Direction } from '../enums/Direction';
+import { Orientation } from '../models/Orientation';
+import { Direction } from '../models/Direction';
 
 import { handleKeyDown, registerCustomFocusHandler } from '../navigation';
 

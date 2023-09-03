@@ -1,8 +1,8 @@
 /**
  * @typedef {import('../declarations/drm').SecurityLevel} SecurityLevel
  */
-import { DrmType } from '../enums/DrmType';
-import { KeySystem } from '../enums/KeySystem';
+import { DrmType } from '../models/DrmType';
+import { KeySystem } from '../models/KeySystem';
 
 /**
  * @name isKeySystemSupported

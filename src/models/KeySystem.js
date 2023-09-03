@@ -1,4 +1,8 @@
-/** @enum {string} */
+/**
+ * @name KeySystem
+ * @readonly
+ * @enum {string}
+ */
 export const KeySystem = {
     WIDEVINE: 'com.widevine.alpha',
     PLAYREADY_LEGACY: 'com.microsoft.playready',
