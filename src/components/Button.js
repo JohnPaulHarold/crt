@@ -9,7 +9,7 @@ import s from './Button.css';
 /**
  *
  * @param {ButtonProps} props
- * @param {*} children
+ * @param {string | HTMLElement} children
  * @returns {HTMLElement}
  */
 export const Button = (props, children) => {

@@ -1,4 +1,4 @@
-/** 
+/**
  * @enum {{title: string, contentType: string}}
  * @todo this probably isn't an enum
  */

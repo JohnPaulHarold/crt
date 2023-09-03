@@ -22,7 +22,6 @@ export function Dialog(props, children) {
                 {
                     id: 'dialog-close',
                     className: s.dialogClose,
-                    theme: 'none',
                 },
                 'X'
             ),
