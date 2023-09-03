@@ -4,7 +4,8 @@
 
 import { EventBus } from './eventBus.js';
 import { NotificationsService } from './libs/notifications.js';
-import { initNavigation } from './navigation.js';
+import { speak } from './libs/utter.js';
+import { NavigationEvents, initNavigation, navigationBus } from './navigation.js';
 import { initRouting, routes } from './routes.js';
 import { MainNav } from './views/mainNav.js';
 
@@ -43,6 +44,16 @@ export function main() {
     initNavigation();
     initRouting();
     initNotifications();
+    initTTS();
+}
+
+function initTTS() {
+    navigationBus.on(NavigationEvents.MOVE, (p) => {
+        console.log('[initTTS] p', p);
+        const text = p.detail.nextElement.textContent;
+
+        speak(text);
+    })
 }
 
 function initNotifications() {

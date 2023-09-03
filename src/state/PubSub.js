@@ -45,7 +45,7 @@ PubSub.prototype = {
 
         this.listeners[id] = this.listeners[id] || [];
         this.listeners[id].push(function () {
-            callback.apply(self, arguments);
+            callback.apply(undefined, arguments);
             if (once) {
                 self.off(id);
             }

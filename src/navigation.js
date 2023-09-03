@@ -1,13 +1,17 @@
 import { getNextFocus } from '@bbc/tv-lrud-spatial';
 
 import { scrollAction } from './libs/deadSea';
+
 import { $dataGet } from './utils/dom/$dataGet';
+import { collectionToArray } from './utils/dom/collectionToArray';
 import { assertKey } from './utils/keys';
+import { throttle } from './utils/function/throttle';
+
 import { AdditionalKeys } from './models/AdditionalKeys';
 import { Direction } from './models/Direction';
-import { throttle } from './utils/function/throttle';
+
 import { animations } from './config/animations';
-import { collectionToArray } from './utils/dom/collectionToArray';
+
 import { PubSub } from './state/PubSub';
 
 /** @type {HTMLElement|undefined} */
