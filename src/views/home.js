@@ -20,7 +20,7 @@ import { Orientation } from '../models/Orientation';
 import { AdditionalKeys } from '../models/AdditionalKeys';
 
 import { focusInto } from '../navigation';
-import { appOutlets } from '../main';
+import { appOutlets } from '../outlets';
 
 /**
  *

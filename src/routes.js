@@ -17,7 +17,7 @@ import { Popupdemo } from './views/popupdemo.js';
 import { BaseView } from './libs/baseView.js';
 import { Hashish } from './libs/hashish.js';
 
-import { appOutlets } from './main.js';
+import { appOutlets } from './outlets.js';
 
 /** @type {Array<import('./declarations/types.js').Route>} */
 export const routes = [
