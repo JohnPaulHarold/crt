@@ -3,33 +3,13 @@
  */
 
 import { EventBus } from './eventBus.js';
+import { initOutlets, appOutlets } from './outlets.js';
 import { NotificationsService } from './libs/notifications.js';
 import { initNavigation } from './navigation.js';
 import { initRouting, routes } from './routes.js';
 import { MainNav } from './views/mainNav.js';
 
-// todo: could these be acquired as part of bootstrap process
-// injected into each BaseView class?
-/** @type {AppOutlets} */
-export const appOutlets = {};
-
 export const eventBus = new EventBus('crt-events');
-
-/**
- * @name initOutlets
- * @param {string[]} outletIds
- */
-function initOutlets(outletIds) {
-    outletIds.forEach((id) => {
-        const el = document.getElementById(id);
-
-        if (el) {
-            appOutlets[id] = el;
-        }
-    });
-
-    return appOutlets;
-}
 
 /**
  * @name main

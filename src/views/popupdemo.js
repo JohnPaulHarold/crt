@@ -10,7 +10,7 @@ import { AdditionalKeys } from '../models/AdditionalKeys';
 
 import { BaseView } from '../libs/baseView';
 import { div, p } from '../libs/makeElement';
-import { appOutlets } from '../main';
+import { appOutlets } from '../outlets';
 
 import { focusInto } from '../navigation';
 
