@@ -4,6 +4,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import url from '@rollup/plugin-url';
 import postcss from 'rollup-plugin-postcss';
 import postcssModules from 'postcss-modules';
+import terser from '@rollup/plugin-terser';
 
 import copy from 'rollup-plugin-copy';
 
@@ -99,5 +100,6 @@ export default {
             babelHelpers: 'bundled',
             include: ['src/**/*'],
         }),
+        terser()
     ],
 };
