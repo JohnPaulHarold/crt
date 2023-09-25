@@ -2,6 +2,7 @@ import { Orientation } from '../models/Orientation';
 
 import { collectionToArray } from '../utils/dom/collectionToArray';
 import { $dataGet } from '../utils/dom/$dataGet';
+import { transformProp } from '../utils/style/prefix';
 
 /** @type { {[index: string]: number[]} } */
 const offsetCache = {};
@@ -119,8 +120,7 @@ function doTheHardWork(scrollEl, useTransforms) {
             scrollEl.style[axis] = -newOffset + 'px';
         } else {
             const axis = orientation === Orientation.HORIZONTAL ? 'X' : 'Y';
-            scrollEl.style.transform =
-                'translate' + axis + '(' + -newOffset + 'px) ';
+            scrollEl.style.setProperty(transformProp, 'translate' + axis + '(' + -newOffset + 'px) ');
         }
     }
 }
