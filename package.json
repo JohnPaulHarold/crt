@@ -38,7 +38,7 @@
         "rollup-plugin-postcss": "^4.0.2",
         "rollup-plugin-serve": "^2.0.2",
         "typescript": "^5.2.2",
-        "vitest": "^0.34.4"
+        "vitest": "^0.34.5"
     },
     "dependencies": {
         "@bbc/tv-lrud-spatial": "^0.0.8"
