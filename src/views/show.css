@@ -9,13 +9,17 @@
 
 .showLogo {
     position: relative;
+    -webkit-transform: scale(1);
     transform: scale(1);
+    -webkit-transform-origin: left top;
     transform-origin: left top;
+    -webkit-transition: -webkit-transform 250ms ease;
     transition: transform 250ms ease;
     height: 10rem;
 }
 
 .showLogo:global(.min) {
+    -webkit-transform: scale(0.25);
     transform: scale(0.25);
 }
 

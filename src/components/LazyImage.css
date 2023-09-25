@@ -1,5 +1,6 @@
 .lazyImage {
     opacity: 0;
+    -webkit-transition: opacity 250ms ease;
     transition: opacity 250ms ease;
 }
 
