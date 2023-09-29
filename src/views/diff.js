@@ -62,7 +62,10 @@ export class Diff extends BaseView {
     }
 
     destructor() {
-        this.viewEl.removeEventListener('keydown', this.handleKeyDown.bind(this));
+        this.viewEl.removeEventListener(
+            'keydown',
+            this.handleKeyDown.bind(this)
+        );
     }
 
     viewDidLoad() {
@@ -70,8 +73,8 @@ export class Diff extends BaseView {
     }
 
     /**
-     * 
-     * @param {KeyboardEvent} e 
+     *
+     * @param {KeyboardEvent} e
      */
     handleKeyDown(e) {
         e.preventDefault();

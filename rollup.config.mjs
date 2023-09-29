@@ -38,18 +38,21 @@ const copyPlugin = copy({
             dest: 'dist/',
         },
         {
-            src: 'src/static/*.js',
+            src: 'src/static/polyfills/*.js',
             dest: 'dist/',
         },
         {
             src: 'src/static/index.html',
             dest: 'dist/',
-            transform: (contents, filename) => {
-                return contents
-                    .toString()
-                    .replace('__STYLE__', `bundle.${ts}.iife.css?ts=${ts}`)
-                    .replace('__SCRIPT__', `bundle.${ts}.iife.js?ts=${ts}`)
-                    .replace('__TITLE__', 'CRT app');
+            transform: (contents) => {
+                return (
+                    contents
+                        .toString()
+                        // .replace('__BOOT__', `boot.${ts}.js?ts=${ts}`)
+                        .replace('__STYLE__', `bundle.${ts}.iife.css?ts=${ts}`)
+                        .replace('__SCRIPT__', `bundle.${ts}.iife.js?ts=${ts}`)
+                        .replace('__TITLE__', 'CRT app')
+                );
             },
         },
     ],
@@ -67,21 +70,20 @@ export default {
     input: 'src/main.js',
 
     output: [
-        {
-            sourcemap: true,
-            file: pkg.main,
-            format: 'cjs',
-        },
-        {
-            sourcemap: true,
-            file: pkg.module,
-            format: 'es',
-        },
+        // {
+        //     sourcemap: true,
+        //     file: pkg.main,
+        //     format: 'cjs',
+        // },
+        // {
+        //     sourcemap: true,
+        //     file: pkg.module,
+        //     format: 'es',
+        // },
         {
             sourcemap: true,
             file: `${pkg.browser.replace('iife', `${ts}.iife`)}`,
             format: 'iife',
-            name,
             // https://rollupjs.org/guide/en/#outputglobals
             globals: {},
         },

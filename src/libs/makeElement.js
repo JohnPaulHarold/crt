@@ -180,6 +180,9 @@ export const input = (...args) =>
 /** @type {ShorthandMakeElement}  */
 export const pre = (...args) => makeElement('pre', args[0], ...args.slice(1));
 
+/** @type {ShorthandMakeElement}  */
+export const main = (...args) => makeElement('main', args[0], ...args.slice(1));
+
 // function input() {
 //     const args = collectionToArray(arguments);
 //     const propsOrChild = args[0];

@@ -121,7 +121,8 @@ function doTheHardWork(scrollEl, useTransforms) {
         } else {
             const axis = orientation === Orientation.HORIZONTAL ? 'X' : 'Y';
             // @ts-ignore
-            scrollEl.style[transformProp] = 'translate' + axis + '(' + -newOffset + 'px)';
+            scrollEl.style[transformProp] =
+                'translate' + axis + '(' + -newOffset + 'px)';
         }
     }
 }
