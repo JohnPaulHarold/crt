@@ -120,7 +120,8 @@ function doTheHardWork(scrollEl, useTransforms) {
             scrollEl.style[axis] = -newOffset + 'px';
         } else {
             const axis = orientation === Orientation.HORIZONTAL ? 'X' : 'Y';
-            scrollEl.style.setProperty(transformProp, 'translate' + axis + '(' + -newOffset + 'px) ');
+            // @ts-ignore
+            scrollEl.style[transformProp] = 'translate' + axis + '(' + -newOffset + 'px)';
         }
     }
 }

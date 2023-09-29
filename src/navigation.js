@@ -85,24 +85,19 @@ export function handleKeyDown(event, scope) {
     ) {
         let nextFocus;
 
-        if (event.target === document.body) {
-            // we've probably lost focus if this happens
-            if (lastFocus instanceof HTMLElement) {
-                // if we've stored the last focus, use it
-                // lastFocus.focus();
-                moveFocus(lastFocus);
-                nextFocus = getNextFocus(lastFocus, event.keyCode, _scope);
-            } else {
-                // we have no real starting point, so assume we're starting anew,
-                // like at app start
-                nextFocus = getNextFocus();
-            }
-        } else {
+        if (event.target === document.body && lastFocus instanceof HTMLElement) {
+            moveFocus(lastFocus);
+            nextFocus = getNextFocus(lastFocus, event.keyCode, _scope);
+        } else if (event.target instanceof HTMLElement) {
             nextFocus = getNextFocus(
-                /** @type {HTMLElement} */ (event.target),
+                event.target,
                 event.keyCode,
                 _scope
             );
+        } else {
+            // we have no real starting point, so assume we're starting anew,
+            // like at app start
+            nextFocus = getNextFocus();
         }
 
         if (nextFocus) {

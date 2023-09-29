@@ -14,8 +14,6 @@ const extensions = ['.js', '.ts'];
 
 const name = 'crt';
 
-console.log('[NODE_ENV] ', process.env.NODE_ENV);
-
 const urlPlugin = url({
     // Where to put files
     destDir: 'dist/assets/',
@@ -34,6 +32,10 @@ const copyPlugin = copy({
     targets: [
         {
             src: 'src/static/*.css',
+            dest: 'dist/',
+        },
+        {
+            src: 'src/static/*.js',
             dest: 'dist/',
         },
         {
@@ -100,6 +102,6 @@ export default {
             babelHelpers: 'bundled',
             include: ['src/**/*'],
         }),
-        terser()
+        terser(),
     ],
 };

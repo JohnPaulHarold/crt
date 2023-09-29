@@ -61,22 +61,32 @@ export class Diff extends BaseView {
         this.state = createReactive(initialState, this.updateDiff.bind(this));
     }
 
-    viewDidLoad() {
-        this.viewEl.addEventListener('keydown', (e) => {
-            e.preventDefault();
+    destructor() {
+        this.viewEl.removeEventListener('keydown', this.handleKeyDown.bind(this));
+    }
 
-            if (
-                e.target &&
-                e.target instanceof HTMLElement &&
-                assertKey(e, AdditionalKeys.ENTER)
-            ) {
-                if (e.target.id === 'add-lyric') {
-                    this.state.lyricCount++;
-                } else {
-                    this.state.lyricCount--;
-                }
+    viewDidLoad() {
+        this.viewEl.addEventListener('keydown', this.handleKeyDown.bind(this));
+    }
+
+    /**
+     * 
+     * @param {KeyboardEvent} e 
+     */
+    handleKeyDown(e) {
+        e.preventDefault();
+
+        if (
+            e.target &&
+            e.target instanceof HTMLElement &&
+            assertKey(e, AdditionalKeys.ENTER)
+        ) {
+            if (e.target.id === 'add-lyric') {
+                this.state.lyricCount++;
+            } else {
+                this.state.lyricCount--;
             }
-        });
+        }
     }
 
     /**
