@@ -15,6 +15,8 @@ const extensions = ['.js', '.ts'];
 
 const name = 'crt';
 
+const ts = new Date().getTime();
+
 const urlPlugin = url({
     // Where to put files
     destDir: 'dist/assets/',
@@ -45,8 +47,8 @@ const copyPlugin = copy({
             transform: (contents, filename) => {
                 return contents
                     .toString()
-                    .replace('__STYLE__', 'bundle.iife.css')
-                    .replace('__SCRIPT__', 'bundle.iife.js')
+                    .replace('__STYLE__', `bundle.${ts}.iife.css?ts=${ts}`)
+                    .replace('__SCRIPT__', `bundle.${ts}.iife.js?ts=${ts}`)
                     .replace('__TITLE__', 'CRT app');
             },
         },
@@ -77,7 +79,7 @@ export default {
         },
         {
             sourcemap: true,
-            file: pkg.browser,
+            file: `${pkg.browser.replace('iife', `${ts}.iife`)}`,
             format: 'iife',
             name,
             // https://rollupjs.org/guide/en/#outputglobals
