@@ -2,19 +2,16 @@
  * @typedef {import('./declarations/types.js').AppOutlets} AppOutlets
  */
 
-import { EventBus } from './eventBus.js';
 import { initOutlets, appOutlets } from './outlets.js';
 import { NotificationsService } from './libs/notifications.js';
 import { initNavigation } from './navigation.js';
 import { initRouting, routes } from './routes.js';
 import { MainNav } from './views/mainNav.js';
 
-export const eventBus = new EventBus('crt-events');
-
 /**
  * @name main
  */
-export function main() {
+function buildApp() {
     // todo: we could lessen this hardcoding, by using data-attrs
     // ie: <div data-outlet="nav"/>
     // document.querySelectorAll('[data-outlet=*]')
@@ -48,3 +45,10 @@ function initAppShell(outlets) {
 
     MainNavView.attach(navEl);
 }
+
+function bootstrap() {
+    document.removeEventListener('DOMContentLoaded', bootstrap);
+    buildApp();
+}
+
+document.addEventListener('DOMContentLoaded', bootstrap);

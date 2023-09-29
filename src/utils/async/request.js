@@ -42,8 +42,11 @@ export function request(options) {
                 xhr.status < HTTPStatus.MULTIPLE_CHOICES
             ) {
                 let processed = xhr.response;
-                if (options.type === 'json' && typeof xhr.response === 'string') {
-                    processed = JSON.parse(xhr.response)
+                if (
+                    options.type === 'json' &&
+                    typeof xhr.response === 'string'
+                ) {
+                    processed = JSON.parse(xhr.response);
                 }
                 resolve(processed);
             } else {
@@ -97,18 +100,20 @@ export function requestWorker(options) {
                 const status = response.status;
                 const payload = response.data;
 
-                if (status >= HTTPStatus.OK && status < HTTPStatus.MULTIPLE_CHOICES) {
+                if (
+                    status >= HTTPStatus.OK &&
+                    status < HTTPStatus.MULTIPLE_CHOICES
+                ) {
                     resolve(payload);
                 } else {
                     reject(payload);
                 }
-
             } catch (error) {
                 console.error('error --- ', error);
                 reject(error);
             } finally {
                 requestWorker.terminate();
             }
-        })
-    })
-} 
+        });
+    });
+}

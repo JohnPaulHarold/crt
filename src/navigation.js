@@ -85,15 +85,14 @@ export function handleKeyDown(event, scope) {
     ) {
         let nextFocus;
 
-        if (event.target === document.body && lastFocus instanceof HTMLElement) {
+        if (
+            event.target === document.body &&
+            lastFocus instanceof HTMLElement
+        ) {
             moveFocus(lastFocus);
             nextFocus = getNextFocus(lastFocus, event.keyCode, _scope);
         } else if (event.target instanceof HTMLElement) {
-            nextFocus = getNextFocus(
-                event.target,
-                event.keyCode,
-                _scope
-            );
+            nextFocus = getNextFocus(event.target, event.keyCode, _scope);
         } else {
             // we have no real starting point, so assume we're starting anew,
             // like at app start
