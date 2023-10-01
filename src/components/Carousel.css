@@ -25,17 +25,14 @@
 }
 
 .transition {
-    -webkit-transition: -webkit-transform 250ms ease-in-out;
     transition: transform 0.25s ease-in-out;
 }
 
 .orientVertical .transitionNoTransform {
-    -webkit-transition: top 250ms ease-in-out;
     transition: top 0.25s ease-in-out;
 }
 
 .orientHorizontal .transitionNoTransform {
-    -webkit-transition: left 250ms ease-in-out;
     transition: left 0.25s ease-in-out;
 }
 
