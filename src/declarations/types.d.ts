@@ -20,6 +20,7 @@ export interface Route {
     title?: string;
     id: string;
     viewClass: BaseViewInstance;
+    useSsr?: boolean;
 }
 
 export interface ViewOptions {

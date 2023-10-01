@@ -4,7 +4,7 @@
  * @returns {void}
  */
 export function removeElement(el) {
-    if (el.parentElement) {
+    if (el && el.parentElement) {
         el.parentElement.removeChild(el);
     }
 }

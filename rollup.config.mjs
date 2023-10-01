@@ -4,6 +4,7 @@ import babel from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import url from '@rollup/plugin-url';
 import terser from '@rollup/plugin-terser';
+import json from '@rollup/plugin-json';
 
 // 3rd party
 // postcss
@@ -86,6 +87,7 @@ export default {
             sourcemap: true,
             file: `${pkg.browser.replace('iife', `${ts}.iife`)}`,
             format: 'iife',
+            name,
             // https://rollupjs.org/guide/en/#outputglobals
             globals: {},
         },
@@ -96,6 +98,7 @@ export default {
         commonjs({ transformMixedEsModules: true }),
         urlPlugin,
         copyPlugin,
+        json(),
         postcss({
             plugins: [autoprefixer()],
             modules: true,

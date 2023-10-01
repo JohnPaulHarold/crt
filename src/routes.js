@@ -20,6 +20,9 @@ import { Hashish } from './libs/hashish.js';
 
 import { appOutlets } from './outlets.js';
 
+import { request } from './utils/async/request.js';
+import { removeElement } from './utils/dom/removeElement.js';
+
 /** @type {Array<import('./declarations/types.js').Route>} */
 export const routes = [
     // {
@@ -32,6 +35,7 @@ export const routes = [
         exact: true,
         title: 'Home',
         id: 'home',
+        useSsr: true,
         default: true,
         viewClass: Home,
     },
@@ -78,8 +82,9 @@ export const routes = [
     },
 ];
 
-/** @type {BaseViewInstance} */
+/** @type {BaseViewInstance | string } */
 let _currentView;
+
 /** @type {BaseViewInstance | null} */
 let _nextView;
 
@@ -104,12 +109,21 @@ function loadView(nextView) {
     const mainViewElement = appOutlets['main'];
     _nextView = nextView;
 
+    if (!_currentView && !!mainViewElement.children.length) {
+        // some left overs from a SSR
+        mainViewElement.innerHTML = '';
+    }
+
     if (mainViewElement && _nextView instanceof BaseView) {
         _nextView.attach(mainViewElement);
     }
 
     if (_currentView instanceof BaseView) {
         _currentView.detach();
+    }
+
+    if (typeof _currentView === 'string') {
+        removeElement(document.getElementById(_currentView));
     }
 
     _currentView = _nextView;
@@ -124,6 +138,26 @@ function loadView(nextView) {
  * @returns {void}
  */
 function handleViewChange(route, routeInfo) {
+    if (route.useSsr) {
+        // load in some HTML from a remote source
+        const reqOptions = { 
+            type: 'json', 
+            url: 'http://localhost:8080/ssr?view=' + route.id
+        };
+        request(reqOptions)
+            .then((res) => {
+                appOutlets.main.innerHTML = res.html;
+                _currentView = route.id;
+                if (res.script) {
+                    const script = document.createElement('script');
+                    script.src = res.script;
+                    appOutlets.main.appendChild(script);
+                }
+
+            })
+        // then set this as the new DOM in the view node
+        return;
+    }
     const View = route.viewClass;
     const viewOptions = {
         id: route.id,

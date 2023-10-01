@@ -16,7 +16,7 @@
         "serve": "cd dist && python -m SimpleHTTPServer 3500",
         "test": "vitest",
         "typecheck": "npx tsc",
-        "ssr": "nodemon server/index.js"
+        "ssr": "nodemon src/server/index.js"
     },
     "author": "jp",
     "license": "Apache-2.0",
@@ -25,9 +25,11 @@
         "@babel/preset-env": "^7.23.9",
         "@rollup/plugin-babel": "^6.0.4",
         "@rollup/plugin-commonjs": "^25.0.7",
+        "@rollup/plugin-json": "^6.0.0",
         "@rollup/plugin-node-resolve": "^15.2.3",
         "@rollup/plugin-terser": "^0.4.4",
         "@rollup/plugin-url": "^8.0.2",
+        "@types/jsdom": "^21.1.3",
         "@vitest/coverage-v8": "^1.2.2",
         "autoprefixer": "^10.4.17",
         "eslint": "^8.56.0",
