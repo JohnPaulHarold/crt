@@ -88,7 +88,7 @@ function setData(el, dataset) {
  * @returns {HTMLElement}
  */
 export function makeElement(type, textOrPropsOrChild, ...otherChildren) {
-    const el = document.createElement(type);
+    const el = globalThis.document.createElement(type);
 
     if (Array.isArray(textOrPropsOrChild)) {
         appendArray(el, textOrPropsOrChild);
