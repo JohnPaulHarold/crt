@@ -1,10 +1,14 @@
+// official plugins
 import resolve from '@rollup/plugin-node-resolve';
 import babel from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import url from '@rollup/plugin-url';
-import postcss from 'rollup-plugin-postcss';
-import postcssModules from 'postcss-modules';
 import terser from '@rollup/plugin-terser';
+
+// 3rd party
+// postcss
+import postcss from 'rollup-plugin-postcss';
+import autoprefixer from 'autoprefixer';
 
 import bundleWorker from 'rollup-plugin-bundle-worker';
 import copy from 'rollup-plugin-copy';
@@ -58,8 +62,6 @@ const copyPlugin = copy({
     ],
 });
 
-const cssExportMap = {};
-
 export default {
     // Specify here external modules which you don't want to
     // include in your bundle (for instance: 'lodash', 'moment' etc.)
@@ -95,12 +97,11 @@ export default {
         urlPlugin,
         copyPlugin,
         postcss({
+            plugins: [autoprefixer()],
             modules: true,
-            getExportNamed: false,
-            getExport(id) {
-                return cssExportMap[id];
-            },
             extract: true,
+            minimize: true,
+            sourceMap: true,
         }),
         bundleWorker(),
         babel({

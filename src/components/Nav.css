@@ -4,8 +4,6 @@
     left: 0;
     width: 18.75rem;
     height: 100%;
-    -o-transition: width 250ms ease-in-out;
-    -webkit-transition: width 250ms ease-in-out;
     transition: width 250ms ease-in-out;
     z-index: 100;
     padding-top: 5rem;

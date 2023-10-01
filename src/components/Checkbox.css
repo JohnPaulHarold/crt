@@ -21,7 +21,6 @@
     width: 20px;
     height: 20px;
     background-color: #2c2c2c;
-    -webkit-transition: 0.3s background-color; /* slight transition */
     transition: 0.3s background-color; /* slight transition */
 }
 
