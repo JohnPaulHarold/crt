@@ -12,7 +12,7 @@ import { DrmSupportsLevels } from './DrmSupportsLevels';
  * @param {DrmSupportsProps} props
  * @returns {Element}
  */
-export const DrmSupports = ({ data, drmType }) =>
+export const DrmSupports = ({ data, drmType, levels }) =>
     div(
         {
             className: cx(
@@ -27,6 +27,7 @@ export const DrmSupports = ({ data, drmType }) =>
             drmType,
             DrmSupportsLevels({
                 data: data[drmType].drm && data[drmType].drm.securityLevels,
+                levels,
             })
         )
     );

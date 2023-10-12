@@ -172,7 +172,13 @@ export type CodecProps = {
     title: string;
 };
 
-export type DrmSupportsProps = { data: Record<string, any>; drmType: string };
+export type DrmSupportsProps = {
+    data: Record<string, any>;
+    drmType: string;
+    levels?: string[];
+};
+
 export type DrmSupportsLevelsProps = {
     data: any[];
+    levels?: string[];
 };

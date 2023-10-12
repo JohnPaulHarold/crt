@@ -11,36 +11,26 @@ import s from './Codec.css';
  * @param {DrmSupportsLevelsProps} props
  * @returns {Element}
  */
-export const DrmSupportsLevels = ({ data }) => {
-    const l1 = getLevelSupport(data, 'L1');
-    const l2 = getLevelSupport(data, 'L2');
-    const l3 = getLevelSupport(data, 'L3');
-
-    return !!l1 || !!l2 || !!l3
-        ? div(
-              { style: { overflow: 'hidden' } },
-              div(
-                  {
-                      className: cx(s.levelbox, getValidationClass(l1, s)),
-                  },
-                  'L1'
-              ),
-
-              div(
-                  {
-                      className: cx(s.levelbox, getValidationClass(l2, s)),
-                  },
-                  'L2'
-              ),
-
-              div(
-                  {
-                      className: cx(s.levelbox, getValidationClass(l3, s)),
-                  },
-                  'L3'
+export const DrmSupportsLevels = ({ data, levels }) => {
+    return div(
+        { style: { overflow: 'hidden' } },
+        levels && levels.length > 0
+            ? levels.map((level) =>
+                  div(
+                      {
+                          className: cx(
+                              s.levelbox,
+                              getValidationClass(
+                                  getLevelSupport(data, level),
+                                  s
+                              )
+                          ),
+                      },
+                      level
+                  )
               )
-          )
-        : div('');
+            : div('')
+    );
 };
 
 /**
@@ -54,6 +44,7 @@ function getLevelSupport(data, levelName) {
     return (_data = data) === null ||
         _data === void 0 ||
         (_data = _data.find(function (level) {
+            console.log(levelName);
             return level.name === levelName;
         })) === null ||
         _data === void 0

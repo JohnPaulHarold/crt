@@ -16,6 +16,15 @@
     overflow: hidden;
 }
 
+.title {
+    margin: 0.3rem 0;
+}
+
+.codec {
+    margin-bottom: 0.3rem;
+    padding-bottom: 0.6rem;
+}
+
 .box {
     padding: 3px;
     margin: 3px;
