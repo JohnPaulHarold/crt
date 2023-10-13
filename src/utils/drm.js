@@ -12,25 +12,25 @@ import { KeySystem } from '../models/KeySystem';
  * @returns {Promise<boolean>}
  */
 function isKeySystemSupported(keySystem, contentType, robustness = '') {
-    if (navigator.requestMediaKeySystemAccess) {
-        return navigator
-            .requestMediaKeySystemAccess(keySystem, [
-                {
-                    initDataTypes: ['cenc'],
-                    videoCapabilities: [
-                        {
-                            contentType,
-                            robustness,
-                        },
-                    ],
-                },
-            ])
-            .then((access) => access.createMediaKeys())
-            .then(() => true)
-            .catch(() => false);
-    } else {
-        return Promise.reject();
+    if (!navigator.requestMediaKeySystemAccess) {
+        return Promise.reject(false);
     }
+
+    return navigator
+        .requestMediaKeySystemAccess(keySystem, [
+            {
+                initDataTypes: ['cenc'],
+                videoCapabilities: [
+                    {
+                        contentType,
+                        robustness,
+                    },
+                ],
+            },
+        ])
+        .then((access) => access.createMediaKeys())
+        .then(() => true)
+        .catch(() => false);
 }
 
 /**
@@ -106,6 +106,8 @@ function getPlayreadyLegacy(contentType) {
     );
 }
 
+// see https://github.com/videojs/videojs-contrib-eme/blob/33dfe13b64024f099561ce86c253a27ed6194b8a/src/cdm.js#L27
+// and: https://github.com/shaka-project/shaka-player/issues/818#issuecomment-405695770
 /**
  * @name getPlayready
  * @param {string} contentType

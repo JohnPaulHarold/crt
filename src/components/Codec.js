@@ -25,8 +25,8 @@ export const Codec = ({ data, codec, title }) => {
                     getValidationClass(!!data.mse || !!data.video, s)
                 ),
             },
-            h2(title),
-            div(codec),
+            h2({ className: s.title }, title),
+            div({ className: s.codec }, `Codec: ${codec}`),
             div(
                 {
                     className: cx(s.box, getValidationClass(data.mse, s)),
@@ -40,8 +40,16 @@ export const Codec = ({ data, codec, title }) => {
                 '<video />'
             )
         ),
-        DrmSupports({ data, drmType: DrmType.WIDEVINE }),
-        DrmSupports({ data, drmType: DrmType.PLAYREADY }),
+        DrmSupports({
+            data,
+            drmType: DrmType.WIDEVINE,
+            levels: ['L1', 'L2', 'L3'],
+        }),
+        DrmSupports({
+            data,
+            drmType: DrmType.PLAYREADY,
+            levels: ['SL150', 'SL2000', 'SL3000'],
+        }),
         DrmSupports({ data, drmType: DrmType.PLAYREADY_LEGACY }),
         DrmSupports({ data, drmType: DrmType.FAIRPLAY })
     );
