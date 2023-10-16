@@ -108,11 +108,10 @@ export class Canivideo extends BaseView {
 
         if (target && this.data) {
             target.innerHTML = '';
-            // target.appendChild(Heading({level: 'h1'}, 'CAN I VIDEO?'));
             Object.keys(this.data).forEach((type) => {
                 const videoTypeEl = div(
-                    { className: s.videoType },
-                    Heading({ level: 'h2' }, type),
+                    { className: s['type-wrapper'] },
+                    div({ className: s.title }, type),
                     Object.keys(this.data[type]).map((codec) => {
                         return a({ href: '#', className: s.codec }, [
                             Codec({
@@ -126,21 +125,6 @@ export class Canivideo extends BaseView {
                 );
 
                 target && target.appendChild(videoTypeEl);
-
-                // target && target.appendChild(Heading({ level: 'h2' }, type));
-                // Object.keys(this.data[type]).forEach((codec) => {
-                //     target &&
-                //         target.appendChild(
-                //             a({ href: '#', className: s.codec }, [
-                //                 Codec({
-                //                     data: this.data[type][codec],
-                //                     codec,
-                //                     type,
-                //                     title: this.data[type][codec].title,
-                //                 }),
-                //             ])
-                //         );
-                // });
             });
         }
     }

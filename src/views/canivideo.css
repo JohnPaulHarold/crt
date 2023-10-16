@@ -1,17 +1,28 @@
+.type-wrapper {
+    padding: 8px;
+    background-color: #fafad2;
+    margin: 8px 0;
+    border-radius: 4px;
+    box-shadow: #aeaeae 0px 3px 8px;
+}
+
+.type-wrapper a,
+.type-wrapper a:link,
+.type-wrapper a:visited {
+    color: black;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 140%;
+    color: black;
+}
+
 .codec {
-    color: white;
     display: block;
-    margin: 6px 0;
-    border: 3px solid transparent;
 }
 
-.codec:focus {
-    border: 3px solid #ffffff;
-}
-
-.videoType {
-    display: block;
-    background: #5d5d5d;
-    padding: 2%;
-    border-radius: 1rem;
+a.codec:focus {
+    outline: inset 6px solid #ffa601;
+    border-radius: 4px;
 }
