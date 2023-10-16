@@ -43,8 +43,5 @@
     },
     "dependencies": {
         "@bbc/tv-lrud-spatial": "^0.0.8"
-    },
-    "volta": {
-        "node": "18.18.2"
     }
 }

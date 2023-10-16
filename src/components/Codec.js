@@ -2,59 +2,13 @@
  * @typedef {import('../declarations/types').CodecProps} CodecProps
  */
 
-import { div, h2 } from '../libs/makeElement';
+import { div } from '../libs/makeElement';
 import { DrmType } from '../models/DrmType';
 
 import s from './Codec.css';
-import { DrmSupports } from './DrmSupports';
-import { getValidationClass } from '../utils/getValidationClass';
 import { cx } from '../utils/dom/cx';
 import { getValidClass } from '../utils/getValidClass';
-
-/**
- *
- * @param {CodecProps} props
- * @returns {Element}
- */
-export const Codec2 = ({ data, codec, title }) => {
-    return div(
-        { className: s.container },
-        div(
-            {
-                className: cx(
-                    s.box,
-                    getValidationClass(!!data.mse || !!data.video, s)
-                ),
-            },
-            h2({ className: s.title }, title),
-            div({ className: s.codec }, `Codec: ${codec}`),
-            div(
-                {
-                    className: cx(s.box, getValidationClass(data.mse, s)),
-                },
-                'MSE'
-            ),
-            div(
-                {
-                    className: cx(s.box, getValidationClass(data.video, s)),
-                },
-                '<video />'
-            )
-        ),
-        DrmSupports({
-            data,
-            drmType: DrmType.WIDEVINE,
-            levels: ['L1', 'L2', 'L3'],
-        }),
-        DrmSupports({
-            data,
-            drmType: DrmType.PLAYREADY,
-            levels: ['SL150', 'SL2000', 'SL3000'],
-        }),
-        DrmSupports({ data, drmType: DrmType.PLAYREADY_LEGACY }),
-        DrmSupports({ data, drmType: DrmType.FAIRPLAY })
-    );
-};
+import { DrmNames } from '../models/DrmNames';
 
 /**
  *
@@ -81,7 +35,7 @@ export const Codec = ({ data, codec, title }) => {
                 {
                     className: cx(
                         s['text-center'],
-                        s['float-left'],
+                        s['inline-block'],
                         s.box,
                         s[getValidClass(data.mse)]
                     ),
@@ -92,7 +46,7 @@ export const Codec = ({ data, codec, title }) => {
                 {
                     className: cx(
                         s['text-center'],
-                        s['float-left'],
+                        s['inline-block'],
                         s.box,
                         s[getValidClass(data.video)]
                     ),
@@ -100,14 +54,44 @@ export const Codec = ({ data, codec, title }) => {
                 '<video />'
             )
         ),
-        div({ className: s.clear }),
         div(
-            { className: s.third },
+            { className: cx(s['text-center'], s.whole) },
             div(
-                { className: s['float-left'] },
+                {
+                    className: cx(
+                        s['title-wrapper'],
+                        s.box,
+                        s[
+                            getValidClass(
+                                data[DrmType.WIDEVINE].drm.supported ||
+                                    data[DrmType.PLAYREADY].drm.supported ||
+                                    data[DrmType.PLAYREADY_LEGACY].drm
+                                        .supported ||
+                                    data[DrmType.FAIRPLAY].drm.supported
+                            )
+                        ]
+                    ),
+                },
+                'DRM'
+            )
+        ),
+        div(
+            { className: s.quarter },
+            div(
+                { className: s['inline-block'] },
                 div(
-                    { className: cx(s['text-center'], s.box) },
-                    'Google Widevine'
+                    {
+                        className: cx(
+                            s['text-center'],
+                            s.box,
+                            s[
+                                getValidClass(
+                                    data[DrmType.WIDEVINE].drm.supported
+                                )
+                            ]
+                        ),
+                    },
+                    DrmNames[DrmType.WIDEVINE]
                 ),
                 div(
                     { className: s.third },
@@ -116,8 +100,21 @@ export const Codec = ({ data, codec, title }) => {
                             className: cx(
                                 s['inline-block'],
                                 s['text-center'],
-                                s['float-left'],
-                                s.box
+                                s['inline-block'],
+                                s.box,
+                                s[
+                                    getValidClass(
+                                        data[
+                                            DrmType.WIDEVINE
+                                        ].drm.securityLevels.find(
+                                            /**
+                                             * @param {{name: string}} level
+                                             * @returns {boolean}
+                                             */
+                                            (level) => level.name === 'L1'
+                                        ).supported
+                                    )
+                                ]
                             ),
                         },
                         'L1'
@@ -127,8 +124,21 @@ export const Codec = ({ data, codec, title }) => {
                             className: cx(
                                 s['inline-block'],
                                 s['text-center'],
-                                s['float-left'],
-                                s.box
+                                s['inline-block'],
+                                s.box,
+                                s[
+                                    getValidClass(
+                                        data[
+                                            DrmType.WIDEVINE
+                                        ].drm.securityLevels.find(
+                                            /**
+                                             * @param {{name: string}} level
+                                             * @returns {boolean}
+                                             */
+                                            (level) => level.name === 'L2'
+                                        ).supported
+                                    )
+                                ]
                             ),
                         },
                         'L2'
@@ -138,8 +148,21 @@ export const Codec = ({ data, codec, title }) => {
                             className: cx(
                                 s['inline-block'],
                                 s['text-center'],
-                                s['float-left'],
-                                s.box
+                                s['inline-block'],
+                                s.box,
+                                s[
+                                    getValidClass(
+                                        data[
+                                            DrmType.WIDEVINE
+                                        ].drm.securityLevels.find(
+                                            /**
+                                             * @param {{name: string}} level
+                                             * @returns {boolean}
+                                             */
+                                            (level) => level.name === 'L3'
+                                        ).supported
+                                    )
+                                ]
                             ),
                         },
                         'L3'
@@ -147,10 +170,20 @@ export const Codec = ({ data, codec, title }) => {
                 )
             ),
             div(
-                { className: s['float-left'] },
+                { className: s['inline-block'] },
                 div(
-                    { className: cx(s['text-center'], s.box) },
-                    'Microsoft PlayReady'
+                    {
+                        className: cx(
+                            s['text-center'],
+                            s.box,
+                            s[
+                                getValidClass(
+                                    data[DrmType.PLAYREADY].drm.supported
+                                )
+                            ]
+                        ),
+                    },
+                    DrmNames[DrmType.PLAYREADY]
                 ),
                 div(
                     { className: s.third },
@@ -159,19 +192,33 @@ export const Codec = ({ data, codec, title }) => {
                             className: cx(
                                 s['inline-block'],
                                 s['text-center'],
-                                s['float-left'],
-                                s.box
+                                s['inline-block'],
+                                s.box,
+                                data[DrmType.PLAYREADY].drm.securityLevels.find(
+                                    /**
+                                     * @param {{name: string}} level
+                                     * @returns {boolean}
+                                     */
+                                    (level) => level.name === 'SL150'
+                                ).supported
                             ),
                         },
-                        'SL100'
+                        'SL150'
                     ),
                     div(
                         {
                             className: cx(
                                 s['inline-block'],
                                 s['text-center'],
-                                s['float-left'],
-                                s.box
+                                s['inline-block'],
+                                s.box,
+                                data[DrmType.PLAYREADY].drm.securityLevels.find(
+                                    /**
+                                     * @param {{name: string}} level
+                                     * @returns {boolean}
+                                     */
+                                    (level) => level.name === 'SL2000'
+                                ).supported
                             ),
                         },
                         'SL2000'
@@ -181,8 +228,15 @@ export const Codec = ({ data, codec, title }) => {
                             className: cx(
                                 s['inline-block'],
                                 s['text-center'],
-                                s['float-left'],
-                                s.box
+                                s['inline-block'],
+                                s.box,
+                                data[DrmType.PLAYREADY].drm.securityLevels.find(
+                                    /**
+                                     * @param {{name: string}} level
+                                     * @returns {boolean}
+                                     */
+                                    (level) => level.name === 'SL3000'
+                                ).supported
                             ),
                         },
                         'SL3000'
@@ -190,15 +244,52 @@ export const Codec = ({ data, codec, title }) => {
                 )
             ),
             div(
-                { className: s['float-left'] },
+                {
+                    className: cx(
+                        s['inline-block'],
+                        s['v-align-top'],
+                        s['b-bottom']
+                    ),
+                },
                 div(
                     {
-                        className: cx(s['text-center'], s['b-bottom'], s.box),
+                        className: cx(
+                            s['text-center'],
+                            s.box,
+                            s[
+                                getValidClass(
+                                    data[DrmType.PLAYREADY_LEGACY].drm.supported
+                                )
+                            ]
+                        ),
                     },
-                    'Apple FairPlay'
+                    DrmNames[DrmType.PLAYREADY_LEGACY]
+                )
+            ),
+            div(
+                {
+                    className: cx(
+                        s['inline-block'],
+                        s['v-align-top'],
+                        s['b-bottom']
+                    ),
+                },
+                div(
+                    {
+                        className: cx(
+                            s['text-center'],
+                            s['v-align-top'],
+                            s.box,
+                            s[
+                                getValidClass(
+                                    data[DrmType.FAIRPLAY].drm.supported
+                                )
+                            ]
+                        ),
+                    },
+                    DrmNames[DrmType.FAIRPLAY]
                 )
             )
-        ),
-        div({ className: s.clear })
+        )
     );
 };

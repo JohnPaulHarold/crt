@@ -1,3 +1,5 @@
+/* https://assemble.nonprd.pluto.tv/tokens/colors */
+
 * {
     box-sizing: border-box;
 }
@@ -9,26 +11,40 @@
 }
 
 .codec-wrapper {
-    border: 2px solid #000000;
+    border: 2px solid #2c2c2c; /* slate */
     margin: 8px 0;
     border-radius: 4px;
-    box-shadow: #aeaeae 0px 3px 8px;
+    box-shadow: #d0d0d0 0px 3px 8px; /* marshmellow */
+}
+
+.whole > div {
+    width: 100%;
+    border-top: 2px solid #2c2c2c;
+    border-right: 2px solid #2c2c2c;
 }
 
 .half > div {
     width: 50%;
-    border-top: 2px solid #000000;
-    border-right: 2px solid #000000;
+    border-top: 2px solid #2c2c2c;
+    border-right: 2px solid #2c2c2c;
 }
 
 .third > div {
     width: 33.33333%;
-    border-top: 2px solid #000000;
-    border-right: 2px solid #000000;
+    border-top: 2px solid #2c2c2c;
+    border-right: 2px solid #2c2c2c;
 }
 
+.quarter > div {
+    width: 25%;
+    border-top: 2px solid #2c2c2c;
+    border-right: 2px solid #2c2c2c;
+}
+
+.whole > div:last-child,
 .half > div:last-child,
-.third > div:last-child {
+.third > div:last-child,
+.quarter > div:last-child {
     border-right: none;
 }
 
@@ -36,14 +52,6 @@
 
 .title-wrapper {
     padding: 4px;
-}
-
-.float-left {
-    float: left;
-}
-
-.clear {
-    clear: left;
 }
 
 .inline-block {
@@ -55,14 +63,18 @@
 }
 
 div.valid {
-    background: #90ee90;
+    background: #02c07d; /* success */
 }
 
 .box {
-    background: #f08080;
+    background: #ec6c6c; /* deleteLight */
     padding: 6px;
 }
 
 .b-bottom {
-    border-bottom: 2px solid #000000;
+    border-bottom: 2px solid #2c2c2c;
+}
+
+.v-align-top {
+    vertical-align: top;
 }
