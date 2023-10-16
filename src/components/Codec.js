@@ -9,13 +9,14 @@ import s from './Codec.css';
 import { DrmSupports } from './DrmSupports';
 import { getValidationClass } from '../utils/getValidationClass';
 import { cx } from '../utils/dom/cx';
+import { getValidClass } from '../utils/getValidClass';
 
 /**
  *
  * @param {CodecProps} props
  * @returns {Element}
  */
-export const Codec = ({ data, codec, title }) => {
+export const Codec2 = ({ data, codec, title }) => {
     return div(
         { className: s.container },
         div(
@@ -52,5 +53,152 @@ export const Codec = ({ data, codec, title }) => {
         }),
         DrmSupports({ data, drmType: DrmType.PLAYREADY_LEGACY }),
         DrmSupports({ data, drmType: DrmType.FAIRPLAY })
+    );
+};
+
+/**
+ *
+ * @param {CodecProps} props
+ * @returns {Element}
+ */
+export const Codec = ({ data, codec, title }) => {
+    return div(
+        { className: s['codec-wrapper'] },
+        div(
+            {
+                className: cx(
+                    s['title-wrapper'],
+                    s.box,
+                    s[getValidClass(data.mse || data.video)]
+                ),
+            },
+            div({ className: s.title }, title),
+            div(codec)
+        ),
+        div(
+            { className: s.half },
+            div(
+                {
+                    className: cx(
+                        s['text-center'],
+                        s['float-left'],
+                        s.box,
+                        s[getValidClass(data.mse)]
+                    ),
+                },
+                'MSE'
+            ),
+            div(
+                {
+                    className: cx(
+                        s['text-center'],
+                        s['float-left'],
+                        s.box,
+                        s[getValidClass(data.video)]
+                    ),
+                },
+                '<video />'
+            )
+        ),
+        div({ className: s.clear }),
+        div(
+            { className: s.third },
+            div(
+                { className: s['float-left'] },
+                div(
+                    { className: cx(s['text-center'], s.box) },
+                    'Google Widevine'
+                ),
+                div(
+                    { className: s.third },
+                    div(
+                        {
+                            className: cx(
+                                s['inline-block'],
+                                s['text-center'],
+                                s['float-left'],
+                                s.box
+                            ),
+                        },
+                        'L1'
+                    ),
+                    div(
+                        {
+                            className: cx(
+                                s['inline-block'],
+                                s['text-center'],
+                                s['float-left'],
+                                s.box
+                            ),
+                        },
+                        'L2'
+                    ),
+                    div(
+                        {
+                            className: cx(
+                                s['inline-block'],
+                                s['text-center'],
+                                s['float-left'],
+                                s.box
+                            ),
+                        },
+                        'L3'
+                    )
+                )
+            ),
+            div(
+                { className: s['float-left'] },
+                div(
+                    { className: cx(s['text-center'], s.box) },
+                    'Microsoft PlayReady'
+                ),
+                div(
+                    { className: s.third },
+                    div(
+                        {
+                            className: cx(
+                                s['inline-block'],
+                                s['text-center'],
+                                s['float-left'],
+                                s.box
+                            ),
+                        },
+                        'SL100'
+                    ),
+                    div(
+                        {
+                            className: cx(
+                                s['inline-block'],
+                                s['text-center'],
+                                s['float-left'],
+                                s.box
+                            ),
+                        },
+                        'SL2000'
+                    ),
+                    div(
+                        {
+                            className: cx(
+                                s['inline-block'],
+                                s['text-center'],
+                                s['float-left'],
+                                s.box
+                            ),
+                        },
+                        'SL3000'
+                    )
+                )
+            ),
+            div(
+                { className: s['float-left'] },
+                div(
+                    {
+                        className: cx(s['text-center'], s['b-bottom'], s.box),
+                    },
+                    'Apple FairPlay'
+                )
+            )
+        ),
+        div({ className: s.clear })
     );
 };
