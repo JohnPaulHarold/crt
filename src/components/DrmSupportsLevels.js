@@ -13,7 +13,7 @@ import s from './Codec.css';
  */
 export const DrmSupportsLevels = ({ data, levels }) => {
     return div(
-        { style: { overflow: 'hidden' } },
+        { className: s['overflow-hidden'] },
         levels && levels.length > 0
             ? levels.map((level) =>
                   div(
@@ -44,7 +44,6 @@ function getLevelSupport(data, levelName) {
     return (_data = data) === null ||
         _data === void 0 ||
         (_data = _data.find(function (level) {
-            console.log(levelName);
             return level.name === levelName;
         })) === null ||
         _data === void 0

@@ -173,7 +173,10 @@ export type CodecProps = {
 };
 
 export type DrmSupportsProps = {
-    data: Record<string, any>;
+    data: Record<
+        string,
+        { drm: { supported: boolean; securityLevels: string[] } }
+    >;
     drmType: string;
     levels?: string[];
 };
