@@ -15,6 +15,12 @@
     box-shadow: #aeaeae 0px 3px 8px;
 }
 
+.whole > div {
+    width: 100%;
+    border-top: 2px solid #000000;
+    border-right: 2px solid #000000;
+}
+
 .half > div {
     width: 50%;
     border-top: 2px solid #000000;
@@ -27,8 +33,15 @@
     border-right: 2px solid #000000;
 }
 
+.quarter > div {
+    width: 25%;
+    border-top: 2px solid #000000;
+    border-right: 2px solid #000000;
+}
+
 .half > div:last-child,
-.third > div:last-child {
+.third > div:last-child,
+.quarter > div:last-child {
     border-right: none;
 }
 

@@ -100,9 +100,12 @@ export const Codec = ({ data, codec, title }) => {
                 '<video />'
             )
         ),
-        div({ className: s.clear }),
         div(
-            { className: s.third },
+            { className: cx(s['text-center'], s.clear, s.whole) },
+            div({ className: cx(s['title-wrapper'], s.box) }, 'DRM')
+        ),
+        div(
+            { className: s.quarter },
             div(
                 { className: s['float-left'] },
                 div(
@@ -187,6 +190,15 @@ export const Codec = ({ data, codec, title }) => {
                         },
                         'SL3000'
                     )
+                )
+            ),
+            div(
+                { className: s['float-left'] },
+                div(
+                    {
+                        className: cx(s['text-center'], s['b-bottom'], s.box),
+                    },
+                    'Microsoft PlayReady Legacy'
                 )
             ),
             div(
