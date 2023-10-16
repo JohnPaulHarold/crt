@@ -39,6 +39,7 @@
     border-right: 2px solid #000000;
 }
 
+.whole > div:last-child,
 .half > div:last-child,
 .third > div:last-child,
 .quarter > div:last-child {
