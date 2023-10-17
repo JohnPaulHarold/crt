@@ -4,6 +4,7 @@
 
 import { Orientation } from '../models/Orientation';
 import { BaseView } from '../libs/baseView';
+import { DrmType } from '../models/DrmType';
 
 export interface AppOutlets {
     [index: string]: HTMLElement;
@@ -165,23 +166,19 @@ export type ContainerType =
 
 export type Codec = { title: string; contentType: string };
 
+export type securityLevel = { name: string; supported: boolean };
+
 export type CodecProps = {
-    data: Record<string, any>;
+    data: Record<
+        string,
+        {
+            drm: {
+                supported: boolean;
+                securityLevels: securityLevel[];
+            };
+        }
+    >;
     codec: string;
     type: string;
     title: string;
-};
-
-export type DrmSupportsProps = {
-    data: Record<
-        string,
-        { drm: { supported: boolean; securityLevels: string[] } }
-    >;
-    drmType: string;
-    levels?: string[];
-};
-
-export type DrmSupportsLevelsProps = {
-    data: any[];
-    levels?: string[];
 };

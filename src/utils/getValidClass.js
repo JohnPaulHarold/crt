@@ -1,6 +1,6 @@
 /**
- * @param {boolean} feature
+ * @param {boolean} valid
  */
-export function getValidClass(feature) {
-    return feature ? 'valid' : '';
+export function getValidClass(valid) {
+    return valid ? 'valid' : '';
 }
