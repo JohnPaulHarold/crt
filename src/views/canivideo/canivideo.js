@@ -1,22 +1,22 @@
 /**
- * @typedef {import('../declarations/types').ContainerType} ContainerType
- * @typedef {import('../declarations/types').ViewOptions} ViewOptions
- * @typedef {import('../declarations/types').Codec} Codec
+ * @typedef {import('../../declarations/types').ContainerType} ContainerType
+ * @typedef {import('../../declarations/types').ViewOptions} ViewOptions
+ * @typedef {import('../../declarations/types').Codec} Codec
  */
-import { Carousel } from '../components/Carousel';
-import { Codec } from '../components/Codec';
-import { Heading } from '../components/Heading';
+import { Carousel } from '../../components/Carousel';
+import { Codec } from './Codec';
+import { Heading } from '../../components/Heading';
 
-import { Codecs } from '../models/Codecs';
-import { DrmType } from '../models/DrmType';
-import { Orientation } from '../models/Orientation';
-import { VideoTypes } from '../models/VideoTypes';
+import { Codecs } from '../../models/Codecs';
+import { DrmType } from '../../models/DrmType';
+import { Orientation } from '../../models/Orientation';
+import { VideoTypes } from '../../models/VideoTypes';
 
-import { BaseView } from '../libs/baseView';
-import { a, div } from '../libs/makeElement';
+import { BaseView } from '../../libs/baseView';
+import { a, div } from '../../libs/makeElement';
 
-import { getDrm } from '../utils/drm';
-import { isCodecSupported } from '../utils/isCodecSupported';
+import { getDrm } from '../../utils/drm';
+import { isCodecSupported } from '../../utils/isCodecSupported';
 
 import s from './canivideo.css';
 

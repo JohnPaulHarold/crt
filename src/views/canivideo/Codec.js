@@ -1,15 +1,16 @@
 /**
- * @typedef {import('../declarations/types').CodecProps} CodecProps
- * @typedef {import('../declarations/types').securityLevel} securityLevel
+ * @typedef {import('../../declarations/types').CodecProps} CodecProps
+ * @typedef {import('../../declarations/types').securityLevel} securityLevel
  */
 
-import { div } from '../libs/makeElement';
-import { DrmType } from '../models/DrmType';
+import { div } from '../../libs/makeElement';
+import { DrmType } from '../../models/DrmType';
 
 import s from './Codec.css';
-import { cx } from '../utils/dom/cx';
-import { getValidClass } from '../utils/getValidClass';
-import { DrmNames } from '../models/DrmNames';
+import { cx } from '../../utils/dom/cx';
+import { getValidClass } from '../../utils/getValidClass';
+import { DrmNames } from '../../models/DrmNames';
+import { DrmLevels } from '../../models/DrmLevels';
 
 /**
  *
@@ -30,7 +31,15 @@ const classNames = (list, valid) => ({
  * @param {string} item
  * @returns {securityLevel | undefined}
  */
-const find = (list, item) => list.find((level) => level.name === item);
+const find = (list, item) => {
+    if (!list) return undefined;
+    for (let i = 0; i < list.length; i++) {
+        if (list[i].name == item) {
+            return list[i];
+        }
+    }
+    return undefined;
+};
 
 /**
  *
@@ -50,12 +59,12 @@ export const Codec = ({ data, codec, title }) => {
         playreadyLegacyDrm.supported ||
         fairplayDrm.supported;
 
-    const widevineL1 = find(widevineDrm.securityLevels, 'L1');
-    const widevineL2 = find(widevineDrm.securityLevels, 'L2');
-    const widevineL3 = find(widevineDrm.securityLevels, 'L3');
-    const playreadySL150 = find(playreadyDrm.securityLevels, 'SL150');
-    const playreadySL2000 = find(playreadyDrm.securityLevels, 'SL2000');
-    const playreadySL3000 = find(playreadyDrm.securityLevels, 'SL3000');
+    const widevineL1 = find(widevineDrm.securityLevels, DrmLevels.L1);
+    const widevineL2 = find(widevineDrm.securityLevels, DrmLevels.L2);
+    const widevineL3 = find(widevineDrm.securityLevels, DrmLevels.L3);
+    const playreadySL150 = find(playreadyDrm.securityLevels, DrmLevels.SL150);
+    const playreadySL2000 = find(playreadyDrm.securityLevels, DrmLevels.SL2000);
+    const playreadySL3000 = find(playreadyDrm.securityLevels, DrmLevels.SL3000);
 
     return div(
         classNames(['codec-wrapper']),
@@ -97,21 +106,21 @@ export const Codec = ({ data, codec, title }) => {
                             ['text-center', 'inline-block', 'box'],
                             widevineL1 && widevineL1.supported
                         ),
-                        'L1'
+                        DrmLevels.L1
                     ),
                     div(
                         classNames(
                             ['text-center', 'inline-block', 'box'],
                             widevineL2 && widevineL2.supported
                         ),
-                        'L2'
+                        DrmLevels.L2
                     ),
                     div(
                         classNames(
                             ['text-center', 'inline-block', 'box'],
                             widevineL3 && widevineL3.supported
                         ),
-                        'L3'
+                        DrmLevels.L3
                     )
                 )
             ),
@@ -128,21 +137,21 @@ export const Codec = ({ data, codec, title }) => {
                             ['text-center', 'inline-block', 'box'],
                             playreadySL150 && playreadySL150.supported
                         ),
-                        'SL150'
+                        DrmLevels.SL150
                     ),
                     div(
                         classNames(
                             ['text-center', 'inline-block', 'box'],
                             playreadySL2000 && playreadySL2000.supported
                         ),
-                        'SL2000'
+                        DrmLevels.SL2000
                     ),
                     div(
                         classNames(
                             ['text-center', 'inline-block', 'box'],
                             playreadySL3000 && playreadySL3000.supported
                         ),
-                        'SL3000'
+                        DrmLevels.SL3000
                     )
                 )
             ),

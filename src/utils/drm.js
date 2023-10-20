@@ -1,6 +1,7 @@
 /**
  * @typedef {import('../declarations/drm').SecurityLevel} SecurityLevel
  */
+import { DrmLevels } from '../models/DrmLevels';
 import { DrmType } from '../models/DrmType';
 import { KeySystem } from '../models/KeySystem';
 
@@ -64,19 +65,19 @@ function getWidevine(contentType) {
                     supported,
                     securityLevels: [
                         {
-                            name: 'L1',
+                            name: DrmLevels.L1,
                             supported:
                                 supportedRobustness.includes('HW_SECURE_ALL'),
                         },
                         {
-                            name: 'L2',
+                            name: DrmLevels.L2,
                             supported:
                                 supportedRobustness.includes(
                                     'HW_SECURE_CRYPTO'
                                 ),
                         },
                         {
-                            name: 'L3',
+                            name: DrmLevels.L3,
                             supported:
                                 supportedRobustness.includes(
                                     'SW_SECURE_CRYPTO'
@@ -125,29 +126,29 @@ function getPlayready(contentType) {
         .then((promisesResolved) =>
             promisesResolved.filter((robustness) => !!robustness)
         )
-        .then((supportedRobustness) =>
-            isKeySystemSupported(KeySystem.PLAYREADY, contentType).then(
+        .then((supportedRobustness) => {
+            return isKeySystemSupported(KeySystem.PLAYREADY, contentType).then(
                 (supported) => ({
                     type: DrmType.PLAYREADY,
                     keySystem: KeySystem.PLAYREADY,
                     supported,
                     securityLevels: [
                         {
-                            name: 'SL150',
+                            name: DrmLevels.SL150,
                             supported: supportedRobustness.includes('150'),
                         },
                         {
-                            name: 'SL2000',
+                            name: DrmLevels.SL2000,
                             supported: supportedRobustness.includes('2000'),
                         },
                         {
-                            name: 'SL3000',
+                            name: DrmLevels.SL3000,
                             supported: supportedRobustness.includes('3000'),
                         },
                     ],
                 })
-            )
-        );
+            );
+        });
 }
 
 /**
