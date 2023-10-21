@@ -1,3 +1,5 @@
+@use '../styles/colours';
+
 .dialog {
     width: 50%;
     height: 50%;
@@ -5,11 +7,11 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #2a2a2a;
+    background-color: colours.$cavern;
 }
 
 .dialogTitleContainer {
-    background-color: #5e00ff;
+    background-color: colours.$brandPurple;
 }
 
 .dialogTitle {
@@ -24,11 +26,11 @@
     height: 2rem;
     width: 2rem;
     vertical-align: top;
-    color: #1c004c;
+    color: colours.$onyx;
     margin-right: 1rem;
 }
 
 .dialogClose:global(.focused) {
-    color: white;
+    color: colours.$white;
     background-color: none;
 }

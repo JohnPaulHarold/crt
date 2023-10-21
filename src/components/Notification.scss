@@ -1,5 +1,7 @@
+@use '../styles/colours';
+
 .notification {
-    background: #303030;
+    background: colours.$pewter;
     padding: 2rem;
     text-align: center;
 }

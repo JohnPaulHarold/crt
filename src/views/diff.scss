@@ -1,5 +1,7 @@
+@use '../styles/colours';
+
 button {
-    background: yellow;
-    columns: black;
+    background: colours.$primary;
+    columns: colours.$black;
     padding: 1rem;
 }

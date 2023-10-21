@@ -1,3 +1,5 @@
+@use '../styles/colours';
+
 .checkbox label {
     display: block;
     position: relative;
@@ -14,20 +16,20 @@
 
 .checkbox label span {
     position: absolute;
-    border: 0.2rem solid #a8a8a8;
+    border: 0.2rem solid colours.$dust;
     /* position to the free space in <label> */
     top: 0;
     left: 0;
     width: 20px;
     height: 20px;
-    background-color: #2c2c2c;
+    background-color: colours.$slate;
     transition: 0.3s background-color; /* slight transition */
 }
 
 .checkbox label:global(.focused) span {
-    border: 0.2rem solid #ffde2b;
+    border: 0.2rem solid colours.$primary;
 }
 
 .checkbox label input:checked ~ span {
-    background-color: #ffde2b;
+    background-color: colours.$primary;
 }

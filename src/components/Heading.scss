@@ -1,15 +1,17 @@
+@use '../styles/colours';
+
 .primary {
-    color: #ffffff;
+    color: colours.$white;
 }
 .secondary {
-    color: #a8a8a8;
+    color: colours.$neutral;
 }
 .highlight {
-    color: #ffde2b;
+    color: colours.$primary;
 }
 .disabled {
-    color: #858585;
+    color: colours.$dust;
 }
 .error {
-    color: #de1c22;
+    color: colours.$error;
 }

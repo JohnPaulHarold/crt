@@ -1,3 +1,5 @@
+@use '../styles/colours';
+
 .mainNav {
     position: absolute;
     top: 0;
@@ -29,18 +31,18 @@
     display: block;
     box-sizing: border-box;
     border-radius: 0 1rem 1rem 0;
-    color: #fff;
+    color: colours.$white;
     text-decoration: none;
     font-weight: bold;
 }
 
 .mainNav :global(a.focused) {
-    color: #000;
-    background-color: #ffde2b;
+    color: colours.$black;
+    background-color: colours.$primary;
 }
 
 .mainNav :global(a.active:not(.focused)) {
-    background-color: #363636;
+    background-color: colours.$shadow;
 }
 
 .mainNav > div {

@@ -1,3 +1,5 @@
+@use '../styles/colours';
+
 .showBleedImage {
     position: absolute;
 }
@@ -36,9 +38,6 @@
     text-overflow: ellipsis;
 }
 
-.buttonRow {
-}
-
 .suggestions {
     position: relative;
     margin-top: 10rem;
@@ -53,5 +52,5 @@
 }
 
 .suggestions a:global(.focused) :global(.lazy-image) {
-    border: 0.2rem solid #ffde2b;
+    border: 0.2rem solid colours.$primary;
 }

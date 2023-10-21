@@ -1,9 +1,11 @@
+@use '../styles/colours';
+
 .tile {
     width: 20rem;
     height: 11.25rem;
     display: inline-block;
-    background-color: #5e00ff;
-    color: white;
+    background-color: colours.$brandPurple;
+    color: colours.$white;
     font-size: 2rem;
     overflow: hidden;
     position: relative;
@@ -18,5 +20,5 @@
 }
 
 :global(a.focused) .tile {
-    background-color: #ff6700;
+    background-color: colours.$brandOrange;
 }

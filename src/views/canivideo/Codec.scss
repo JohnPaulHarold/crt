@@ -1,3 +1,6 @@
+@use '../../styles/colours';
+@use './local-colours' as lc;
+
 * {
     box-sizing: border-box;
 }
@@ -9,34 +12,34 @@
 }
 
 .codec-wrapper {
-    border: 0.125rem solid #2c2c2c;
+    border: 0.125rem solid colours.$slate;
     margin: 0.5rem 0;
     border-radius: 0.125rem;
-    box-shadow: #d0d0d0 0 0.125rem 0.25rem;
+    box-shadow: lc.$shadow 0 0.125rem 0.25rem;
 }
 
 .whole > div {
     width: 100%;
-    border-top: 0.125rem solid #2c2c2c;
-    border-right: 0.125rem solid #2c2c2c;
+    border-top: 0.125rem solid colours.$slate;
+    border-right: 0.125rem solid colours.$slate;
 }
 
 .half > div {
     width: 50%;
-    border-top: 0.125rem solid #2c2c2c;
-    border-right: 0.125rem solid #2c2c2c;
+    border-top: 0.125rem solid colours.$slate;
+    border-right: 0.125rem solid colours.$slate;
 }
 
 .third > div {
     width: 33.33333%;
-    border-top: 0.125rem solid #2c2c2c;
-    border-right: 0.125rem solid #2c2c2c;
+    border-top: 0.125rem solid colours.$slate;
+    border-right: 0.125rem solid colours.$slate;
 }
 
 .quarter > div {
     width: 25%;
-    border-top: 0.125rem solid #2c2c2c;
-    border-right: 0.125rem solid #2c2c2c;
+    border-top: 0.125rem solid colours.$slate;
+    border-right: 0.125rem solid colours.$slate;
 }
 
 .whole > div:last-child,
@@ -61,16 +64,16 @@
 }
 
 div.valid {
-    background: #02c07d;
+    background: lc.$supported;
 }
 
 .box {
-    background: #ec6c6c;
+    background: lc.$unsupported;
     padding: 0.5rem;
 }
 
 .b-bottom {
-    border-bottom: 0.125rem solid #2c2c2c;
+    border-bottom: 0.125rem solid colours.$slate;
 }
 
 .v-align-top {

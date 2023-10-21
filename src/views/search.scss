@@ -1,9 +1,11 @@
+@use '../styles/colours';
+
 .searchInput {
     display: block;
     font-size: 5rem;
     min-height: 6rem;
-    background-color: #1d1d1d;
-    color: white;
+    background-color: colours.$onyx;
+    color: colours.$white;
     margin-bottom: 1rem;
 }
 
@@ -18,16 +20,16 @@
 
 .searchResult {
     height: 3rem;
-    background-color: #1c004c;
+    background-color: colours.$slate;
     margin-bottom: 1rem;
     padding: 0 1rem;
-    color: #fff;
+    color: colours.$white;
     border-radius: 0.25rem;
     font-size: 2rem;
 }
 
 :global(.focused) > .searchResult {
-    background: #5e00ff;
+    background: colours.$brandPurple;
 }
 
 .searchResultsSlider {

@@ -1,9 +1,11 @@
+@use '../styles/colours';
+
 .view {
     height: 100%;
 }
 
 .myForm {
-    background: #363636;
+    background: colours.$shadow;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     top: 50%;
@@ -38,6 +40,6 @@
     right: 0;
     top: 0;
     left: auto;
-    background: #363636;
-    color: white;
+    background: colours.$shadow;
+    color: colours.$white;
 }

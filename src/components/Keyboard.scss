@@ -1,16 +1,12 @@
-.keyboard {
-}
-
-.keyboardRow {
-}
+@use '../styles/colours';
 
 .keyboardKey {
     width: 3rem;
     height: 3rem;
     margin-right: 1rem;
     margin-bottom: 1rem;
-    background-color: #393939;
-    color: white;
+    background-color: colours.$shadow;
+    color: colours.$white;
     border: none;
     border-radius: 0.25rem;
     font-size: 1.5rem;
@@ -18,8 +14,8 @@
 }
 
 .keyboardKey:global(.focused) {
-    color: #393939;
-    background-color: white;
+    color: colours.$charcoal;
+    background-color: colours.$white;
 }
 
 .w2 {
