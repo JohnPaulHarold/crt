@@ -1,16 +1,18 @@
+@use '../styles/colours';
+
 .button {
     background: none;
-    color: #aaa;
+    color: colours.$neutral;
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     font-weight: bold;
-    border: 0.15rem solid #979797;
+    border: 0.15rem solid colours.$graphite;
 }
 
 .button:global(.focused) {
-    color: #000;
-    background-color: #ffde2b;
-    border: 0.15rem solid #ffde2b;
+    color: colours.$black;
+    background-color: colours.$primary;
+    border: 0.15rem solid colours.$primary;
 }
 
 .button:global(.ghost.focused) {

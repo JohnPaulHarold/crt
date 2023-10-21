@@ -23,7 +23,7 @@ import { Keyboard } from '../components/Keyboard';
 
 import { focusInto, moveFocus, setLrudScope } from '../navigation';
 
-import s from './formExample.css';
+import s from './formExample.scss';
 import { $dataSet } from '../utils/dom/$dataSet';
 
 /**

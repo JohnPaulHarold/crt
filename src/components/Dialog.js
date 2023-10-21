@@ -5,7 +5,7 @@
 import { div } from '../libs/makeElement';
 import { Button } from './Button';
 
-import s from './Dialog.css';
+import s from './Dialog.scss';
 import { Heading } from './Heading';
 /**
  *

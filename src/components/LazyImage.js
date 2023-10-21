@@ -4,7 +4,7 @@
 
 import { img } from '../libs/makeElement';
 
-import s from './LazyImage.css';
+import s from './LazyImage.scss';
 /**
  *
  * @param {LazyImageProps} props

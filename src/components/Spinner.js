@@ -5,7 +5,7 @@
 import { div, span } from '../libs/makeElement';
 import { cx } from '../utils/dom/cx';
 
-import s from './Spinner.css';
+import s from './Spinner.scss';
 /**
  * @param {SpinnerProps=} props
  * @returns {HTMLElement}

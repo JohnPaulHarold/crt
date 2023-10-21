@@ -21,7 +21,7 @@ import { showData } from '../stubData/showData';
 
 import Logo from '../assets/Public_Domain_Mark_button.svg.png';
 
-import s from './show.css';
+import s from './show.scss';
 import { Heading } from '../components/Heading';
 
 /**

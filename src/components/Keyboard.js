@@ -7,7 +7,7 @@ import { div } from '../libs/makeElement';
 import { cx } from '../utils/dom/cx';
 import { Button } from './Button';
 
-import s from './Keyboard.css';
+import s from './Keyboard.scss';
 /**
  *
  * @param {KeyProps} props
