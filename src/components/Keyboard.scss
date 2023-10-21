@@ -1,14 +1,15 @@
 @use '../styles/colours';
+@use '../styles/funcs' as fn;
 
 .keyboardKey {
-    width: 3rem;
-    height: 3rem;
-    margin-right: 1rem;
-    margin-bottom: 1rem;
+    width: fn.px-to-rem(72px);
+    height: fn.px-to-rem(72px);
+    margin-right: fn.px-to-rem(24px);
+    margin-bottom: fn.px-to-rem(24px);
     background-color: colours.$shadow;
     color: colours.$white;
     border: none;
-    border-radius: 0.25rem;
+    border-radius: fn.px-to-rem(3px);
     font-size: 1.5rem;
     padding: 0;
 }
@@ -19,5 +20,5 @@
 }
 
 .w2 {
-    width: 7rem;
+    width: fn.px-to-rem(168px);
 }

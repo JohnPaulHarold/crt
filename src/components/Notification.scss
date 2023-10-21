@@ -1,7 +1,8 @@
 @use '../styles/colours';
+@use '../styles/funcs' as fn;
 
 .notification {
     background: colours.$pewter;
-    padding: 2rem;
+    padding: fn.px-to-rem(48px);
     text-align: center;
 }

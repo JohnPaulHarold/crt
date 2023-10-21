@@ -1,18 +1,19 @@
 @use '../styles/colours';
+@use '../styles/funcs' as fn;
 
 .button {
     background: none;
     color: colours.$neutral;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
+    padding: fn.px-to-rem(12px) fn.px-to-rem(24px);
+    border-radius: fn.px-to-rem(12px);
     font-weight: bold;
-    border: 0.15rem solid colours.$graphite;
+    border: fn.px-to-rem(3px) solid colours.$graphite;
 }
 
 .button:global(.focused) {
     color: colours.$black;
     background-color: colours.$primary;
-    border: 0.15rem solid colours.$primary;
+    border: fn.px-to-rem(3px) solid colours.$primary;
 }
 
 .button:global(.ghost.focused) {

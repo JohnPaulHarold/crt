@@ -1,13 +1,14 @@
 @use '../../styles/colours';
+@use '../styles/funcs' as fn;
 @use './local-colours' as lc;
 
 
 .type-wrapper {
-    padding: 0.375rem;
+    padding: fn.px-to-rem(9px);
     background-color: lc.$background;
-    margin: 0.375rem 0;
-    border-radius: 0.1875rem;
-    box-shadow: lc.$shadow 0 0.1875rem 0.5625rem;
+    margin: fn.px-to-rem(9px) 0;
+    border-radius: fn.px-to-rem(6px);
+    box-shadow: lc.$shadow 0 fn.px-to-rem(6px) fn.px-to-rem(12px);
 }
 
 .type-wrapper a,
@@ -27,6 +28,6 @@
 }
 
 a.codec:focus {
-    outline: inset 0.375rem solid colours.$brandOrange;
-    border-radius: 0.1875rem;
+    outline: inset fn.px-to-rem(9px) solid colours.$brandOrange;
+    border-radius: fn.px-to-rem(6px)
 }

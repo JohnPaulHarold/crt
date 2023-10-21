@@ -1,36 +1,37 @@
 @use '../styles/colours';
+@use '../styles/funcs' as fn;
 
 .mainNav {
     position: absolute;
     top: 0;
     left: 0;
-    width: 18.75rem;
+    width: fn.px-to-rem(450px);
     height: 100%;
     transition: width 250ms ease-in-out;
     z-index: 100;
-    padding-top: 5rem;
+    padding-top: fn.px-to-rem(120px);
     background: rgba(54, 54, 54, 0.8);
 }
 
 .mainNav:global(.collapsed) {
-    width: 6.25rem;
+    width: fn.px-to-rem(150px);
     background-color: transparent;
 }
 
 .mainNav ol {
-    max-width: 6.25rem;
+    max-width: fn.px-to-rem(150px);
 }
 
 .mainNav li {
-    margin-bottom: 1rem;
+    margin-bottom: fn.px-to-rem(24px);
 }
 
 .mainNav a {
-    padding: 0.5rem;
+    padding: fn.px-to-rem(12px);
     width: 100%;
     display: block;
     box-sizing: border-box;
-    border-radius: 0 1rem 1rem 0;
+    border-radius: 0 fn.px-to-rem(24px) fn.px-to-rem(24px) 0;
     color: colours.$white;
     text-decoration: none;
     font-weight: bold;

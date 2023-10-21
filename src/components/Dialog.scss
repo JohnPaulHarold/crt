@@ -1,4 +1,5 @@
 @use '../styles/colours';
+@use '../styles/funcs' as fn;
 
 .dialog {
     width: 50%;
@@ -23,11 +24,11 @@
     display: inline-block;
     border: 0;
     background: none;
-    height: 2rem;
-    width: 2rem;
+    height: fn.px-to-rem(48px);
+    width: fn.px-to-rem(48px);
     vertical-align: top;
     color: colours.$onyx;
-    margin-right: 1rem;
+    margin-right: fn.px-to-rem(24px);
 }
 
 .dialogClose:global(.focused) {
