@@ -10,9 +10,11 @@ import { BaseView } from '../libs/baseView';
 import { a, div, p, section } from '../libs/makeElement';
 import { Direction } from '../models/Direction';
 import { NavigationEvents, navigationBus } from '../navigation';
+import { getBaseFontSize } from '../utils/dom/getBaseFontSize';
 import { removeElement } from '../utils/dom/removeElement';
 import { parseDecimal } from '../utils/math/parseDecimal';
 import { transformProp } from '../utils/style/prefix';
+import { pxToRem } from '../utils/style/pxToRem';
 
 import s from './vlist.css';
 
@@ -72,7 +74,7 @@ function buildBigData(bigNumber) {
  * @param {Orientation} [options.orientation]
  * @param {string} options.container expects a queryString
  * @param {function} options.renderRow
- * @param {number} [options.elHeight]
+ * @param {number} options.elHeight
  * @param {number} [options.elWidth]
  * @param {number} [options.bufferAmount]
  * @param {number} [options.visibleEls]
@@ -86,11 +88,19 @@ function VL(options) {
   this.renderRow = options.renderRow;
   this.sliderEl = document.createElement('div');
   this.sliderEl.style.transition = "transform 250ms ease";
-  this.elHeight = options.elHeight;
+
+  const baseFontSize = getBaseFontSize();
+  /**
+   * @type {number}
+   * @description for now, this is required while an approach to dyanmic sized elements is thought up
+   * @memberof VL
+   */
+  this.elHeight = pxToRem(options.elHeight, baseFontSize);
   this.paddingTop = 0;
   
   /**
    * @type {number[]}
+   * @memberof VL
    * @description describe what this concept is all about. I've forgotten
    */
   this.window = [];
@@ -106,7 +116,7 @@ VL.prototype = {
     slice.forEach((bd) => {
       const el = this.renderRow(bd);
       // apply the height, for now
-      el.style.height = this.elHeight + "px";
+      el.style.height = this.elHeight + "rem";
       this.sliderEl.appendChild(el);
     });
 
@@ -138,7 +148,7 @@ VL.prototype = {
     const upperBound = this.window[1];
 
     // @ts-ignore
-    this.sliderEl.style[transformProp] = 'translateY(' + -(position * this.elHeight) + 'px)';
+    this.sliderEl.style[transformProp] = 'translateY(' + -(position * this.elHeight) + 'rem)';
 
     /**
      * @todo could not the prepend and append operations be combined?
@@ -150,7 +160,7 @@ VL.prototype = {
       slice.forEach((bd) => {
         const el = this.renderRow(bd);
         // apply the height, for now
-        el.style.height = this.elHeight + "px";
+        el.style.height = this.elHeight + "rem";
         frag.appendChild(el);
       });
       this.sliderEl.appendChild(frag);
@@ -167,7 +177,7 @@ VL.prototype = {
       }
 
       this.paddingTop = this.paddingTop + (this.visibleEls * this.elHeight);
-      this.sliderEl.style.paddingTop = this.paddingTop + "px";
+      this.sliderEl.style.paddingTop = this.paddingTop + "rem";
       this.window[0] = this.window[0] + this.visibleEls; 
     }
 
@@ -178,7 +188,7 @@ VL.prototype = {
       slice.forEach((bd) => {
         const el = this.renderRow(bd);
         // apply the height, for now
-        el.style.height = this.elHeight + "px";
+        el.style.height = this.elHeight + "rem";
         frag.appendChild(el);
       });
 
@@ -188,7 +198,7 @@ VL.prototype = {
       this.sliderEl.prepend(frag);
 
       this.paddingTop = this.paddingTop - (slice.length * this.elHeight);
-      this.sliderEl.style.paddingTop = this.paddingTop + "px";
+      this.sliderEl.style.paddingTop = this.paddingTop + "rem";
       this.window[0] = Math.max(this.window[0] - this.visibleEls, 0); 
     }
   }
