@@ -1,8 +1,8 @@
-@use '../styles/colours';
+@use '../styles/colours' as col;
 @use '../styles/funcs' as fn;
 
 button {
-    background: colours.$primary;
-    columns: colours.$black;
+    background: col.$primary;
+    columns: col.$black;
     padding: fn.px-to-rem(24px);
 }

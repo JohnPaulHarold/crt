@@ -1,4 +1,4 @@
-@use '../styles/colours';
+@use '../styles/colours' as col;
 
 .spinnerContainer {
     width: 100%;
@@ -6,7 +6,7 @@
     position: absolute;
     right: 0;
     bottom: 0;
-    color: colours.$white;
+    color: col.$white;
 }
 
 .spinnerInner {

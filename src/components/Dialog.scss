@@ -1,4 +1,4 @@
-@use '../styles/colours';
+@use '../styles/colours' as col;
 @use '../styles/funcs' as fn;
 
 .dialog {
@@ -8,11 +8,11 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: colours.$cavern;
+    background-color: col.$cavern;
 }
 
 .dialogTitleContainer {
-    background-color: colours.$brandPurple;
+    background-color: col.$brandPurple;
 }
 
 .dialogTitle {
@@ -27,11 +27,11 @@
     height: fn.px-to-rem(48px);
     width: fn.px-to-rem(48px);
     vertical-align: top;
-    color: colours.$onyx;
+    color: col.$onyx;
     margin-right: fn.px-to-rem(24px);
 }
 
 .dialogClose:global(.focused) {
-    color: colours.$white;
+    color: col.$white;
     background-color: none;
 }

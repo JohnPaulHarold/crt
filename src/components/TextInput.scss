@@ -1,16 +1,16 @@
-@use '../styles/colours';
+@use '../styles/colours' as col;
 @use '../styles/funcs' as fn;
 
 .textInput input {
     border: 0;
-    background: colours.$slate;
+    background: col.$slate;
     border-bottom: fn.px-to-rem(3px) solid transparent;
     margin-right: fn.px-to-rem(24px);
     outline: none;
     height: fn.px-to-rem(48px);
-    color: colours.$white;
+    color: col.$white;
 }
 
 .textInput input:global(.focused) {
-    border-bottom: fn.px-to-rem(3px) solid colours.$primary;
+    border-bottom: fn.px-to-rem(3px) solid col.$primary;
 }

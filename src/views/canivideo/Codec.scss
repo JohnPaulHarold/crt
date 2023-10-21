@@ -1,4 +1,4 @@
-@use '../../styles/colours';
+@use '../../styles/colours' as col;
 @use '../../styles/funcs' as fn;
 @use './local-colours' as lc;
 
@@ -13,7 +13,7 @@
 }
 
 .codec-wrapper {
-    border: fn.px-to-rem(3px) solid colours.$slate;
+    border: fn.px-to-rem(3px) solid col.$slate;
     margin: fn.px-to-rem(12px) 0;
     border-radius: fn.px-to-rem(3px);
     box-shadow: lc.$shadow 0 fn.px-to-rem(3px) fn.px-to-rem(6px);
@@ -21,26 +21,26 @@
 
 .whole > div {
     width: 100%;
-    border-top: fn.px-to-rem(3px) solid colours.$slate;
-    border-right: fn.px-to-rem(3px) solid colours.$slate;
+    border-top: fn.px-to-rem(3px) solid col.$slate;
+    border-right: fn.px-to-rem(3px) solid col.$slate;
 }
 
 .half > div {
     width: 50%;
-    border-top: fn.px-to-rem(3px) solid colours.$slate;
-    border-right: fn.px-to-rem(3px) solid colours.$slate;
+    border-top: fn.px-to-rem(3px) solid col.$slate;
+    border-right: fn.px-to-rem(3px) solid col.$slate;
 }
 
 .third > div {
     width: 33.33333%;
-    border-top: fn.px-to-rem(3px) solid colours.$slate;
-    border-right: fn.px-to-rem(3px) solid colours.$slate;
+    border-top: fn.px-to-rem(3px) solid col.$slate;
+    border-right: fn.px-to-rem(3px) solid col.$slate;
 }
 
 .quarter > div {
     width: 25%;
-    border-top: fn.px-to-rem(3px) solid colours.$slate;
-    border-right: fn.px-to-rem(3px) solid colours.$slate;
+    border-top: fn.px-to-rem(3px) solid col.$slate;
+    border-right: fn.px-to-rem(3px) solid col.$slate;
 }
 
 .whole > div:last-child,
@@ -74,7 +74,7 @@ div.valid {
 }
 
 .b-bottom {
-    border-bottom: fn.px-to-rem(3px) solid colours.$slate;
+    border-bottom: fn.px-to-rem(3px) solid col.$slate;
 }
 
 .v-align-top {

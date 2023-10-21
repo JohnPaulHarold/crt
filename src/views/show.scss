@@ -1,4 +1,4 @@
-@use '../styles/colours';
+@use '../styles/colours' as col;
 @use '../styles/funcs' as fn;
 
 .showBleedImage {
@@ -51,5 +51,5 @@
 }
 
 .suggestions a:global(.focused) :global(.lazy-image) {
-    border: fn.px-to-rem(6px) solid colours.$primary;
+    border: fn.px-to-rem(6px) solid col.$primary;
 }

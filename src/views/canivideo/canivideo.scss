@@ -1,4 +1,4 @@
-@use '../../styles/colours';
+@use '../../styles/colours' as col;
 @use '../../styles/funcs' as fn;
 @use './local-colours' as lc;
 
@@ -14,13 +14,13 @@
 .type-wrapper a,
 .type-wrapper a:link,
 .type-wrapper a:visited {
-    color: colours.$slate;
+    color: col.$slate;
 }
 
 .title {
     font-weight: bold;
     font-size: 140%;
-    color: colours.$slate;
+    color: col.$slate;
 }
 
 .codec {
@@ -28,6 +28,6 @@
 }
 
 a.codec:focus {
-    outline: inset fn.px-to-rem(9px) solid colours.$brandOrange;
+    outline: inset fn.px-to-rem(9px) solid col.$brandOrange;
     border-radius: fn.px-to-rem(6px)
 }

@@ -1,4 +1,4 @@
-@use '../styles/colours';
+@use '../styles/colours' as col;
 @use '../styles/funcs' as fn;
 
 .keyboardKey {
@@ -6,8 +6,8 @@
     height: fn.px-to-rem(72px);
     margin-right: fn.px-to-rem(24px);
     margin-bottom: fn.px-to-rem(24px);
-    background-color: colours.$shadow;
-    color: colours.$white;
+    background-color: col.$shadow;
+    color: col.$white;
     border: none;
     border-radius: fn.px-to-rem(3px);
     font-size: 1.5rem;
@@ -15,8 +15,8 @@
 }
 
 .keyboardKey:global(.focused) {
-    color: colours.$charcoal;
-    background-color: colours.$white;
+    color: col.$charcoal;
+    background-color: col.$white;
 }
 
 .w2 {
