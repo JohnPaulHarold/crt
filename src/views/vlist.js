@@ -87,8 +87,11 @@ function VL(options) {
   this.sliderEl = document.createElement('div');
   this.sliderEl.style.transition = "transform 250ms ease";
   this.elHeight = options.elHeight;
+  this.paddingTop = 0;
+  
   /**
    * @type {number[]}
+   * @description describe what this concept is all about. I've forgotten
    */
   this.window = [];
 }
@@ -131,8 +134,6 @@ VL.prototype = {
    * @param {number} position 
    */
   updateList(direction, position) {
-    // console.log('[VL][calculate]\n\ndirection %o\n\nposition %o', direction, position);
-    // const normalisedPos = position % this.visibleEls;
     const lowerBound = this.window[0];
     const upperBound = this.window[1];
 
@@ -140,12 +141,9 @@ VL.prototype = {
     this.sliderEl.style[transformProp] = 'translateY(' + -(position * this.elHeight) + 'px)';
 
     /**
-     * @todo could not the prepent and append operations be combined?
+     * @todo could not the prepend and append operations be combined?
      */
-
-
-    if (position >= upperBound - this.bufferAmount && direction === Direction.DOWN) {
-      console.log('[VL][calculate] append');
+    if (direction === Direction.DOWN && position >= upperBound - this.bufferAmount) {
       // get a new page of data
       const frag = document.createDocumentFragment();
       const slice = this.getNextData(upperBound + 1, upperBound + 1 + this.visibleEls);
@@ -159,9 +157,8 @@ VL.prototype = {
       this.window[1] = this.window[1] + this.visibleEls;
     }
 
-    if (direction === Direction.DOWN && position > lowerBound + this.visibleEls + this.bufferAmount) {
-      console.log('[VL][calculate] trim start');
-      
+    if (direction === Direction.DOWN && position > lowerBound + this.visibleEls + this.bufferAmount) {      
+      // remove defined amount from start of DOM list
       let i = this.visibleEls - 1;
       while (i >= 0) {
         const el = this.sliderEl.children[i];
@@ -169,12 +166,12 @@ VL.prototype = {
         i--;
       }
 
-      this.sliderEl.style.paddingTop = (this.visibleEls * this.elHeight) + "px";
+      this.paddingTop = this.paddingTop + (this.visibleEls * this.elHeight);
+      this.sliderEl.style.paddingTop = this.paddingTop + "px";
       this.window[0] = this.window[0] + this.visibleEls; 
     }
 
-    if (position <= lowerBound + this.bufferAmount && direction === Direction.UP) {
-      console.log('[VL][calculate] prepend', lowerBound);
+    if (direction === Direction.UP && position <= lowerBound + this.bufferAmount) {
       const frag = document.createDocumentFragment();
       const slice = this.getNextData(lowerBound - this.visibleEls, lowerBound);
 
@@ -185,9 +182,14 @@ VL.prototype = {
         frag.appendChild(el);
       });
 
+      /**
+       * @todo this is bugged
+       */
       this.sliderEl.prepend(frag);
-      this.sliderEl.style.paddingTop = (0 * this.elHeight) + "px";
-      this.window[0] = 0; 
+
+      this.paddingTop = this.paddingTop - (slice.length * this.elHeight);
+      this.sliderEl.style.paddingTop = this.paddingTop + "px";
+      this.window[0] = Math.max(this.window[0] - this.visibleEls, 0); 
     }
   }
 };
