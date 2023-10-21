@@ -12,17 +12,13 @@
 
 .showLogo {
     position: relative;
-    -webkit-transform: scale(1);
     transform: scale(1);
-    -webkit-transform-origin: left top;
     transform-origin: left top;
-    -webkit-transition: -webkit-transform 250ms ease;
     transition: transform 250ms ease;
     height: fn.px-to-rem(240px);
 }
 
 .showLogo:global(.min) {
-    -webkit-transform: scale(0.25);
     transform: scale(0.25);
 }
 
@@ -32,9 +28,11 @@
 
 .showDescription {
     white-space: normal;
+    /*! autoprefixer: off */
     display: -webkit-box;
     -webkit-line-clamp: 6;
     -webkit-box-orient: vertical;
+    /* autoprefixer: on */
     overflow: hidden;
     text-overflow: ellipsis;
 }

@@ -7,7 +7,6 @@
 
 .myForm {
     background: colours.$shadow;
-    -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     top: 50%;
     position: relative;
@@ -22,17 +21,13 @@
 
 .keyboardDrawer {
     position: absolute;
-    -webkit-transition: -webkit-transform 250ms ease;
-    -webkit-transform: translateY(200%);
     transition: transform 250ms ease;
-    -webkit-transform: translateY(200%);
     transform: translateY(200%);
     width: 100%;
     background: rgba(0, 0, 0, 0.7);
 }
 
 .keyboardDrawer:global(.active) {
-    -webkit-transform: translateY(0%);
     transform: translateY(0%);
 }
 
