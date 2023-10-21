@@ -1,3 +1,5 @@
+@use 'sass:color' as sc;
+
 @use '../styles/colours';
 @use '../styles/funcs' as fn;
 
@@ -10,7 +12,7 @@
     transition: width 250ms ease-in-out;
     z-index: 100;
     padding-top: fn.px-to-rem(120px);
-    background: rgba(54, 54, 54, 0.8);
+    background: sc.adjust(colours.$onyx, $alpha: -0.2);
 }
 
 .mainNav:global(.collapsed) {

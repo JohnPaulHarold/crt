@@ -1,3 +1,5 @@
+@use 'sass:color' as sc;
+
 @use '../styles/colours';
 @use '../styles/funcs' as fn;
 
@@ -24,7 +26,7 @@
     transition: transform 250ms ease;
     transform: translateY(200%);
     width: 100%;
-    background: rgba(0, 0, 0, 0.7);
+    background: sc.adjust(colours.$black, $alpha: -0.2);
 }
 
 .keyboardDrawer:global(.active) {
