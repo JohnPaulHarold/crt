@@ -2,7 +2,6 @@
 @use '../../styles/funcs' as fn;
 @use './local-colours' as lc;
 
-
 .type-wrapper {
     padding: fn.px-to-rem(9px);
     background-color: lc.$background;
@@ -29,5 +28,5 @@
 
 a.codec:focus {
     outline: inset fn.px-to-rem(9px) solid col.$brandOrange;
-    border-radius: fn.px-to-rem(6px)
+    border-radius: fn.px-to-rem(6px);
 }
