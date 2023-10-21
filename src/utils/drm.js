@@ -1,6 +1,7 @@
 /**
  * @typedef {import('../declarations/drm').SecurityLevel} SecurityLevel
  */
+import { DrmLevels } from '../models/DrmLevels';
 import { DrmType } from '../models/DrmType';
 import { KeySystem } from '../models/KeySystem';
 
@@ -12,25 +13,25 @@ import { KeySystem } from '../models/KeySystem';
  * @returns {Promise<boolean>}
  */
 function isKeySystemSupported(keySystem, contentType, robustness = '') {
-    if (navigator.requestMediaKeySystemAccess) {
-        return navigator
-            .requestMediaKeySystemAccess(keySystem, [
-                {
-                    initDataTypes: ['cenc'],
-                    videoCapabilities: [
-                        {
-                            contentType,
-                            robustness,
-                        },
-                    ],
-                },
-            ])
-            .then((access) => access.createMediaKeys())
-            .then(() => true)
-            .catch(() => false);
-    } else {
-        return Promise.reject();
+    if (!navigator.requestMediaKeySystemAccess) {
+        return Promise.reject(false);
     }
+
+    return navigator
+        .requestMediaKeySystemAccess(keySystem, [
+            {
+                initDataTypes: ['cenc'],
+                videoCapabilities: [
+                    {
+                        contentType,
+                        robustness,
+                    },
+                ],
+            },
+        ])
+        .then((access) => access.createMediaKeys())
+        .then(() => true)
+        .catch(() => false);
 }
 
 /**
@@ -64,19 +65,19 @@ function getWidevine(contentType) {
                     supported,
                     securityLevels: [
                         {
-                            name: 'L1',
+                            name: DrmLevels.L1,
                             supported:
                                 supportedRobustness.includes('HW_SECURE_ALL'),
                         },
                         {
-                            name: 'L2',
+                            name: DrmLevels.L2,
                             supported:
                                 supportedRobustness.includes(
                                     'HW_SECURE_CRYPTO'
                                 ),
                         },
                         {
-                            name: 'L3',
+                            name: DrmLevels.L3,
                             supported:
                                 supportedRobustness.includes(
                                     'SW_SECURE_CRYPTO'
@@ -106,6 +107,8 @@ function getPlayreadyLegacy(contentType) {
     );
 }
 
+// see https://github.com/videojs/videojs-contrib-eme/blob/33dfe13b64024f099561ce86c253a27ed6194b8a/src/cdm.js#L27
+// and: https://github.com/shaka-project/shaka-player/issues/818#issuecomment-405695770
 /**
  * @name getPlayready
  * @param {string} contentType
@@ -123,29 +126,29 @@ function getPlayready(contentType) {
         .then((promisesResolved) =>
             promisesResolved.filter((robustness) => !!robustness)
         )
-        .then((supportedRobustness) =>
-            isKeySystemSupported(KeySystem.PLAYREADY, contentType).then(
+        .then((supportedRobustness) => {
+            return isKeySystemSupported(KeySystem.PLAYREADY, contentType).then(
                 (supported) => ({
                     type: DrmType.PLAYREADY,
                     keySystem: KeySystem.PLAYREADY,
                     supported,
                     securityLevels: [
                         {
-                            name: 'SL150',
+                            name: DrmLevels.SL150,
                             supported: supportedRobustness.includes('150'),
                         },
                         {
-                            name: 'SL2000',
+                            name: DrmLevels.SL2000,
                             supported: supportedRobustness.includes('2000'),
                         },
                         {
-                            name: 'SL3000',
+                            name: DrmLevels.SL3000,
                             supported: supportedRobustness.includes('3000'),
                         },
                     ],
                 })
-            )
-        );
+            );
+        });
 }
 
 /**

@@ -10,7 +10,7 @@ import { Home } from './views/home.js';
 import { Search } from './views/search.js';
 import { Show } from './views/show.js';
 import { FormExample } from './views/formExample.js';
-import { Canivideo } from './views/canivideo.js';
+import { Canivideo } from './views/canivideo/canivideo.js';
 import { Diff } from './views/diff.js';
 import { Popupdemo } from './views/popupdemo.js';
 
