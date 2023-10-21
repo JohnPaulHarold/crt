@@ -202,6 +202,9 @@ export class VList extends BaseView {
     constructor(options) {
         super(options);
 
+        /**
+         * @todo temp stub data
+         */
         this.bigData = buildBigData(600);
 
         navigationBus.on(
