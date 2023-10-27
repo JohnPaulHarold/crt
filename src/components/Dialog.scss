@@ -1,3 +1,6 @@
+@use '../styles/colours' as col;
+@use '../styles/funcs' as fn;
+
 .dialog {
     width: 50%;
     height: 50%;
@@ -5,11 +8,11 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #2a2a2a;
+    background-color: col.$cavern;
 }
 
 .dialogTitleContainer {
-    background-color: #5e00ff;
+    background-color: col.$brandPurple;
 }
 
 .dialogTitle {
@@ -21,14 +24,14 @@
     display: inline-block;
     border: 0;
     background: none;
-    height: 2rem;
-    width: 2rem;
+    height: fn.px-to-rem(48px);
+    width: fn.px-to-rem(48px);
     vertical-align: top;
-    color: #1c004c;
-    margin-right: 1rem;
+    color: col.$onyx;
+    margin-right: fn.px-to-rem(24px);
 }
 
 .dialogClose:global(.focused) {
-    color: white;
+    color: col.$white;
     background-color: none;
 }

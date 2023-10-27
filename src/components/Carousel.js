@@ -6,7 +6,7 @@ import { div, section } from '../libs/makeElement';
 import { cx } from '../utils/dom/cx';
 import { toTitleCase } from '../utils/string/toTitleCase';
 
-import s from './Carousel.css';
+import s from './Carousel.scss';
 import { Heading } from './Heading';
 /**
  *

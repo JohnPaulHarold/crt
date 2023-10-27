@@ -1,0 +1,53 @@
+@use 'sass:color' as sc;
+
+@use '../styles/colours' as col;
+@use '../styles/funcs' as fn;
+
+.mainNav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: fn.px-to-rem(450px);
+    height: 100%;
+    transition: width 250ms ease-in-out;
+    z-index: 100;
+    padding-top: fn.px-to-rem(120px);
+    background: sc.adjust(col.$onyx, $alpha: -0.2);
+}
+
+.mainNav:global(.collapsed) {
+    width: fn.px-to-rem(150px);
+    background-color: transparent;
+}
+
+.mainNav ol {
+    max-width: fn.px-to-rem(150px);
+}
+
+.mainNav li {
+    margin-bottom: fn.px-to-rem(24px);
+}
+
+.mainNav a {
+    padding: fn.px-to-rem(12px);
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+    border-radius: 0 fn.px-to-rem(24px) fn.px-to-rem(24px) 0;
+    color: col.$white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.mainNav :global(a.focused) {
+    color: col.$black;
+    background-color: col.$primary;
+}
+
+.mainNav :global(a.active:not(.focused)) {
+    background-color: col.$shadow;
+}
+
+.mainNav > div {
+    display: block;
+}

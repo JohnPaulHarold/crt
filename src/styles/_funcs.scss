@@ -1,0 +1,16 @@
+@use 'sass:math';
+
+// see https://css-tricks.com/snippets/sass/strip-unit-function/
+@function strip-unit($unitValue) {
+    @if unitless($unitValue) and type-of($unitValue) == 'number' {
+        @return $unitValue;
+    }
+
+    @return math.div($unitValue, $unitValue * 0 + 1);
+}
+
+@function px-to-rem($px) {
+    $rootFontsizeInPx: 24;
+
+    @return math.div(strip-unit($px), $rootFontsizeInPx) * 1rem;
+}

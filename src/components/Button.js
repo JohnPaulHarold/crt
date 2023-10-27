@@ -5,7 +5,7 @@
 import { button } from '../libs/makeElement';
 import { cx } from '../utils/dom/cx';
 
-import s from './Button.css';
+import s from './Button.scss';
 /**
  *
  * @param {ButtonProps} props

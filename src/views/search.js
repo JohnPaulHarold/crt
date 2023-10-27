@@ -19,7 +19,7 @@ import { Orientation } from '../models/Orientation';
 import { Keyboard } from '../components/Keyboard';
 import { Carousel } from '../components/Carousel';
 
-import s from './search.css';
+import s from './search.scss';
 /**
  * @extends BaseView
  */

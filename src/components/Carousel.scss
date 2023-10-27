@@ -1,19 +1,21 @@
+@use '../styles/funcs' as fn;
+
 .carousel {
     display: block;
-    margin-bottom: 2rem;
+    margin-bottom: fn.px-to-rem(48px);
 }
 
 .carouselTitle {
     font-weight: bold;
-    font-size: 1.62rem;
-    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    margin-bottom: fn.px-to-rem(24px);
 }
 
 .carouselInner {
     display: block;
     position: relative;
     overflow: hidden;
-    min-height: 180px;
+    min-height: fn.px-to-rem(180px);
 }
 
 .orientVertical .carouselInner {
@@ -45,7 +47,7 @@
     display: inline-block;
     width: auto;
     height: auto;
-    margin-right: 20px;
+    margin-right: fn.px-to-rem(24px);
 }
 
 .orientVertical > .carouselSlider {

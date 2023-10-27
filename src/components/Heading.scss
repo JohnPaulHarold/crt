@@ -1,0 +1,17 @@
+@use '../styles/colours' as col;
+
+.primary {
+    color: col.$white;
+}
+.secondary {
+    color: col.$neutral;
+}
+.highlight {
+    color: col.$primary;
+}
+.disabled {
+    color: col.$dust;
+}
+.error {
+    color: col.$error;
+}

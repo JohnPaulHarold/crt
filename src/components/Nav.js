@@ -6,7 +6,7 @@
 import { a, li, nav, ol } from '../libs/makeElement';
 import { cx } from '../utils/dom/cx';
 
-import s from './Nav.css';
+import s from './Nav.scss';
 
 /**
  *

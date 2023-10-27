@@ -4,7 +4,7 @@
 
 import { div, section } from '../libs/makeElement';
 
-import s from './Grid.css';
+import s from './Grid.scss';
 
 /**
  *

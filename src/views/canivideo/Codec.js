@@ -6,7 +6,7 @@
 import { div } from '../../libs/makeElement';
 import { DrmType } from '../../models/DrmType';
 
-import s from './Codec.css';
+import s from './Codec.scss';
 import { cx } from '../../utils/dom/cx';
 import { getValidClass } from '../../utils/getValidClass';
 import { DrmNames } from '../../models/DrmNames';
