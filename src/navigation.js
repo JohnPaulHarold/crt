@@ -1,13 +1,18 @@
 import { getNextFocus } from '@bbc/tv-lrud-spatial';
 
 import { scrollAction } from './libs/deadSea';
+
 import { $dataGet } from './utils/dom/$dataGet';
 import { assertKey } from './utils/keys';
+import { throttle } from './utils/function/throttle';
+import { collectionToArray } from './utils/dom/collectionToArray';
+import { normaliseEventTarget } from './utils/dom/normaliseEventTarget';
+
 import { AdditionalKeys } from './models/AdditionalKeys';
 import { Direction } from './models/Direction';
-import { throttle } from './utils/function/throttle';
+
 import { animations } from './config/animations';
-import { collectionToArray } from './utils/dom/collectionToArray';
+
 import { PubSub } from './state/PubSub';
 
 /** @type {HTMLElement|undefined} */
@@ -85,14 +90,17 @@ export function handleKeyDown(event, scope) {
     ) {
         let nextFocus;
 
+        // special case for tom
+        const elTarget = normaliseEventTarget(event);
+
         if (
-            event.target === document.body &&
+            elTarget === document.body &&
             lastFocus instanceof HTMLElement
         ) {
             moveFocus(lastFocus);
             nextFocus = getNextFocus(lastFocus, event.keyCode, _scope);
-        } else if (event.target instanceof HTMLElement) {
-            nextFocus = getNextFocus(event.target, event.keyCode, _scope);
+        } else if (elTarget instanceof HTMLElement) {
+            nextFocus = getNextFocus(elTarget, event.keyCode, _scope);
         } else {
             // we have no real starting point, so assume we're starting anew,
             // like at app start
@@ -257,17 +265,19 @@ function handleBack(event) {
 function handleEnter(event) {
     event.preventDefault();
 
+    const elTarget = normaliseEventTarget(event);
+
     if (
-        event.target &&
-        event.target instanceof HTMLAnchorElement &&
-        event.target.nodeName === 'A'
+        elTarget &&
+        elTarget instanceof HTMLAnchorElement &&
+        elTarget.nodeName === 'A'
     ) {
-        if ($dataGet(event.target, 'external')) {
+        if ($dataGet(elTarget, 'external')) {
             // it is an external link
-            return handleExternal(event.target.href);
+            return handleExternal(elTarget.href);
         }
 
-        event.target.hash && handleNav(event.target.hash);
+        elTarget.hash && handleNav(elTarget.hash);
     }
 }
 
@@ -291,9 +301,10 @@ export function initNavigation() {
     // todo: probably need a pause/resume spatial navigation method so
     // you can toggle between pointer and spatial based modalities
     window.addEventListener('click', handleClick);
-    window.addEventListener('keydown', (...args) =>
+    window.addEventListener('keydown', (...args) => {
+        console.log('[keydown] ', ...args);
         throttle(_handleKeyDown, 60, args)
-    );
+    });
 
     const initialFocus = getNextFocus();
 

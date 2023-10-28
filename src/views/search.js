@@ -20,6 +20,7 @@ import { Keyboard } from '../components/Keyboard';
 import { Carousel } from '../components/Carousel';
 
 import s from './search.scss';
+import { normaliseEventTarget } from '../utils/dom/normaliseEventTarget';
 /**
  * @extends BaseView
  */
@@ -62,11 +63,12 @@ export class Search extends BaseView {
      * @param {KeyboardEvent} event
      */
     handleKeyboard(event) {
+        const elTarget = normaliseEventTarget(event);
         if (
-            event.target instanceof HTMLElement &&
+            elTarget instanceof HTMLElement &&
             assertKey(event, AdditionalKeys.ENTER)
         ) {
-            const keyPressValue = $dataGet(event.target, 'keyValue');
+            const keyPressValue = $dataGet(elTarget, 'keyValue');
 
             if (typeof keyPressValue === 'string') {
                 this.updateSearchInput(keyPressValue);
