@@ -109,7 +109,7 @@ export function handleKeyDown(event, scope) {
 
         if (nextFocus) {
             if (lastFocus) {
-                emitMoveEvent(lastFocus, nextFocus);
+                emitMoveEvent(event, lastFocus, nextFocus);
             }
 
             moveFocus(nextFocus, lastFocus);
@@ -127,17 +127,20 @@ export const NavigationEvents = {
 };
 
 /**
- *
+ * @name emitMoveEvent
+ * @param {KeyboardEvent} event
  * @param {HTMLElement} last
  * @param {HTMLElement} next
  */
-function emitMoveEvent(last, next) {
+function emitMoveEvent(event, last, next) {
+    const direction = getDirectionFromKeyCode(event.keyCode);
     const [lastC] = getElementContainer(last);
     const [nextC] = getElementContainer(next);
 
     navigationBus.emit(NavigationEvents.MOVE, {
         type: NavigationEvents.MOVE,
         detail: {
+            direction,
             lastElement: last,
             nextElement: next,
             lastContainer: lastC,

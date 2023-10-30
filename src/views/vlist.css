@@ -1,0 +1,8 @@
+.data {
+  border: 3px solid grey;
+  display: block;
+}
+
+.data:global(.focused) {
+  border: 3px solid #ffde2b;
+}

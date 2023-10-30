@@ -1,6 +1,6 @@
 /**
  * @name removeElement
- * @param {HTMLElement} el
+ * @param {HTMLElement|Element} el
  * @returns {void}
  */
 export function removeElement(el) {
