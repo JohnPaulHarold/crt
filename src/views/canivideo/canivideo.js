@@ -18,7 +18,7 @@ import { a, div } from '../../libs/makeElement';
 import { getDrm } from '../../utils/drm';
 import { isCodecSupported } from '../../utils/isCodecSupported';
 
-import s from './canivideo.css';
+import s from './canivideo.scss';
 
 /**
  * @extends BaseView

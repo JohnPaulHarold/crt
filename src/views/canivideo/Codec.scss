@@ -1,0 +1,82 @@
+@use '../../styles/colours' as col;
+@use '../../styles/funcs' as fn;
+@use './local-colours' as lc;
+
+* {
+    box-sizing: border-box;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 120%;
+    padding: fn.px-to-rem(12px) 0;
+}
+
+.codec-wrapper {
+    border: fn.px-to-rem(3px) solid col.$slate;
+    margin: fn.px-to-rem(12px) 0;
+    border-radius: fn.px-to-rem(3px);
+    box-shadow: lc.$shadow 0 fn.px-to-rem(3px) fn.px-to-rem(6px);
+}
+
+.whole > div {
+    width: 100%;
+    border-top: fn.px-to-rem(3px) solid col.$slate;
+    border-right: fn.px-to-rem(3px) solid col.$slate;
+}
+
+.half > div {
+    width: 50%;
+    border-top: fn.px-to-rem(3px) solid col.$slate;
+    border-right: fn.px-to-rem(3px) solid col.$slate;
+}
+
+.third > div {
+    width: 33.33333%;
+    border-top: fn.px-to-rem(3px) solid col.$slate;
+    border-right: fn.px-to-rem(3px) solid col.$slate;
+}
+
+.quarter > div {
+    width: 25%;
+    border-top: fn.px-to-rem(3px) solid col.$slate;
+    border-right: fn.px-to-rem(3px) solid col.$slate;
+}
+
+.whole > div:last-child,
+.half > div:last-child,
+.third > div:last-child,
+.quarter > div:last-child {
+    border-right: none;
+}
+
+/* ----- UTILITY ----- */
+
+.title-wrapper {
+    padding: fn.px-to-rem(12px);
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.text-center {
+    text-align: center;
+}
+
+div.valid {
+    background: lc.$supported;
+}
+
+.box {
+    background: lc.$unsupported;
+    padding: fn.px-to-rem(12px);
+}
+
+.b-bottom {
+    border-bottom: fn.px-to-rem(3px) solid col.$slate;
+}
+
+.v-align-top {
+    vertical-align: top;
+}

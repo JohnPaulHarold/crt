@@ -4,7 +4,7 @@
 
 import { div, label, input } from '../libs/makeElement';
 
-import s from './TextInput.css';
+import s from './TextInput.scss';
 
 /**
  * @name TextInput

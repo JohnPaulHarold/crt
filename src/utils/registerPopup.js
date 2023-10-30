@@ -1,6 +1,7 @@
 import { AdditionalKeys } from '../models/AdditionalKeys';
 import { focusInto, setLrudScope } from '../navigation';
 import { handleKeydownOnElement } from './dom/handleKeydownOnElement';
+import { normaliseEventTarget } from './dom/normaliseEventTarget';
 
 /**
  * @name registerPopup
@@ -12,8 +13,10 @@ import { handleKeydownOnElement } from './dom/handleKeydownOnElement';
 export function registerPopup(popupEl, handler, outlet) {
     /** @type { (event: KeyboardEvent) => void }  */
     const popupCallback = (event) => {
-        if (event.target instanceof HTMLElement) {
-            handler(event.target.id);
+        const elTarget = normaliseEventTarget(event);
+        
+        if (elTarget instanceof HTMLElement) {
+            handler(elTarget.id);
         }
     };
 

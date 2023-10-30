@@ -1,9 +1,12 @@
+@use '../styles/colours' as col;
+@use '../styles/funcs' as fn;
+
 .tile {
-    width: 20rem;
-    height: 11.25rem;
+    width: fn.px-to-rem(480px);
+    height: fn.px-to-rem(270px);
     display: inline-block;
-    background-color: #5e00ff;
-    color: white;
+    background-color: col.$brandPurple;
+    color: col.$white;
     font-size: 2rem;
     overflow: hidden;
     position: relative;
@@ -18,5 +21,5 @@
 }
 
 :global(a.focused) .tile {
-    background-color: #ff6700;
+    background-color: col.$brandOrange;
 }

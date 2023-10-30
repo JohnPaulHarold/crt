@@ -4,7 +4,7 @@
 
 import { div, input, label, span } from '../libs/makeElement';
 
-import s from './Checkbox.css';
+import s from './Checkbox.scss';
 
 /**
  * @name Checkbox

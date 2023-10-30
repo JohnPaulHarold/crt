@@ -21,8 +21,9 @@ import { showData } from '../stubData/showData';
 
 import Logo from '../assets/Public_Domain_Mark_button.svg.png';
 
-import s from './show.css';
+import s from './show.scss';
 import { Heading } from '../components/Heading';
+import { normaliseEventTarget } from '../utils/dom/normaliseEventTarget';
 
 /**
  * @extends BaseView
@@ -90,10 +91,11 @@ export class Show extends BaseView {
      * @param {KeyboardEvent} event
      */
     customHandleKeyDown(event) {
+        const elTarget = normaliseEventTarget(event);
         const navEl =
-            event.target &&
-            event.target instanceof HTMLElement &&
-            event.target.id.match(/nav/);
+            elTarget &&
+            elTarget instanceof HTMLElement &&
+            elTarget.id.match(/nav/);
         const isUpOrDown = assertKey(event, [Direction.UP, Direction.DOWN]);
 
         if (isUpOrDown && this.scope && !navEl) {

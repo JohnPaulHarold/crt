@@ -1,7 +1,10 @@
+@use '../styles/colours' as col;
+@use '../styles/funcs' as fn;
+
 .checkbox label {
     display: block;
     position: relative;
-    padding-left: 2rem;
+    padding-left: fn.px-to-rem(48px);
     outline: none;
 }
 
@@ -14,20 +17,20 @@
 
 .checkbox label span {
     position: absolute;
-    border: 0.2rem solid #a8a8a8;
+    border: fn.px-to-rem(3px) solid col.$dust;
     /* position to the free space in <label> */
     top: 0;
     left: 0;
-    width: 20px;
-    height: 20px;
-    background-color: #2c2c2c;
+    width: fn.px-to-rem(24px);
+    height: fn.px-to-rem(24px);
+    background-color: col.$slate;
     transition: 0.3s background-color; /* slight transition */
 }
 
 .checkbox label:global(.focused) span {
-    border: 0.2rem solid #ffde2b;
+    border: fn.px-to-rem(3px) solid col.$primary;
 }
 
 .checkbox label input:checked ~ span {
-    background-color: #ffde2b;
+    background-color: col.$primary;
 }

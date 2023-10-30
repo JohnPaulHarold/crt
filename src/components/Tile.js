@@ -4,7 +4,7 @@
 
 import { div, span } from '../libs/makeElement';
 
-import s from './Tile.css';
+import s from './Tile.scss';
 /**
  *
  * @param {TileProps} props

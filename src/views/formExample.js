@@ -23,8 +23,9 @@ import { Keyboard } from '../components/Keyboard';
 
 import { focusInto, moveFocus, setLrudScope } from '../navigation';
 
-import s from './formExample.css';
+import s from './formExample.scss';
 import { $dataSet } from '../utils/dom/$dataSet';
+import { normaliseEventTarget } from '../utils/dom/normaliseEventTarget';
 
 /**
  * @type {HTMLFormElement}
@@ -161,11 +162,12 @@ export class FormExample extends BaseView {
      * @param {KeyboardEvent} event
      */
     handleKeyboard(event) {
+        const elTarget = normaliseEventTarget(event);
         if (
-            event.target instanceof HTMLElement &&
+            elTarget instanceof HTMLElement &&
             assertKey(event, AdditionalKeys.ENTER)
         ) {
-            const keyPressValue = $dataGet(event.target, 'keyValue');
+            const keyPressValue = $dataGet(elTarget, 'keyValue');
             const inputName = this.activeInput && this.activeInput.name;
 
             switch (keyPressValue) {
@@ -207,12 +209,14 @@ export class FormExample extends BaseView {
      * @param {KeyboardEvent} event
      */
     handleForm(event) {
+        const elTarget = normaliseEventTarget(event);
+
         if (assertKey(event, AdditionalKeys.ENTER)) {
             if (
-                event.target instanceof HTMLInputElement &&
-                event.target.type === 'text'
+                elTarget instanceof HTMLInputElement &&
+                elTarget.type === 'text'
             ) {
-                this.activeInput = event.target;
+                this.activeInput = elTarget;
                 // store the current value, in case we cancel
                 // and need to restore
                 $dataSet(
@@ -234,8 +238,8 @@ export class FormExample extends BaseView {
                 this.listenToKeyboard();
             }
 
-            if (event.target instanceof HTMLLabelElement) {
-                const name = event.target.htmlFor;
+            if (elTarget instanceof HTMLLabelElement) {
+                const name = elTarget.htmlFor;
                 const qs = `[name="${name}"]`;
                 const input = document.querySelector(qs);
 

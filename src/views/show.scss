@@ -1,3 +1,6 @@
+@use '../styles/colours' as col;
+@use '../styles/funcs' as fn;
+
 .showBleedImage {
     position: absolute;
 }
@@ -9,17 +12,13 @@
 
 .showLogo {
     position: relative;
-    -webkit-transform: scale(1);
     transform: scale(1);
-    -webkit-transform-origin: left top;
     transform-origin: left top;
-    -webkit-transition: -webkit-transform 250ms ease;
     transition: transform 250ms ease;
-    height: 10rem;
+    height: fn.px-to-rem(240px);
 }
 
 .showLogo:global(.min) {
-    -webkit-transform: scale(0.25);
     transform: scale(0.25);
 }
 
@@ -29,29 +28,28 @@
 
 .showDescription {
     white-space: normal;
+    /*! autoprefixer: off */
     display: -webkit-box;
     -webkit-line-clamp: 6;
     -webkit-box-orient: vertical;
+    /* autoprefixer: on */
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.buttonRow {
-}
-
 .suggestions {
     position: relative;
-    margin-top: 10rem;
+    margin-top: fn.px-to-rem(240px);
 }
 
 .suggestions :global(.lazy-image) {
-    width: 16rem;
-    height: 9rem;
-    margin: 0 1rem 1rem 0;
-    border: 0.2rem solid transparent;
-    border-radius: 0.5rem;
+    width: fn.px-to-rem(384px);
+    height: fn.px-to-rem(216px);
+    margin: 0 fn.px-to-rem(24px) fn.px-to-rem(24px) 0;
+    border: fn.px-to-rem(6px) solid transparent;
+    border-radius: fn.px-to-rem(12px);
 }
 
 .suggestions a:global(.focused) :global(.lazy-image) {
-    border: 0.2rem solid #ffde2b;
+    border: fn.px-to-rem(6px) solid col.$primary;
 }

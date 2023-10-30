@@ -5,7 +5,7 @@
 import { div } from '../libs/makeElement';
 import { cx } from '../utils/dom/cx';
 
-import s from './Notification.css';
+import s from './Notification.scss';
 
 /**
  * @name Notification

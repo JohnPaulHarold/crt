@@ -21,6 +21,7 @@ import { AdditionalKeys } from '../models/AdditionalKeys';
 
 import { focusInto } from '../navigation';
 import { appOutlets } from '../outlets';
+import { normaliseEventTarget } from '../utils/dom/normaliseEventTarget';
 
 /**
  *
@@ -77,10 +78,10 @@ export class Home extends BaseView {
      */
     handleBack(event) {
         if (assertKey(event, AdditionalKeys.BACKSPACE)) {
-            const target = event.target;
+            const elTarget = normaliseEventTarget(event);
 
-            if (target instanceof HTMLElement) {
-                const nextBack = findNextBackStop(target);
+            if (elTarget instanceof HTMLElement) {
+                const nextBack = findNextBackStop(elTarget);
 
                 if (nextBack) {
                     focusInto(nextBack);
@@ -107,11 +108,12 @@ export class Home extends BaseView {
      * @param {KeyboardEvent} event
      */
     handleKeyboard(event) {
+        const elTarget  = normaliseEventTarget(event);
         if (
-            event.target instanceof HTMLAnchorElement &&
+            elTarget instanceof HTMLAnchorElement &&
             assertKey(event, AdditionalKeys.ENTER)
         ) {
-            const keyPressValue = event.target.href;
+            const keyPressValue = elTarget.href;
             window.location.href = keyPressValue;
         }
     }
