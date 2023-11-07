@@ -3,7 +3,7 @@ import { getNextFocus } from '@bbc/tv-lrud-spatial';
 import { scrollAction } from './libs/deadSea';
 
 import { $dataGet } from './utils/dom/$dataGet';
-import { assertKey } from './utils/keys';
+import { assertKey, getDirectionFromKeyCode } from './utils/keys';
 import { throttle } from './utils/function/throttle';
 import { collectionToArray } from './utils/dom/collectionToArray';
 import { normaliseEventTarget } from './utils/dom/normaliseEventTarget';
