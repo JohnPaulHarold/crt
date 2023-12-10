@@ -3,7 +3,11 @@ import { getNextFocus } from '@bbc/tv-lrud-spatial';
 import { scrollAction } from './libs/deadSea';
 
 import { $dataGet } from './utils/dom/$dataGet';
-import { assertKey, getDirectionFromKeyCode } from './utils/keys';
+import {
+    assertKey,
+    getDirectionFromKeyCode,
+    getKeyCodeFromDirection,
+} from './utils/keys';
 import { throttle } from './utils/function/throttle';
 import { collectionToArray } from './utils/dom/collectionToArray';
 import { normaliseEventTarget } from './utils/dom/normaliseEventTarget';
@@ -14,12 +18,14 @@ import { Direction } from './models/Direction';
 import { animations } from './config/animations';
 
 import { PubSub } from './state/PubSub';
+import { Orientation } from './models/Orientation';
 
 /** @type {HTMLElement|undefined} */
 let _scope = undefined;
 /** @type {HTMLElement=} */
 let lastFocus;
 let _handleKeyDown = handleKeyDown;
+let usingPointer = false;
 
 /**
  * @param {HTMLElement} [newScope]
@@ -66,6 +72,10 @@ export const navigationBus = new PubSub();
 export function handleKeyDown(event, scope) {
     event.preventDefault();
 
+    if (usingPointer) {
+        usingPointer = false;
+    }
+
     if (scope) {
         _scope = scope;
     }
@@ -93,10 +103,7 @@ export function handleKeyDown(event, scope) {
         // special case for tom
         const elTarget = normaliseEventTarget(event);
 
-        if (
-            elTarget === document.body &&
-            lastFocus instanceof HTMLElement
-        ) {
+        if (elTarget === document.body && lastFocus instanceof HTMLElement) {
             moveFocus(lastFocus);
             nextFocus = getNextFocus(lastFocus, event.keyCode, _scope);
         } else if (elTarget instanceof HTMLElement) {
@@ -262,8 +269,8 @@ function handleBack(event) {
 }
 
 /**
- * handleEnter
- * @param {KeyboardEvent} event
+ * @name handleEnter
+ * @param {KeyboardEvent|MouseEvent} event
  */
 function handleEnter(event) {
     event.preventDefault();
@@ -282,16 +289,79 @@ function handleEnter(event) {
 
         elTarget.hash && handleNav(elTarget.hash);
     }
+
+    if (usingPointer && elTarget) {
+        // the carousel prev/next buttons
+        if (elTarget instanceof HTMLButtonElement) {
+            const increment = $dataGet(elTarget, 'pointerIncrement');
+            const arrowContainer = findParentByQs(
+                elTarget,
+                '[data-deadsea-arrows-for-id]'
+            );
+
+            if (!(arrowContainer instanceof HTMLElement)) return;
+
+            const scrollableId = $dataGet(arrowContainer, 'deadseaArrowsForId');
+            const scrollable = document.querySelector(
+                '[data-deadsea-id="' + scrollableId + '"]'
+            );
+
+            if (scrollable instanceof HTMLElement) {
+                const orientation = $dataGet(scrollable, 'deadseaOrientation');
+                const incObj = {
+                    increment: increment,
+                    forId: scrollable,
+                };
+
+                // if the increment is only 1 in a direction, we can
+                // keep on using LRUD and just get the next logical
+                // focusable
+                let nextFocus;
+
+                if (increment === 1 || increment === -1) {
+                    const direction =
+                        orientation === Orientation.HORIZONTAL
+                            ? [Direction.LEFT, Direction.RIGHT]
+                            : [Direction.UP, Direction.DOWN];
+
+                    const keyCode = getKeyCodeFromDirection(
+                        direction[Math.max(0, increment)]
+                    );
+                    nextFocus = getNextFocus(lastFocus, keyCode);
+
+                    if (nextFocus) {
+                        moveFocus(nextFocus, lastFocus);
+                        lastFocus = nextFocus;
+                    }
+                }
+            }
+        }
+    }
 }
 
 /**
- * handleClick
+ * @name handleClick
  * @param {MouseEvent} event
  */
 function handleClick(event) {
     event.preventDefault();
-    // log it out while we figure out what to do
-    console.log('[navigation][handleClick] ');
+    if (!usingPointer) {
+        usingPointer = true;
+    }
+
+    handleEnter(event);
+}
+
+/**
+ * @name handleMouseMove
+ * @param {MouseEvent} event
+ */
+function handleMouseMove(event) {
+    event.preventDefault();
+
+    if (!usingPointer) {
+        usingPointer = true;
+    }
 }
 
 /**
@@ -303,10 +373,10 @@ export function initNavigation() {
     // anything, the current focus is lost
     // todo: probably need a pause/resume spatial navigation method so
     // you can toggle between pointer and spatial based modalities
+    window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('click', handleClick);
     window.addEventListener('keydown', (...args) => {
-        console.log('[keydown] ', ...args);
-        throttle(_handleKeyDown, 60, args)
+        throttle(_handleKeyDown, 60, args);
     });
 
     const initialFocus = getNextFocus();
@@ -373,4 +443,20 @@ export function getCurrentFocus() {
             id: focusableEl.getAttribute('id'),
         };
     }
+}
+
+/**
+ * @name findParentByQs
+ * @param {HTMLElement} el
+ * @param {string} qs
+ * @returns {HTMLElement | null}
+ */
+function findParentByQs(el, qs) {
+    let match = el && el.querySelector(qs);
+
+    if (match instanceof HTMLElement) {
+        return match;
+    }
+
+    return el.parentElement && findParentByQs(el.parentElement, qs);
 }

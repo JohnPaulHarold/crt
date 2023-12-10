@@ -1,4 +1,33 @@
 @use '../styles/funcs' as fn;
+@use '../styles/colours' as col;
+
+.arrows {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+    left: 50%;
+}
+
+.arrow {
+    position: absolute;
+    background: none;
+    color: col.$mist;
+}
+
+.arrow:hover {
+    background: col.$mist;
+    color: col.$black;
+}
+
+.arrowleft {
+    left: 0;
+}
+
+.arrowRight {
+    right: 0;
+}
 
 .carousel {
     display: block;
@@ -36,6 +65,10 @@
 
 .orientHorizontal .transitionNoTransform {
     transition: left 0.25s ease-in-out;
+}
+
+.sliderOuter {
+    position: relative;
 }
 
 .carouselSlider {

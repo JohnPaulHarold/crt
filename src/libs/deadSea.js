@@ -16,8 +16,17 @@ const focusedQuery = '.focused';
  */
 function getScrollEl(el) {
     if (!el || !el.parentElement) return;
+    const orientation = el.dataset.deadseaOrientation;
+    const arrowsForId = $dataGet(el, 'deadseaArrowsForId');
+    const sliderElForArrows = document.querySelector(
+        "[data-deadsea-id='" + arrowsForId + "']"
+    );
 
-    if (el.dataset.deadseaOrientation) {
+    if (sliderElForArrows instanceof HTMLElement) {
+        return sliderElForArrows;
+    }
+
+    if (orientation) {
         return el;
     }
 
@@ -27,64 +36,94 @@ function getScrollEl(el) {
 /**
  * @name findScrollableFromFocusEl
  * @param {HTMLElement} el
- * @param {HTMLElement[]} scrollables
- * @returns {[HTMLElement, number]}
+ * @param {HTMLElement[]} scrollableItems
+ * @param {object} [incrementObject]
+ * @param {number} [incrementObject.increment]
+ * @param {string} [incrementObject.forId]
+ * @returns {{el: HTMLElement | null, index: number}}
  */
-function findScrollableFromFocusEl(el, scrollables) {
-    let directChildIndex = scrollables.indexOf(el);
+function findScrollableItemUsingFocusEl(el, scrollableItems, incrementObject) {
+    let increment = (incrementObject && incrementObject.increment) || 0;
+    let directChildIndex = scrollableItems.indexOf(el);
+
     if (directChildIndex > -1) {
-        return [scrollables[directChildIndex], directChildIndex];
+        return {
+            el: scrollableItems[directChildIndex + increment],
+            index: directChildIndex + increment,
+        };
     }
 
     /** @type {HTMLElement} */
     let matched = el; // set to satisfy TypeScript
 
-    for (let i = 0, l = scrollables.length; i < l; i++) {
-        const scrollable = scrollables[i];
+    for (let i = 0, l = scrollableItems.length; i < l; i++) {
+        const scrollable = scrollableItems[i];
         if (scrollable.contains(el)) {
             matched = scrollable;
             directChildIndex = i;
+            if (
+                incrementObject &&
+                scrollable.dataset.deadseaArrowsForId === incrementObject.forId
+            ) {
+                directChildIndex + increment;
+            }
             break;
         }
     }
 
-    return [matched, directChildIndex];
+    return {
+        el: matched,
+        index: directChildIndex,
+    };
 }
 
 /**
  * @name calculateOffset
  * @param {number[]} offsets
- * @param {number} scrollableIndex
+ * @param {number} scrollableItemIndex
  * @param {number} startOffset
  */
-function calculateOffset(offsets, scrollableIndex, startOffset) {
-    return offsets[Math.max(0, scrollableIndex - startOffset)];
+function calculateOffset(offsets, scrollableItemIndex, startOffset) {
+    return offsets[Math.max(0, scrollableItemIndex - startOffset)];
 }
 
 /**
  * @name doTheHardWork
  * @param {HTMLElement} scrollEl
  * @param {boolean} useTransforms
+ * @param {object} [incrementObject]
  */
-function doTheHardWork(scrollEl, useTransforms) {
+function doTheHardWork(scrollEl, useTransforms, incrementObject) {
     // todo: either tell the type system to always expect an id, or generate one for it.
     const focusedEl = document.querySelector(focusedQuery);
 
+    // get various data attributes from the carousel element
     const scrollId = $dataGet(scrollEl, 'deadseaId') || '';
     const orientation = $dataGet(scrollEl, 'deadseaOrientation');
     const qs = $dataGet(scrollEl, 'deadseaChildQuery') || '';
     const startOffset = $dataGet(scrollEl, 'deadseaStartOffset') || 0;
     const startQs = $dataGet(scrollEl, 'deadseaScrollStartQuery') || '';
+
     const offsetProp =
         orientation === Orientation.HORIZONTAL ? 'offsetLeft' : 'offsetTop';
-    const scrollables =
+
+    // if we have used the childQuery data attr, then we will use that
+    // to workout the list of scrollable items
+    // else we assume it's a the direct children of the scroller
+    // this allows us to have variable sized items, or different items,
+    // or items we don't wish to add to our calculations.
+    const scrollableItems =
         qs && typeof qs === 'string'
             ? collectionToArray(document.querySelectorAll(qs))
             : collectionToArray(scrollEl.children);
-    const scrollableIndex =
+    const nextScrollableItem =
         focusedEl instanceof HTMLElement
-            ? findScrollableFromFocusEl(focusedEl, scrollables)[1]
-            : 0;
+            ? findScrollableItemUsingFocusEl(
+                  focusedEl,
+                  scrollableItems,
+                  incrementObject
+              )
+            : { el: null, index: 0 };
 
     const startEl =
         startQs &&
@@ -100,8 +139,8 @@ function doTheHardWork(scrollEl, useTransforms) {
         // generate the slot
         offsetCache[scrollId] = [];
         // loop through and add the offsets
-        for (let i = 0, l = scrollables.length; i < l; i++) {
-            const s = scrollables[i];
+        for (let i = 0, l = scrollableItems.length; i < l; i++) {
+            const s = scrollableItems[i];
             const value = s[offsetProp] - startElOffsetInPx;
             offsetCache[scrollId].push(value);
         }
@@ -109,11 +148,11 @@ function doTheHardWork(scrollEl, useTransforms) {
 
     const newOffset = calculateOffset(
         offsetCache[scrollId],
-        scrollableIndex,
+        nextScrollableItem.index,
         startOffset
     );
 
-    if (scrollableIndex >= startOffset) {
+    if (nextScrollableItem.index >= startOffset) {
         if (!useTransforms) {
             const axis =
                 orientation === Orientation.HORIZONTAL ? 'left' : 'top';
@@ -129,15 +168,16 @@ function doTheHardWork(scrollEl, useTransforms) {
 
 /**
  * @name scrollAction
- * @param {HTMLElement} el
- * @param {boolean} useTransforms
+ * @param {HTMLElement} nextEl the element we are wanting to scroll to
+ * @param {boolean} useTransforms whether to use CSS transforms or not
+ * @param {object} [incrementObject]
  * @returns {void}
  */
-export function scrollAction(el, useTransforms) {
-    let scrollEl = getScrollEl(el);
+export function scrollAction(nextEl, useTransforms, incrementObject) {
+    let scrollEl = getScrollEl(nextEl);
 
     while (scrollEl) {
-        doTheHardWork(scrollEl, useTransforms);
+        doTheHardWork(scrollEl, useTransforms, incrementObject);
         scrollEl =
             scrollEl.parentElement instanceof HTMLElement
                 ? getScrollEl(scrollEl.parentElement)
