@@ -2,7 +2,7 @@
  * @typedef {import('../declarations/types').CarouselProps} CarouselProps
  */
 import { animations } from '../config/animations';
-import { div, section } from '../libs/makeElement';
+import { button, div, section } from '../libs/makeElement';
 import { cx } from '../utils/dom/cx';
 import { toTitleCase } from '../utils/string/toTitleCase';
 
@@ -36,17 +36,48 @@ export const Carousel = (props, children) => {
             Heading({ level: 'h2', className: s.carouselTitle }, props.title),
         div(
             {
-                className: sliderCx,
-                dataset: {
-                    deadseaId: props.id,
-                    deadseaStartOffset: props.startOffset || 0,
-                    deadseaOrientation: props.orientation,
-                    deadseaChildQuery: props.childQuery || '',
-                    deadseaScrollStartQuery: props.scrollStartQuery || '',
-                    backStop: props.backStop || '',
-                },
+                className: s.sliderOuter,
             },
-            children
+            div(
+                {
+                    className: cx(s.arrows, s[orientation]),
+                    dataset: {
+                        deadseaArrowsForId: props.id,
+                    },
+                },
+                button(
+                    {
+                        className: cx('lrud-ignore', s.arrow, s.arrowLeft),
+                        dataset: {
+                            pointerIncrement: -1,
+                        },
+                    },
+                    'LEFT'
+                ),
+                button(
+                    {
+                        className: cx('lrud-ignore', s.arrow, s.arrowRight),
+                        dataset: {
+                            pointerIncrement: 1,
+                        },
+                    },
+                    'RIGHT'
+                )
+            ),
+            div(
+                {
+                    className: sliderCx,
+                    dataset: {
+                        deadseaId: props.id,
+                        deadseaStartOffset: props.startOffset || 0,
+                        deadseaOrientation: props.orientation,
+                        deadseaChildQuery: props.childQuery || '',
+                        deadseaScrollStartQuery: props.scrollStartQuery || '',
+                        backStop: props.backStop || '',
+                    },
+                },
+                children
+            )
         )
     );
 };
