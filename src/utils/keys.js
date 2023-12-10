@@ -83,3 +83,20 @@ export function getOrientationFromKeyCode(keyCode) {
 
     return Orientation.HORIZONTAL;
 }
+
+/**
+ * @name getKeyCodeFromDirection
+ * @param {Direction} direction
+ * @returns {number | undefined}
+ */
+export function getKeyCodeFromDirection(direction) {
+    let keyCode;
+    for (const key in keyCodeMap) {
+        if (keyCodeMap[key] === direction) {
+            keyCode = key;
+            break;
+        }
+    }
+
+    return keyCode ? parseInt(keyCode, 10) : undefined;
+}
