@@ -20,6 +20,11 @@
     transform: translate(-50%, -50%);
 }
 
-:global(a.focused) .tile {
+:global(.focused) .tile,
+:global(.using-pointer :hover) .tile {
     background-color: col.$brandOrange;
+}
+
+:global(.using-pointer .focused) .tile {
+    background-color: col.$brandPurple;
 }
