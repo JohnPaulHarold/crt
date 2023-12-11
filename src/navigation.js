@@ -73,7 +73,7 @@ export function handleKeyDown(event, scope) {
     event.preventDefault();
 
     if (usingPointer) {
-        usingPointer = false;
+        setUsingPointer(false);
     }
 
     if (scope) {
@@ -228,6 +228,15 @@ const focusWithoutScrolling = function (el) {
 };
 
 /**
+ * @name setUsingPointer
+ * @param {boolean} flag 
+ */
+function setUsingPointer(flag) {
+    usingPointer = flag;
+    document.body.classList[flag ? 'add' : 'remove']('using-pointer');
+}
+
+/**
  *
  * @param {HTMLElement} target
  * @returns {HTMLElement[]}
@@ -273,7 +282,7 @@ function handleBack(event) {
  * @param {KeyboardEvent|MouseEvent} event
  */
 function handleEnter(event) {
-    event.preventDefault();
+    // event.preventDefault();
 
     const elTarget = normaliseEventTarget(event);
 
@@ -308,10 +317,10 @@ function handleEnter(event) {
 
             if (scrollable instanceof HTMLElement) {
                 const orientation = $dataGet(scrollable, 'deadseaOrientation');
-                const incObj = {
-                    increment: increment,
-                    forId: scrollable,
-                };
+                // const incObj = {
+                //     increment: increment,
+                //     forId: scrollable,
+                // };
 
                 // if the increment is only 1 in a direction, we can
                 // keep on using LRUD and just get the next logical
@@ -344,9 +353,8 @@ function handleEnter(event) {
  * @param {MouseEvent} event
  */
 function handleClick(event) {
-    event.preventDefault();
     if (!usingPointer) {
-        usingPointer = true;
+        setUsingPointer(true);
     }
 
     handleEnter(event);
@@ -354,13 +362,10 @@ function handleClick(event) {
 
 /**
  * @name handleMouseMove
- * @param {MouseEvent} event
  */
-function handleMouseMove(event) {
-    event.preventDefault();
-
+function handleMouseMove() {
     if (!usingPointer) {
-        usingPointer = true;
+        setUsingPointer(true);
     }
 }
 
