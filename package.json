@@ -33,7 +33,7 @@
         "jsdom": "^24.0.0",
         "postcss": "^8.4.33",
         "prettier": "3.2.5",
-        "rollup": "^4.9.6",
+        "rollup": "^4.10.0",
         "rollup-plugin-bundle-worker": "github:JohnPaulHarold/rollup-plugin-bundle-worker",
         "rollup-plugin-copy": "^3.5.0",
         "rollup-plugin-postcss": "^4.0.2",
