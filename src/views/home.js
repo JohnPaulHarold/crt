@@ -19,10 +19,9 @@ import { Spinner } from '../components/Spinner';
 import { Orientation } from '../models/Orientation';
 import { AdditionalKeys } from '../models/AdditionalKeys';
 
-import { focusInto, getElementContainer, getLastFocus } from '../navigation';
+import { focusInto } from '../navigation';
 import { appOutlets } from '../outlets';
 import { normaliseEventTarget } from '../utils/dom/normaliseEventTarget';
-import { $dataSet } from '../utils/dom/$dataSet';
 
 /**
  *
@@ -113,19 +112,7 @@ export class Home extends BaseView {
                     // focus into the menu
                     const navEl = appOutlets['nav'];
                     focusInto(navEl);
-                }
-
-                const currentFocus = getLastFocus()
-
-                if (currentFocus && currentFocus.id) {
-                    const containers = getElementContainer(currentFocus.el);
-                    const container = containers[0];
-        
-                    if ($dataGet(container, 'focus')) {
-                        $dataSet(container, 'focus', currentFocus.id);
-                    }
-                }
- 
+                } 
             }
         }
     }
