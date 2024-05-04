@@ -14,6 +14,7 @@ import { Direction } from './models/Direction';
 import { animations } from './config/animations';
 
 import { PubSub } from './state/PubSub';
+import { $dataSet } from './utils/dom/$dataSet';
 
 /** @type {HTMLElement|undefined} */
 let _scope = undefined;
@@ -75,10 +76,10 @@ export function handleKeyDown(event, scope) {
         return handleEnter(event);
     }
 
-    if (assertKey(event, AdditionalKeys.BACKSPACE)) {
-        // early return on `back` keypress.
-        return handleBack(event);
-    }
+    // if (assertKey(event, AdditionalKeys.BACKSPACE)) {
+    //     // early return on `back` keypress.
+    //     return handleBack(event);
+    // }
 
     if (
         assertKey(event, [
@@ -225,7 +226,7 @@ const focusWithoutScrolling = function (el) {
  * @param {HTMLElement} target
  * @returns {HTMLElement[]}
  */
-function getElementContainer(target) {
+export function getElementContainer(target) {
     let a = target;
     const els = [];
 
@@ -253,13 +254,13 @@ function handleOtherKey(event) {
     event.preventDefault();
 }
 
-/**
- * handleBack
- * @param {KeyboardEvent} event
- */
-function handleBack(event) {
-    event.preventDefault();
-}
+// /**
+//  * handleBack
+//  * @param {KeyboardEvent} event
+//  */
+// function handleBack(event) {
+//     event.preventDefault();
+// }
 
 /**
  * handleEnter
@@ -304,8 +305,8 @@ export function initNavigation() {
     // todo: probably need a pause/resume spatial navigation method so
     // you can toggle between pointer and spatial based modalities
     window.addEventListener('click', handleClick);
+    console.log('[initNavigation] adding keydown listener');
     window.addEventListener('keydown', (...args) => {
-        console.log('[keydown] ', ...args);
         throttle(_handleKeyDown, 60, args)
     });
 
@@ -342,6 +343,16 @@ export function focusInto(scopeEl) {
         const nextFocus = getNextFocus(undefined, undefined, scopeEl);
 
         if (nextFocus) {
+
+            if (nextFocus.id) {
+                const containers = getElementContainer(nextFocus);
+                const container = containers[0];
+    
+                if ($dataGet(container, 'focus')) {
+                    $dataSet(container, 'focus', nextFocus.id);
+                }
+            }
+
             moveFocus(nextFocus);
             lastFocus = nextFocus;
         }
