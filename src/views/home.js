@@ -19,9 +19,10 @@ import { Spinner } from '../components/Spinner';
 import { Orientation } from '../models/Orientation';
 import { AdditionalKeys } from '../models/AdditionalKeys';
 
-import { focusInto } from '../navigation';
+import { focusInto, getElementContainer, getLastFocus } from '../navigation';
 import { appOutlets } from '../outlets';
 import { normaliseEventTarget } from '../utils/dom/normaliseEventTarget';
+import { $dataSet } from '../utils/dom/$dataSet';
 
 /**
  *
@@ -35,12 +36,16 @@ function findNextBackStop(el) {
 
     if ($dataGet(el, 'backStop')) {
         const firstChild = el.children[0];
+
+        // if you're already focused on the back-stop of the container
+        // keep traversing the tree till you find the next
         if (
             firstChild.classList.contains('focused') ||
             firstChild.querySelector('.focused')
         ) {
             return findNextBackStop(el.parentElement);
         }
+
         return el;
     }
 
@@ -57,7 +62,18 @@ export class Home extends BaseView {
     constructor(options) {
         super(options);
         this.fetchData();
-        this.listenForBack();
+        
+    }
+
+    viewDidLoad() {
+        this.listenForBack(true);
+    }
+
+    viewWillUnload() {
+        this.listenForBack(false);
+        if (this.keyHandleCleanup) {
+            this.keyHandleCleanup();
+        }
     }
 
     /**
@@ -68,8 +84,16 @@ export class Home extends BaseView {
         focusInto(el);
     }
 
-    listenForBack() {
-        window.addEventListener('keydown', this.handleBack.bind(this));
+    /**
+     * 
+     * @param {boolean} flag 
+     */
+    listenForBack(flag) {
+        const method = flag 
+            ? this.viewEl.addEventListener
+            : this.viewEl.removeEventListener;
+
+        method('keydown', this.handleBack.bind(this));
     }
 
     /**
@@ -90,6 +114,18 @@ export class Home extends BaseView {
                     const navEl = appOutlets['nav'];
                     focusInto(navEl);
                 }
+
+                const currentFocus = getLastFocus()
+
+                if (currentFocus && currentFocus.id) {
+                    const containers = getElementContainer(currentFocus.el);
+                    const container = containers[0];
+        
+                    if ($dataGet(container, 'focus')) {
+                        $dataSet(container, 'focus', currentFocus.id);
+                    }
+                }
+ 
             }
         }
     }
@@ -108,7 +144,7 @@ export class Home extends BaseView {
      * @param {KeyboardEvent} event
      */
     handleKeyboard(event) {
-        const elTarget  = normaliseEventTarget(event);
+        const elTarget = normaliseEventTarget(event);
         if (
             elTarget instanceof HTMLAnchorElement &&
             assertKey(event, AdditionalKeys.ENTER)
