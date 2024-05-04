@@ -35,12 +35,16 @@ function findNextBackStop(el) {
 
     if ($dataGet(el, 'backStop')) {
         const firstChild = el.children[0];
+
+        // if you're already focused on the back-stop of the container
+        // keep traversing the tree till you find the next
         if (
             firstChild.classList.contains('focused') ||
             firstChild.querySelector('.focused')
         ) {
             return findNextBackStop(el.parentElement);
         }
+
         return el;
     }
 
@@ -57,7 +61,18 @@ export class Home extends BaseView {
     constructor(options) {
         super(options);
         this.fetchData();
-        this.listenForBack();
+        
+    }
+
+    viewDidLoad() {
+        this.listenForBack(true);
+    }
+
+    viewWillUnload() {
+        this.listenForBack(false);
+        if (this.keyHandleCleanup) {
+            this.keyHandleCleanup();
+        }
     }
 
     /**
@@ -68,8 +83,16 @@ export class Home extends BaseView {
         focusInto(el);
     }
 
-    listenForBack() {
-        window.addEventListener('keydown', this.handleBack.bind(this));
+    /**
+     * 
+     * @param {boolean} flag 
+     */
+    listenForBack(flag) {
+        const method = flag 
+            ? this.viewEl.addEventListener
+            : this.viewEl.removeEventListener;
+
+        method('keydown', this.handleBack.bind(this));
     }
 
     /**
@@ -89,7 +112,7 @@ export class Home extends BaseView {
                     // focus into the menu
                     const navEl = appOutlets['nav'];
                     focusInto(navEl);
-                }
+                } 
             }
         }
     }
@@ -108,7 +131,7 @@ export class Home extends BaseView {
      * @param {KeyboardEvent} event
      */
     handleKeyboard(event) {
-        const elTarget  = normaliseEventTarget(event);
+        const elTarget = normaliseEventTarget(event);
         if (
             elTarget instanceof HTMLAnchorElement &&
             assertKey(event, AdditionalKeys.ENTER)
