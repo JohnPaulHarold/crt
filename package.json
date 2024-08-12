@@ -20,7 +20,7 @@
     "author": "jp",
     "license": "Apache-2.0",
     "devDependencies": {
-        "@babel/core": "^7.24.9",
+        "@babel/core": "^7.25.2",
         "@babel/preset-env": "^7.25.3",
         "@rollup/plugin-babel": "^6.0.4",
         "@rollup/plugin-commonjs": "^26.0.1",
