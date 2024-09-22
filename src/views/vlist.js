@@ -23,7 +23,6 @@ import s from './vlist.css';
  * @param {*} props 
  */
 function VirtualList(props) {
-
   return section({
     className: 'virtual-list' + ' ' + props.className,
     id: props.id
@@ -56,7 +55,7 @@ function dec2hex(dec) {
 function buildBigData(bigNumber) {
   const bigData = [];
 
-  for (let i= 0; i < bigNumber; i++) {
+  for (let i = 0; i < bigNumber; i++) {
     bigData.push({
       d: i,
       b: dec2bin(i),
@@ -97,7 +96,7 @@ function VL(options) {
    */
   this.elHeight = pxToRem(options.elHeight, baseFontSize);
   this.paddingTop = 0;
-  
+
   /**
    * @type {number[]}
    * @memberof VL
@@ -167,7 +166,7 @@ VL.prototype = {
       this.window[1] = this.window[1] + this.visibleEls;
     }
 
-    if (direction === Direction.DOWN && position > lowerBound + this.visibleEls + this.bufferAmount) {      
+    if (direction === Direction.DOWN && position > lowerBound + this.visibleEls + this.bufferAmount) {
       // remove defined amount from start of DOM list
       let i = this.visibleEls - 1;
       while (i >= 0) {
@@ -178,7 +177,7 @@ VL.prototype = {
 
       this.paddingTop = this.paddingTop + (this.visibleEls * this.elHeight);
       this.sliderEl.style.paddingTop = this.paddingTop + "rem";
-      this.window[0] = this.window[0] + this.visibleEls; 
+      this.window[0] = this.window[0] + this.visibleEls;
     }
 
     if (direction === Direction.UP && position <= lowerBound + this.bufferAmount) {
@@ -199,97 +198,107 @@ VL.prototype = {
 
       this.paddingTop = this.paddingTop - (slice.length * this.elHeight);
       this.sliderEl.style.paddingTop = this.paddingTop + "rem";
-      this.window[0] = Math.max(this.window[0] - this.visibleEls, 0); 
+      this.window[0] = Math.max(this.window[0] - this.visibleEls, 0);
     }
   }
 };
 
 /**
  * @extends BaseView
+ * @typedef {BaseView & VList} VListView
  */
-export class VList extends BaseView {
+
+/**
+ * @constructor
+ * @param {ViewOptions} options
+ * @this {VListView}
+ */
+export function VList(options) {
+  BaseView.call(this, options);
+  /**
+   * @todo temp stub data
+   */
+  this.bigData = buildBigData(600);
+
+  navigationBus.on(
+    NavigationEvents.MOVE,
+    this.handleMove.bind(this)
+  )
+
+  this.containerId = 'my-vlist'
+  const vlOpts = {
+    container: '#' + this.containerId,
+    data: this.bigData,
+    renderRow: this.renderRow.bind(this),
     /**
-     * @param {ViewOptions} options
+     * @todo elHeight will be resolution dependent
      */
-    constructor(options) {
-        super(options);
-
-        /**
-         * @todo temp stub data
-         */
-        this.bigData = buildBigData(600);
-
-        navigationBus.on(
-          NavigationEvents.MOVE,
-          this.handleMove.bind(this)
-        )
-
-        this.containerId = 'my-vlist'
-        const vlOpts = {
-          container: '#' + this.containerId,
-          data: this.bigData,
-          renderRow: this.renderRow.bind(this),
-          /**
-           * @todo elHeight will be resolution dependent
-           */
-          elHeight: 220,
-          /**
-           * @description number of rows that are buffered offscreen
-           */
-          bufferAmount: 5,
-          visibleEls: 10,
-        };
-
-        this.vl = new VL(vlOpts);
-    }
-
-    destructor() {
-      navigationBus.off(
-        NavigationEvents.MOVE,
-      )
-    }
-
-    viewDidLoad() {
-      this.vl.init()
-    }
-
+    elHeight: 220,
     /**
-     * 
-     * @param {*} event 
+     * @description number of rows that are buffered offscreen
      */
-    handleMove(event) {
-      if (event.detail && event.detail.nextContainer.id === this.containerId) {
-        const direction = event.detail.direction;
-        const position = parseDecimal(event.detail.nextElement.dataset.vlIndex);
+    bufferAmount: 5,
+    visibleEls: 10,
+  };
 
-        this.vl.updateList(direction, position);
-      }
-    }
+  this.vl = new VL(vlOpts);
+}
 
-    /**
-     * 
-     * @param {*} bd 
-     * @returns 
-     */
-    renderRow(bd) {
-      const indexOf = this.bigData.indexOf(bd);
+// inherit from BaseView
+VList.prototype = Object.create(BaseView.prototype);
+// Set the constructor back
+VList.prototype.constructor = VList;
 
-      return a({
-        className: s.data,
-        dataset: { vlIndex: indexOf}
-      }, 
-        div({}, 
-          p({}, "Decimal: " + bd.d),
-          p({}, "Binary: " + bd.b),
-          p({}, "Hex: " + bd.h)
-        ))
-    }
+VList.prototype.destructor = function () {
+  navigationBus.off(
+    NavigationEvents.MOVE,
+  )
+}
 
-    render() {
-        return div(
-            { className: 'view', id: this.id },
+VList.prototype.viewDidLoad = function () {
+  this.vl.init()
+}
 
-            VirtualList({ id: 'my-vlist', className: 'my-vlist'})
-        );
-    }
+/**
+ * 
+ * @param {*} event 
+ */
+VList.prototype.handleMove = function (event) {
+  if (event.detail && event.detail.nextContainer.id === this.containerId) {
+    const direction = event.detail.direction;
+    const position = parseDecimal(event.detail.nextElement.dataset.vlIndex);
+
+    this.vl.updateList(direction, position);
+  }
+}
+
+/**
+ * 
+ * @param {*} bd 
+ * @returns 
+ */
+VList.prototype.renderRow = function (bd) {
+  const indexOf = this.bigData.indexOf(bd);
+
+  return a({
+    className: s.data,
+    dataset: { vlIndex: indexOf }
+  },
+    div({},
+      p({}, "Decimal: " + bd.d),
+      p({}, "Binary: " + bd.b),
+      p({}, "Hex: " + bd.h)
+    ))
+}
+
+/**
+ * @this {VListView}
+ * @returns {HTMLElement}
+ */
+VList.prototype.render = function () {
+  return div(
+    { className: 'view', id: this.id },
+
+    VirtualList({ id: 'my-vlist', className: 'my-vlist' })
+  );
 }

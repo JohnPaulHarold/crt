@@ -7,76 +7,94 @@ import { Nav } from '../components/Nav';
 import { collectionToArray } from '../utils/dom/collectionToArray';
 
 /**
- * @typedef {Object} DiffState
- * @property {boolean} menuOpen
+ * @extends BaseView
+ * @typedef {BaseView & MainNav} MainNavView
  */
 
 /**
- * @extends BaseView
+ * @constructor
+ * @param {NavViewOptions} options
+ * @this {MainNavView}
  */
-export class MainNav extends BaseView {
-    /**
-     * @param {NavViewOptions} options
-     */
-    constructor(options) {
-        super(options);
-        this.navItems = options.navItems;
-    }
+export function MainNav(options) {
+    BaseView.call(this, options);
+    this.navItems = options.navItems;
+}
 
-    destructor() {
-        const listen = false;
-        this.listenForFocus(listen);
-        this.listenToHashChange(listen);
-    }
+// inherit from BaseView
+MainNav.prototype = Object.create(BaseView.prototype);
+// Set the constructor back
+MainNav.prototype.constructor = MainNav;
 
-    viewDidLoad() {
-        const listen = true;
-        this.listenForFocus(listen);
-        this.listenToHashChange(listen);
-        this.updateActive();
-    }
+// prototype methods
+/**
+ *
+ * @this {MainNavView}
+ */
+MainNav.prototype.destructor = function () {
+    const listen = false;
+    this.listenForFocus(listen);
+    this.listenToHashChange(listen);
+}
 
-    /**
-     *
-     * @param {boolean} listen
-     */
-    listenToHashChange(listen) {
-        const method = listen ? 'addEventListener' : 'removeEventListener';
-        window[method]('hashchange', this.updateActive.bind(this));
-    }
+/**
+ *
+ * @this {MainNavView}
+ */
+MainNav.prototype.viewDidLoad = function () {
+    const listen = true;
+    this.listenForFocus(listen);
+    this.listenToHashChange(listen);
+    this.updateActive();
+}
 
-    updateActive() {
-        const hash = location.hash;
-        const els = this.viewEl.querySelectorAll('[href]');
-        collectionToArray(els).forEach((el) => el.classList.remove('active'));
-        const elToFocus = this.viewEl.querySelector('[href="' + hash + '"]');
-        elToFocus && elToFocus.classList.add('active');
-    }
+/**
+ *
+ * @param {boolean} listen
+ * @this {MainNavView}
+ */
+MainNav.prototype.listenToHashChange = function (listen) {
+    const method = listen ? 'addEventListener' : 'removeEventListener';
+    window[method]('hashchange', this.updateActive.bind(this));
+}
 
-    /**
-     *
-     * @param {boolean} listen
-     */
-    listenForFocus(listen) {
-        const method = listen ? 'addEventListener' : 'removeEventListener';
-        this.viewEl[method]('focusin', this.updateMenu.bind(this, 'focusin'));
-        this.viewEl[method]('focusout', this.updateMenu.bind(this, 'focusin'));
-    }
+/**
+ * @this {MainNavView}
+ */
+MainNav.prototype.updateActive = function () {
+    const hash = location.hash;
+    const els = this.viewEl.querySelectorAll('[href]');
+    collectionToArray(els).forEach((el) => el.classList.remove('active'));
+    const elToFocus = this.viewEl.querySelector('[href="' + hash + '"]');
+    elToFocus && elToFocus.classList.add('active');
+}
 
-    /**
-     *
-     * @param {'focusin'|'focusout'} eventName
-     */
-    updateMenu(eventName) {
-        const method = eventName === 'focusin' ? 'add' : 'remove';
-        this.viewEl.classList[method]('collapsed');
-    }
+/**
+ * @this {MainNavView}
+ * @param {boolean} listen
+ */
+MainNav.prototype.listenForFocus = function (listen) {
+    const method = listen ? 'addEventListener' : 'removeEventListener';
+    this.viewEl[method]('focusin', this.updateMenu.bind(this, 'focusin'));
+    this.viewEl[method]('focusout', this.updateMenu.bind(this, 'focusin'));
+}
 
-    render() {
-        return Nav({
-            id: this.id,
-            navItems: this.navItems,
-            blockExit: 'up down left',
-        });
-    }
+/**
+ * @this {MainNavView}
+ * @param {'focusin'|'focusout'} eventName
+ */
+MainNav.prototype.updateMenu = function (eventName) {
+    const method = eventName === 'focusin' ? 'add' : 'remove';
+    this.viewEl.classList[method]('collapsed');
+}
+
+/**
+ * @this {MainNavView}
+ */
+MainNav.prototype.render = function () {
+    return Nav({
+        id: this.id,
+        navItems: this.navItems,
+        blockExit: 'up down left',
+    });
 }

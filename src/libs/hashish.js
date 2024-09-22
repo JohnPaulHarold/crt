@@ -3,32 +3,33 @@
  * @typedef {import('../declarations/types').RouteParams} RouteParams
  * @typedef {import('../declarations/types').RouteSearch} RouteSearch
  * @typedef {{ pattern: string, params: RouteParams, search: RouteSearch }} HandlerArgs
+ * @typedef {Record<string,{ callback: (matchedRoute: HandlerArgs) => void; exact: boolean }>} HashRouteHandlers
  */
 
 import { parseSearchParams } from '../utils/dom/parseSearchParams';
 
-export const Hashish = (function () {
-    /** @type { {[index: string]: { callback: (arg0: HandlerArgs) => void, exact: boolean}} } */
-    const handlers = {};
-    let basePath = '';
-    let hashSymbol = '#';
+export const hashish = {
+    /** @type {HashRouteHandlers}>} */
+    handlers: {},
+    basePath: '',
+    hashSymbol: '#',
 
     /**
      *
      * @param {string} path
      * @param {string} [hash]
      */
-    function config(path, hash) {
-        basePath = path;
+    config(path, hash) {
+        this.basePath = path;
         if (hash) {
-            hashSymbol = hash;
+            this.hashSymbol = hash;
         }
 
-        setupListeners();
-        init();
-    }
+        this.setupListeners();
+        this.init();
+    },
 
-    function init() {
+    init() {
         /** @type {HashChangeEvent|CustomEvent} */
         let hashChangeEvent;
 
@@ -48,15 +49,15 @@ export const Hashish = (function () {
             });
         }
 
-        navigateTo(hashChangeEvent);
-    }
+        this.navigateTo(hashChangeEvent);
+    },
 
     /**
      * @name navigateTo
      * @param {HashChangeEvent|CustomEvent|undefined} event
      * @todo could probably change the signature to a URL rather than Event
      */
-    function navigateTo(event) {
+    navigateTo(event) {
         if (!event) {
             return;
         }
@@ -72,15 +73,15 @@ export const Hashish = (function () {
         const { newURL } = evt || {};
 
         try {
-            const matchedRoute = matchRoute(newURL);
+            const matchedRoute = this.matchRoute(newURL);
 
             if (matchedRoute) {
-                handlers[matchedRoute.pattern].callback(matchedRoute);
+                this.handlers[matchedRoute.pattern].callback(matchedRoute);
             }
         } catch (error) {
             console.log('[Router] failed to load view component', error);
         }
-    }
+    },
 
     /**
      *
@@ -88,26 +89,26 @@ export const Hashish = (function () {
      * @param {string} pattern
      * @returns {RegExpMatchArray | null}
      */
-    function getMatchFromPattern(routeUrl, pattern) {
+    getMatchFromPattern(routeUrl, pattern) {
         const routeMatcher = new RegExp(
             pattern.replace(/({[^}]*(\w+)[^}]*})/g, '([\\w-]+)')
         );
         const match = routeUrl.match(routeMatcher);
 
         return match;
-    }
+    },
 
     /**
      *
      * @param {string} url
      * @returns {{ pattern: string, params: RouteParams, search: RouteSearch } | undefined}
      */
-    function matchRoute(url) {
+    matchRoute(url) {
         // location.origin don't work on old browser
 
         const path = url.replace(location.protocol + '//' + location.host, '');
         // could be `/` or `/#/foo`
-        const route = path === basePath ? '/' : path.split(hashSymbol)[1];
+        const route = path.split(this.hashSymbol)[1] || path;
 
         // strip out the searchParams if they are there
         const [routeUrl, paramsString] = route.split('?');
@@ -115,7 +116,7 @@ export const Hashish = (function () {
         let matched;
 
         // note: pattern will be without the hash, such as `/` or `/foo`
-        for (const pattern in handlers) {
+        for (const pattern in this.handlers) {
             if (routeUrl === pattern) {
                 matched = {
                     pattern,
@@ -126,11 +127,11 @@ export const Hashish = (function () {
                 break;
             }
 
-            if (handlers[pattern].exact) {
+            if (this.handlers[pattern].exact) {
                 continue;
             }
 
-            const match = getMatchFromPattern(routeUrl, pattern);
+            const match = this.getMatchFromPattern(routeUrl, pattern);
 
             if (!match) {
                 continue;
@@ -159,33 +160,27 @@ export const Hashish = (function () {
         }
 
         return matched;
-    }
+    },
 
-    function setupListeners() {
-        window.addEventListener('hashchange', locationHashChanged);
-    }
+    setupListeners() {
+        window.addEventListener('hashchange', this.locationHashChanged.bind(this));
+    },
 
     /**
      *
      * @param {HashChangeEvent} event
      * @todo isn't this a bit pointless?
      */
-    function locationHashChanged(event) {
-        navigateTo(event);
-    }
-
-    // eslint-disable-next-line no-unused-vars
-    function buildHref() {
-        // all the more fun because location.origin doesn't always exist
-        return location.protocol + '//' + location.host + location.pathname;
-    }
+    locationHashChanged(event) {
+        this.navigateTo(event);
+    },
 
     /**
      *
      * @param {string|Route} pathObject
      * @param {(handler: HandlerArgs) => void} handler
      */
-    function registerRoute(pathObject, handler) {
+    registerRoute(pathObject, handler) {
         let pattern = '';
         let exact = false;
         if (typeof pathObject === 'string') {
@@ -196,7 +191,7 @@ export const Hashish = (function () {
         }
 
         // add the handler with the pattern as the path
-        handlers[pattern] = {
+        this.handlers[pattern] = {
             callback: handler,
             exact,
         };
@@ -204,23 +199,17 @@ export const Hashish = (function () {
         // then quickly check if our newly added pattern matches the current url
         // if so, we can load up the view
 
-        const matchedRoute = getMatchFromPattern(location.href, pattern);
+        const matchedRoute = this.getMatchFromPattern(location.href, pattern);
 
         if (matchedRoute) {
-            init();
+            this.init();
         }
-    }
+    },
 
     /**
      * @param {string} path
      */
-    function unregisterRoute(path) {
-        delete handlers[path];
-    }
-
-    return {
-        config,
-        registerRoute,
-        unregisterRoute,
-    };
-})();
+    unregisterRoute(path) {
+        delete this.handlers[path];
+    },
+}

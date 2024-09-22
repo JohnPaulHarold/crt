@@ -15,7 +15,7 @@ import { Popupdemo } from './views/popupdemo.js';
 import { VList } from './views/vlist.js';
 
 import { BaseView } from './libs/baseView.js';
-import { Hashish } from './libs/hashish.js';
+import { hashish } from './libs/hashish.js';
 
 import { appOutlets } from './outlets.js';
 
@@ -80,10 +80,10 @@ let _nextView;
  * @name initRouting
  */
 export function initRouting() {
-    Hashish.config(location.pathname);
+    hashish.config(location.pathname);
 
     routes.forEach((route) => {
-        Hashish.registerRoute(route, (routeInfo) => {
+        hashish.registerRoute(route, (routeInfo) => {
             handleViewChange(route, routeInfo);
         });
     });

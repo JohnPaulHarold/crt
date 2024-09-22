@@ -47,100 +47,121 @@ const lyrics = [
 
 /**
  * @extends BaseView
+ * @typedef {BaseView & Diff} DiffView
  */
-export class Diff extends BaseView {
-    /**
-     * @param {ViewOptions} options
-     */
-    constructor(options) {
-        super(options);
 
-        const initialState = { lyricCount: 0 };
+/**
+ * @constructor
+ * @param {ViewOptions} options
+ * @this DiffView
+ */
+export function Diff(options) {
+    BaseView.call(this, options);
 
-        /** @type {DiffState} */
-        this.state = createReactive(initialState, this.updateDiff.bind(this));
-    }
+    const initialState = { lyricCount: 0 };
 
-    destructor() {
-        this.viewEl.removeEventListener(
-            'keydown',
-            this.handleKeyDown.bind(this)
-        );
-    }
+    /** @type {DiffState} */
+    this.state = createReactive(initialState, this.updateDiff.bind(this));
+}
 
-    viewDidLoad() {
-        this.viewEl.addEventListener('keydown', this.handleKeyDown.bind(this));
-    }
+// inherit from BaseView
+Diff.prototype = Object.create(BaseView.prototype);
+// Set the constructor back
+Diff.prototype.constructor = Diff;
 
-    /**
-     *
-     * @param {KeyboardEvent} e
-     */
-    handleKeyDown(e) {
-        e.preventDefault();
+// prototype methods
 
-        if (
-            e.target &&
-            e.target instanceof HTMLElement &&
-            assertKey(e, AdditionalKeys.ENTER)
-        ) {
-            if (e.target.id === 'add-lyric') {
-                this.state.lyricCount++;
-            } else {
-                this.state.lyricCount--;
-            }
+/**
+ * @this {DiffView}
+ */
+Diff.prototype.destructor = function () {
+    this.viewEl.removeEventListener(
+        'keydown',
+        this.handleKeyDown.bind(this)
+    );
+}
+
+/**
+ * @this {DiffView}
+ */
+Diff.prototype.viewDidLoad = function () {
+    this.viewEl.addEventListener('keydown', this.handleKeyDown.bind(this));
+}
+
+/**
+ *
+ * @param {KeyboardEvent} e
+ */
+Diff.prototype.handleKeyDown = function (e) {
+    e.preventDefault();
+
+    if (
+        e.target &&
+        e.target instanceof HTMLElement &&
+        assertKey(e, AdditionalKeys.ENTER)
+    ) {
+        if (e.target.id === 'add-lyric') {
+            this.state.lyricCount++;
+        } else {
+            this.state.lyricCount--;
         }
-    }
-
-    /**
-     *
-     * @param {DiffState} newState
-     */
-    updateDiff(newState) {
-        const vdom = this.getTemplate();
-        const dom = this.viewEl;
-
-        diff(vdom, dom);
-
-        if (newState.lyricCount < 1 && dom) {
-            focusInto(dom);
-        }
-    }
-
-    /**
-     *
-     * @returns {HTMLElement}
-     */
-    getTemplate() {
-        return div(
-            { className: 'diff', id: this.id },
-            lyrics
-                .slice(0, this.state.lyricCount)
-                .map((lyric) => p({ className: 'lyric-line' }, lyric)),
-            this.state.lyricCount < lyrics.length &&
-                Button(
-                    {
-                        className: isElementFocused('add-lyric')
-                            ? 'focused'
-                            : '',
-                        id: 'add-lyric',
-                    },
-                    'Add line'
-                ),
-            this.state.lyricCount > 0 &&
-                Button(
-                    {
-                        className: isElementFocused('remove-lyric')
-                            ? 'focused'
-                            : '',
-                        id: 'remove-lyric',
-                    },
-                    'Remove line'
-                )
-        );
-    }
-
-    render() {
-        return this.getTemplate();
     }
 }
+
+/**
+ *
+ * @param {DiffState} newState
+ * @this {DiffView}
+ */
+Diff.prototype.updateDiff = function (newState) {
+    const vdom = this.getTemplate();
+    const dom = this.viewEl;
+
+    diff(vdom, dom);
+
+    if (newState.lyricCount < 1 && dom) {
+        focusInto(dom);
+    }
+}
+
+/**
+ * @this {DiffView}
+ * @returns {HTMLElement}
+ */
+Diff.prototype.getTemplate = function () {
+    return div(
+        { className: 'diff', id: this.id },
+        lyrics
+            .slice(0, this.state.lyricCount)
+            .map((lyric) => p({ className: 'lyric-line' }, lyric)),
+        this.state.lyricCount < lyrics.length &&
+            Button(
+                {
+                    className: isElementFocused('add-lyric')
+                        ? 'focused'
+                        : '',
+                    id: 'add-lyric',
+                },
+                'Add line'
+            ),
+        this.state.lyricCount > 0 &&
+            Button(
+                {
+                    className: isElementFocused('remove-lyric')
+                        ? 'focused'
+                        : '',
+                    id: 'remove-lyric',
+                },
+                'Remove line'
+            )
+    );
+}
+
+/**
+ * @this {DiffView}
+ * @returns {HTMLElement}
+ */
+Diff.prototype.render = function () {
+    return this.getTemplate();
+}
+
