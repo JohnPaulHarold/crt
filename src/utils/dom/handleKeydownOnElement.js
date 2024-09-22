@@ -1,6 +1,6 @@
 /**
  * @callback keydownCallback
- * @param {KeyboardEvent} event
+ * @param {KeyboardEvent | MouseEvent} event
  */
 
 import { assertKey } from '../keys';
@@ -13,17 +13,23 @@ import { assertKey } from '../keys';
 export function handleKeydownOnElement(el, callback, allowedKeys) {
     /**
      * @name func
-     * @param {KeyboardEvent} e
+     * @param {KeyboardEvent | MouseEvent} e
      */
     function func(e) {
-        if ((allowedKeys && assertKey(e, allowedKeys)) || !allowedKeys) {
+        if (e instanceof MouseEvent) {
             callback(e);
+        } else {
+            if ((allowedKeys && assertKey(e, allowedKeys)) || !allowedKeys) {
+                callback(e);
+            }
         }
     }
 
-    el.addEventListener('keydown', func);
+    // el.addEventListener('keydown', func);
+    el.addEventListener('click', func);
 
     return () => {
-        el.removeEventListener('keydown', func);
+        // el.removeEventListener('keydown', func);
+        el.addEventListener('click', func);
     };
 }

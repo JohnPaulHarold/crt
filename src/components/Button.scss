@@ -10,13 +10,13 @@
     border: fn.px-to-rem(3px) solid col.$graphite;
 }
 
-.button:global(.focused) {
+.button:focus {
     color: col.$black;
     background-color: col.$primary;
     border: fn.px-to-rem(3px) solid col.$primary;
 }
 
-.button:global(.ghost.focused) {
+.button:focus:global(.ghost) {
     color: inherit;
     background-color: inherit;
 }

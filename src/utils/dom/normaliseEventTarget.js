@@ -1,6 +1,6 @@
 /**
  * 
- * @param {KeyboardEvent} event 
+ * @param {KeyboardEvent | MouseEvent} event 
  * @returns 
  */
 export function normaliseEventTarget(event) {

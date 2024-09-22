@@ -13,6 +13,7 @@ import { assertKey } from '../utils/keys';
 import { AdditionalKeys } from '../models/AdditionalKeys';
 import { focusInto, isElementFocused } from '../navigation';
 import { createReactive } from '../utils/object/createReactive';
+import { normaliseEventTarget } from '../utils/dom/normaliseEventTarget';
 
 const lyrics = [
     'All men have secrets and here is mine',
@@ -76,8 +77,8 @@ Diff.prototype.constructor = Diff;
  */
 Diff.prototype.destructor = function () {
     this.viewEl.removeEventListener(
-        'keydown',
-        this.handleKeyDown.bind(this)
+        'click',
+        this.handlePress.bind(this)
     );
 }
 
@@ -85,22 +86,24 @@ Diff.prototype.destructor = function () {
  * @this {DiffView}
  */
 Diff.prototype.viewDidLoad = function () {
-    this.viewEl.addEventListener('keydown', this.handleKeyDown.bind(this));
+    this.viewEl.addEventListener('click', this.handlePress.bind(this));
 }
 
 /**
  *
- * @param {KeyboardEvent} e
+ * @param {KeyboardEvent | MouseEvent} event
  */
-Diff.prototype.handleKeyDown = function (e) {
-    e.preventDefault();
+Diff.prototype.handlePress = function (event) {
+    const elTarget = normaliseEventTarget(event);
 
     if (
-        e.target &&
-        e.target instanceof HTMLElement &&
-        assertKey(e, AdditionalKeys.ENTER)
+        elTarget instanceof HTMLElement &&
+        (
+            event instanceof MouseEvent ||
+            event instanceof KeyboardEvent && assertKey(event, AdditionalKeys.ENTER)
+        )
     ) {
-        if (e.target.id === 'add-lyric') {
+        if (elTarget.id === 'add-lyric') {
             this.state.lyricCount++;
         } else {
             this.state.lyricCount--;
