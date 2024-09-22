@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, test, vi } from 'vitest';
-import { Hashish } from './hashish';
+import { hashish } from './hashish';
 
 describe('hashish', () => {
     test('it registers handlers', () => {
@@ -19,8 +19,8 @@ describe('hashish', () => {
             newURL: window.location.origin + `#/${id}`,
         });
 
-        Hashish.config(window.location.pathname);
-        Hashish.registerRoute(r, cb);
+        hashish.config(window.location.pathname);
+        hashish.registerRoute(r, cb);
 
         window.dispatchEvent(evt);
         const expectation = { params: {}, search: {}, pattern: `/${id}` };
@@ -40,8 +40,8 @@ describe('hashish', () => {
             newURL: window.location.origin + `!#/${id}`,
         });
 
-        Hashish.config(window.location.pathname, '!#');
-        Hashish.registerRoute(r, cb);
+        hashish.config(window.location.pathname, '!#');
+        hashish.registerRoute(r, cb);
 
         window.dispatchEvent(evt);
         const expectation = { params: {}, search: {}, pattern: `/${id}` };
