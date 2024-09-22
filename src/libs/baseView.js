@@ -1,69 +1,56 @@
+/**
+ * @typedef {import ("../declarations/types").ViewOptions} ViewOptions
+ */
+
 import { removeElement } from '../utils/dom/removeElement';
 import { div } from './makeElement';
 
+/** @namespace BaseViewClass */
 /**
  * @constructor
+ * @param {ViewOptions} options
  */
-export class BaseView {
+export function BaseView(options) {
+    /** @type {string} */
+    this.id = options.id;
+
     /**
-     * @param {import("../declarations/types").ViewOptions} options
+     * @type {HTMLElement}
+     * @public
      */
-    constructor({ id }) {
-        /**
-         * @type {string}
-         * @public
-         */
-        this.id = id;
+    this.viewEl;
 
-        /**
-         * @type {HTMLElement}
-         * @public
-         */
-        this.viewEl;
+    this.viewWillLoad();
+}
 
-        this.viewWillLoad();
-    }
-
+BaseView.prototype = {
     /**
-     *
      * @returns {void}
      */
-    destructor() {
-        // console.log('[BaseView][destructor]');
-    }
+    destructor: function () {
+        // do nothing.
+    },
+
+    viewWillLoad: function () {
+        // do nothing.
+    },
+
+    viewDidLoad: function () {
+        // do nothing.
+    },
+
+    viewWillUnload: function () {
+        // do nothing.
+    },
+
+    viewDidUnload: function () {
+        // do nothing.
+    },
 
     /**
-     *
-     */
-    viewWillLoad() {
-        // console.log('[BaseView][viewWillLoad]');
-    }
-
-    /**
-     *
-     */
-    viewDidLoad() {
-        // console.log(`[${this.id}][viewDidLoad]`);
-    }
-
-    /**
-     *
-     */
-    viewWillUnload() {
-        // console.log('[BaseView][viewWillUnload]');
-    }
-
-    /**
-     *
-     */
-    viewDidUnload() {
-        // console.log('[BaseView][viewDidUnload]');
-    }
-    /**
-     *
      * @param {Element} el
      */
-    attach(el) {
+    attach: function (el) {
         const viewContentEl = this.render();
         this.viewEl = viewContentEl;
 
@@ -74,25 +61,21 @@ export class BaseView {
         // feels like a hack...
         // ideally, using MutationObserver would be better for this
         setTimeout(this.viewDidLoad.bind(this), 0);
-    }
+    },
 
-    /**
-     *
-     */
-    detach() {
+    detach: function () {
         this.viewWillUnload();
         this.destructor();
 
         removeElement(this.viewEl);
 
         this.viewDidUnload();
-    }
+    },
 
     /**
-     *
-     *@returns {HTMLElement}
+     * @returns {HTMLElement}
      */
-    render() {
+    render: function () {
         const el = div({
             className: 'view',
             id: this.id,
@@ -101,3 +84,4 @@ export class BaseView {
         return el;
     }
 }
+

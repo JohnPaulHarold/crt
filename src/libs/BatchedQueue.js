@@ -1,8 +1,6 @@
 import { noop } from '../utils/function/noop';
 
 /**
- * @name BatchedQueue
- * @class
  * @constructor
  * @param {function} handleFull
  * @param {number} batchInterval
@@ -55,6 +53,9 @@ BatchedQueue.prototype = {
      */
     sweep() {
         this.timer = setTimeout(() => {
+            /**
+             * @type {Array<*>}
+             */
             const data = [].concat(this.data);
 
             if (data.length > 0) {

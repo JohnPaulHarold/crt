@@ -19,88 +19,93 @@ import { registerPopup } from '../utils/registerPopup';
 
 /**
  * @extends BaseView
+ * @typedef {BaseView & Popupdemo} PopupdemoView
  */
-export class Popupdemo extends BaseView {
-    /**
-     * @param {ViewOptions} options
-     */
-    constructor(options) {
-        super(options);
 
-        const dialogEl = Dialog(
-            {
-                title: 'My Title',
-                id: 'my-title',
-            },
-            [
-                p(
-                    { className: 'my-popup-text' },
-                    'Hey, I have something to tell you...'
-                ),
-                Button({ id: 'btn-ok' }, 'OK'),
-                Button({ id: 'btn-cancel' }, 'Cancel'),
-            ]
-        );
+/**
+ * constructor
+ * @param {ViewOptions} options
+ * @this PopupdemoView
+ */
+export function Popupdemo(options) {
+    BaseView.call(this, options);
 
-        const handler = this.handlePopup.bind(this);
+    const dialogEl = Dialog(
+        {
+            title: 'My Title',
+            id: 'my-title',
+        },
+        [
+            p(
+                { className: 'my-popup-text' },
+                'Hey, I have something to tell you...'
+            ),
+            Button({ id: 'btn-ok' }, 'OK'),
+            Button({ id: 'btn-cancel' }, 'Cancel'),
+        ]
+    );
 
-        this.popup = registerPopup(dialogEl, handler, appOutlets.popups);
-    }
+    const handler = this.handlePopup.bind(this);
 
-    destructor() {}
+    this.popup = registerPopup(dialogEl, handler, appOutlets.popups);
+}
 
-    viewDidLoad() {
-        this.viewEl.addEventListener('keydown', (e) => {
-            e.preventDefault();
+// inherit from BaseView
+Popupdemo.prototype = Object.create(BaseView.prototype);
+// Set the constructor back
+Popupdemo.prototype.constructor = Popupdemo;
 
-            if (
-                e.target &&
-                e.target instanceof HTMLElement &&
-                assertKey(e, AdditionalKeys.ENTER)
-            ) {
-                if (e.target.id === 'btn-show-popup') {
-                    this.openPopup();
-                }
+Popupdemo.prototype.viewDidLoad = function () {
+    this.viewEl.addEventListener('keydown', (e) => {
+        e.preventDefault();
+
+        if (
+            e.target &&
+            e.target instanceof HTMLElement &&
+            assertKey(e, AdditionalKeys.ENTER)
+        ) {
+            if (e.target.id === 'btn-show-popup') {
+                this.openPopup();
             }
-        });
-    }
-
-    /**
-     *
-     * @param {string} id
-     */
-    handlePopup(id) {
-        switch (id) {
-            case 'btn-cancel':
-            case 'dialog-close':
-                this.popup.close();
-                focusInto(this.viewEl);
-                break;
-            case 'btn-ok':
-                // go off and do whatever the OK is for: i.e: save some user settings
-                this.popup.close();
-                focusInto(this.viewEl);
-                break;
-            case 'open':
-                break;
-            default:
-                break;
         }
-    }
+    });
+}
 
-    openPopup() {
-        this.popup.open();
+/**
+ *
+ * @param {string} id
+ */
+Popupdemo.prototype.handlePopup = function (id) {
+    switch (id) {
+        case 'btn-cancel':
+        case 'dialog-close':
+            this.popup.close();
+            focusInto(this.viewEl);
+            break;
+        case 'btn-ok':
+            // go off and do whatever the OK is for: i.e: save some user settings
+            this.popup.close();
+            focusInto(this.viewEl);
+            break;
+        case 'open':
+            break;
+        default:
+            break;
     }
+}
 
-    render() {
-        return div(
-            { className: 'view', id: this.id },
-            Button(
-                {
-                    id: 'btn-show-popup',
-                },
-                'Show Popup'
-            )
-        );
-    }
+Popupdemo.prototype.openPopup = function () {
+    this.popup.open();
+}
+
+Popupdemo.prototype.render = function () {
+    return div(
+        { className: 'view', id: this.id },
+        Button(
+            {
+                id: 'btn-show-popup',
+            },
+            'Show Popup'
+        )
+    );
 }
