@@ -1,7 +1,6 @@
 // @ts-ignore
-import RequestWorker from 'worker!../workers/request.js';
 
-const HTTPStatus = {
+export const HTTPStatus = {
     OK: 200,
     ACCEPTED: 202,
     MULTIPLE_CHOICES: 300,
@@ -71,49 +70,5 @@ export function request(options) {
         }
 
         xhr.send(options.body);
-    });
-}
-
-/**
- * @template T
- * @param {Object} options
- * @param {string} [options.method] REST method
- * @param {string} options.url url
- * @param {XMLHttpRequestResponseType} [options.type] expected responseType
- * @param {Record<string, string>} [options.headers] optional headers
- * @param {string} [options.body] body
- * @returns {Promise<T>}
- */
-export function requestWorker(options) {
-    const requestWorker = new RequestWorker();
-
-    return new Promise((resolve, reject) => {
-        requestWorker.postMessage(options);
-
-        requestWorker.addEventListener('message', (e) => {
-            try {
-                let response = e.data;
-                console.log('response typeof', typeof response);
-                if (typeof e.data === 'string') {
-                    response = JSON.parse(e.data);
-                }
-                const status = response.status;
-                const payload = response.data;
-
-                if (
-                    status >= HTTPStatus.OK &&
-                    status < HTTPStatus.MULTIPLE_CHOICES
-                ) {
-                    resolve(payload);
-                } else {
-                    reject(payload);
-                }
-            } catch (error) {
-                console.error('error --- ', error);
-                reject(error);
-            } finally {
-                requestWorker.terminate();
-            }
-        });
     });
 }

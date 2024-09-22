@@ -7,7 +7,6 @@ import {
     a,
     button,
     div,
-    form,
     h1,
     h2,
     header,
@@ -125,8 +124,7 @@ describe('makeElement', () => {
         h2,
         header,
         p,
-        ul,
-        form,
+        ul
     ].forEach((me) =>
         test(`has a shorthand for`, () => {
             expect(me({})).toBeInstanceOf(HTMLElement);
