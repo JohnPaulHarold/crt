@@ -39,12 +39,12 @@
     font-weight: bold;
 }
 
-.mainNav :global(a.focused) {
+.mainNav a:focus {
     color: col.$black;
     background-color: col.$primary;
 }
 
-.mainNav :global(a.active:not(.focused)) {
+.mainNav a:active {
     background-color: col.$shadow;
 }
 

@@ -16,6 +16,8 @@ import { focusInto } from '../navigation';
 
 import { assertKey } from '../utils/keys';
 import { registerPopup } from '../utils/registerPopup';
+import { normaliseEventTarget } from '../utils/dom/normaliseEventTarget';
+import { handleKeydownOnElement } from '../utils/dom/handleKeydownOnElement';
 
 /**
  * @extends BaseView
@@ -23,7 +25,7 @@ import { registerPopup } from '../utils/registerPopup';
  */
 
 /**
- * constructor
+ * @constructor
  * @param {ViewOptions} options
  * @this PopupdemoView
  */
@@ -47,7 +49,15 @@ export function Popupdemo(options) {
 
     const handler = this.handlePopup.bind(this);
 
+    this.button = Button(
+        {
+            id: 'btn-show-popup',
+        },
+        'Show Popup'
+    );
     this.popup = registerPopup(dialogEl, handler, appOutlets.popups);
+
+    this.listenForPresses();  
 }
 
 // inherit from BaseView
@@ -55,25 +65,48 @@ Popupdemo.prototype = Object.create(BaseView.prototype);
 // Set the constructor back
 Popupdemo.prototype.constructor = Popupdemo;
 
-Popupdemo.prototype.viewDidLoad = function () {
-    this.viewEl.addEventListener('keydown', (e) => {
-        e.preventDefault();
+Popupdemo.prototype.destructor = function () {
+    if (this.pressHandleCleanup) {
+        this.pressHandleCleanup();
+    }
 
-        if (
-            e.target &&
-            e.target instanceof HTMLElement &&
-            assertKey(e, AdditionalKeys.ENTER)
-        ) {
-            if (e.target.id === 'btn-show-popup') {
-                this.openPopup();
-            }
+    this.pressHandleCleanup = null;
+}
+
+/**
+ * @this PopupdemoView
+ */
+Popupdemo.prototype.listenForPresses = function () {
+    this.pressHandleCleanup = handleKeydownOnElement(
+        this.button,
+        this.handlePresses.bind(this)
+    );
+}
+
+/**
+ *
+ * @param {KeyboardEvent | MouseEvent} event
+ */
+Popupdemo.prototype.handlePresses = function (event) {
+    const elTarget = normaliseEventTarget(event);
+
+    if (
+        elTarget instanceof HTMLElement &&
+        (
+            event instanceof MouseEvent ||
+            event instanceof KeyboardEvent && assertKey(event, AdditionalKeys.ENTER)
+        )
+    ) {
+        if (elTarget.id === 'btn-show-popup') {
+            this.openPopup();
         }
-    });
+    }
 }
 
 /**
  *
  * @param {string} id
+ * @this {PopupdemoView}
  */
 Popupdemo.prototype.handlePopup = function (id) {
     switch (id) {
@@ -98,14 +131,13 @@ Popupdemo.prototype.openPopup = function () {
     this.popup.open();
 }
 
+/**
+ * @this {PopupdemoView}
+ * @returns {HTMLElement}
+ */
 Popupdemo.prototype.render = function () {
     return div(
         { className: 'view', id: this.id },
-        Button(
-            {
-                id: 'btn-show-popup',
-            },
-            'Show Popup'
-        )
+        this.button
     );
 }

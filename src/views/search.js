@@ -45,6 +45,13 @@ export function Search(options) {
         { className: s.searchNoResults },
         'Found nothing...'
     );
+    this.searchResults = div(
+        {
+            id: 'search-results',
+            className: s.searchResults,
+        },
+        this.letsSearch
+    );
 
     this.listenToKeyboard();    
 }
@@ -69,13 +76,16 @@ Search.prototype.listenToKeyboard = function () {
 
 /**
  *
- * @param {KeyboardEvent} event
+ * @param {KeyboardEvent | MouseEvent} event
  */
 Search.prototype.handleKeyboard = function (event) {
     const elTarget = normaliseEventTarget(event);
     if (
         elTarget instanceof HTMLElement &&
-        assertKey(event, AdditionalKeys.ENTER)
+        (
+            event instanceof MouseEvent ||
+            event instanceof KeyboardEvent && assertKey(event, AdditionalKeys.ENTER)
+        )
     ) {
         const keyPressValue = $dataGet(elTarget, 'keyValue');
 
@@ -179,13 +189,7 @@ Search.prototype.render = function () {
         div(
             { className: s.panels2 },
             this.keyboard,
-            div(
-                {
-                    id: 'search-results',
-                    className: s.searchResults,
-                },
-                this.letsSearch
-            )
+            this.searchResults
         )
     );
 }

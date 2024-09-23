@@ -254,14 +254,6 @@ function handleOtherKey(event) {
     event.preventDefault();
 }
 
-// /**
-//  * handleBack
-//  * @param {KeyboardEvent} event
-//  */
-// function handleBack(event) {
-//     event.preventDefault();
-// }
-
 /**
  * handleEnter
  * @param {KeyboardEvent} event
@@ -271,6 +263,7 @@ function handleEnter(event) {
 
     const elTarget = normaliseEventTarget(event);
 
+    // special routine for actual a tags with urls
     if (
         elTarget &&
         elTarget instanceof HTMLAnchorElement &&
@@ -304,8 +297,9 @@ export function initNavigation() {
     // anything, the current focus is lost
     // todo: probably need a pause/resume spatial navigation method so
     // you can toggle between pointer and spatial based modalities
-    window.addEventListener('click', handleClick);
-    console.log('[initNavigation] adding keydown listener');
+    
+    // window.addEventListener('click', handleClick);
+    
     window.addEventListener('keydown', (...args) => {
         throttle(_handleKeyDown, 60, args)
     });

@@ -8,7 +8,6 @@ import { BaseView } from '../libs/baseView';
 
 import { pageData } from '../stubData/pageData';
 
-import { handleKeydownOnElement } from '../utils/dom/handleKeydownOnElement';
 import { assertKey } from '../utils/keys';
 import { $dataGet } from '../utils/dom/$dataGet';
 
@@ -80,16 +79,6 @@ Home.prototype.viewDidLoad = function () {
 }
 
 /**
- * @this {HomeView}
- */
-Home.prototype.viewWillUnload = function () {
-    this.listenForBack(false);
-    if (this.keyHandleCleanup) {
-        this.keyHandleCleanup();
-    }
-}
-
-/**
  * @name focusPage
  * @param {HTMLElement} el
  */
@@ -131,24 +120,18 @@ Home.prototype.handleBack = function (event) {
     }
 }
 
-Home.prototype.listenToCarousels = function () {
-    if (this.carousels) {
-        this.keyHandleCleanup = handleKeydownOnElement(
-            this.carousels,
-            this.handleKeyboard.bind(this)
-        );
-    }
-}
-
 /**
  *
- * @param {KeyboardEvent} event
+ * @param {KeyboardEvent | MouseEvent} event
  */
 Home.prototype.handleKeyboard = function (event) {
     const elTarget = normaliseEventTarget(event);
     if (
         elTarget instanceof HTMLAnchorElement &&
-        assertKey(event, AdditionalKeys.ENTER)
+        (
+            event instanceof MouseEvent ||
+            event instanceof KeyboardEvent && assertKey(event, AdditionalKeys.ENTER)
+        )
     ) {
         const keyPressValue = elTarget.href;
         window.location.href = keyPressValue;
@@ -192,8 +175,6 @@ Home.prototype.buildCarousels = function (data) {
             )
         )
     );
-
-    this.listenToCarousels();
 
     return this.carousels;
 }
