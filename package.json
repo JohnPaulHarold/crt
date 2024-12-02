@@ -32,7 +32,7 @@
         "eslint": "^9.15.0",
         "jsdom": "^25.0.1",
         "postcss": "^8.4.49",
-        "prettier": "3.3.3",
+        "prettier": "3.4.1",
         "rollup": "^4.27.4",
         "rollup-plugin-bundle-worker": "github:JohnPaulHarold/rollup-plugin-bundle-worker",
         "rollup-plugin-copy": "^3.5.0",
