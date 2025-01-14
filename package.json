@@ -44,5 +44,9 @@
     },
     "dependencies": {
         "@bbc/tv-lrud-spatial": "^0.0.12"
+    },
+    "engines": {
+        "npm": ">=10.9.2",
+        "node": ">=22.13.0"
     }
 }

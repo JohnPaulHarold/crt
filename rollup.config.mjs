@@ -13,7 +13,7 @@ import autoprefixer from 'autoprefixer';
 import bundleWorker from 'rollup-plugin-bundle-worker';
 import copy from 'rollup-plugin-copy';
 
-import pkg from './package.json' assert { type: 'json' };
+import pkg from './package.json' with { type: 'json' };
 
 const extensions = ['.js', '.ts'];
 
