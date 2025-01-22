@@ -30,7 +30,7 @@
         "@vitest/coverage-v8": "^2.1.8",
         "autoprefixer": "^10.4.20",
         "eslint": "^9.18.0",
-        "jsdom": "^25.0.1",
+        "jsdom": "^26.0.0",
         "postcss": "^8.5.1",
         "prettier": "3.4.2",
         "rollup": "^4.31.0",
