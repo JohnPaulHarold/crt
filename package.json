@@ -39,11 +39,11 @@
         "rollup-plugin-postcss": "^4.0.2",
         "rollup-plugin-serve": "^3.0.0",
         "sass": "^1.83.4",
-        "typescript": "^5.7.3",
-        "vitest": "^2.0.0"
+        "typescript": "^5.7.3"
     },
     "dependencies": {
-        "@bbc/tv-lrud-spatial": "^0.0.12"
+        "@bbc/tv-lrud-spatial": "^0.0.12",
+        "vitest": "^3.0.4"
     },
     "engines": {
         "npm": ">=10.9.2",
