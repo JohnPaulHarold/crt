@@ -40,7 +40,7 @@
         "rollup-plugin-serve": "^3.0.0",
         "sass": "^1.85.0",
         "typescript": "^5.7.3",
-        "vitest": "^3.0.4"
+        "vitest": "^3.0.7"
     },
     "dependencies": {
         "@bbc/tv-lrud-spatial": "^0.0.12"
