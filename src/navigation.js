@@ -279,16 +279,6 @@ function handleEnter(event) {
 }
 
 /**
- * handleClick
- * @param {MouseEvent} event
- */
-function handleClick(event) {
-    event.preventDefault();
-    // log it out while we figure out what to do
-    console.log('[navigation][handleClick] ');
-}
-
-/**
  * This callback is displayed as a global member.
  * @returns {void}
  */

@@ -7,6 +7,7 @@ describe('cx', () => {
     });
 
     test('concats c & r but not t', () => {
+        // eslint-disable-next-line no-constant-binary-expression
         expect(cx('c', 'r', 0 > 1 && 't')).toBe('c r');
     });
 
