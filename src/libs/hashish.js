@@ -40,6 +40,7 @@ export const hashish = {
             hashChangeEvent = new HashChangeEvent('hashchange', {
                 newURL: location.href,
             });
+        // eslint-disable-next-line no-unused-vars
         } catch (error) {
             /** @type {CustomEvent} */
             hashChangeEvent = new CustomEvent('hashchange', {
