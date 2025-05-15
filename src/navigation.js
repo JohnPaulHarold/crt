@@ -30,7 +30,6 @@ export function setLrudScope(newScope) {
 }
 
 /**
- * @name getLastFocus
  * @returns { {el: HTMLElement, id: string|null} | undefined }
  */
 export function getLastFocus() {
@@ -43,7 +42,6 @@ export function getLastFocus() {
 }
 
 /**
- * @name registerCustomFocusHandler
  * @description exists in case you need to override the default handling
  * @param {(event: KeyboardEvent) => void} func
  * @returns {() => void}
@@ -60,7 +58,6 @@ export function registerCustomFocusHandler(func) {
 export const navigationBus = new PubSub();
 
 /**
- * @name handleKeyDown
  * @param {KeyboardEvent} event
  * @param {HTMLElement} [scope]
  */
@@ -128,7 +125,6 @@ export const NavigationEvents = {
 };
 
 /**
- * @name emitMoveEvent
  * @param {KeyboardEvent} event
  * @param {HTMLElement} last
  * @param {HTMLElement} next
@@ -191,7 +187,6 @@ export function moveFocus(toEl, fromEl) {
 }
 
 /**
- * @name focusWithoutScrolling
  * @param {HTMLElement} el
  * @see {@link https://stackoverflow.com/questions/4963053/focus-to-input-without-scrolling}
  */
@@ -319,7 +314,6 @@ export function handleExternal(href) {
 }
 
 /**
- * @name focusInto
  * @param {HTMLElement} scopeEl
  */
 export function focusInto(scopeEl) {
@@ -344,7 +338,6 @@ export function focusInto(scopeEl) {
 }
 
 /**
- * @name isElementFocused
  * @param {string} id DOM element id
  */
 export function isElementFocused(id) {

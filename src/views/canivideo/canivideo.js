@@ -1,8 +1,3 @@
-/**
- * @typedef {import('../../declarations/types').ContainerType} ContainerType
- * @typedef {import('../../declarations/types').ViewOptions} ViewOptions
- * @typedef {import('../../declarations/types').Codec} Codec
- */
 import { Carousel } from '../../components/Carousel';
 import { Codec } from './Codec';
 import { Heading } from '../../components/Heading';
@@ -21,13 +16,23 @@ import { isCodecSupported } from '../../utils/isCodecSupported';
 import s from './canivideo.scss';
 
 /**
+ * @typedef {'video/mp4' | 'video/webm' | 'application/vnd.apple.mpegurl'} ContainerType
+ */
+
+/**
+ * @typedef {object} Codec
+ * @property {string} title
+ * @property {string} contentType
+ */
+
+/**
  * @extends BaseView
  * @typedef {BaseView & Canivideo} CanivideoView
  */
 
 /**
  * @constructor
- * @param {ViewOptions} options
+ * @param {import('../../libs/baseView').ViewOptions} options
  * @this CanivideoView
  */
 export function Canivideo(options) {

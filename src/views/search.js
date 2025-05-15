@@ -1,7 +1,3 @@
-/**
- * @typedef {import('../declarations/types').ViewOptions} ViewOptions
- * @typedef {import('../declarations/types').RailItem} RailItem
- */
 import { a, div, span } from '../libs/makeElement';
 import { BaseView } from '../libs/baseView';
 
@@ -29,7 +25,7 @@ import { normaliseEventTarget } from '../utils/dom/normaliseEventTarget';
 
 /**
  * @constructor
- * @param {ViewOptions} options
+ * @param {import('../libs/baseView').ViewOptions} options
  * @this {SearchView}
  */
 export function Search(options) {
@@ -134,7 +130,7 @@ Search.prototype.updateSearchList = function () {
             return searchResultsEl.appendChild(this.letsSearch);
         }
 
-        /** @type {RailItem[]} */
+        /** @type {import('./home').RailItem[]} */
         let filteredResults = [];
 
         if (this.searchTerm.length > 0) {

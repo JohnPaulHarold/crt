@@ -1,10 +1,13 @@
-/**
- * @typedef {import('../declarations/types').TileProps} TileProps
- */
-
 import { div, span } from '../libs/makeElement';
 
 import s from './Tile.scss';
+
+/**
+ * @typedef {BaseComponentProps & {
+ *  title: string;
+ * }} TileProps
+ */
+
 /**
  *
  * @param {TileProps} props

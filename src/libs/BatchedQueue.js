@@ -1,8 +1,12 @@
 import { noop } from '../utils/function/noop';
 
 /**
- * @constructor
- * @param {function} handleFull
+ * @callback HandleFullCallback
+ * @param {*} data
+ */
+
+/**
+ * @param {HandleFullCallback} handleFull
  * @param {number} batchInterval
  * @param {number} size
  */
@@ -35,7 +39,7 @@ BatchedQueue.prototype = {
             /**
              * @type {Array<*>}
              */
-            const data = [].concat(this.data);
+            const data = /** @type {Array<*>}*/([]).concat(this.data);
 
             this.handleFull(data);
             this.clear(data.length);
@@ -56,7 +60,7 @@ BatchedQueue.prototype = {
             /**
              * @type {Array<*>}
              */
-            const data = [].concat(this.data);
+            const data = /** @type {Array<*>}*/([]).concat(this.data);
 
             if (data.length > 0) {
                 this.handleFull(data);

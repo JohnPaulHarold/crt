@@ -1,16 +1,38 @@
-/**
- * @typedef {import('../../declarations/types').CodecProps} CodecProps
- * @typedef {import('../../declarations/types').securityLevel} securityLevel
- */
-
 import { div } from '../../libs/makeElement';
+
+import { cx } from '../../utils/dom/cx';
+import { getValidClass } from '../../utils/getValidClass';
+
+import { DrmNames } from '../../models/DrmNames';
+import { DrmLevels } from '../../models/DrmLevels';
 import { DrmType } from '../../models/DrmType';
 
 import s from './Codec.scss';
-import { cx } from '../../utils/dom/cx';
-import { getValidClass } from '../../utils/getValidClass';
-import { DrmNames } from '../../models/DrmNames';
-import { DrmLevels } from '../../models/DrmLevels';
+
+/**
+ * @typedef {object} securityLevel
+ * @property {string} name
+ * @property {boolean} supported
+ */
+
+/**
+ * @typedef {object} DRMSupportReport
+ * @property {boolean} supported
+ * @property {securityLevel[]} securityLevels
+ */
+
+/**
+ * @typedef {object} CodecProps
+ * @property {Object<string, {
+ *   drm: {
+ *     supported: boolean,
+ *     securityLevels: Array<securityLevel>
+ *   }
+ * }>} data - Object mapping string keys to DRM information for different data sources.
+ * @property {string} codec - The codec string.
+ * @property {string} type - The container type.
+ * @property {string} title - A human-readable title for the codec/type combination.
+ */
 
 /**
  *

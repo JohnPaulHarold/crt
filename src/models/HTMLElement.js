@@ -1,5 +1,4 @@
 /**
- * @name HTMLElement
  * @readonly
  * @enum {string}
  */

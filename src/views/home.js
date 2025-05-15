@@ -1,8 +1,3 @@
-/**
- * @typedef {import('../declarations/types').ViewOptions} ViewOptions
- * @typedef {import('../declarations/types').PageData} PageData
- */
-
 import { a, div } from '../libs/makeElement';
 import { BaseView } from '../libs/baseView';
 
@@ -21,6 +16,28 @@ import { AdditionalKeys } from '../models/AdditionalKeys';
 import { focusInto } from '../navigation';
 import { appOutlets } from '../outlets';
 import { normaliseEventTarget } from '../utils/dom/normaliseEventTarget';
+
+/**
+ * @typedef {object} RailItem
+ * @property {string} title
+ * @property {string} id
+ * @property {string} url
+ */
+
+/**
+ * @typedef {object} RailData
+ * @property {string} [title]
+ * @property {string} id
+ * @property {Orientation} [orientation]
+ * @property {RailItem[]} items
+ */
+
+/**
+ * @typedef {object} PageData
+ * @property {string} [title]
+ * @property {string} id
+ * @property {RailData[]} items
+ */
 
 /**
  *
@@ -51,13 +68,12 @@ function findNextBackStop(el) {
 }
 
 /**
- * @extends BaseView
  * @typedef {BaseView & Home} HomeView
  */
 
 /**
  * constructor
- * @param {ViewOptions} options
+ * @param {import('../libs/baseView').ViewOptions} options
  * @this {HomeView}
  */
 export function Home(options) {
@@ -79,7 +95,6 @@ Home.prototype.viewDidLoad = function () {
 }
 
 /**
- * @name focusPage
  * @param {HTMLElement} el
  */
 Home.prototype.focusPage = function (el) {

@@ -9,7 +9,6 @@ export function EventBus(description) {
 
 EventBus.prototype = {
     /**
-     * @name on
      * @memberof EventBus#
      * @param {string} type
      * @param {EventListenerOrEventListenerObject} listener
@@ -19,7 +18,6 @@ EventBus.prototype = {
     },
 
     /**
-     * @name once
      * @memberof EventBus#
      * @param {string} type
      * @param {EventListenerOrEventListenerObject} listener
@@ -30,7 +28,6 @@ EventBus.prototype = {
     },
 
     /**
-     * @name off
      * @memberof EventBus#
      * @param {string} type
      * @param {EventListenerOrEventListenerObject} listener
@@ -40,7 +37,6 @@ EventBus.prototype = {
     },
 
     /**
-     * @name emit
      * @memberof EventBus#
      * @param {string} type
      * @param {*} detail

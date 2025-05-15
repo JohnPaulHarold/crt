@@ -1,10 +1,12 @@
-/**
- * @typedef {import('../declarations/types').GridProps} GridProps
- */
-
 import { div, section } from '../libs/makeElement';
 
 import s from './Grid.scss';
+
+/**
+ * @typedef {BaseComponentProps & { 
+ *  columns: number 
+ * }} GridProps
+ */
 
 /**
  *

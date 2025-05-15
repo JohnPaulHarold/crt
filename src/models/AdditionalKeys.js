@@ -1,5 +1,4 @@
 /**
- * @name AdditionalKeys
  * @readonly
  * @enum {string}
  */

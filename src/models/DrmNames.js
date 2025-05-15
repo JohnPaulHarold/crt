@@ -1,7 +1,6 @@
 import { DrmType } from './DrmType';
 
 /**
- * @name DrmType
  * @readonly
  * @enum {string}
  */

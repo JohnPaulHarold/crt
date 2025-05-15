@@ -1,14 +1,7 @@
-/**
- * @typedef {import('../declarations/enums/Orientation')} Orientation
-*/
-
-/**
- * @typedef {import('../declarations/types').ViewOptions} ViewOptions
- */
-
 import { BaseView } from '../libs/baseView';
 import { a, div, p, section } from '../libs/makeElement';
 import { Direction } from '../models/Direction';
+import { Orientation } from '../models/Orientation';
 import { NavigationEvents, navigationBus } from '../navigation';
 import { getBaseFontSize } from '../utils/dom/getBaseFontSize';
 import { removeElement } from '../utils/dom/removeElement';
@@ -210,7 +203,7 @@ VL.prototype = {
 
 /**
  * @constructor
- * @param {ViewOptions} options
+ * @param {import('../libs/baseView').ViewOptions} options
  * @this {VListView}
  */
 export function VList(options) {

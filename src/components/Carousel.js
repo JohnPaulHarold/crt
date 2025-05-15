@@ -1,13 +1,25 @@
 /**
- * @typedef {import('../declarations/types').CarouselProps} CarouselProps
- */
+ * @typedef {BaseComponentProps & {
+ *  blockExit?: string;
+ *  childQuery?: string;
+ *  id: string;
+ *  orientation: Orientation;
+ *  startOffset?: number;
+ *  title?: string;
+ *  backStop?: string;
+ *  scrollStartQuery?: string;
+ * }} CarouselProps
+*/
+
 import { animations } from '../config/animations';
 import { div, section } from '../libs/makeElement';
 import { cx } from '../utils/dom/cx';
 import { toTitleCase } from '../utils/string/toTitleCase';
 
-import s from './Carousel.scss';
 import { Heading } from './Heading';
+
+import s from './Carousel.scss';
+import { Orientation } from '../models/Orientation';
 /**
  *
  * @param {CarouselProps} props

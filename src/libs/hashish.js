@@ -1,15 +1,14 @@
 /**
- * @typedef {import('../declarations/types').Route} Route
- * @typedef {import('../declarations/types').RouteParams} RouteParams
- * @typedef {import('../declarations/types').RouteSearch} RouteSearch
- * @typedef {{ pattern: string, params: RouteParams, search: RouteSearch }} HandlerArgs
- * @typedef {Record<string,{ callback: (matchedRoute: HandlerArgs) => void; exact: boolean }>} HashRouteHandlers
+ * @typedef {object} HandlerArgs
+ * @property {string} pattern
+ * @property {import('../routes').RouteParams} params
+ * @property {import('../routes').RouteSearch} search
  */
 
 import { parseSearchParams } from '../utils/dom/parseSearchParams';
 
 export const hashish = {
-    /** @type {HashRouteHandlers}>} */
+    /** @type {*}>} */ // fix this
     handlers: {},
     basePath: '',
     hashSymbol: '#',
@@ -54,7 +53,6 @@ export const hashish = {
     },
 
     /**
-     * @name navigateTo
      * @param {HashChangeEvent|CustomEvent|undefined} event
      * @todo could probably change the signature to a URL rather than Event
      */
@@ -102,7 +100,7 @@ export const hashish = {
     /**
      *
      * @param {string} url
-     * @returns {{ pattern: string, params: RouteParams, search: RouteSearch } | undefined}
+     * @returns {HandlerArgs | undefined}
      */
     matchRoute(url) {
         // location.origin don't work on old browser
@@ -178,7 +176,7 @@ export const hashish = {
 
     /**
      *
-     * @param {string|Route} pathObject
+     * @param {string | import('../routes').Route} pathObject
      * @param {(handler: HandlerArgs) => void} handler
      */
     registerRoute(pathObject, handler) {

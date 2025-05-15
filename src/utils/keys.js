@@ -30,7 +30,6 @@ const keyCodeMap = {
 };
 
 /**
- * @name getDirectionFromCode
  * @param {number} keyCode
  * @returns {Direction}
  */

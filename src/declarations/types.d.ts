@@ -153,12 +153,6 @@ export interface DialogProps extends BaseComponentProps {
     title?: string;
 }
 
-// note:
-// props: Record<string, any>
-// textOrArray: any
-// children: ?
-export type ShorthandMakeElement = (...args: any[]) => HTMLElement;
-
 export type ContainerType =
     | 'video/mp4'
     | 'video/webm'

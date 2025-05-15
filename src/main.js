@@ -1,16 +1,9 @@
-/**
- * @typedef {import('./declarations/types.js').AppOutlets} AppOutlets
- */
-
 import { initOutlets, appOutlets } from './outlets.js';
 import { NotificationsService } from './libs/notifications.js';
 import { initNavigation } from './navigation.js';
 import { initRouting, routes } from './routes.js';
 import { MainNav } from './views/mainNav.js';
 
-/**
- * @name main
- */
 function buildApp() {
     // todo: we could lessen this hardcoding, by using data-attrs
     // ie: <div data-outlet="nav"/>
@@ -27,8 +20,7 @@ function initNotifications() {
 }
 
 /**
- * @name initAppShell
- * @param {AppOutlets} outlets
+ * @param {import('./outlets.js').AppOutlets} outlets
  */
 function initAppShell(outlets) {
     const navEl = outlets['nav'];

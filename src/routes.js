@@ -1,9 +1,19 @@
 /**
- * @typedef {import('./declarations/types.js').ViewOptions} ViewOptions
- * @typedef {import('./declarations/types.js').Route} Route
- * @typedef {import('./declarations/types.js').RouteParams} RouteParams
- * @typedef {import('./declarations/types.js').RouteSearch} RouteSearch
- * @typedef {import('./libs/baseView.js')} BaseViewInstance
+ * @typedef {Record<string, string | number | boolean>} RouteParams
+ */
+
+/**
+ * @typedef {Record<string, string | number | boolean>} RouteSearch
+ */
+
+/**
+ * @typedef {object} Route
+ * @property {boolean} [default]
+ * @property {boolean} [exact]
+ * @property {string} pattern
+ * @property {string} [title]
+ * @property {string} id
+ * @property {*} [viewClass] // todo: fix this
  */
 
 import { Home } from './views/home.js';
@@ -19,7 +29,7 @@ import { hashish } from './libs/hashish.js';
 
 import { appOutlets } from './outlets.js';
 
-/** @type {Array<import('./declarations/types.js').Route>} */
+/** @type {Route[]} */
 export const routes = [
     // {
     //   pattern: '/show/{showId}/episode/{id}',
@@ -71,14 +81,12 @@ export const routes = [
     },
 ];
 
-/** @type {BaseViewInstance} */
+// todo: fix this, should be a BaseView "class"
+/** @type {*} */
 let _currentView;
-/** @type {BaseViewInstance | null} */
+/** @type {* | null} */
 let _nextView;
 
-/**
- * @name initRouting
- */
 export function initRouting() {
     hashish.config(location.pathname);
 
@@ -90,8 +98,7 @@ export function initRouting() {
 }
 
 /**
- * @name loadView
- * @param {BaseViewInstance} nextView
+ * @param {*} nextView // todo: fix this
  */
 function loadView(nextView) {
     const mainViewElement = appOutlets['main'];
@@ -111,7 +118,6 @@ function loadView(nextView) {
 
 /**
  * @typedef {{ params: RouteParams, search: RouteSearch }} RouteInfo
- * @name handleViewChange
  * @param {Route} route
  * @param {RouteInfo} routeInfo
  * @returns {void}

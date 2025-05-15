@@ -1,9 +1,5 @@
 /**
- * @typedef {import('../declarations/types').PageData} PageData
- */
-
-/**
- * @type {PageData} pageData
+ * @type {import("../views/home").PageData} pageData
  */
 export const pageData = {
     id: 'test',

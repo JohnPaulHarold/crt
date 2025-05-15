@@ -1,11 +1,14 @@
-/**
- * @typedef {import('../declarations/types').SpinnerProps} SpinnerProps
- */
-
 import { div, span } from '../libs/makeElement';
 import { cx } from '../utils/dom/cx';
 
 import s from './Spinner.scss';
+
+/**
+ * @typedef {BaseComponentProps & {
+ *  message?: string;
+ * }} SpinnerProps
+ */
+
 /**
  * @param {SpinnerProps=} props
  * @returns {HTMLElement}
