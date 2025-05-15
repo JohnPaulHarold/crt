@@ -1,4 +1,14 @@
 /**
+ * Represents the types of input that can be considered a child or a collection of children
+ * for an HTML element. This can be:
+ * - A single string (for a text node).
+ * - A single HTMLElement.
+ * - An array containing strings, HTMLElements, or other nested arrays of the same (any[] for deeper nesting).
+ * @typedef {string | HTMLElement | Array<string | HTMLElement | any[]>} ChildInput
+ */
+
+/**
+ * Type definition for the shorthand element creation functions (e.g., div, span).
  * @typedef {function(...any): HTMLElement} ShorthandMakeElement
  */
 
@@ -26,7 +36,10 @@ function appendText(el, text) {
 
 /**
  * @param {HTMLElement} el
- * @param {string[] | Element[] | Array<unknown>} children
+ * @param {Array<string | Element | Array<any>>} children - An array of child elements.
+ *   Each element can be a string (for a text node), an Element, or another array of children
+ *   (allowing for nested structures). The `Array<any>` allows for deeper, less strictly-typed nesting
+ *   if necessary, though the primary expectation is `string | Element`.
  */
 function appendArray(el, children) {
     children.forEach((child) => {
@@ -75,11 +88,15 @@ function setData(el, dataset) {
 
 /**
  * @param {string} type
- * @param {string | Record<string, any> | HTMLElement | HTMLElement[]} textOrPropsOrChild
- * @param {HTMLElement[]} otherChildren
+ * @param {Record<string, any> | ChildInput} [textOrPropsOrChild] - Optional.
+ *   Either an object of attributes/properties for the element,
+ *   or the first child/collection of children (string, HTMLElement, or array of ChildInput).
+ * @param {ChildInput[]} otherChildren - Additional children to append. Each argument
+ *   is treated as a child or a collection of children.
  * @see {@link https://david-gilbertson.medium.com/how-i-converted-my-react-app-to-vanillajs-and-whether-or-not-it-was-a-terrible-idea-4b14b1b2faff}
  *
  * @returns {HTMLElement}
+ * @example makeElement('div', { id: 'foo' }, 'Hello', makeElement('span', 'World'))
  */
 export function makeElement(type, textOrPropsOrChild, ...otherChildren) {
     const el = document.createElement(type);
@@ -90,7 +107,11 @@ export function makeElement(type, textOrPropsOrChild, ...otherChildren) {
         el.appendChild(textOrPropsOrChild);
     } else if (typeof textOrPropsOrChild === 'string') {
         appendText(el, textOrPropsOrChild);
-    } else if (typeof textOrPropsOrChild === 'object') {
+    } else if (
+        typeof textOrPropsOrChild === 'object' &&
+        textOrPropsOrChild !== null && // Ensure it's not null
+        !Array.isArray(textOrPropsOrChild) // Ensure it's not an array (already handled)
+    ) {
         Object.keys(textOrPropsOrChild).forEach((propName) => {
             if (propName in el || attributeExceptions.indexOf(propName) > -1) {
                 const value = textOrPropsOrChild[propName];
@@ -111,7 +132,10 @@ export function makeElement(type, textOrPropsOrChild, ...otherChildren) {
         });
     }
 
-    if (otherChildren) appendArray(el, otherChildren);
+    // otherChildren is an array of ChildInput elements.
+    // appendArray expects a single array, so we pass otherChildren directly.
+    // It will iterate through each ChildInput in otherChildren.
+    if (otherChildren.length > 0) appendArray(el, otherChildren);
 
     return el;
 }
