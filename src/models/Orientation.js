@@ -1,5 +1,4 @@
 /**
- * @name Orientation
  * @readonly
  * @enum {string}
  */

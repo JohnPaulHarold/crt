@@ -1,12 +1,16 @@
-/**
- * @typedef {import('../declarations/types').DialogProps} DialogProps
- */
-
 import { div } from '../libs/makeElement';
+
 import { Button } from './Button';
+import { Heading } from './Heading';
 
 import s from './Dialog.scss';
-import { Heading } from './Heading';
+
+/**
+ * @typedef {BaseComponentProps & { 
+*  title?: string 
+* }} DialogProps
+*/
+
 /**
  *
  * @param {DialogProps} props

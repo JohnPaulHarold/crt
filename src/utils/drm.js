@@ -1,12 +1,22 @@
-/**
- * @typedef {import('../declarations/drm').SecurityLevel} SecurityLevel
- */
 import { DrmLevels } from '../models/DrmLevels';
 import { DrmType } from '../models/DrmType';
 import { KeySystem } from '../models/KeySystem';
 
 /**
- * @name isKeySystemSupported
+ * @typedef {object} SecurityLevel
+ * @property {string} name
+ * @property {boolean} supported
+ */
+
+/**
+ * @typedef {object} IDrm
+ * @property {DrmType} type
+ * @property {KeySystem} keySystem
+ * @property {boolean} supported
+ * @property {SecurityLevel[]} securityLevels
+ */
+
+/**
  * @param {KeySystem} keySystem
  * @param {string} contentType
  * @param {string} robustness
@@ -35,7 +45,6 @@ function isKeySystemSupported(keySystem, contentType, robustness = '') {
 }
 
 /**
- * @name getWidevine
  * @param {string} contentType
  */
 function getWidevine(contentType) {
@@ -93,7 +102,6 @@ function getWidevine(contentType) {
 }
 
 /**
- * @name getPlayreadyLegacy
  * @param {string} contentType
  */
 function getPlayreadyLegacy(contentType) {
@@ -110,7 +118,6 @@ function getPlayreadyLegacy(contentType) {
 // see https://github.com/videojs/videojs-contrib-eme/blob/33dfe13b64024f099561ce86c253a27ed6194b8a/src/cdm.js#L27
 // and: https://github.com/shaka-project/shaka-player/issues/818#issuecomment-405695770
 /**
- * @name getPlayready
  * @param {string} contentType
  */
 function getPlayready(contentType) {
@@ -152,7 +159,6 @@ function getPlayready(contentType) {
 }
 
 /**
- * @name getFairplay
  * @param {string} contentType
  */
 function getFairplay(contentType) {

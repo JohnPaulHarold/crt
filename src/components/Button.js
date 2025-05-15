@@ -1,5 +1,10 @@
 /**
- * @typedef {import('../declarations/types').ButtonProps} ButtonProps
+ * @typedef {BaseComponentProps & {
+ *  text?: string
+ *  ghost?: boolean
+ *  icon?: string
+ *  iconPosition?: 'left' | 'right' | 'top' | 'bottom'
+ * }} ButtonProps
  */
 
 import { button } from '../libs/makeElement';

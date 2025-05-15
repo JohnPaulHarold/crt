@@ -1,5 +1,4 @@
 /**
- * @name parseDecimal
  * @param {string} numStr 
  */
 export function parseDecimal(numStr) {

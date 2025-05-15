@@ -10,14 +10,12 @@ const defaultOptions = {
 };
 
 /**
- * LoadScriptOptions
  * @typedef {Object} LoadScriptOptions
  * @property {boolean} [async] - if the `aysnc` attribute is added or not
  * @property {boolean} [canFail] - if the failure to add this script is critical. Will reject with error if so
  */
 
 /**
- * LoadedScriptSuccess
  * @typedef {Object} LoadedScriptResponse
  * @property {boolean} loaded - if the resource loaded or not
  * @property {Event} [error] - error object
@@ -25,7 +23,6 @@ const defaultOptions = {
  */
 
 /**
- * @name loadScript
  * @param {string} src - url of the external resource
  * @param {ResourceType} type - either 'css' or 'js'
  * @param {LoadScriptOptions} [options] - additional options for script loading behaviours

@@ -1,5 +1,4 @@
 /**
- *
  * @param {HTMLElement} el
  * @param {string} dataProp
  * @returns {*}

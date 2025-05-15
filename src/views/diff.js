@@ -1,7 +1,3 @@
-/**
- * @typedef {import('../declarations/types').ViewOptions} ViewOptions
- */
-
 import { div, p } from '../libs/makeElement';
 import { BaseView } from '../libs/baseView';
 import { diff } from '../libs/differenceEngine';
@@ -47,13 +43,12 @@ const lyrics = [
  */
 
 /**
- * @extends BaseView
  * @typedef {BaseView & Diff} DiffView
  */
 
 /**
  * @constructor
- * @param {ViewOptions} options
+ * @param {import('../libs/baseView').ViewOptions} options
  * @this DiffView
  */
 export function Diff(options) {

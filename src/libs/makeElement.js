@@ -1,6 +1,5 @@
 /**
- * @typedef {import('../declarations/types').StylesRecord} StylesRecord
- * @typedef {import('../declarations/types').ShorthandMakeElement} ShorthandMakeElement
+ * @typedef {function(...any): HTMLElement} ShorthandMakeElement
  */
 
 const attributeExceptions = [
@@ -17,7 +16,6 @@ const attributeExceptions = [
 ];
 
 /**
- * appendText
  * @param {HTMLElement} el
  * @param {string} text
  */
@@ -27,7 +25,6 @@ function appendText(el, text) {
 }
 
 /**
- * appendArray
  * @param {HTMLElement} el
  * @param {string[] | Element[] | Array<unknown>} children
  */
@@ -44,7 +41,6 @@ function appendArray(el, children) {
 }
 
 /**
- * setStyles
  * @param {HTMLElement} el
  * @param {CSSStyleDeclaration} styles
  * @returns
@@ -68,7 +64,6 @@ function setStyles(el, styles) {
 }
 
 /**
- * setData
  * @param {HTMLElement} el
  * @param {Record<string, string>} dataset
  */
@@ -79,7 +74,6 @@ function setData(el, dataset) {
 }
 
 /**
- * makeElement
  * @param {string} type
  * @param {string | Record<string, any> | HTMLElement | HTMLElement[]} textOrPropsOrChild
  * @param {HTMLElement[]} otherChildren

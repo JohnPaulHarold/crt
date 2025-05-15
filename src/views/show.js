@@ -1,16 +1,15 @@
-/**
- * @typedef {import('../declarations/types').ViewOptions} ViewOptions
- */
 import { a, div, p } from '../libs/makeElement';
 import { BaseView } from '../libs/baseView';
 import { checkImages } from '../libs/indolence';
 
 import { assertKey } from '../utils/keys';
+import { normaliseEventTarget } from '../utils/dom/normaliseEventTarget';
 
 import { LazyImage } from '../components/LazyImage';
 import { Grid } from '../components/Grid';
 import { Button } from '../components/Button';
 import { Carousel } from '../components/Carousel';
+import { Heading } from '../components/Heading';
 
 import { Orientation } from '../models/Orientation';
 import { Direction } from '../models/Direction';
@@ -22,18 +21,15 @@ import { showData } from '../stubData/showData';
 import Logo from '../assets/Public_Domain_Mark_button.svg.png';
 
 import s from './show.scss';
-import { Heading } from '../components/Heading';
-import { normaliseEventTarget } from '../utils/dom/normaliseEventTarget';
 
 /**
- * @extends BaseView
  * @typedef {BaseView & Show} ShowView
  */
 
 /**
  * @constructor
- * @param {ViewOptions} options
- * @this ShowView
+ * @param {import('../libs/baseView').ViewOptions} options
+ * @this {ShowView}
  */
 export function Show(options) {
     BaseView.call(this, options);
@@ -117,11 +113,17 @@ Show.prototype.customHandleKeyDown = function (event) {
     }
 }
 
+/**
+ * @this {ShowView}
+ */
 Show.prototype.viewDidLoad = function () {
     this.scope = this.viewEl;
     checkImages(this.scope);
 }
 
+/**
+ * @this {ShowView}
+ */
 Show.prototype.render = function () {
     return div(
         { className: 'view', id: this.id },

@@ -4,14 +4,13 @@ import { handleKeydownOnElement } from './dom/handleKeydownOnElement';
 import { normaliseEventTarget } from './dom/normaliseEventTarget';
 
 /**
- * @name registerPopup
  * @param {HTMLElement} popupEl
  * @param {(id: string) => void} handler
  * @param {HTMLElement} outlet
  * @returns {{open: () => void, close: () => void}}
  */
 export function registerPopup(popupEl, handler, outlet) {
-    /** @type { (event: KeyboardEvent) => void }  */
+    /** @type { import('./dom/handleKeydownOnElement').keydownCallback }  */
     const popupCallback = (event) => {
         const elTarget = normaliseEventTarget(event);
         

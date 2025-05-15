@@ -1,5 +1,4 @@
 /**
- * @name DrmType
  * @readonly
  * @enum {string}
  */

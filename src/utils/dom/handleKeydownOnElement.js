@@ -12,7 +12,6 @@ import { assertKey } from '../keys';
  */
 export function handleKeydownOnElement(el, callback, allowedKeys) {
     /**
-     * @name func
      * @param {KeyboardEvent | MouseEvent} e
      */
     function func(e) {

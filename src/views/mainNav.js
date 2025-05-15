@@ -1,10 +1,12 @@
-/**
- * @typedef {import('../declarations/types').NavViewOptions} NavViewOptions
- */
-
 import { BaseView } from '../libs/baseView';
 import { Nav } from '../components/Nav';
 import { collectionToArray } from '../utils/dom/collectionToArray';
+
+/**
+ * @typedef {import('../libs/baseView').ViewOptions & {
+ *  navItems: import('../components/Nav').NavItem[]
+ * }} NavViewOptions
+ */
 
 /**
  * @extends BaseView

@@ -1,5 +1,4 @@
 /**
- * collectionToArray
  * @template T
  * @param {HTMLCollection|NodeList|NamedNodeMap} collection
  * @returns {Array<T>}

@@ -1,8 +1,3 @@
-/**
- * @typedef {import('../declarations/types').ViewOptions} ViewOptions
- * @typedef {import('../declarations/types').PageData} PageData
- */
-
 import { Button } from '../components/Button';
 import { Dialog } from '../components/Dialog';
 
@@ -26,7 +21,7 @@ import { handleKeydownOnElement } from '../utils/dom/handleKeydownOnElement';
 
 /**
  * @constructor
- * @param {ViewOptions} options
+ * @param {import('../libs/baseView').ViewOptions} options
  * @this PopupdemoView
  */
 export function Popupdemo(options) {

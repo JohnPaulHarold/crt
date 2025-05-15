@@ -1,10 +1,13 @@
-/**
- * @typedef {import('../declarations/types').LazyImageProps} LazyImageProps
- */
-
 import { img } from '../libs/makeElement';
 
 import s from './LazyImage.scss';
+
+/**
+ * @typedef {BaseComponentProps & {
+ *  src: string;
+ * }} LazyImageProps
+ */
+
 /**
  *
  * @param {LazyImageProps} props

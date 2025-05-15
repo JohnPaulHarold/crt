@@ -7,7 +7,6 @@ export function PubSub() {
 
 PubSub.prototype = {
     /**
-     * @name broadcast
      * @param {*} payload
      */
     broadcast(payload) {
@@ -17,7 +16,6 @@ PubSub.prototype = {
     },
 
     /**
-     * @name emit
      * @param {string} id
      * @param {*} payload
      */
@@ -30,7 +28,6 @@ PubSub.prototype = {
     },
 
     /**
-     * @name on
      * @param {string} id
      * @param {function} callback
      * @param {boolean=} once
@@ -53,7 +50,6 @@ PubSub.prototype = {
     },
 
     /**
-     * @name on
      * @param {string} id
      * @param {function} callback
      */
@@ -68,7 +64,6 @@ PubSub.prototype = {
     },
 
     /**
-     * @name off
      * @param {string} id
      */
     off(id) {

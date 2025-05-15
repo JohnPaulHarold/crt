@@ -1,5 +1,4 @@
 /**
- * getElementChain
  * @param {Element|ParentNode} target
  * @returns {Array<Element|ParentNode|Node>}
  */

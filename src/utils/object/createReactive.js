@@ -18,7 +18,6 @@ export function createReactive(state, onSet) {
     /**
      * The internal store
      *
-     * @name newObj#locals
      * @type {T}
      * @readonly
      */

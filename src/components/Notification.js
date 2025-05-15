@@ -1,14 +1,15 @@
-/**
- * @typedef {import('../declarations/types').NotificationProps} NotificationProps
- */
-
 import { div } from '../libs/makeElement';
 import { cx } from '../utils/dom/cx';
 
 import s from './Notification.scss';
 
 /**
- * @name Notification
+ * @typedef {BaseComponentProps & { 
+ *  message: string; 
+ * }} NotificationProps
+ */
+
+/**
  * @param {NotificationProps} props
  * @returns {HTMLElement}
  */

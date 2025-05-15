@@ -1,11 +1,14 @@
-/**
- * @typedef {import('../declarations/types').HeadingProps} HeadingProps
- */
-
 import { h1, h2, h3, h4, h5, h6 } from '../libs/makeElement';
 import { cx } from '../utils/dom/cx';
 
 import s from './Heading.scss';
+
+/**
+ * @typedef {BaseComponentProps & {
+ *  level?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'; 
+ *  colour?: 'primary' | 'secondary' | 'highlight' | 'disabled' | 'error';
+ * }} HeadingProps
+ */
 
 /**
  *

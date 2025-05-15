@@ -10,9 +10,8 @@ const offsetCache = {};
 const focusedQuery = '.focused';
 
 /**
- * @name shouldScroll
  * @param {HTMLElement} el
- * @returns {HTMLElement | undefined}
+ * @returns {HTMLElement=}
  */
 function getScrollEl(el) {
     if (!el || !el.parentElement) return;
@@ -25,7 +24,6 @@ function getScrollEl(el) {
 }
 
 /**
- * @name findScrollableFromFocusEl
  * @param {HTMLElement} el
  * @param {HTMLElement[]} scrollables
  * @returns {[HTMLElement, number]}
@@ -52,7 +50,6 @@ function findScrollableFromFocusEl(el, scrollables) {
 }
 
 /**
- * @name calculateOffset
  * @param {number[]} offsets
  * @param {number} scrollableIndex
  * @param {number} startOffset
@@ -62,7 +59,6 @@ function calculateOffset(offsets, scrollableIndex, startOffset) {
 }
 
 /**
- * @name doTheHardWork
  * @param {HTMLElement} scrollEl
  * @param {boolean} useTransforms
  */
@@ -128,10 +124,8 @@ function doTheHardWork(scrollEl, useTransforms) {
 }
 
 /**
- * @name scrollAction
  * @param {HTMLElement} el
  * @param {boolean} useTransforms
- * @returns {void}
  */
 export function scrollAction(el, useTransforms) {
     let scrollEl = getScrollEl(el);

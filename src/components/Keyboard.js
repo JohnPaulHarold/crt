@@ -1,13 +1,27 @@
-/**
- * @typedef {import('../declarations/types').KeyboardProps} KeyboardProps
- * @typedef {import('../declarations/types').KeyProps} KeyProps
- */
-
 import { div } from '../libs/makeElement';
 import { cx } from '../utils/dom/cx';
 import { Button } from './Button';
 
 import s from './Keyboard.scss';
+
+/**
+ * @typedef {object} KeyboardKey
+ * @property {string} display
+ * @property {string} value
+ * @property {number} [width]
+ */
+
+/**
+ * @typedef {KeyboardKey & {
+ *  className?: string
+ * }} KeyProps
+ */
+
+/**
+ * @typedef {object} KeyboardProps
+ * @property {KeyboardKey[][]} keyMap
+ */
+
 /**
  *
  * @param {KeyProps} props

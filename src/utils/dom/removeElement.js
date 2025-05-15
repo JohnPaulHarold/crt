@@ -1,5 +1,4 @@
 /**
- * @name removeElement
  * @param {HTMLElement|Element} el
  * @returns {void}
  */

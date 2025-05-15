@@ -1,5 +1,5 @@
 /**
- * @typedef {import('./declarations/types.js').AppOutlets} AppOutlets
+ * @typedef {{[index: string]: HTMLElement}} AppOutlets
  */
 
 // todo: could these be acquired as part of bootstrap process
@@ -8,7 +8,6 @@
 export const appOutlets = {};
 
 /**
- * @name initOutlets
  * @param {string[]} outletIds
  */
 export function initOutlets(outletIds) {
