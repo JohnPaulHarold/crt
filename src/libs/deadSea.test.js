@@ -2,24 +2,24 @@
  * @vitest-environment jsdom
  */
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
-import { scrollAction } from './deadSea';
+import { scrollAction, clearDeadSeaCache } from './deadSea';
 import { Orientation } from '../models/Orientation';
 
 // Helper to convert kebab-case to camelCase
 /**
- * 
- * @param {string} s 
+ *
+ * @param {string} s
  * @returns {string}
  */
 const kebabToCamel = (s) => s.replace(/-./g, (x) => x[1].toUpperCase());
 
 // Helper to create elements and set data attributes
 /**
- * 
- * @param {string} tag 
- * @param {Record<string, any>} attributes 
- * @param {*[]} children 
- * @returns 
+ *
+ * @param {string} tag
+ * @param {Record<string, any>} attributes
+ * @param {*[]} children
+ * @returns
  */
 const createElement = (tag, attributes = {}, children = []) => {
     const el = document.createElement(tag);
@@ -31,12 +31,11 @@ const createElement = (tag, attributes = {}, children = []) => {
             el.className = attributes[key];
         } else if (key === 'style' && typeof attributes[key] === 'object') {
             Object.assign(el.style, attributes[key]);
-        }
-         else {
+        } else {
             el.setAttribute(key, attributes[key]);
         }
     }
-    children.forEach(child => el.appendChild(child));
+    children.forEach((child) => el.appendChild(child));
     return el;
 };
 
@@ -52,8 +51,8 @@ describe('deadSea', () => {
 
     afterEach(() => {
         if (container) {
-          document.body.removeChild(container);
-          container = null;
+            document.body.removeChild(container);
+            container = null;
         }
 
         document.body.innerHTML = ''; // Clean up focused elements etc.
@@ -62,13 +61,29 @@ describe('deadSea', () => {
 
     describe('scrollAction', () => {
         test('should scroll horizontally using style.left when useTransforms is false', () => {
-            const child1 = createElement('div', { style: { width: '100px', height: '50px' } });
-            const child2 = createElement('div', { class: 'focused', style: { width: '100px', height: '50px' } });
-            const child3 = createElement('div', { style: { width: '100px', height: '50px' } });
+            const child1 = createElement('div', {
+                style: { width: '100px', height: '50px' },
+            });
+            const child2 = createElement('div', {
+                class: 'focused',
+                style: { width: '100px', height: '50px' },
+            });
+            const child3 = createElement('div', {
+                style: { width: '100px', height: '50px' },
+            });
 
-            Object.defineProperty(child1, 'offsetLeft', { configurable: true, value: 0 });
-            Object.defineProperty(child2, 'offsetLeft', { configurable: true, value: 100 });
-            Object.defineProperty(child3, 'offsetLeft', { configurable: true, value: 200 });
+            Object.defineProperty(child1, 'offsetLeft', {
+                configurable: true,
+                value: 0,
+            });
+            Object.defineProperty(child2, 'offsetLeft', {
+                configurable: true,
+                value: 100,
+            });
+            Object.defineProperty(child3, 'offsetLeft', {
+                configurable: true,
+                value: 200,
+            });
 
             const scrollEl = createElement(
                 'div',
@@ -89,11 +104,23 @@ describe('deadSea', () => {
         test('should scroll vertically using transform when useTransforms is true and start-offset is met', () => {
             const child1 = createElement('div', { style: { height: '50px' } });
             const child2 = createElement('div', { style: { height: '50px' } }); // Not focused, but part of offset calculation
-            const child3 = createElement('div', { class: 'focused', style: { height: '50px' } });
+            const child3 = createElement('div', {
+                class: 'focused',
+                style: { height: '50px' },
+            });
 
-            Object.defineProperty(child1, 'offsetTop', { configurable: true, value: 0 });
-            Object.defineProperty(child2, 'offsetTop', { configurable: true, value: 50 });
-            Object.defineProperty(child3, 'offsetTop', { configurable: true, value: 100 });
+            Object.defineProperty(child1, 'offsetTop', {
+                configurable: true,
+                value: 0,
+            });
+            Object.defineProperty(child2, 'offsetTop', {
+                configurable: true,
+                value: 50,
+            });
+            Object.defineProperty(child3, 'offsetTop', {
+                configurable: true,
+                value: 100,
+            });
 
             const scrollEl = createElement(
                 'div',
@@ -112,11 +139,20 @@ describe('deadSea', () => {
         });
 
         test('should not scroll if focused item index is less than start-offset', () => {
-            const child1 = createElement('div', { class: 'focused', style: { height: '50px' } });
+            const child1 = createElement('div', {
+                class: 'focused',
+                style: { height: '50px' },
+            });
             const child2 = createElement('div', { style: { height: '50px' } });
 
-            Object.defineProperty(child1, 'offsetTop', { configurable: true, value: 0 });
-            Object.defineProperty(child2, 'offsetTop', { configurable: true, value: 50 });
+            Object.defineProperty(child1, 'offsetTop', {
+                configurable: true,
+                value: 0,
+            });
+            Object.defineProperty(child2, 'offsetTop', {
+                configurable: true,
+                value: 50,
+            });
 
             const scrollEl = createElement(
                 'div',
@@ -131,18 +167,31 @@ describe('deadSea', () => {
 
             scrollAction(child1, true); // child1 is at index 0
 
+            // It should reset the scroll position
             expect(scrollEl.style.transform).toBe('');
-            expect(scrollEl.style.top).toBe('');
+            expect(scrollEl.style.top).toBe('0px');
         });
 
         test('should use data-deadsea-child-query to find scrollable items', () => {
-            const actualChild1 = createElement('div', { class: 'scroll-item', style: { width: '100px' } });
+            const actualChild1 = createElement('div', {
+                class: 'scroll-item',
+                style: { width: '100px' },
+            });
             const wrapper1 = createElement('div', {}, [actualChild1]);
-            const actualChild2 = createElement('div', { class: 'scroll-item focused', style: { width: '100px' } });
+            const actualChild2 = createElement('div', {
+                class: 'scroll-item focused',
+                style: { width: '100px' },
+            });
             const wrapper2 = createElement('div', {}, [actualChild2]);
 
-            Object.defineProperty(actualChild1, 'offsetLeft', { configurable: true, value: 0 });
-            Object.defineProperty(actualChild2, 'offsetLeft', { configurable: true, value: 100 });
+            Object.defineProperty(actualChild1, 'offsetLeft', {
+                configurable: true,
+                value: 0,
+            });
+            Object.defineProperty(actualChild2, 'offsetLeft', {
+                configurable: true,
+                value: 100,
+            });
 
             const scrollEl = createElement(
                 'div',
@@ -162,13 +211,28 @@ describe('deadSea', () => {
         });
 
         test('should adjust scroll based on data-deadsea-scroll-start-query', () => {
-            const startMarker = createElement('div', { id: 'scroll-start-here', style: { width: '30px' } }); // This defines the 0px scroll point
+            const startMarker = createElement('div', {
+                id: 'scroll-start-here',
+                style: { width: '30px' },
+            }); // This defines the 0px scroll point
             const child1 = createElement('div', { style: { width: '100px' } }); // Effective offset 0 from startMarker
-            const child2 = createElement('div', { class: 'focused', style: { width: '100px' } }); // Effective offset 100 from startMarker
+            const child2 = createElement('div', {
+                class: 'focused',
+                style: { width: '100px' },
+            }); // Effective offset 100 from startMarker
 
-            Object.defineProperty(startMarker, 'offsetLeft', { configurable: true, value: 30 });
-            Object.defineProperty(child1, 'offsetLeft', { configurable: true, value: 30 });
-            Object.defineProperty(child2, 'offsetLeft', { configurable: true, value: 130 });
+            Object.defineProperty(startMarker, 'offsetLeft', {
+                configurable: true,
+                value: 30,
+            });
+            Object.defineProperty(child1, 'offsetLeft', {
+                configurable: true,
+                value: 30,
+            });
+            Object.defineProperty(child2, 'offsetLeft', {
+                configurable: true,
+                value: 130,
+            });
 
             const scrollEl = createElement(
                 'div',
@@ -195,10 +259,21 @@ describe('deadSea', () => {
         });
 
         test('should handle nested scrollable elements', () => {
-            const innerChild1 = createElement('div', { style: { width: '50px' } });
-            const innerChild2 = createElement('div', { class: 'focused', style: { width: '50px' } });
-            Object.defineProperty(innerChild1, 'offsetLeft', { configurable: true, value: 0 });
-            Object.defineProperty(innerChild2, 'offsetLeft', { configurable: true, value: 50 });
+            const innerChild1 = createElement('div', {
+                style: { width: '50px' },
+            });
+            const innerChild2 = createElement('div', {
+                class: 'focused',
+                style: { width: '50px' },
+            });
+            Object.defineProperty(innerChild1, 'offsetLeft', {
+                configurable: true,
+                value: 0,
+            });
+            Object.defineProperty(innerChild2, 'offsetLeft', {
+                configurable: true,
+                value: 50,
+            });
 
             const innerScrollEl = createElement(
                 'div',
@@ -211,13 +286,26 @@ describe('deadSea', () => {
                 [innerChild1, innerChild2]
             );
 
-            const outerItem1 = createElement('div', { style: { width: '200px' } });
+            const outerItem1 = createElement('div', {
+                style: { width: '200px' },
+            });
             const outerItem2AsInnerScrollEl = innerScrollEl; // innerScrollEl is a child of outerScrollEl
-            const outerItem3 = createElement('div', { style: { width: '200px' } });
+            const outerItem3 = createElement('div', {
+                style: { width: '200px' },
+            });
 
-            Object.defineProperty(outerItem1, 'offsetLeft', { configurable: true, value: 0 });
-            Object.defineProperty(outerItem2AsInnerScrollEl, 'offsetLeft', { configurable: true, value: 200 });
-            Object.defineProperty(outerItem3, 'offsetLeft', { configurable: true, value: 400 });
+            Object.defineProperty(outerItem1, 'offsetLeft', {
+                configurable: true,
+                value: 0,
+            });
+            Object.defineProperty(outerItem2AsInnerScrollEl, 'offsetLeft', {
+                configurable: true,
+                value: 200,
+            });
+            Object.defineProperty(outerItem3, 'offsetLeft', {
+                configurable: true,
+                value: 400,
+            });
 
             const outerScrollEl = createElement(
                 'div',
@@ -243,8 +331,14 @@ describe('deadSea', () => {
             const child1 = createElement('div', { style: { width: '100px' } });
             const child2 = createElement('div', { style: { width: '100px' } }); // No .focused class on any child
 
-            Object.defineProperty(child1, 'offsetLeft', { configurable: true, value: 0 });
-            Object.defineProperty(child2, 'offsetLeft', { configurable: true, value: 100 });
+            Object.defineProperty(child1, 'offsetLeft', {
+                configurable: true,
+                value: 0,
+            });
+            Object.defineProperty(child2, 'offsetLeft', {
+                configurable: true,
+                value: 100,
+            });
 
             const scrollEl = createElement(
                 'div',
@@ -277,21 +371,20 @@ describe('deadSea', () => {
         });
 
         test('should handle empty scrollables gracefully (e.g., by not setting an invalid style)', () => {
-            const scrollEl = createElement(
-                'div',
-                {
-                    'data-deadsea-id': 'test-empty-scrollables',
-                    'data-deadsea-orientation': Orientation.HORIZONTAL,
-                    'data-deadsea-start-offset': '0',
-                    // No children added to scrollEl here
-                }
-            );
+            const scrollEl = createElement('div', {
+                'data-deadsea-id': 'test-empty-scrollables',
+                'data-deadsea-orientation': Orientation.HORIZONTAL,
+                'data-deadsea-start-offset': '0',
+                // No children added to scrollEl here
+            });
             container.appendChild(scrollEl);
 
             // Add a dummy focused element to the document body so querySelector('.focused') finds something,
             // but it's not within scrollEl's context for findScrollableFromFocusEl if scrollables is empty.
             // Or, more accurately, findScrollableFromFocusEl will be called with this dummy.
-            const dummyFocusedGlobal = createElement('div', { class: 'focused' });
+            const dummyFocusedGlobal = createElement('div', {
+                class: 'focused',
+            });
             document.body.appendChild(dummyFocusedGlobal);
 
             // scrollAction is called with scrollEl itself.
@@ -304,7 +397,7 @@ describe('deadSea', () => {
             // newOffset will be undefined.
             // scrollEl.style.left = -undefined + 'px' = 'NaNpx'.
             scrollAction(scrollEl, false);
-            
+
             // If newOffset is undefined, a robust implementation should not set style to 'NaNpx'.
             // It might leave it as '', or set it to '0px'.
             // Since the actual result is '', we expect ''.
@@ -315,12 +408,21 @@ describe('deadSea', () => {
 
         test('should use cached offsets on subsequent calls for the same scrollId', () => {
             const child1 = createElement('div', { style: { width: '100px' } });
-            const child2 = createElement('div', { class: 'focused', style: { width: '100px' } });
+            const child2 = createElement('div', {
+                class: 'focused',
+                style: { width: '100px' },
+            });
 
             const mockOffsetLeftChild1 = vi.fn(() => 0);
             const mockOffsetLeftChild2 = vi.fn(() => 100);
-            Object.defineProperty(child1, 'offsetLeft', { configurable: true, get: mockOffsetLeftChild1 });
-            Object.defineProperty(child2, 'offsetLeft', { configurable: true, get: mockOffsetLeftChild2 });
+            Object.defineProperty(child1, 'offsetLeft', {
+                configurable: true,
+                get: mockOffsetLeftChild1,
+            });
+            Object.defineProperty(child2, 'offsetLeft', {
+                configurable: true,
+                get: mockOffsetLeftChild2,
+            });
 
             const scrollEl = createElement(
                 'div',
@@ -360,10 +462,13 @@ describe('deadSea', () => {
                 'data-deadsea-orientation': 'horizontal',
                 'data-deadsea-id': 'getscroll-self',
                 'data-deadsea-start-offset': '0',
-                class: 'focused' // scrollEl itself is focused for simplicity of test
+                class: 'focused', // scrollEl itself is focused for simplicity of test
             });
             const child = createElement('div', { style: { width: '100px' } });
-            Object.defineProperty(child, 'offsetLeft', { configurable: true, value: 0 });
+            Object.defineProperty(child, 'offsetLeft', {
+                configurable: true,
+                value: 0,
+            });
             scrollEl.appendChild(child); // scrollEl needs children for offset calculation
             container.appendChild(scrollEl);
 
@@ -376,5 +481,87 @@ describe('deadSea', () => {
             scrollAction(scrollEl, false); // Start search from scrollEl, getScrollEl(scrollEl) returns scrollEl
             expect(scrollEl.style.left).toBe('0px');
         });
+    });
+});
+
+describe('clearDeadSeaCache', () => {
+    /** @type {*} */
+    let container;
+
+    beforeEach(() => {
+        container = document.createElement('div');
+        document.body.appendChild(container);
+    });
+
+    afterEach(() => {
+        if (container) {
+            document.body.removeChild(container);
+            container = null;
+        }
+        vi.restoreAllMocks();
+    });
+
+    test('should remove the specified entry from the cache', () => {
+        const scrollId = 'test-cache-clear';
+        const child1 = document.createElement('div');
+        child1.className = 'focused';
+        Object.defineProperty(child1, 'offsetLeft', {
+            configurable: true,
+            value: 0,
+        });
+        const scrollEl = document.createElement('div');
+        scrollEl.dataset.deadseaId = scrollId;
+        scrollEl.dataset.deadseaOrientation = Orientation.HORIZONTAL;
+        scrollEl.dataset.deadseaStartOffset = '0';
+        scrollEl.appendChild(child1);
+        container.appendChild(scrollEl);
+
+        // First call to populate the cache
+        scrollAction(child1, false);
+
+        const offsetLeftGetter = vi.spyOn(child1, 'offsetLeft', 'get');
+        scrollAction(child1, false);
+        expect(offsetLeftGetter).not.toHaveBeenCalled(); // Should use cache
+
+        // Now clear the cache
+        clearDeadSeaCache(scrollId);
+
+        // Call again, the cache should be repopulated, so the getter is called
+        scrollAction(child1, false);
+        expect(offsetLeftGetter).toHaveBeenCalled();
+    });
+});
+
+describe('error handling and edge cases', () => {
+    /** @type {HTMLElement} */
+    let container;
+
+    beforeEach(() => {
+        container = document.createElement('div');
+        document.body.appendChild(container);
+    });
+
+    afterEach(() => {
+        if (container) {
+            document.body.removeChild(container);
+        }
+        document.body.innerHTML = ''; // Clean up focused elements etc.
+        vi.restoreAllMocks();
+    });
+
+    test('should log an error and do nothing if data-deadsea-id is missing', () => {
+        const consoleErrorSpy = vi
+            .spyOn(console, 'error')
+            .mockImplementation(() => {});
+        const scrollEl = document.createElement('div');
+        scrollEl.dataset.deadseaOrientation = Orientation.HORIZONTAL;
+        container.appendChild(scrollEl);
+        scrollAction(scrollEl, false);
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+            'DeadSea element requires a "data-deadsea-id" attribute for caching.',
+            scrollEl
+        );
+        expect(scrollEl.style.left).toBe('');
+        consoleErrorSpy.mockRestore();
     });
 });
