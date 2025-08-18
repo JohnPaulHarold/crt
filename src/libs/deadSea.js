@@ -4,7 +4,7 @@ import { collectionToArray } from '../utils/dom/collectionToArray';
 import { $dataGet } from '../utils/dom/$dataGet';
 import { transformProp } from '../utils/style/prefix';
 
-/** @type { {[index: string]: number[]} } */
+/** @type {Record<string, number[]>} */
 const offsetCache = {};
 
 const focusedQuery = '.focused';
@@ -63,29 +63,42 @@ function calculateOffset(offsets, scrollableIndex, startOffset) {
  * @param {boolean} useTransforms
  */
 function doTheHardWork(scrollEl, useTransforms) {
-    // todo: either tell the type system to always expect an id, or generate one for it.
+    const scrollId = $dataGet(scrollEl, 'deadseaId');
+    if (!scrollId) {
+        console.error(
+            'DeadSea element requires a "data-deadsea-id" attribute for caching.',
+            scrollEl
+        );
+        return;
+    }
+
     const focusedEl = document.querySelector(focusedQuery);
 
-    const scrollId = $dataGet(scrollEl, 'deadseaId') || '';
-    const orientation = $dataGet(scrollEl, 'deadseaOrientation');
-    const qs = $dataGet(scrollEl, 'deadseaChildQuery') || '';
-    const startOffset = $dataGet(scrollEl, 'deadseaStartOffset') || 0;
-    const startQs = $dataGet(scrollEl, 'deadseaScrollStartQuery') || '';
+    const orientation =
+        $dataGet(scrollEl, 'deadseaOrientation') || Orientation.HORIZONTAL;
+    const childQuery = $dataGet(scrollEl, 'deadseaChildQuery');
+    const startOffset = parseInt(
+        $dataGet(scrollEl, 'deadseaStartOffset') || '0',
+        10
+    );
+    const startQs = $dataGet(scrollEl, 'deadseaScrollStartQuery');
     const offsetProp =
         orientation === Orientation.HORIZONTAL ? 'offsetLeft' : 'offsetTop';
-    const scrollables =
-        qs && typeof qs === 'string'
-            ? collectionToArray(document.querySelectorAll(qs))
-            : collectionToArray(scrollEl.children);
+
+    const scrollables = childQuery
+        ? collectionToArray(scrollEl.querySelectorAll(childQuery))
+        : collectionToArray(scrollEl.children);
+
+    if (scrollables.length === 0) {
+        return; // Nothing to scroll.
+    }
+
     const scrollableIndex =
         focusedEl instanceof HTMLElement
             ? findScrollableFromFocusEl(focusedEl, scrollables)[1]
             : 0;
 
-    const startEl =
-        startQs &&
-        typeof startQs === 'string' &&
-        document.querySelector(startQs);
+    const startEl = startQs ? document.querySelector(startQs) : null;
     let startElOffsetInPx = 0;
     if (startEl instanceof HTMLElement) {
         startElOffsetInPx = startEl[offsetProp];
@@ -93,14 +106,10 @@ function doTheHardWork(scrollEl, useTransforms) {
 
     // get all the offsets and cache them against the id of the carousel
     if (!offsetCache[scrollId]) {
-        // generate the slot
-        offsetCache[scrollId] = [];
-        // loop through and add the offsets
-        for (let i = 0, l = scrollables.length; i < l; i++) {
-            const s = scrollables[i];
-            const value = s[offsetProp] - startElOffsetInPx;
-            offsetCache[scrollId].push(value);
-        }
+        offsetCache[scrollId] = scrollables.map(
+            (s) =>
+                /** @type {HTMLElement} */ (s)[offsetProp] - startElOffsetInPx
+        );
     }
 
     const newOffset = calculateOffset(
@@ -109,16 +118,27 @@ function doTheHardWork(scrollEl, useTransforms) {
         startOffset
     );
 
+    // Guard against invalid offset (e.g., from empty cache or bad index)
+    if (typeof newOffset !== 'number' || !isFinite(newOffset)) {
+        return;
+    }
+
     if (scrollableIndex >= startOffset) {
         if (!useTransforms) {
             const axis =
                 orientation === Orientation.HORIZONTAL ? 'left' : 'top';
             scrollEl.style[axis] = -newOffset + 'px';
-        } else {
+        } else if (transformProp) {
             const axis = orientation === Orientation.HORIZONTAL ? 'X' : 'Y';
-            // @ts-ignore
-            scrollEl.style[transformProp] =
-                'translate' + axis + '(' + -newOffset + 'px)';
+            /** @type {any} */ (scrollEl.style)[transformProp] =
+                `translate${axis}(${-newOffset}px)`;
+        }
+    } else {
+        // Reset scroll position if we are before the start offset
+        scrollEl.style.left = '0px';
+        scrollEl.style.top = '0px';
+        if (transformProp) {
+            /** @type {any} */ (scrollEl.style)[transformProp] = '';
         }
     }
 }
@@ -137,4 +157,13 @@ export function scrollAction(el, useTransforms) {
                 ? getScrollEl(scrollEl.parentElement)
                 : undefined;
     }
+}
+
+/**
+ * Clears the cached offsets for a given scroll container.
+ * Call this when the container is destroyed to prevent memory leaks.
+ * @param {string} scrollId The `data-deadsea-id` of the container.
+ */
+export function clearDeadSeaCache(scrollId) {
+    delete offsetCache[scrollId];
 }
