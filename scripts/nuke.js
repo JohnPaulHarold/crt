@@ -1,6 +1,11 @@
 import { exec } from 'child_process';
 
-const targets = ['node_modules/', 'dist'].join(' ');
+const targets = [
+    'node_modules/',
+    'coverage/',
+    'packages/*/dist',
+    'packages/*/node_modules',
+].join(' ');
 
 exec(`rm -rf ${targets}`, (error, _, stderr) => {
     if (error) {

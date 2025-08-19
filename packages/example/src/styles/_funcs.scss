@@ -1,0 +1,10 @@
+@use "sass:math";
+
+@function px-to-rem($px, $base-font-size: 24) {
+  @if (math.is-unitless($px)) {
+    @return math.div($px, $base-font-size) * 1rem;
+  } @else {
+    // Assumes the input unit is px. Divides by a px value to get a unitless number.
+    @return math.div($px, $base-font-size * 1px) * 1rem;
+  }
+}
