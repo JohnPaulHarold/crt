@@ -1,13 +1,7 @@
 {
-    "compilerOptions": {
-        "strict": true,
-        "checkJs": true,
-        "allowJs": true,
-        "declaration": true,
-        "emitDeclarationOnly": true,
-        "outDir": "types",
-        "skipLibCheck": true,
-        "esModuleInterop": true
-    },
-    "include": ["src/**/*.js", "src/**/*.d.ts", "workers/request.js", "packages/example/src/config/animations.js", "packages/example/src/state/PubSub.js", "packages/example/src/state/PubSub.test.js", "packages/example/src/navigation.js", "packages/example/src/libs/hashish.js", "packages/example/src/libs/hashish.test.js", "packages/example/src/libs/indolence.js", "packages/example/src/libs/notifications.js", "packages/example/src/eventBus.js", "packages/example/src/main.js", "packages/example/src/outlets.js", "packages/example/src/routes.js", "packages/example/src/libs/BatchedQueue.js", "packages/example/src/config/keyMap.js", "packages/example/src/config/qwertyKeyMap.js"]
+    "files": [],
+    "references": [
+        { "path": "packages/crt" },
+        { "path": "packages/example" }
+    ]
 }

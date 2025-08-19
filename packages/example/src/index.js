@@ -15,11 +15,11 @@ import { createVListView } from './views/vlist.js';
 
 import s from './index.scss';
 
-/** @type {import('crt').BaseViewInstance | null} */
+/** @type {import('crt/types').BaseViewInstance | null} */
 let currentView = null;
 
 /**
- * @param {(options: import('crt').ViewOptions) => import('crt').BaseViewInstance} createView - The view factory function.
+ * @param {(options: import('crt/types').ViewOptions) => import('crt/types').BaseViewInstance} createView - The view factory function.
  * @param {import('./libs/hashish').HandlerArgs} options
  */
 function loadView(createView, options) {

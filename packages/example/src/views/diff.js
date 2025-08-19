@@ -116,8 +116,8 @@ function getTemplate() {
 }
 
 /**
- * @param {import('crt').ViewOptions} options
- * @returns {import('crt').BaseViewInstance}
+ * @param {import('crt/types').ViewOptions} options
+ * @returns {import('crt/types').BaseViewInstance}
  */
 export function createDiffView(options) {
     const base = createBaseView(options);

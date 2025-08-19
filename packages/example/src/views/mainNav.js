@@ -2,14 +2,14 @@ import { collectionToArray, createBaseView } from 'crt';
 import { Nav } from '../components/Nav.js';
 
 /**
- * @typedef {import('crt').ViewOptions & {
+ * @typedef {import('crt/types').ViewOptions & {
  *  navItems: import('../components/Nav').NavItem[]
  * }} NavViewOptions
  */
 
 /**
- * @param {import('crt').ViewOptions} options
- * @returns {import('crt').BaseViewInstance}
+ * @param {import('crt/types').ViewOptions} options
+ * @returns {import('crt/types').BaseViewInstance}
  */
 export function createMainNavView(options) {
     const base = createBaseView(options);

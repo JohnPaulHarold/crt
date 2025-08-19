@@ -16,7 +16,7 @@
         "coverage": "node scripts/coverage.js",
         "lint:js": "eslint .",
         "lint:prettier": "prettier --write .",
-        "typecheck": "npm run typecheck -ws"
+        "typecheck": "tsc -b"
     },
     "devDependencies": {
         "@babel/cli": "^7.24.7",

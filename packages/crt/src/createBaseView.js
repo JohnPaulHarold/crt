@@ -1,29 +1,8 @@
 import { removeElement } from './utils/dom/removeElement.js';
 import { h } from './makeElement.js';
 
-/**
- * @typedef {object} ViewOptions
- * @property {string} [title]
- * @property {string} id
- * @property {import('../routes').RouteParams} [params]
- * @property {import('../routes').RouteSearch} [search]
- */
-
-/**
- * Defines the shape of a BaseView instance.
- * @typedef {object} BaseViewInstance
- * @property {string} id - The unique ID of this view instance.
- * @property {string | undefined} [title] - The title of the view.
- * @property {HTMLElement | undefined} viewEl - The main HTML element representing this view.
- * @property {(parentElement: HTMLElement) => void} viewWillLoad - Lifecycle hook called before the view is attached.
- * @property {() => void} viewDidLoad - Lifecycle hook called after the view is attached.
- * @property {() => void} viewWillUnload - Lifecycle hook called before the view is detached.
- * @property {() => void} viewDidUnload - Lifecycle hook called after the view is detached.
- * @property {() => void} destructor - Lifecycle hook called before the view is detached.
- * @property {(parentElement: HTMLElement) => void} attach - Attaches the view to a parent DOM element.
- * @property {() => void} detach - Detaches the view from the DOM.
- * @property {() => HTMLElement} render - Renders the view and returns its main HTML element.
- */
+/** @typedef {import('./types.js').ViewOptions} ViewOptions */
+/** @typedef {import('./types.js').BaseViewInstance} BaseViewInstance */
 
 /**
  * Creates a base view object.
