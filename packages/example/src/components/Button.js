@@ -7,7 +7,8 @@
  * }} ButtonProps
  */
 
-import { button, cx } from 'crt';
+import { cx } from 'crt';
+import { button } from '../h.js';
 
 import s from './Button.scss';
 /**

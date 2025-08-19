@@ -1,9 +1,5 @@
 import {
     BaseView,
-    a,
-    div,
-    p,
-    section,
     Direction,
     Orientation,
     getBaseFontSize,
@@ -12,6 +8,8 @@ import {
     transformProp,
     pxToRem,
 } from 'crt';
+
+import { a, div, p, section } from '../h.js';
 
 import { NavigationEvents, navigationBus } from '../navigation.js';
 

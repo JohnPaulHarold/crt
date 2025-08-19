@@ -1,4 +1,4 @@
-import { a, li, nav, ul } from 'crt';
+import { a, li, nav, ul } from '../h.js';
 import { routes } from '../routes.js';
 
 import s from './Nav.scss';

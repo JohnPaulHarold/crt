@@ -5,9 +5,9 @@ import {
     $dataGet,
     assertKey,
     BaseView,
-    a,
-    div,
 } from 'crt';
+
+import { a, div } from '../h.js';
 
 import { pageData } from '../stubData/pageData.js';
 

@@ -96,9 +96,9 @@ function setData(el, dataset) {
  * @see {@link https://david-gilbertson.medium.com/how-i-converted-my-react-app-to-vanillajs-and-whether-or-not-it-was-a-terrible-idea-4b14b1b2faff}
  *
  * @returns {HTMLElement}
- * @example makeElement('div', { id: 'foo' }, 'Hello', makeElement('span', 'World'))
+ * @example h('div', { id: 'foo' }, 'Hello', h('span', 'World'))
  */
-export function makeElement(type, textOrPropsOrChild, ...otherChildren) {
+export function h(type, textOrPropsOrChild, ...otherChildren) {
     const el = document.createElement(type);
 
     if (Array.isArray(textOrPropsOrChild)) {
@@ -140,48 +140,5 @@ export function makeElement(type, textOrPropsOrChild, ...otherChildren) {
     return el;
 }
 
-/** @type {ShorthandMakeElement}  */
-export const nav = (...args) => makeElement('nav', args[0], ...args.slice(1));
-/** @type {ShorthandMakeElement}  */
-export const section = (...args) =>
-    makeElement('section', args[0], ...args.slice(1));
-/** @type {ShorthandMakeElement}  */
-export const div = (...args) => makeElement('div', args[0], ...args.slice(1));
-/** @type {ShorthandMakeElement}  */
-export const span = (...args) => makeElement('span', args[0], ...args.slice(1));
-/** @type {ShorthandMakeElement}  */
-export const a = (...args) => makeElement('a', args[0], ...args.slice(1));
-/** @type {ShorthandMakeElement}  */
-export const button = (...args) =>
-    makeElement('button', args[0], ...args.slice(1));
-/** @type {ShorthandMakeElement}  */
-export const h1 = (...args) => makeElement('h1', args[0], ...args.slice(1));
-/** @type {ShorthandMakeElement}  */
-export const h2 = (...args) => makeElement('h2', args[0], ...args.slice(1));
-/** @type {ShorthandMakeElement}  */
-export const h3 = (...args) => makeElement('h3', args[0], ...args.slice(1));
-/** @type {ShorthandMakeElement}  */
-export const h4 = (...args) => makeElement('h4', args[0], ...args.slice(1));
-/** @type {ShorthandMakeElement}  */
-export const h5 = (...args) => makeElement('h5', args[0], ...args.slice(1));
-/** @type {ShorthandMakeElement}  */
-export const h6 = (...args) => makeElement('h6', args[0], ...args.slice(1));
-/** @type {ShorthandMakeElement}  */
-export const header = (...args) =>
-    makeElement('header', args[0], ...args.slice(1));
-/** @type {ShorthandMakeElement}  */
-export const p = (...args) => makeElement('p', args[0], ...args.slice(1));
-/** @type {ShorthandMakeElement}  */
-export const ol = (...args) => makeElement('ol', args[0], ...args.slice(1));
-/** @type {ShorthandMakeElement}  */
-export const ul = (...args) => makeElement('ul', args[0], ...args.slice(1));
-/** @type {ShorthandMakeElement}  */
-export const li = (...args) => makeElement('li', args[0], ...args.slice(1));
-/** @type {ShorthandMakeElement}  */
-export const img = (...args) => makeElement('img', args[0], ...args.slice(1));
-
-/** @type {ShorthandMakeElement}  */
-export const pre = (...args) => makeElement('pre', args[0], ...args.slice(1));
-
-/** @type {ShorthandMakeElement}  */
-export const main = (...args) => makeElement('main', args[0], ...args.slice(1));
+// Kept for compatibility
+export const makeElement = h;

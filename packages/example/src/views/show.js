@@ -1,7 +1,4 @@
 import {
-    a,
-    div,
-    p,
     BaseView,
     assertKey,
     normaliseEventTarget,
@@ -9,6 +6,8 @@ import {
     Direction,
 } from 'crt';
 import { checkImages } from '../libs/indolence.js';
+
+import { a, div, p } from '../h.js';
 
 import { LazyImage } from '../components/LazyImage.js';
 import { Grid } from '../components/Grid.js';

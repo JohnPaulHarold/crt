@@ -1,5 +1,6 @@
-import { div, cx } from 'crt';
-import { Button } from './Button';
+import { cx } from 'crt';
+import { div } from '../h.js';
+import { Button } from './Button.js';
 
 import s from './Keyboard.scss';
 

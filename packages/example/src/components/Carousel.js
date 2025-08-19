@@ -11,11 +11,12 @@
  * }} CarouselProps
 */
 
-import { animations } from '../config/animations';
+import { animations } from '../config/animations.js';
 
-import { div, section, cx, toTitleCase, Orientation } from 'crt';
+import { cx, toTitleCase, Orientation } from 'crt';
+import { div, section } from '../h.js';
 
-import { Heading } from './Heading';
+import { Heading } from './Heading.js';
 
 import s from './Carousel.scss';
 

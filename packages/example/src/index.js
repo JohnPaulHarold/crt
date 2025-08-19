@@ -1,4 +1,4 @@
-import { div, main } from 'crt';
+import { div, main } from './h.js';
 
 import { hashish } from './libs/hashish.js';
 import { initNavigation } from './navigation.js';

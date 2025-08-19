@@ -1,4 +1,4 @@
-import { div, span } from 'crt';
+import { div, span } from '../h.js';
 
 import s from './Tile.scss';
 

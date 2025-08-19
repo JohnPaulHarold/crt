@@ -1,4 +1,6 @@
-import { a, div, BaseView, Orientation } from 'crt';
+import { BaseView, Orientation } from 'crt';
+
+import { div, a } from '../../h';
 
 import { Carousel } from '../../components/Carousel';
 import { Heading } from '../../components/Heading';

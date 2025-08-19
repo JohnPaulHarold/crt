@@ -1,4 +1,4 @@
-import { img } from 'crt';
+import { img } from '../h.js';
 
 import s from './LazyImage.scss';
 
