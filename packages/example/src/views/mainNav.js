@@ -1,5 +1,5 @@
-import { collectionToArray, BaseView } from 'crt';
-import { Nav } from '../components/Nav';
+import { collectionToArray, createBaseView } from 'crt';
+import { Nav } from '../components/Nav.js';
 
 /**
  * @typedef {import('crt').ViewOptions & {
@@ -8,94 +8,77 @@ import { Nav } from '../components/Nav';
  */
 
 /**
- * @extends BaseView
- * @typedef {BaseView & MainNav} MainNavView
+ * @param {import('crt').ViewOptions} options
+ * @returns {import('crt').BaseViewInstance}
  */
+export function createMainNavView(options) {
+    const base = createBaseView(options);
 
-/**
- * @constructor
- * @param {NavViewOptions} options
- * @this {MainNavView}
- */
-export function MainNav(options) {
-    BaseView.call(this, options);
-    this.navItems = options.navItems;
-}
+    const mainNavView = {
+        ...base,
+        navItems: options.navItems,
 
-// inherit from BaseView
-MainNav.prototype = Object.create(BaseView.prototype);
-// Set the constructor back
-MainNav.prototype.constructor = MainNav;
+        destructor: function () {
+            this.listenForFocus(false);
+            this.listenToHashChange(false);
+        },
 
-// prototype methods
-/**
- *
- * @this {MainNavView}
- */
-MainNav.prototype.destructor = function () {
-    const listen = false;
-    this.listenForFocus(listen);
-    this.listenToHashChange(listen);
-}
+        viewDidLoad: function () {
+            this.listenForFocus(true);
+            this.listenToHashChange(true);
+            this.updateActive();
+        },
 
-/**
- *
- * @this {MainNavView}
- */
-MainNav.prototype.viewDidLoad = function () {
-    const listen = true;
-    this.listenForFocus(listen);
-    this.listenToHashChange(listen);
-    this.updateActive();
-}
+        listenToHashChange: function (listen) {
+            const method = listen ? 'addEventListener' : 'removeEventListener';
+            // Bind the method once to ensure the same function reference is used for add/remove
+            this.boundUpdateActive =
+                this.boundUpdateActive || this.updateActive.bind(this);
+            window[method]('hashchange', this.boundUpdateActive);
+        },
 
-/**
- *
- * @param {boolean} listen
- * @this {MainNavView}
- */
-MainNav.prototype.listenToHashChange = function (listen) {
-    const method = listen ? 'addEventListener' : 'removeEventListener';
-    window[method]('hashchange', this.updateActive.bind(this));
-}
+        updateActive: function () {
+            if (!this.viewEl) return;
+            const hash = location.hash;
+            const els = this.viewEl.querySelectorAll('[href]');
+            collectionToArray(els).forEach((el) =>
+                el.classList.remove('active')
+            );
+            const elToFocus = this.viewEl.querySelector(
+                '[href="' + hash + '"]'
+            );
+            if (elToFocus) {
+                elToFocus.classList.add('active');
+            }
+        },
 
-/**
- * @this {MainNavView}
- */
-MainNav.prototype.updateActive = function () {
-    const hash = location.hash;
-    const els = this.viewEl.querySelectorAll('[href]');
-    collectionToArray(els).forEach((el) => el.classList.remove('active'));
-    const elToFocus = this.viewEl.querySelector('[href="' + hash + '"]');
-    elToFocus && elToFocus.classList.add('active');
-}
+        listenForFocus: function (listen) {
+            if (!this.viewEl) return;
+            const method = listen ? 'addEventListener' : 'removeEventListener';
+            this.viewEl[method](
+                'focusin',
+                this.updateMenu.bind(this, 'focusin')
+            );
+            this.viewEl[method](
+                'focusout',
+                this.updateMenu.bind(this, 'focusout') // Corrected from 'focusin'
+            );
+        },
 
-/**
- * @this {MainNavView}
- * @param {boolean} listen
- */
-MainNav.prototype.listenForFocus = function (listen) {
-    const method = listen ? 'addEventListener' : 'removeEventListener';
-    this.viewEl[method]('focusin', this.updateMenu.bind(this, 'focusin'));
-    this.viewEl[method]('focusout', this.updateMenu.bind(this, 'focusin'));
-}
+        updateMenu: function (eventName) {
+            if (!this.viewEl) return;
+            const method = eventName === 'focusin' ? 'add' : 'remove';
+            this.viewEl.classList[method]('collapsed');
+        },
 
-/**
- * @this {MainNavView}
- * @param {'focusin'|'focusout'} eventName
- */
-MainNav.prototype.updateMenu = function (eventName) {
-    const method = eventName === 'focusin' ? 'add' : 'remove';
-    this.viewEl.classList[method]('collapsed');
-}
+        render: function () {
+            return Nav({
+                id: this.id,
+                navItems: this.navItems,
+                blockExit: 'up down left',
+            });
+        },
+    };
 
-/**
- * @this {MainNavView}
- */
-MainNav.prototype.render = function () {
-    return Nav({
-        id: this.id,
-        navItems: this.navItems,
-        blockExit: 'up down left',
-    });
+    return mainNavView;
 }

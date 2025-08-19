@@ -4,7 +4,7 @@ import {
     Orientation,
     $dataGet,
     assertKey,
-    BaseView,
+    createBaseView,
 } from 'crt';
 
 import { a, div } from '../h.js';
@@ -69,44 +69,16 @@ function findNextBackStop(el) {
 }
 
 /**
- * @typedef {BaseView & Home} HomeView
- */
-
-/**
- * constructor
- * @param {import('crt').ViewOptions} options
- * @this {HomeView}
- */
-export function Home(options) {
-    BaseView.call(this, options);
-    this.fetchData();
-}
-
-// inherit from BaseView
-Home.prototype = Object.create(BaseView.prototype);
-// Set the constructor back
-Home.prototype.constructor = Home;
-
-// prototype methods
-/**
- * @this {HomeView}
- */
-Home.prototype.viewDidLoad = function () {
-    this.listenForBack(true);
-}
-
-/**
  * @param {HTMLElement} el
  */
-Home.prototype.focusPage = function (el) {
+function focusPage(el) {
     focusInto(el);
 }
 
 /**
- * @this {HomeView}
  * @param {boolean} flag
  */
-Home.prototype.listenForBack = function (flag) {
+function listenForBack(flag) {
     const method = flag 
         ? this.viewEl.addEventListener
         : this.viewEl.removeEventListener;
@@ -118,7 +90,7 @@ Home.prototype.listenForBack = function (flag) {
  *
  * @param {KeyboardEvent} event
  */
-Home.prototype.handleBack = function (event) {
+function handleBack(event) {
     if (assertKey(event, AdditionalKeys.BACKSPACE)) {
         const elTarget = normaliseEventTarget(event);
 
@@ -140,7 +112,7 @@ Home.prototype.handleBack = function (event) {
  *
  * @param {KeyboardEvent | MouseEvent} event
  */
-Home.prototype.handleKeyboard = function (event) {
+function handleKeyboard(event) {
     const elTarget = normaliseEventTarget(event);
     if (
         elTarget instanceof HTMLAnchorElement &&
@@ -159,7 +131,7 @@ Home.prototype.handleKeyboard = function (event) {
  * @param {PageData} data
  * @returns {HTMLElement}
  */
-Home.prototype.buildCarousels = function (data) {
+function buildCarousels(data) {
     this.carousels = Carousel(
         {
             id: data.id,
@@ -196,50 +168,61 @@ Home.prototype.buildCarousels = function (data) {
 }
 
 /**
- * 
- * @this {HomeView}
+ * @param {import('crt').ViewOptions} options
+ * @returns {import('crt').BaseViewInstance}
  */
-Home.prototype.fetchData = function () {
-    setTimeout(() => {
-        this.data = pageData;
-        this.updateRender();
-    }, 500);
+export function createHomeView(options) {
+    const base = createBaseView(options);
 
-    return;
-}
+    const homeView = {
+        ...base,
+        data: null,
+        carousels: null,
 
-/**
- * updateRender
- * @param {HTMLElement} [el]
- * @this {HomeView}
- */
-Home.prototype.updateRender = function (el) {
-    let target = this.viewEl;
+        viewDidLoad: function () {
+            listenForBack.call(this, true);
+        },
 
-    if (el) {
-        target = el;
-    }
+        fetchData: function () {
+            setTimeout(() => {
+                this.data = pageData;
+                this.updateRender();
+            }, 500);
+        },
 
-    if (target && this.data) {
-        target.innerHTML = '';
-        const el = this.buildCarousels(this.data);
-        target.appendChild(el);
+        /**
+         * 
+         * @param {HTMLElement} [el] 
+         */
+        updateRender: function (el) {
+            let target = this.viewEl;
 
-        this.focusPage(el);
-    }
-}
+            if (el) {
+                target = el;
+            }
 
-/**
- * @this {HomeView}
- * @returns {HTMLElement}
- */
-Home.prototype.render = function () {
-    if (!this.data) {
-        return div(
-            { className: 'view', id: this.id },
-            Spinner({ message: 'Hold on!' })
-        );
-    }
+            if (target && this.data) {
+                target.innerHTML = '';
+                const carouselEl = buildCarousels.call(this, this.data);
+                target.appendChild(carouselEl);
 
-    return div({ className: 'view', id: this.id });
+                focusPage(carouselEl);
+            }
+        },
+
+        render: function () {
+            if (!this.data) {
+                return div(
+                    { className: 'view', id: this.id },
+                    Spinner({ message: 'Hold on!' })
+                );
+            }
+
+            return div({ className: 'view', id: this.id });
+        },
+    };
+
+    homeView.fetchData();
+
+    return homeView;
 }

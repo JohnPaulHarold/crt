@@ -1,4 +1,4 @@
-export { BaseView } from './baseView.js';
+export { createBaseView } from './createBaseView.js';
 export { clearDeadSeaCache, scrollAction } from './deadSea.js';
 export { diff, stringToHTML } from './differenceEngine.js';
 export {

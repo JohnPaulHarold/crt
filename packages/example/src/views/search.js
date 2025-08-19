@@ -1,6 +1,6 @@
 import {
-    BaseView,
     $dataGet,
+    createBaseView,
     assertKey,
     handleKeydownOnElement,
     AdditionalKeys,
@@ -19,53 +19,8 @@ import { Carousel } from '../components/Carousel.js';
 
 import s from './search.scss';
 
-/**
- * @extends BaseView
- * @typedef {BaseView & Search} SearchView
- */
-
-/**
- * @constructor
- * @param {import('../libs/baseView').ViewOptions} options
- * @this {SearchView}
- */
-export function Search(options) {
-    BaseView.call(this, options);
-
-    this.keyboard = Keyboard({ keyMap: keyMap });
-    this.searchTerm = '';
-    this.letsSearch = span(
-        { className: s.searchNoResults },
-        "Let's search!"
-    );
-    this.noResults = span(
-        { className: s.searchNoResults },
-        'Found nothing...'
-    );
-    this.searchResults = div(
-        {
-            id: 'search-results',
-            className: s.searchResults,
-        },
-        this.letsSearch
-    );
-
-    this.listenToKeyboard();    
-}
-
-// inherit from BaseView
-Search.prototype = Object.create(BaseView.prototype);
-// Set the constructor back
-Search.prototype.constructor = Search;
-
-Search.prototype.destructor = function () {
-    if (this.keyHandleCleanup) {
-        this.keyHandleCleanup();
-    }
-}
-
-Search.prototype.listenToKeyboard = function () {
-    this.keyHandleCleanup = handleKeydownOnElement(
+function listenToKeyboard() {
+    return handleKeydownOnElement(
         this.keyboard,
         this.handleKeyboard.bind(this)
     );
@@ -75,7 +30,7 @@ Search.prototype.listenToKeyboard = function () {
  *
  * @param {KeyboardEvent | MouseEvent} event
  */
-Search.prototype.handleKeyboard = function (event) {
+function handleKeyboard(event) {
     const elTarget = normaliseEventTarget(event);
     if (
         elTarget instanceof HTMLElement &&
@@ -96,7 +51,7 @@ Search.prototype.handleKeyboard = function (event) {
  *
  * @param {string} value
  */
-Search.prototype.updateSearchInput = function (value) {
+function updateSearchInput(value) {
     const searchInputEl = document.getElementById('search-input');
 
     if (searchInputEl instanceof HTMLElement) {
@@ -120,7 +75,7 @@ Search.prototype.updateSearchInput = function (value) {
     this.updateSearchList();
 }
 
-Search.prototype.updateSearchList = function () {
+function updateSearchList() {
     const searchResultsEl = document.getElementById('search-results');
 
     // clear it
@@ -176,17 +131,60 @@ Search.prototype.updateSearchList = function () {
 }
 
 /**
- * @this {SearchView}
- * @returns {HTMLElement}
+ * @param {import('crt').ViewOptions} options
+ * @returns {import('crt').BaseViewInstance}
  */
-Search.prototype.render = function () {
-    return div(
-        { className: 'view', id: this.id },
-        div({ className: s.searchInput, id: 'search-input' }),
-        div(
-            { className: s.panels2 },
-            this.keyboard,
-            this.searchResults
-        )
-    );
+export function createSearchView(options) {
+    const base = createBaseView(options);
+
+    const searchView = {
+        ...base,
+        keyboard: Keyboard({ keyMap: keyMap }),
+        searchTerm: '',
+        keyHandleCleanup: null,
+
+        destructor: function () {
+            if (this.keyHandleCleanup) {
+                this.keyHandleCleanup();
+            }
+        },
+
+        viewDidLoad: function () {
+            this.keyHandleCleanup = listenToKeyboard.call(this);
+        },
+
+        handleKeyboard: handleKeyboard,
+        updateSearchInput: updateSearchInput,
+        updateSearchList: updateSearchList,
+
+        render: function () {
+            this.letsSearch = span(
+                { className: s.searchNoResults },
+                "Let's search!"
+            );
+            this.noResults = span(
+                { className: s.searchNoResults },
+                'Found nothing...'
+            );
+            this.searchResults = div(
+                {
+                    id: 'search-results',
+                    className: s.searchResults,
+                },
+                this.letsSearch
+            );
+
+            return div(
+                { className: 'view', id: this.id },
+                div({ className: s.searchInput, id: 'search-input' }),
+                div(
+                    { className: s.panels2 },
+                    this.keyboard,
+                    this.searchResults
+                )
+            );
+        },
+    };
+
+    return searchView;
 }

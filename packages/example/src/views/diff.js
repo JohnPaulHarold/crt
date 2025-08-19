@@ -4,7 +4,7 @@ import {
     AdditionalKeys,
     assertKey,
     diff,
-    BaseView,
+    createBaseView,
 } from 'crt';
 
 import { div, p } from '../h.js';
@@ -45,52 +45,10 @@ const lyrics = [
  */
 
 /**
- * @typedef {BaseView & Diff} DiffView
- */
-
-/**
- * @constructor
- * @param {import('crt').ViewOptions} options
- * @this DiffView
- */
-export function Diff(options) {
-    BaseView.call(this, options);
-
-    const initialState = { lyricCount: 0 };
-
-    /** @type {DiffState} */
-    this.state = createReactive(initialState, this.updateDiff.bind(this));
-}
-
-// inherit from BaseView
-Diff.prototype = Object.create(BaseView.prototype);
-// Set the constructor back
-Diff.prototype.constructor = Diff;
-
-// prototype methods
-
-/**
- * @this {DiffView}
- */
-Diff.prototype.destructor = function () {
-    this.viewEl.removeEventListener(
-        'click',
-        this.handlePress.bind(this)
-    );
-}
-
-/**
- * @this {DiffView}
- */
-Diff.prototype.viewDidLoad = function () {
-    this.viewEl.addEventListener('click', this.handlePress.bind(this));
-}
-
-/**
  *
  * @param {KeyboardEvent | MouseEvent} event
  */
-Diff.prototype.handlePress = function (event) {
+function handlePress(event) {
     const elTarget = normaliseEventTarget(event);
 
     if (
@@ -110,11 +68,10 @@ Diff.prototype.handlePress = function (event) {
 
 /**
  *
- * @param {DiffState} newState
- * @this {DiffView}
+ * @param {DiffState} _newState
  */
-Diff.prototype.updateDiff = function (newState) {
-    const vdom = this.getTemplate();
+function updateDiff(_newState) {
+    const vdom = getTemplate.call(this);
     const dom = this.viewEl;
 
     diff(vdom, dom);
@@ -125,11 +82,10 @@ Diff.prototype.updateDiff = function (newState) {
 }
 
 /**
- * @this {DiffView}
  * @returns {HTMLElement}
  */
-Diff.prototype.getTemplate = function () {
-    return div(
+function getTemplate() {
+    const el = div(
         { className: 'diff', id: this.id },
         lyrics
             .slice(0, this.state.lyricCount)
@@ -155,12 +111,40 @@ Diff.prototype.getTemplate = function () {
                 'Remove line'
             )
     );
+
+    return el;
 }
 
 /**
- * @this {DiffView}
- * @returns {HTMLElement}
+ * @param {import('crt').ViewOptions} options
+ * @returns {import('crt').BaseViewInstance}
  */
-Diff.prototype.render = function () {
-    return this.getTemplate();
+export function createDiffView(options) {
+    const base = createBaseView(options);
+
+    const diffView = {
+        ...base,
+        state: null,
+
+        destructor: function () {
+            this.viewEl.removeEventListener(
+                'click',
+                this.boundHandlePress
+            );
+        },
+
+        viewDidLoad: function () {
+            this.boundHandlePress = handlePress.bind(this);
+            this.viewEl.addEventListener('click', this.boundHandlePress);
+        },
+
+        render: function () {
+            return getTemplate.call(this);
+        },
+    };
+
+    const boundUpdateDiff = updateDiff.bind(diffView);
+    diffView.state = createReactive({ lyricCount: 0 }, boundUpdateDiff);
+
+    return diffView;
 }

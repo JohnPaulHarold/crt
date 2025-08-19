@@ -7,11 +7,11 @@ import { appOutlets } from './outlets.js';
 
 import { Nav } from './components/Nav.js';
 
-import { Home } from './views/home.js';
-import { Search } from './views/search.js';
-import { Show } from './views/show.js';
-import { Diff } from './views/diff.js';
-import { VList } from './views/vlist.js';
+import { createHomeView } from './views/home.js';
+import { createSearchView } from './views/search.js';
+import { createShowView } from './views/show.js';
+import { createDiffView } from './views/diff.js';
+import { createVListView } from './views/vlist.js';
 
 import s from './index.scss';
 
@@ -19,15 +19,15 @@ import s from './index.scss';
 let currentView = null;
 
 /**
- * @param {any} View - The view constructor.
+ * @param {(options: import('crt').ViewOptions) => import('crt').BaseViewInstance} createView - The view factory function.
  * @param {import('./libs/hashish').HandlerArgs} options
  */
-function loadView(View, options) {
+function loadView(createView, options) {
     if (currentView) {
         currentView.detach();
     }
 
-    currentView = new View({
+    currentView = createView({
         id: options.pattern,
         ...options,
     });
@@ -55,11 +55,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const app = App();
     root.appendChild(app);
 
-    hashish.registerRoute(routes.HOME, (opts) => loadView(Home, opts));
-    hashish.registerRoute(routes.SEARCH, (opts) => loadView(Search, opts));
-    hashish.registerRoute(routes.SHOW, (opts) => loadView(Show, opts));
-    hashish.registerRoute(routes.DIFF, (opts) => loadView(Diff, opts));
-    hashish.registerRoute(routes.VLIST, (opts) => loadView(VList, opts));
+    hashish.registerRoute(routes.HOME, (opts) => loadView(createHomeView, opts));
+    hashish.registerRoute(routes.SEARCH, (opts) => loadView(createSearchView, opts));
+    hashish.registerRoute(routes.SHOW, (opts) => loadView(createShowView, opts));
+    hashish.registerRoute(routes.DIFF, (opts) => loadView(createDiffView, opts));
+    hashish.registerRoute(routes.VLIST, (opts) => loadView(createVListView, opts));
 
     hashish.config('/');
 
