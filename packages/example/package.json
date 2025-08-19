@@ -4,6 +4,7 @@
     "private": true,
     "description": "Example TV app using crt",
     "type": "module",
+    "_comment": "TODO: Revisit using 'workspace:*' for the crt dependency once the environmental issue is resolved. The 'file:../crt' is a workaround.",
     "scripts": {
         "build": "rm -rf dist && rollup -c rollup.config.mjs",
         "dev": "rm -rf dist && rollup -c rollup.dev.mjs -w",
@@ -28,6 +29,6 @@
     },
     "dependencies": {
         "@bbc/tv-lrud-spatial": "^0.0.16",
-        "crt": "*"
+        "crt": "file:../crt"
     }
 }
