@@ -1,7 +1,4 @@
 import {
-    a,
-    div,
-    span,
     BaseView,
     $dataGet,
     assertKey,
@@ -10,6 +7,8 @@ import {
     Orientation,
     normaliseEventTarget,
 } from 'crt';
+
+import { a, div, span } from '../h.js';
 
 import { keyMap } from '../config/keyMap.js';
 

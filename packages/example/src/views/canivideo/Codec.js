@@ -1,4 +1,6 @@
-import { div, cx } from 'crt';
+import { cx } from 'crt';
+
+import { div } from '../../h';
 
 import s from './Codec.scss';
 

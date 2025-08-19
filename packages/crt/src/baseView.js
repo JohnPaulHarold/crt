@@ -1,5 +1,5 @@
 import { removeElement } from './utils/dom/removeElement.js';
-import { div } from './makeElement.js';
+import { h } from './makeElement.js';
 
 /**
  * @typedef {object} ViewOptions
@@ -96,7 +96,7 @@ BaseView.prototype = {
      * @this {BaseViewInstance}
      */
     render: function () {
-        const el = div({
+        const el = h('div', {
             className: 'view',
             id: this.id,
         });
@@ -104,4 +104,3 @@ BaseView.prototype = {
         return el;
     }
 }
-

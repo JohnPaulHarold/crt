@@ -5,9 +5,9 @@ import {
     assertKey,
     diff,
     BaseView,
-    div,
-    p,
 } from 'crt';
+
+import { div, p } from '../h.js';
 
 import { Button } from '../components/Button.js';
 
