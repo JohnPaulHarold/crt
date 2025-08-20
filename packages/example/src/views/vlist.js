@@ -9,7 +9,10 @@ import {
 
 import { a, div, p, section } from '../h.js';
 
-import { NavigationEvents, navigationBus } from '../navigation.js';
+import {
+    NavigationEvents,
+    navigationService,
+} from '../services/navigationService.js';
 import { parseDecimal } from '../utils/math/parseDecimal.js';
 
 import s from './vlist.scss';
@@ -263,7 +266,9 @@ export function createVListView(options) {
 
         destructor: function () {
             if (this.boundHandleMove) {
-                navigationBus.off(NavigationEvents.MOVE, this.boundHandleMove);
+                navigationService
+                    .getBus()
+                    .off(NavigationEvents.MOVE, this.boundHandleMove);
             }
         },
 
@@ -281,7 +286,9 @@ export function createVListView(options) {
             this.vl.init();
 
             this.boundHandleMove = this.handleMove.bind(this);
-            navigationBus.on(NavigationEvents.MOVE, this.boundHandleMove);
+            navigationService
+                .getBus()
+                .on(NavigationEvents.MOVE, this.boundHandleMove);
         },
 
         handleMove: function (event) {

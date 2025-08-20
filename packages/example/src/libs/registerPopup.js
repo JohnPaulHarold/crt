@@ -3,7 +3,7 @@ import {
     handleKeydownOnElement,
     normaliseEventTarget,
 } from 'crt';
-import { focusInto, setLrudScope } from '../navigation.js';
+import { navigationService } from '../services/navigationService.js';
 
 /**
  * @typedef {object} RegisteredPopup
@@ -35,13 +35,13 @@ export function registerPopup(popupEl, handler, outlet) {
         open: () => {
             outlet.appendChild(popupEl);
             outlet.classList.add('open');
-            setLrudScope(popupEl);
-            focusInto(popupEl);
+            navigationService.setScope(popupEl);
+            navigationService.focusInto(popupEl);
             handler('open');
         },
         close: () => {
             outlet.classList.remove('open');
-            setLrudScope(undefined); // Explicitly clear the scope
+            navigationService.setScope(undefined);
             handler('close');
             outlet.removeChild(popupEl);
             cleanup();

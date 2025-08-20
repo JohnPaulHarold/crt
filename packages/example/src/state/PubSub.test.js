@@ -1,14 +1,10 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { PubSub } from './PubSub';
-
-/**
- * @type {PubSub}
- */
-let ps;
+import { pubSub } from './PubSub';
 
 describe('PubSub', () => {
     beforeEach(() => {
-        ps = new PubSub();
+        // Reset the singleton's state before each test to ensure isolation.
+        if (pubSub._resetForTesting) pubSub._resetForTesting();
     });
 
     test('push cb via `on` and expect it to be called', () => {
@@ -16,8 +12,8 @@ describe('PubSub', () => {
         const n = 'test';
         const p = { x: n };
 
-        ps.on(n, m);
-        ps.emit(n, p);
+        pubSub.on(n, m);
+        pubSub.emit(n, p);
 
         expect(m).toHaveBeenCalledWith(p);
     });
@@ -27,9 +23,9 @@ describe('PubSub', () => {
         const n = 'test';
         const p = { x: n };
 
-        ps.once(n, m);
-        ps.emit(n, p);
-        ps.emit(n, p);
+        pubSub.once(n, m);
+        pubSub.emit(n, p);
+        pubSub.emit(n, p);
 
         expect(m).toHaveBeenCalledOnce();
     });
@@ -39,13 +35,13 @@ describe('PubSub', () => {
         const n = 'test';
         const p = { x: n };
 
-        ps.on(n, m);
-        ps.emit(n, p);
+        pubSub.on(n, m);
+        pubSub.emit(n, p);
 
         expect(m).toHaveBeenCalledWith(p);
 
-        ps.off(n);
-        ps.emit(n, p);
+        pubSub.off(n);
+        pubSub.emit(n, p);
 
         expect(m).toHaveBeenCalledTimes(1);
     });
@@ -59,14 +55,27 @@ describe('PubSub', () => {
         const n3 = 'test3';
         const p = { x: n1, y: n2, z: n3 };
 
-        ps.on(n1, m1);
-        ps.on(n2, m2);
-        ps.on(n3, m3);
+        pubSub.on(n1, m1);
+        pubSub.on(n2, m2);
+        pubSub.on(n3, m3);
 
-        ps.broadcast(p);
+        pubSub.broadcast(p);
 
         expect(m1).toHaveBeenCalledWith(p);
         expect(m2).toHaveBeenCalledWith(p);
         expect(m3).toHaveBeenCalledWith(p);
+    });
+
+    test('`_resetForTesting` should clear all listeners', () => {
+        const m = vi.fn();
+        const n = 'test';
+        const p = { x: n };
+
+        pubSub.on(n, m);
+
+        if (pubSub._resetForTesting) pubSub._resetForTesting();
+
+        pubSub.emit(n, p);
+        expect(m).not.toHaveBeenCalled();
     });
 });
