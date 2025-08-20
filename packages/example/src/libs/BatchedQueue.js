@@ -39,7 +39,7 @@ BatchedQueue.prototype = {
             /**
              * @type {Array<*>}
              */
-            const data = /** @type {Array<*>}*/([]).concat(this.data);
+            const data = /** @type {Array<*>}*/ ([]).concat(this.data);
 
             this.handleFull(data);
             this.clear(data.length);
@@ -60,7 +60,7 @@ BatchedQueue.prototype = {
             /**
              * @type {Array<*>}
              */
-            const data = /** @type {Array<*>}*/([]).concat(this.data);
+            const data = /** @type {Array<*>}*/ ([]).concat(this.data);
 
             if (data.length > 0) {
                 this.handleFull(data);

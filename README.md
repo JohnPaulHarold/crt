@@ -16,15 +16,15 @@ I'm also interested in moving DOM construction to the server where possible, try
 
 Other aspects I'm looking at:
 
--   DOM diffing
--   [a11y](https://developer.mozilla.org/en-US/docs/Web/Accessibility)
+- DOM diffing
+- [a11y](https://developer.mozilla.org/en-US/docs/Web/Accessibility)
 
 ## styles
 
 For now, [sass](https://sass-lang.com/) is used. This is primarily for a few reasons:
 
--   variables
--   a helpful pixels to rem function
+- variables
+- a helpful pixels to rem function
 
 CSS Variables are a thing, but the scope of the project is for devices with technology prior to that standard becoming widespread. Like most of the rest of the choices, it will be subject to review as the baseline of technology moves upwards. I also wasn't keen on the polyfills, but that could also change.
 

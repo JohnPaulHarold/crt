@@ -6,8 +6,8 @@ const openCommand =
     process.platform === 'darwin'
         ? 'open'
         : process.platform === 'win32'
-        ? 'start'
-        : 'xdg-open';
+          ? 'start'
+          : 'xdg-open';
 
 const coverageReportPath = path.join(process.cwd(), 'coverage', 'index.html');
 

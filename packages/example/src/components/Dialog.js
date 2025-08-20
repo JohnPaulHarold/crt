@@ -6,10 +6,10 @@ import { Heading } from './Heading';
 import s from './Dialog.scss';
 
 /**
- * @typedef {BaseComponentProps & { 
-*  title?: string 
-* }} DialogProps
-*/
+ * @typedef {BaseComponentProps & {
+ *  title?: string
+ * }} DialogProps
+ */
 
 /**
  *

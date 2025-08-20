@@ -15,7 +15,7 @@ describe('loadScript', () => {
         const url = 'http://path/to/file.js';
         try {
             await loadScript(url, 'js');
-        // eslint-disable-next-line no-unused-vars
+            // eslint-disable-next-line no-unused-vars
         } catch (error) {
             const assert = document.head.querySelector('script');
 

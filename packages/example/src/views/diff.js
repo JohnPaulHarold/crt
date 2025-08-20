@@ -55,10 +55,9 @@ function handlePress(event) {
 
     if (
         elTarget instanceof HTMLElement &&
-        (
-            event instanceof MouseEvent ||
-            event instanceof KeyboardEvent && assertKey(event, AdditionalKeys.ENTER)
-        )
+        (event instanceof MouseEvent ||
+            (event instanceof KeyboardEvent &&
+                assertKey(event, AdditionalKeys.ENTER)))
     ) {
         if (elTarget.id === 'add-lyric') {
             this.state.lyricCount++;
@@ -100,9 +99,7 @@ function getTemplate() {
         this.state.lyricCount < lyrics.length &&
             Button(
                 {
-                    className: isElementFocused('add-lyric')
-                        ? 'focused'
-                        : '',
+                    className: isElementFocused('add-lyric') ? 'focused' : '',
                     id: 'add-lyric',
                 },
                 'Add line'

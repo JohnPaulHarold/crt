@@ -1,8 +1,10 @@
 /**
- * 
- * @param {KeyboardEvent | MouseEvent} event 
- * @returns 
+ *
+ * @param {KeyboardEvent | MouseEvent} event
+ * @returns
  */
 export function normaliseEventTarget(event) {
-  return event.target && event.target !== window ? event.target : document.activeElement;
+    return event.target && event.target !== window
+        ? event.target
+        : document.activeElement;
 }

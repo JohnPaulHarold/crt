@@ -4,8 +4,8 @@ import { div } from '../h.js';
 import s from './Notification.scss';
 
 /**
- * @typedef {BaseComponentProps & { 
- *  message: string; 
+ * @typedef {BaseComponentProps & {
+ *  message: string;
  * }} NotificationProps
  */
 

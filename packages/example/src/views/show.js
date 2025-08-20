@@ -26,20 +26,20 @@ import s from './show.scss';
 
 /**
  * @typedef {import('crt/types').BaseViewInstance & {
-*  info: Record<string, any> | undefined,
-*  search: Record<string, any> | undefined,
-*  belowFold: boolean,
-*  showName: string,
-*  customKeyDownHandlerCleanup: (() => void) | null,
-*  logoEl: Element | null,
-*  overlayEl: Element | null,
-*  destructor: () => void,
-*  viewDidLoad: () => void,
-*  animateFold: () => void,
-*  customHandleKeyDown: (event: KeyboardEvent) => void,
-*  render: () => HTMLElement
-* }} ShowViewInstance
-*/
+ *  info: Record<string, any> | undefined,
+ *  search: Record<string, any> | undefined,
+ *  belowFold: boolean,
+ *  showName: string,
+ *  customKeyDownHandlerCleanup: (() => void) | null,
+ *  logoEl: Element | null,
+ *  overlayEl: Element | null,
+ *  destructor: () => void,
+ *  viewDidLoad: () => void,
+ *  animateFold: () => void,
+ *  customHandleKeyDown: (event: KeyboardEvent) => void,
+ *  render: () => HTMLElement
+ * }} ShowViewInstance
+ */
 
 /**
  * @param {import('crt/types').ViewOptions} options
@@ -104,10 +104,10 @@ export function createShowView(options) {
                 elTarget instanceof HTMLElement &&
                 appOutlets.nav &&
                 appOutlets.nav.contains(elTarget);
-                const isUpOrDown = assertKey(event, [Direction.UP, Direction.DOWN]);
+            const isUpOrDown = assertKey(event, [Direction.UP, Direction.DOWN]);
 
-                if (isUpOrDown && this.viewEl && !onNav) {
-                    this.animateFold();
+            if (isUpOrDown && this.viewEl && !onNav) {
+                this.animateFold();
                 handleKeyDown(event, this.viewEl);
                 this.belowFold = !this.belowFold;
                 // we will also need to load any images

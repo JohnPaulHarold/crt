@@ -3,8 +3,8 @@ import { div, section } from '../h.js';
 import s from './Grid.scss';
 
 /**
- * @typedef {BaseComponentProps & { 
- *  columns: number 
+ * @typedef {BaseComponentProps & {
+ *  columns: number
  * }} GridProps
  */
 

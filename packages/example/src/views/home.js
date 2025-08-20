@@ -84,7 +84,7 @@ function focusPage(el) {
 function listenForBack(flag) {
     if (!this.viewEl) return;
 
-    const method = flag 
+    const method = flag
         ? this.viewEl.addEventListener
         : this.viewEl.removeEventListener;
 
@@ -111,7 +111,7 @@ function handleBack(event) {
                 if (!navEl) return;
 
                 focusInto(navEl);
-            } 
+            }
         }
     }
 }
@@ -189,8 +189,8 @@ export function createHomeView(options) {
         },
 
         /**
-         * 
-         * @param {HTMLElement} [el] 
+         *
+         * @param {HTMLElement} [el]
          */
         updateRender: function (el) {
             let target = this.viewEl;
