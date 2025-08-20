@@ -22,18 +22,22 @@ function isImageInViewport(img, postBounds) {
  * @param {number} [postBounds]
  */
 export function checkImages(scope, postBounds) {
-    const qs = "[data-loaded='false']";
+    // Be more specific with the query to ensure we only get image elements.
+    const qs = "img[data-loaded='false']";
     const nodes = collectionToArray(scope.querySelectorAll(qs));
-    nodes.forEach((node) => {
-        if (isImageInViewport(node, postBounds)) {
-            node.onload = function () {
-                node.classList.add('loaded');
-                node.onload = null;
-                node.src = node.dataset.src;
-                node.dataset.loaded = true;
-            };
 
-            node.src = node.dataset.src;
+    // Add a JSDoc type to the 'node' parameter to resolve the implicit 'any' error.
+    nodes.forEach((/** @type {HTMLImageElement} */ node) => {
+        if (isImageInViewport(node, postBounds)) {
+            // Check for data-src to avoid errors.
+            if (node.dataset.src) {
+                // Mark as loading immediately to prevent reprocessing.
+                node.dataset.loaded = 'true';
+                node.onload = () => {
+                    node.classList.add('loaded');
+                };
+                node.src = node.dataset.src; // Trigger the image load.
+            }
         }
     });
 }

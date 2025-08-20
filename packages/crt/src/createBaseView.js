@@ -1,5 +1,5 @@
 import { removeElement } from './utils/dom/removeElement.js';
-import { h } from './makeElement.js';
+import { h } from './h.js';
 
 /** @typedef {import('./types.js').ViewOptions} ViewOptions */
 /** @typedef {import('./types.js').BaseViewInstance} BaseViewInstance */

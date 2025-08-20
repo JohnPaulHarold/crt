@@ -103,7 +103,7 @@ export function handleKeyDown(event, scope) {
         } else {
             // we have no real starting point, so assume we're starting anew,
             // like at app start
-            nextFocus = getNextFocus();
+            nextFocus = getNextFocus(null, -1);
         }
 
         if (nextFocus) {
@@ -149,7 +149,9 @@ function emitMoveEvent(event, last, next) {
 
 function clearFocus() {
     const els = document.querySelectorAll('.focused');
-    collectionToArray(els).forEach((el) => el.classList.remove('focused'));
+    collectionToArray(els).forEach((/** @type {Element} */ el) =>
+        el.classList.remove('focused')
+    );
 }
 /**
  *
@@ -290,7 +292,7 @@ export function initNavigation() {
         throttle(_handleKeyDown, 60, args)
     });
 
-    const initialFocus = getNextFocus();
+    const initialFocus = getNextFocus(null, -1);
 
     if (initialFocus) {
         moveFocus(initialFocus);
@@ -319,7 +321,7 @@ export function handleExternal(href) {
  */
 export function focusInto(scopeEl) {
     if (scopeEl instanceof HTMLElement) {
-        const nextFocus = getNextFocus(undefined, undefined, scopeEl);
+        const nextFocus = getNextFocus(null, -1, scopeEl);
 
         if (nextFocus) {
 

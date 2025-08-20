@@ -1,9 +1,7 @@
 export { createBaseView } from './createBaseView.js';
 export { clearDeadSeaCache, scrollAction } from './deadSea.js';
 export { diff, stringToHTML } from './differenceEngine.js';
-export {
-    h, makeElement
-} from './makeElement.js';
+export { h, makeElement } from './h.js';
 
 // Models
 export { AdditionalKeys } from './models/AdditionalKeys.js';

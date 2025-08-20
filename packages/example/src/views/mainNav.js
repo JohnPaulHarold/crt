@@ -56,7 +56,7 @@ export function createMainNavView(options) {
             if (!this.viewEl) return;
             const hash = location.hash;
             const els = this.viewEl.querySelectorAll('[href]');
-            collectionToArray(els).forEach((el) =>
+            collectionToArray(els).forEach((/** @type {Element} */ el) =>
                 el.classList.remove('active')
             );
             const elToFocus = this.viewEl.querySelector(
