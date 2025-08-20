@@ -36,4 +36,3 @@ export { parseSearchParams } from './utils/dom/parseSearchParams.js';
 
 export { throttle } from './utils/function/throttle.js';
 export { noop } from './utils/function/noop.js';
-

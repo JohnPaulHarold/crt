@@ -47,19 +47,12 @@ describe('makeElement', () => {
             className: 'y',
         };
 
-        const assert1 = h('p', [
-            h('span', {}),
-            h('span', {}),
-        ]);
+        const assert1 = h('p', [h('span', {}), h('span', {})]);
 
         expect(assert1).toBeInstanceOf(HTMLParagraphElement);
         expect(assert1.children.length).toEqual(2);
 
-        const assert2 = h(
-            'p',
-            attrs,
-            ...[h('span', 'x'), h('span', 'y')]
-        );
+        const assert2 = h('p', attrs, ...[h('span', 'x'), h('span', 'y')]);
 
         expect(assert2).toBeInstanceOf(HTMLParagraphElement);
         expect(assert2.getAttribute('id')).toEqual('x');
@@ -88,7 +81,9 @@ describe('makeElement', () => {
     });
 
     test('it warns on invalid properties', () => {
-        const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        const consoleWarnSpy = vi
+            .spyOn(console, 'warn')
+            .mockImplementation(() => {});
         h('div', { invalidProp: 'foo' });
         expect(consoleWarnSpy).toHaveBeenCalledWith(
             'invalidProp is not a valid property of a <div>'

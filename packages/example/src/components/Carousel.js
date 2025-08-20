@@ -9,7 +9,7 @@
  *  backStop?: string;
  *  scrollStartQuery?: string;
  * }} CarouselProps
-*/
+ */
 
 import { animations } from '../config/animations.js';
 

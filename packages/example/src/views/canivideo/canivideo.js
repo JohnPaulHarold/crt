@@ -71,10 +71,7 @@ export function createCanivideoView(options) {
 
                     this.data[type][typeAndCodec][
                         DrmType.PLAYREADY_LEGACY
-                    ].drm = getDrm(
-                        DrmType.PLAYREADY_LEGACY,
-                        typeAndCodec
-                    ).then(
+                    ].drm = getDrm(DrmType.PLAYREADY_LEGACY, typeAndCodec).then(
                         (res) =>
                             (this.data[type][typeAndCodec][
                                 DrmType.PLAYREADY_LEGACY
@@ -92,9 +89,8 @@ export function createCanivideoView(options) {
                     Promise.allSettled([
                         this.data[type][typeAndCodec][DrmType.WIDEVINE].drm,
                         this.data[type][typeAndCodec][DrmType.PLAYREADY].drm,
-                        this.data[type][typeAndCodec][
-                            DrmType.PLAYREADY_LEGACY
-                        ].drm,
+                        this.data[type][typeAndCodec][DrmType.PLAYREADY_LEGACY]
+                            .drm,
                         this.data[type][typeAndCodec][DrmType.FAIRPLAY].drm,
                     ]).then(() => {
                         const el = document.querySelector(

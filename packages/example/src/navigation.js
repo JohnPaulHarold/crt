@@ -92,10 +92,7 @@ export function handleKeyDown(event, scope) {
         // special case for tom
         const elTarget = normaliseEventTarget(event);
 
-        if (
-            elTarget === document.body &&
-            lastFocus instanceof HTMLElement
-        ) {
+        if (elTarget === document.body && lastFocus instanceof HTMLElement) {
             moveFocus(lastFocus);
             nextFocus = getNextFocus(lastFocus, event.keyCode, _scope);
         } else if (elTarget instanceof HTMLElement) {
@@ -285,11 +282,11 @@ export function initNavigation() {
     // anything, the current focus is lost
     // todo: probably need a pause/resume spatial navigation method so
     // you can toggle between pointer and spatial based modalities
-    
+
     // window.addEventListener('click', handleClick);
-    
+
     window.addEventListener('keydown', (...args) => {
-        throttle(_handleKeyDown, 60, args)
+        throttle(_handleKeyDown, 60, args);
     });
 
     const initialFocus = getNextFocus(null, -1);
@@ -324,11 +321,10 @@ export function focusInto(scopeEl) {
         const nextFocus = getNextFocus(null, -1, scopeEl);
 
         if (nextFocus) {
-
             if (nextFocus.id) {
                 const containers = getElementContainer(nextFocus);
                 const container = containers[0];
-    
+
                 if ($dataGet(container, 'focus')) {
                     $dataSet(container, 'focus', nextFocus.id);
                 }

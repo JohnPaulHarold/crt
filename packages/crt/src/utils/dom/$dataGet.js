@@ -9,7 +9,7 @@ export function $dataGet(el, dataProp) {
     if (typeof value === 'string') {
         try {
             return JSON.parse(value);
-        // eslint-disable-next-line no-unused-vars
+            // eslint-disable-next-line no-unused-vars
         } catch (error) {
             return value;
         }

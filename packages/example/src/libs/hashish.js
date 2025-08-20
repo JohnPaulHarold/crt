@@ -98,7 +98,7 @@ export const hashish = {
                 const matchedVariables = match.slice(1);
                 /** @type { import('../routes').RouteParams } */
                 const params = {};
- 
+
                 variables.forEach(function (variable, i) {
                     // strip the brackets
                     const key = variable.replace(/{|}/g, '');

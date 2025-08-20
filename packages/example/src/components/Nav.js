@@ -37,7 +37,9 @@ export function Nav({ id, navItems, blockExit, backStop }) {
         props,
         ul(
             {},
-            navItems.map((item) => li({}, a({ href: item.href, id: item.id }, item.title)))
+            navItems.map((item) =>
+                li({}, a({ href: item.href, id: item.id }, item.title))
+            )
         )
     );
 }

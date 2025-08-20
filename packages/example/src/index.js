@@ -76,11 +76,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const app = App();
     root.appendChild(app);
 
-    hashish.registerRoute(routes.HOME, (opts) => loadView(createHomeView, opts));
-    hashish.registerRoute(routes.SEARCH, (opts) => loadView(createSearchView, opts));
-    hashish.registerRoute(routes.SHOW, (opts) => loadView(createShowView, opts));
-    hashish.registerRoute(routes.DIFF, (opts) => loadView(createDiffView, opts));
-    hashish.registerRoute(routes.VLIST, (opts) => loadView(createVListView, opts));
+    hashish.registerRoute(routes.HOME, (opts) =>
+        loadView(createHomeView, opts)
+    );
+    hashish.registerRoute(routes.SEARCH, (opts) =>
+        loadView(createSearchView, opts)
+    );
+    hashish.registerRoute(routes.SHOW, (opts) =>
+        loadView(createShowView, opts)
+    );
+    hashish.registerRoute(routes.DIFF, (opts) =>
+        loadView(createDiffView, opts)
+    );
+    hashish.registerRoute(routes.VLIST, (opts) =>
+        loadView(createVListView, opts)
+    );
 
     hashish.config('/');
 

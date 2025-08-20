@@ -18,10 +18,10 @@ import s from './vlist.scss';
  * @param {{id: string, className: string}} props
  */
 function VirtualList(props) {
-  return section({
-    className: 'virtual-list' + ' ' + props.className,
-    id: props.id
-  });
+    return section({
+        className: 'virtual-list' + ' ' + props.className,
+        id: props.id,
+    });
 }
 
 /**
@@ -36,7 +36,7 @@ function VirtualList(props) {
  * @returns {string}
  */
 function dec2bin(dec) {
-  return (dec >>> 0).toString(2);
+    return (dec >>> 0).toString(2);
 }
 
 /**
@@ -44,7 +44,7 @@ function dec2bin(dec) {
  * @returns {string}
  */
 function dec2hex(dec) {
-  return (dec >>> 0).toString(16);
+    return (dec >>> 0).toString(16);
 }
 
 /**
@@ -52,18 +52,18 @@ function dec2hex(dec) {
  * @returns {VListItem[]}
  */
 function buildBigData(bigNumber) {
-  /** @type {VListItem[]} */
-  const bigData = [];
+    /** @type {VListItem[]} */
+    const bigData = [];
 
-  for (let i = 0; i < bigNumber; i++) {
-    bigData.push({
-      d: i,
-      b: dec2bin(i),
-      h: dec2hex(i)
-    })
-  }
+    for (let i = 0; i < bigNumber; i++) {
+        bigData.push({
+            d: i,
+            b: dec2bin(i),
+            h: dec2hex(i),
+        });
+    }
 
-  return bigData
+    return bigData;
 }
 
 /**
@@ -205,10 +205,7 @@ function createVL(options) {
                 this.paddingTop =
                     this.paddingTop - slice.length * this.elHeight;
                 this.sliderEl.style.paddingTop = this.paddingTop + 'rem';
-                this.window[0] = Math.max(
-                    this.window[0] - this.visibleEls,
-                    0
-                );
+                this.window[0] = Math.max(this.window[0] - this.visibleEls, 0);
             }
         },
     };
