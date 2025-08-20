@@ -3,7 +3,6 @@ import {
     Direction,
     getBaseFontSize,
     removeElement,
-    parseDecimal,
     transformProp,
     pxToRem,
 } from 'crt';
@@ -11,6 +10,7 @@ import {
 import { a, div, p, section } from '../h.js';
 
 import { NavigationEvents, navigationBus } from '../navigation.js';
+import { parseDecimal } from '../utils/math/parseDecimal.js';
 
 import s from './vlist.scss';
 

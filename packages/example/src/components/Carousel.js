@@ -11,10 +11,11 @@
  * }} CarouselProps
  */
 
-import { animations } from '../config/animations.js';
+import { cx, Orientation } from 'crt';
 
-import { cx, toTitleCase, Orientation } from 'crt';
+import { animations } from '../config/animations.js';
 import { div, section } from '../h.js';
+import { toTitleCase } from '../utils/string/toTitleCase.js';
 
 import { Heading } from './Heading.js';
 

@@ -1,9 +1,10 @@
-import { Orientation } from './models/Orientation.js';
-
-import { collectionToArray } from './utils/dom/collectionToArray.js';
-import { $dataGet } from './utils/dom/$dataGet.js';
-import { transformProp } from './utils/style/prefix.js';
-import { loga } from './utils/loga/loga.js';
+import {
+    Orientation,
+    collectionToArray,
+    $dataGet,
+    transformProp,
+    loga,
+} from 'crt';
 
 const logr = loga.create('deadsea');
 

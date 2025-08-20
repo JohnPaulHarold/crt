@@ -38,11 +38,18 @@ describe('parseSearchParams', () => {
 
     test('should handle mixed types correctly', () => {
         const paramsString = 'name=test&count=42&live=true';
-        expect(parseSearchParams(paramsString)).toEqual({ name: 'test', count: 42, live: true });
+        expect(parseSearchParams(paramsString)).toEqual({
+            name: 'test',
+            count: 42,
+            live: true,
+        });
     });
 
     test('should handle valueless keys', () => {
         const paramsString = 'foo&bar=baz';
-        expect(parseSearchParams(paramsString)).toEqual({ foo: '', bar: 'baz' });
+        expect(parseSearchParams(paramsString)).toEqual({
+            foo: '',
+            bar: 'baz',
+        });
     });
 });

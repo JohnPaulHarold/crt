@@ -12,7 +12,5 @@
         // use the generated .d.ts files for type information instead.
         "../crt/dist"
     ],
-    "references": [
-        { "path": "../crt" }
-    ]
+    "references": [{ "path": "../crt" }]
 }
