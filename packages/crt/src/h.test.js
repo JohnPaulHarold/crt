@@ -4,7 +4,7 @@
 import { describe, expect, test, vi } from 'vitest';
 import { h } from './h.js';
 
-describe('makeElement', () => {
+describe('h', () => {
     test('it creates an element', () => {
         const assert = h('div', {});
 
@@ -86,6 +86,8 @@ describe('makeElement', () => {
             .mockImplementation(() => {});
         h('div', { invalidProp: 'foo' });
         expect(consoleWarnSpy).toHaveBeenCalledWith(
+            expect.any(String),
+            expect.any(String),
             'invalidProp is not a valid property of a <div>'
         );
         consoleWarnSpy.mockRestore();

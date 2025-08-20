@@ -1,6 +1,9 @@
+import { loga } from 'crt';
 import { DrmLevels } from './DrmLevels';
 import { DrmType } from './DrmType';
 import { KeySystem } from './KeySystem';
+
+const logr = loga.create('drm');
 
 /**
  * @typedef {object} SecurityLevel
@@ -97,7 +100,7 @@ function getWidevine(contentType) {
             )
         )
         .catch((e) => {
-            console.log('[getWidevine] failed', e);
+            logr.log('[getWidevine] failed', e);
         });
 }
 

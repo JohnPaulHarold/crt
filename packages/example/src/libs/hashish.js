@@ -11,7 +11,9 @@
  * @property {boolean} exact
  */
 
-import { parseSearchParams } from 'crt';
+import { parseSearchParams, loga } from 'crt';
+
+const logr = loga.create('hashish');
 
 export const hashish = {
     /** @type {Record<string, RouteHandler>} */
@@ -48,7 +50,10 @@ export const hashish = {
                 this.handlers[matchedRoute.pattern].callback(matchedRoute);
             }
         } catch (error) {
-            console.log('[Router] failed to load view component', error);
+            logr.error(
+                '[handleHashChange] failed to load view component',
+                error
+            );
         }
     },
 

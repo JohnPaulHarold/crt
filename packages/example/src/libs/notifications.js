@@ -1,8 +1,10 @@
-import { removeElement } from 'crt';
+import { removeElement, loga } from 'crt';
 import { BatchedQueue } from './BatchedQueue';
 
+const logr = loga.create('notifications');
+
 function handleNotification() {
-    console.log('[notifications][handleNotification]', arguments);
+    logr.log('[handleNotification]', arguments);
     const notifications = arguments[0];
 
     for (let index = 0; index < notifications.length; index++) {

@@ -1,3 +1,4 @@
+import { loga } from 'crt';
 import { div, main } from './h.js';
 
 import { hashish } from './libs/hashish.js';
@@ -13,6 +14,8 @@ import { createDiffView } from './views/diff.js';
 import { createVListView } from './views/vlist.js';
 
 import s from './index.scss';
+
+const logr = loga.create('example');
 
 /** @type {import('crt/types').BaseViewInstance | null} */
 let currentView = null;
@@ -69,7 +72,7 @@ function App() {
 document.addEventListener('DOMContentLoaded', () => {
     const root = document.getElementById('root');
     if (!root) {
-        console.error('Root element #root not found');
+        logr.error('Root element #root not found');
         return;
     }
 

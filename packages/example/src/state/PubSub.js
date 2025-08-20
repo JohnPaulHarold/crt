@@ -1,8 +1,14 @@
+import { loga } from 'crt';
+
+/**
+ * @constructs PubSub
+ */
 export function PubSub() {
     /**
      * @type { {[index: string]: any[]} }
      */
     this.listeners = {};
+    this.logr = loga.create('PubSub');
 }
 
 PubSub.prototype = {
@@ -34,8 +40,8 @@ PubSub.prototype = {
      */
     on(id, callback, once) {
         if (!callback || typeof callback !== 'function') {
-            console.warn(
-                `You must pass a function as the second argument to PubSub.on()`
+            this.logr.warn(
+                `[on] You must pass a function as the second argument to PubSub.on()`
             );
         }
         const self = this;
@@ -55,8 +61,8 @@ PubSub.prototype = {
      */
     once(id, callback) {
         if (!callback || typeof callback !== 'function') {
-            console.warn(
-                `You must pass a function as the second argument to PubSub.once()`
+            this.logr.warn(
+                `[once] You must pass a function as the second argument to PubSub.once()`
             );
         }
 
