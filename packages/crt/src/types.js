@@ -1,35 +1,22 @@
 /**
- * @typedef {object} RouteParams
- * @property {string} [key]
- */
-
-/**
- * @typedef {object} RouteSearch
- * @property {string | string[]} [key]
- */
-
-/**
  * @typedef {object} ViewOptions
- * @property {string} id
- * @property {string} [title]
- * @property {RouteParams} [params]
- * @property {RouteSearch} [search]
+ * @property {string} id - A unique identifier for the view instance.
+ * @property {string} [title] - An optional title for the view.
+ * @property {Record<string, any>} [params] - Route parameters.
+ * @property {Record<string, any>} [search] - Query string parameters.
  */
 
 /**
- * Defines the shape of a BaseView instance.
  * @typedef {object} BaseViewInstance
- * @property {string} id - The unique ID of this view instance.
- * @property {string | undefined} [title] - The title of the view.
- * @property {HTMLElement | undefined} viewEl - The main HTML element representing this view.
- * @property {() => void} viewWillLoad - Lifecycle hook called before the view is attached.
- * @property {() => void} viewDidLoad - Lifecycle hook called after the view is attached.
- * @property {() => void} viewWillUnload - Lifecycle hook called before the view is detached.
- * @property {() => void} viewDidUnload - Lifecycle hook called after the view is detached.
- * @property {() => void} destructor - Lifecycle hook called before the view is detached.
- * @property {(parentElement: HTMLElement) => void} attach - Attaches the view to a parent DOM element.
+ * @property {string} id - The unique identifier for the view instance.
+ * @property {HTMLElement | null} viewEl - The root DOM element for the view.
+ * @property {Record<string, any> | undefined} [params] - Route parameters.
+ * @property {Record<string, any> | undefined} [search] - Query string parameters.
+ * @property {() => void} [destructor] - Cleans up the view before it's detached.
+ * @property {() => void} [viewDidLoad] - Called after the view's element is attached to the DOM.
+ * @property {() => HTMLElement} render - Renders the view's DOM element.
+ * @property {(parentEl: HTMLElement) => void} attach - Attaches the view to a parent element.
  * @property {() => void} detach - Detaches the view from the DOM.
- * @property {() => HTMLElement} render - Renders the view and returns its main HTML element.
  */
 
 /**
@@ -37,5 +24,4 @@
  * @param {KeyboardEvent | MouseEvent} event
  */
 
-// This file is only for type definitions, so it doesn't export any runtime code.
 export {};

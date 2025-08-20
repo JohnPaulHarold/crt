@@ -21,7 +21,7 @@ import { registerPopup } from '../libs/registerPopup';
  */
 
 /**
- * @typedef {import('crt/types').BaseViewInstance & {
+ * @typedef {import('crt').BaseViewInstance & {
  *  popup: RegisteredPopup | null,
  *  pressHandleCleanup: (() => void) | null,
  *  destructor: () => void,
@@ -34,7 +34,7 @@ import { registerPopup } from '../libs/registerPopup';
  */
 
 /**
- * @param {import('crt/types').ViewOptions} options
+ * @param {import('crt').ViewOptions} options
  * @returns {PopupDemoViewInstance}
  */
 export function createPopupDemoView(options) {

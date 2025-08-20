@@ -233,7 +233,7 @@ function createVL(options) {
  */
 
 /**
- * @typedef {import('crt/types').BaseViewInstance & {
+ * @typedef {import('crt').BaseViewInstance & {
  *  bigData: VListItem[],
  *  containerId: string,
  *  vl: VLInstance | null,
@@ -247,7 +247,7 @@ function createVL(options) {
  */
 
 /**
- * @param {import('crt/types').ViewOptions} options
+ * @param {import('crt').ViewOptions} options
  * @returns {VListViewInstance}
  */
 export function createVListView(options) {

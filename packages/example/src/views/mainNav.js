@@ -2,13 +2,13 @@ import { collectionToArray, createBaseView } from 'crt';
 import { Nav } from '../components/Nav.js';
 
 /**
- * @typedef {import('crt/types').ViewOptions & {
+ * @typedef {import('crt').ViewOptions & {
  *  navItems: import('../components/Nav').NavItem[]
  * }} NavViewOptions
  */
 
 /**
- * @typedef {import('crt/types').BaseViewInstance & {
+ * @typedef {import('crt').BaseViewInstance & {
  *  navItems: import('../components/Nav').NavItem[],
  *  boundUpdateActive?: () => void,
  *  destructor: () => void,

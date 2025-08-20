@@ -133,15 +133,16 @@ function doTheHardWork(scrollEl, useTransforms) {
             scrollEl.style[axis] = -newOffset + 'px';
         } else if (transformProp) {
             const axis = orientation === Orientation.HORIZONTAL ? 'X' : 'Y';
-            /** @type {any} */ (scrollEl.style)[transformProp] =
-                `translate${axis}(${-newOffset}px)`;
+            const style = /** @type {any} */ (scrollEl.style);
+            style[transformProp] = `translate${axis}(${-newOffset}px)`;
         }
     } else {
         // Reset scroll position if we are before the start offset
         scrollEl.style.left = '0px';
         scrollEl.style.top = '0px';
         if (transformProp) {
-            /** @type {any} */ (scrollEl.style)[transformProp] = '';
+            const style = /** @type {any} */ (scrollEl.style);
+            style[transformProp] = '';
         }
     }
 }

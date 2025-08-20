@@ -1,7 +1,7 @@
 import { loga } from 'crt';
 import { div, main } from './h.js';
 
-import { hashish } from './libs/hashish.js';
+import { historyRouter } from './libs/router/router.js';
 import { initNavigation } from './navigation.js';
 import { routes } from './routes.js';
 import { appOutlets } from './outlets.js';
@@ -17,12 +17,12 @@ import s from './index.scss';
 
 const logr = loga.create('example');
 
-/** @type {import('crt/types').BaseViewInstance | null} */
+/** @type {import('crt').BaseViewInstance | null} */
 let currentView = null;
 
 /**
- * @param {(options: import('crt/types').ViewOptions) => import('crt/types').BaseViewInstance} createView - The view factory function.
- * @param {import('./libs/hashish').HandlerArgs} options
+ * @param {(options: import('crt').ViewOptions) => import('crt').BaseViewInstance} createView - The view factory function.
+ * @param {import('./libs/router/router.js').HandlerArgs} options
  */
 function loadView(createView, options) {
     if (currentView) {
@@ -79,23 +79,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const app = App();
     root.appendChild(app);
 
-    hashish.registerRoute(routes.HOME, (opts) =>
+    historyRouter.registerRoute(routes.HOME, (opts) =>
         loadView(createHomeView, opts)
     );
-    hashish.registerRoute(routes.SEARCH, (opts) =>
+    historyRouter.registerRoute(routes.SEARCH, (opts) =>
         loadView(createSearchView, opts)
     );
-    hashish.registerRoute(routes.SHOW, (opts) =>
+    historyRouter.registerRoute(routes.SHOW, (opts) =>
         loadView(createShowView, opts)
     );
-    hashish.registerRoute(routes.DIFF, (opts) =>
+    historyRouter.registerRoute(routes.DIFF, (opts) =>
         loadView(createDiffView, opts)
     );
-    hashish.registerRoute(routes.VLIST, (opts) =>
+    historyRouter.registerRoute(routes.VLIST, (opts) =>
         loadView(createVListView, opts)
     );
 
-    hashish.config('/');
+    historyRouter.config('/', 'hash');
 
     initNavigation();
 });

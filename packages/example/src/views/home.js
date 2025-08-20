@@ -78,7 +78,7 @@ function focusPage(el) {
 }
 
 /**
- * @this {import('crt/types').BaseViewInstance}
+ * @this {import('crt').BaseViewInstance}
  * @param {boolean} flag
  */
 function listenForBack(flag) {
@@ -155,8 +155,9 @@ function buildCarousels(data) {
 }
 
 /**
- * @typedef {import('crt/types').BaseViewInstance & {
+ * @typedef {import('crt').BaseViewInstance & {
  *  data: PageData | null,
+ *  destructor: () => void,
  *  carousels: HTMLElement | null,
  *  fetchData: () => void,
  *  updateRender: (el?: HTMLElement) => void
@@ -164,18 +165,23 @@ function buildCarousels(data) {
  */
 
 /**
- * @param {import('crt/types').ViewOptions} options
+ * @param {import('crt').ViewOptions} options
  * @returns {HomeViewInstance}
  */
 export function createHomeView(options) {
     const base = createBaseView(options);
 
+    /** @type {HomeViewInstance} */
     const homeView = {
         ...base,
         /** @type {PageData | null} */
         data: null,
         /** @type {HTMLElement | null} */
         carousels: null,
+
+        destructor: function () {
+            listenForBack.call(this, false);
+        },
 
         viewDidLoad: function () {
             listenForBack.call(this, true);
