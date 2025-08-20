@@ -50,7 +50,10 @@ export const hashish = {
                 this.handlers[matchedRoute.pattern].callback(matchedRoute);
             }
         } catch (error) {
-            logr.error('[handleHashChange] failed to load view component', error);
+            logr.error(
+                '[handleHashChange] failed to load view component',
+                error
+            );
         }
     },
 

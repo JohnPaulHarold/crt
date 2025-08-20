@@ -131,9 +131,7 @@ export function h(type, textOrPropsOrChild, ...otherChildren) {
                     el[propName] = value;
                 }
             } else {
-                logr.warn(
-                    `${propName} is not a valid property of a <${type}>`
-                );
+                logr.warn(`${propName} is not a valid property of a <${type}>`);
             }
         });
     }

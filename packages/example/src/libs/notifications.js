@@ -3,7 +3,6 @@ import { BatchedQueue } from './BatchedQueue';
 
 const logr = loga.create('notifications');
 
-
 function handleNotification() {
     logr.log('[handleNotification]', arguments);
     const notifications = arguments[0];

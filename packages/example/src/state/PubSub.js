@@ -1,4 +1,4 @@
-import { loga } from "crt";
+import { loga } from 'crt';
 
 /**
  * @constructs PubSub
