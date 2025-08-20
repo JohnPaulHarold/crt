@@ -1,3 +1,7 @@
+import { loga } from './utils/loga/loga.js';
+
+const logr = loga.create('h');
+
 /**
  * Represents the types of input that can be considered a child or a collection of children
  * for an HTML element. This can be:
@@ -69,8 +73,8 @@ function setStyles(el, styles) {
             // @ts-ignore see https://github.com/microsoft/TypeScript/issues/17827
             el.style[styleName] = styles[styleName];
         } else {
-            console.warn(
-                `${styleName} is not a valid style for a <${el.tagName.toLowerCase()}>`
+            logr.warn(
+                `[setStyles] ${styleName} is not a valid style for a <${el.tagName.toLowerCase()}>`
             );
         }
     });
@@ -127,7 +131,7 @@ export function h(type, textOrPropsOrChild, ...otherChildren) {
                     el[propName] = value;
                 }
             } else {
-                console.warn(
+                logr.warn(
                     `${propName} is not a valid property of a <${type}>`
                 );
             }

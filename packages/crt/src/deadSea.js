@@ -3,6 +3,9 @@ import { Orientation } from './models/Orientation.js';
 import { collectionToArray } from './utils/dom/collectionToArray.js';
 import { $dataGet } from './utils/dom/$dataGet.js';
 import { transformProp } from './utils/style/prefix.js';
+import { loga } from './utils/loga/loga.js';
+
+const logr = loga.create('deadsea');
 
 /** @type {Record<string, number[]>} */
 const offsetCache = {};
@@ -65,7 +68,7 @@ function calculateOffset(offsets, scrollableIndex, startOffset) {
 function doTheHardWork(scrollEl, useTransforms) {
     const scrollId = $dataGet(scrollEl, 'deadseaId');
     if (!scrollId) {
-        console.error(
+        logr.error(
             'DeadSea element requires a "data-deadsea-id" attribute for caching.',
             scrollEl
         );

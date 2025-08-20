@@ -558,6 +558,8 @@ describe('error handling and edge cases', () => {
         container.appendChild(scrollEl);
         scrollAction(scrollEl, false);
         expect(consoleErrorSpy).toHaveBeenCalledWith(
+            expect.any(String),
+            expect.any(String),
             'DeadSea element requires a "data-deadsea-id" attribute for caching.',
             scrollEl
         );
