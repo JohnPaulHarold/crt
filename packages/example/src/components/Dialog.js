@@ -1,4 +1,4 @@
-import { div } from 'crt';
+import { div } from '../h.js';
 
 import { Button } from './Button';
 import { Heading } from './Heading';

@@ -1,23 +1,14 @@
 /**
- * @typedef {{[index: string]: HTMLElement}} AppOutlets
+ * A simple object to hold references to key DOM elements (outlets)
+ * where different parts of the application can be rendered.
  */
-
-// todo: could these be acquired as part of bootstrap process
-// injected into each BaseView class?
-/** @type {AppOutlets} */
-export const appOutlets = {};
-
-/**
- * @param {string[]} outletIds
- */
-export function initOutlets(outletIds) {
-    outletIds.forEach((id) => {
-        const el = document.getElementById(id);
-
-        if (el) {
-            appOutlets[id] = el;
-        }
-    });
-
-    return appOutlets;
-}
+export const appOutlets = {
+    /** @type {HTMLElement | null} */
+    nav: null,
+    /** @type {HTMLElement | null} */
+    main: null,
+    /** @type {HTMLElement | null} */
+    popups: null,
+    /** @type {HTMLElement | null} */
+    notifications: null,
+};

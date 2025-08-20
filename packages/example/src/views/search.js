@@ -19,6 +19,9 @@ import { Carousel } from '../components/Carousel.js';
 
 import s from './search.scss';
 
+/**
+ * @this {SearchViewInstance}
+ */
 function listenToKeyboard() {
     return handleKeydownOnElement(
         this.keyboard,
@@ -27,7 +30,7 @@ function listenToKeyboard() {
 }
 
 /**
- *
+ * @this {SearchViewInstance}
  * @param {KeyboardEvent | MouseEvent} event
  */
 function handleKeyboard(event) {
@@ -48,12 +51,12 @@ function handleKeyboard(event) {
 }
 
 /**
- *
+ * @this {SearchViewInstance}
  * @param {string} value
  */
 function updateSearchInput(value) {
-    const searchInputEl = document.getElementById('search-input');
-
+    // this.viewEl is the root element of the view
+    const searchInputEl = this.viewEl?.querySelector('#search-input');
     if (searchInputEl instanceof HTMLElement) {
         this.searchTerm = searchInputEl.textContent || '';
 
@@ -75,13 +78,13 @@ function updateSearchInput(value) {
     this.updateSearchList();
 }
 
+/**
+ * @this {SearchViewInstance}
+ */
 function updateSearchList() {
-    const searchResultsEl = document.getElementById('search-results');
-
-    // clear it
-    if (searchResultsEl instanceof HTMLElement) {
-        searchResultsEl.innerHTML = '';
-
+    const searchResultsEl = this.searchResults;
+    if (searchResultsEl && this.letsSearch && this.noResults) {
+        searchResultsEl.innerHTML = ''; // clear it
         if (this.searchTerm === '') {
             return searchResultsEl.appendChild(this.letsSearch);
         }
@@ -131,24 +134,44 @@ function updateSearchList() {
 }
 
 /**
+ * @typedef {import('crt/types').BaseViewInstance & {
+ *  keyboard: HTMLElement,
+ *  searchTerm: string,
+ *  keyHandleCleanup: (() => void) | null,
+ *  letsSearch: HTMLElement | null,
+ *  noResults: HTMLElement | null,
+ *  searchResults: HTMLElement | null,
+ *  destructor: () => void,
+ *  viewDidLoad: () => void,
+ *  handleKeyboard: (event: KeyboardEvent | MouseEvent) => void,
+ *  updateSearchInput: (value: string) => void,
+ *  updateSearchList: () => void,
+ *  render: () => HTMLElement
+ * }} SearchViewInstance
+ */
+
+/**
  * @param {import('crt/types').ViewOptions} options
- * @returns {import('crt/types').BaseViewInstance}
+ * @returns {SearchViewInstance}
  */
 export function createSearchView(options) {
     const base = createBaseView(options);
 
+    /** @type {SearchViewInstance} */
     const searchView = {
         ...base,
         keyboard: Keyboard({ keyMap: keyMap }),
         searchTerm: '',
         keyHandleCleanup: null,
+        letsSearch: null,
+        noResults: null,
+        searchResults: null,
 
         destructor: function () {
             if (this.keyHandleCleanup) {
                 this.keyHandleCleanup();
             }
         },
-
         viewDidLoad: function () {
             this.keyHandleCleanup = listenToKeyboard.call(this);
         },

@@ -72,18 +72,23 @@ function findNextBackStop(el) {
  * @param {HTMLElement} el
  */
 function focusPage(el) {
+    if (!el) return;
+
     focusInto(el);
 }
 
 /**
+ * @this {import('crt/types').BaseViewInstance}
  * @param {boolean} flag
  */
 function listenForBack(flag) {
+    if (!this.viewEl) return;
+
     const method = flag 
         ? this.viewEl.addEventListener
         : this.viewEl.removeEventListener;
 
-    method('keydown', this.handleBack.bind(this));
+    method('keydown', handleBack);
 }
 
 /**
@@ -102,6 +107,9 @@ function handleBack(event) {
             } else {
                 // focus into the menu
                 const navEl = appOutlets['nav'];
+
+                if (!navEl) return;
+
                 focusInto(navEl);
             } 
         }
@@ -109,30 +117,11 @@ function handleBack(event) {
 }
 
 /**
- *
- * @param {KeyboardEvent | MouseEvent} event
- */
-function handleKeyboard(event) {
-    const elTarget = normaliseEventTarget(event);
-    if (
-        elTarget instanceof HTMLAnchorElement &&
-        (
-            event instanceof MouseEvent ||
-            event instanceof KeyboardEvent && assertKey(event, AdditionalKeys.ENTER)
-        )
-    ) {
-        const keyPressValue = elTarget.href;
-        window.location.href = keyPressValue;
-    }
-}
-
-/**
- *
  * @param {PageData} data
  * @returns {HTMLElement}
  */
 function buildCarousels(data) {
-    this.carousels = Carousel(
+    return Carousel(
         {
             id: data.id,
             orientation: Orientation.VERTICAL,
@@ -163,20 +152,29 @@ function buildCarousels(data) {
             )
         )
     );
-
-    return this.carousels;
 }
 
 /**
+ * @typedef {import('crt/types').BaseViewInstance & {
+ *  data: PageData | null,
+ *  carousels: HTMLElement | null,
+ *  fetchData: () => void,
+ *  updateRender: (el?: HTMLElement) => void
+ * }} HomeViewInstance
+ */
+
+/**
  * @param {import('crt/types').ViewOptions} options
- * @returns {import('crt/types').BaseViewInstance}
+ * @returns {HomeViewInstance}
  */
 export function createHomeView(options) {
     const base = createBaseView(options);
 
     const homeView = {
         ...base,
+        /** @type {PageData | null} */
         data: null,
+        /** @type {HTMLElement | null} */
         carousels: null,
 
         viewDidLoad: function () {
@@ -203,10 +201,10 @@ export function createHomeView(options) {
 
             if (target && this.data) {
                 target.innerHTML = '';
-                const carouselEl = buildCarousels.call(this, this.data);
-                target.appendChild(carouselEl);
+                this.carousels = buildCarousels(this.data);
+                target.appendChild(this.carousels);
 
-                focusPage(carouselEl);
+                focusPage(this.carousels);
             }
         },
 

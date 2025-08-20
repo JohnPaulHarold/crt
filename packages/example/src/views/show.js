@@ -16,6 +16,7 @@ import { Carousel } from '../components/Carousel.js';
 import { Heading } from '../components/Heading.js';
 
 import { handleKeyDown, registerCustomFocusHandler } from '../navigation.js';
+import { appOutlets } from '../outlets.js';
 
 import { showData } from '../stubData/showData.js';
 
@@ -24,12 +25,30 @@ import Logo from '../assets/Public_Domain_Mark_button.svg.png';
 import s from './show.scss';
 
 /**
+ * @typedef {import('crt/types').BaseViewInstance & {
+*  info: Record<string, any> | undefined,
+*  search: Record<string, any> | undefined,
+*  belowFold: boolean,
+*  showName: string,
+*  customKeyDownHandlerCleanup: (() => void) | null,
+*  logoEl: Element | null,
+*  overlayEl: Element | null,
+*  destructor: () => void,
+*  viewDidLoad: () => void,
+*  animateFold: () => void,
+*  customHandleKeyDown: (event: KeyboardEvent) => void,
+*  render: () => HTMLElement
+* }} ShowViewInstance
+*/
+
+/**
  * @param {import('crt/types').ViewOptions} options
- * @returns {import('crt/types').BaseViewInstance}
+ * @returns {ShowViewInstance}
  */
 export function createShowView(options) {
     const base = createBaseView(options);
 
+    /** @type {ShowViewInstance} */
     const showView = {
         ...base,
         info: options.params,
@@ -40,6 +59,8 @@ export function createShowView(options) {
         belowFold: false,
         showName: '',
         customKeyDownHandlerCleanup: null,
+        logoEl: null,
+        overlayEl: null,
 
         destructor: function () {
             if (this.customKeyDownHandlerCleanup) {
@@ -50,6 +71,8 @@ export function createShowView(options) {
         viewDidLoad: function () {
             if (this.viewEl) {
                 checkImages(this.viewEl);
+                this.logoEl = this.viewEl.querySelector(`.${s.showLogo}`);
+                this.overlayEl = this.viewEl.querySelector(`.${s.showOverlay}`);
             }
             this.customKeyDownHandlerCleanup = registerCustomFocusHandler(
                 this.customHandleKeyDown.bind(this)
@@ -57,36 +80,34 @@ export function createShowView(options) {
         },
 
         animateFold: function () {
-            const logoEl = document.querySelector(`.${s.showLogo}`);
-            const overlayEl = document.querySelector(`.${s.showOverlay}`);
-
             if (!this.belowFold) {
-                if (overlayEl instanceof HTMLElement) {
-                    overlayEl.style.opacity = '0';
+                if (this.overlayEl instanceof HTMLElement) {
+                    this.overlayEl.style.opacity = '0';
                 }
-                if (logoEl instanceof HTMLElement) {
-                    logoEl.style.opacity = '0.5';
+                if (this.logoEl instanceof HTMLElement) {
+                    this.logoEl.style.opacity = '0.5';
                 }
             } else {
-                if (overlayEl instanceof HTMLElement) {
-                    overlayEl.style.opacity = '1';
+                if (this.overlayEl instanceof HTMLElement) {
+                    this.overlayEl.style.opacity = '1';
                 }
-                if (logoEl instanceof HTMLElement) {
-                    logoEl.style.opacity = '1';
+                if (this.logoEl instanceof HTMLElement) {
+                    this.logoEl.style.opacity = '1';
                 }
             }
         },
 
         customHandleKeyDown: function (event) {
             const elTarget = normaliseEventTarget(event);
-            const navEl =
+            const onNav =
                 elTarget &&
                 elTarget instanceof HTMLElement &&
-                elTarget.id.match(/nav/);
-            const isUpOrDown = assertKey(event, [Direction.UP, Direction.DOWN]);
+                appOutlets.nav &&
+                appOutlets.nav.contains(elTarget);
+                const isUpOrDown = assertKey(event, [Direction.UP, Direction.DOWN]);
 
-            if (isUpOrDown && this.viewEl && !navEl) {
-                this.animateFold();
+                if (isUpOrDown && this.viewEl && !onNav) {
+                    this.animateFold();
                 handleKeyDown(event, this.viewEl);
                 this.belowFold = !this.belowFold;
                 // we will also need to load any images

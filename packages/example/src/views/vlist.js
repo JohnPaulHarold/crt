@@ -1,7 +1,6 @@
 import {
     createBaseView,
     Direction,
-    Orientation,
     getBaseFontSize,
     removeElement,
     parseDecimal,
@@ -16,8 +15,7 @@ import { NavigationEvents, navigationBus } from '../navigation.js';
 import s from './vlist.scss';
 
 /**
- * 
- * @param {*} props 
+ * @param {{id: string, className: string}} props
  */
 function VirtualList(props) {
   return section({
@@ -27,29 +25,34 @@ function VirtualList(props) {
 }
 
 /**
- * 
- * @param {number} dec 
- * @returns 
+ * @typedef {object} VListItem
+ * @property {number} d Decimal
+ * @property {string} b Binary
+ * @property {string} h Hex
+ */
+
+/**
+ * @param {number} dec
+ * @returns {string}
  */
 function dec2bin(dec) {
   return (dec >>> 0).toString(2);
 }
 
 /**
- * 
- * @param {number} dec 
- * @returns 
+ * @param {number} dec
+ * @returns {string}
  */
 function dec2hex(dec) {
   return (dec >>> 0).toString(16);
 }
 
 /**
- * 
- * @param {number} bigNumber 
- * @returns 
+ * @param {number} bigNumber
+ * @returns {VListItem[]}
  */
 function buildBigData(bigNumber) {
+  /** @type {VListItem[]} */
   const bigData = [];
 
   for (let i = 0; i < bigNumber; i++) {
@@ -64,19 +67,38 @@ function buildBigData(bigNumber) {
 }
 
 /**
- * 
- * @param {Object} options 
- * @param {*[]} options.data
- * @param {Orientation} [options.orientation]
- * @param {string} options.container expects a queryString
- * @param {function} options.renderRow
- * @param {number} options.elHeight
- * @param {number} [options.elWidth]
- * @param {number} [options.bufferAmount]
- * @param {number} [options.visibleEls]
- * @returns {object}
+ * @typedef {object} VLOptions
+ * @property {VListItem[]} data
+ * @property {string} options.container expects a queryString
+ * @property {(item: VListItem) => HTMLElement} options.renderRow
+ * @property {number} options.elHeight
+ * @property {number} [options.bufferAmount]
+ * @property {number} [options.visibleEls]
+ */
+
+/**
+ * @typedef {object} VLInstance
+ * @property {VListItem[]} data
+ * @property {number} visibleEls
+ * @property {number} bufferAmount
+ * @property {string} container
+ * @property {HTMLElement | null} containerEl
+ * @property {(item: VListItem) => HTMLElement} renderRow
+ * @property {HTMLElement} sliderEl
+ * @property {number} elHeight
+ * @property {number} paddingTop
+ * @property {number[]} window
+ * @property {() => void} init
+ * @property {(start: number, end: number) => VListItem[]} getNextData
+ * @property {(direction: Direction, position: number) => void} updateList
+ */
+
+/**
+ * @param {VLOptions} options
+ * @returns {VLInstance}
  */
 function createVL(options) {
+    /** @type {VLInstance} */
     const vl = {
         data: options.data,
         visibleEls: options.visibleEls || 10,
@@ -89,6 +111,9 @@ function createVL(options) {
         paddingTop: 0,
         window: [],
 
+        /**
+         * @this {VLInstance}
+         */
         init() {
             this.containerEl = document.querySelector(this.container);
             this.window = [0, this.visibleEls - 1];
@@ -106,10 +131,16 @@ function createVL(options) {
             }
         },
 
+        /**
+         * @this {VLInstance}
+         */
         getNextData(start, end) {
             return this.data.slice(start, end);
         },
 
+        /**
+         * @this {VLInstance}
+         */
         updateList(direction, position) {
             const lowerBound = this.window[0];
             const upperBound = this.window[1];
@@ -190,12 +221,42 @@ function createVL(options) {
 }
 
 /**
+ * @typedef {object} MoveEventPayloadDetail
+ * @property {Direction} direction
+ * @property {HTMLElement} lastElement
+ * @property {HTMLElement} nextElement
+ * @property {HTMLElement} lastContainer
+ * @property {HTMLElement} nextContainer
+ */
+
+/**
+ * @typedef {object} MoveEventPayload
+ * @property {string} type
+ * @property {MoveEventPayloadDetail} detail
+ */
+
+/**
+ * @typedef {import('crt/types').BaseViewInstance & {
+ *  bigData: VListItem[],
+ *  containerId: string,
+ *  vl: VLInstance | null,
+ *  boundHandleMove: ((event: any) => void) | null,
+ *  destructor: () => void,
+ *  viewDidLoad: () => void,
+ *  handleMove: (event: any) => void,
+ *  renderRow: (bd: VListItem) => HTMLElement,
+ *  render: () => HTMLElement
+ * }} VListViewInstance
+ */
+
+/**
  * @param {import('crt/types').ViewOptions} options
- * @returns {import('crt/types').BaseViewInstance}
+ * @returns {VListViewInstance}
  */
 export function createVListView(options) {
     const base = createBaseView(options);
 
+    /** @type {VListViewInstance} */
     const vListView = {
         ...base,
         bigData: buildBigData(600),
@@ -210,19 +271,35 @@ export function createVListView(options) {
         },
 
         viewDidLoad: function () {
+            const vlOpts = {
+                container: '#' + this.containerId,
+                data: this.bigData,
+                renderRow: this.renderRow.bind(this),
+                elHeight: 220,
+                bufferAmount: 5,
+                visibleEls: 10,
+            };
+
+            this.vl = createVL(vlOpts);
             this.vl.init();
+
             this.boundHandleMove = this.handleMove.bind(this);
             navigationBus.on(NavigationEvents.MOVE, this.boundHandleMove);
         },
 
         handleMove: function (event) {
+            /** @type {MoveEventPayload} */
+            const moveEvent = event;
+
             if (
-                event.detail &&
-                event.detail.nextContainer.id === this.containerId
+                this.vl &&
+                moveEvent.detail &&
+                moveEvent.detail.nextContainer &&
+                moveEvent.detail.nextContainer.id === this.containerId
             ) {
-                const direction = event.detail.direction;
+                const direction = moveEvent.detail.direction;
                 const position = parseDecimal(
-                    event.detail.nextElement.dataset.vlIndex
+                    moveEvent.detail.nextElement.dataset.vlIndex || '0'
                 );
 
                 this.vl.updateList(direction, position);
@@ -253,17 +330,6 @@ export function createVListView(options) {
             );
         },
     };
-
-    const vlOpts = {
-        container: '#' + vListView.containerId,
-        data: vListView.bigData,
-        renderRow: vListView.renderRow.bind(vListView),
-        elHeight: 220,
-        bufferAmount: 5,
-        visibleEls: 10,
-    };
-
-    vListView.vl = createVL(vlOpts);
 
     return vListView;
 }

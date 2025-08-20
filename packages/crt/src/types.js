@@ -32,5 +32,10 @@
  * @property {() => HTMLElement} render - Renders the view and returns its main HTML element.
  */
 
+/**
+ * @callback keydownCallback
+ * @param {KeyboardEvent | MouseEvent} event
+ */
+
 // This file is only for type definitions, so it doesn't export any runtime code.
 export {};

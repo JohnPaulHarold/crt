@@ -40,15 +40,17 @@ const lyrics = [
 ];
 
 /**
- * @typedef {Object} DiffState
+ * @typedef {object} DiffState
  * @property {number} lyricCount
  */
 
 /**
- *
+ * @this {DiffViewInstance}
  * @param {KeyboardEvent | MouseEvent} event
  */
 function handlePress(event) {
+    if (!this.state) return div({ className: 'view', id: this.id });
+
     const elTarget = normaliseEventTarget(event);
 
     if (
@@ -67,24 +69,29 @@ function handlePress(event) {
 }
 
 /**
- *
- * @param {DiffState} _newState
+ * @this {DiffViewInstance}
+ * @param {DiffState} newState
  */
-function updateDiff(_newState) {
+function updateDiff(newState) {
     const vdom = getTemplate.call(this);
     const dom = this.viewEl;
 
-    diff(vdom, dom);
+    if (dom) {
+        diff(vdom, dom);
 
-    if (newState.lyricCount < 1 && dom) {
-        focusInto(dom);
+        if (newState.lyricCount < 1) {
+            focusInto(dom);
+        }
     }
 }
 
 /**
  * @returns {HTMLElement}
+ * @this {DiffViewInstance}
  */
 function getTemplate() {
+    if (!this.state) return div({ className: 'view', id: this.id });
+
     const el = div(
         { className: 'diff', id: this.id },
         lyrics
@@ -116,26 +123,40 @@ function getTemplate() {
 }
 
 /**
+ * @typedef {import('crt/types').BaseViewInstance & {
+ *  state: DiffState | null,
+ *  boundHandlePress?: (event: KeyboardEvent | MouseEvent) => void,
+ *  destructor: () => void,
+ *  viewDidLoad: () => void,
+ *  render: () => HTMLElement
+ * }} DiffViewInstance
+ */
+
+/**
  * @param {import('crt/types').ViewOptions} options
- * @returns {import('crt/types').BaseViewInstance}
+ * @returns {DiffViewInstance}
  */
 export function createDiffView(options) {
     const base = createBaseView(options);
 
+    /** @type {DiffViewInstance} */
     const diffView = {
         ...base,
+        /** @type {DiffState | null} */
         state: null,
+        boundHandlePress: undefined,
 
         destructor: function () {
-            this.viewEl.removeEventListener(
-                'click',
-                this.boundHandlePress
-            );
+            if (this.viewEl && this.boundHandlePress) {
+                this.viewEl.removeEventListener('click', this.boundHandlePress);
+            }
         },
 
         viewDidLoad: function () {
-            this.boundHandlePress = handlePress.bind(this);
-            this.viewEl.addEventListener('click', this.boundHandlePress);
+            if (this.viewEl) {
+                this.boundHandlePress = handlePress.bind(this);
+                this.viewEl.addEventListener('click', this.boundHandlePress);
+            }
         },
 
         render: function () {

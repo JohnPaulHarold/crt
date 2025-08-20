@@ -4,6 +4,13 @@
         "noEmit": true
     },
     "include": ["src/**/*"],
+    "exclude": [
+        "node_modules",
+        "dist",
+        // Exclude the compiled output of the crt package to prevent
+        // type-checking of its generated JavaScript files.
+        "../crt/dist"
+    ],
     "references": [
         { "path": "../crt" }
     ]

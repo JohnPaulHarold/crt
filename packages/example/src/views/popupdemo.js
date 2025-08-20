@@ -7,9 +7,9 @@ import {
     assertKey,
     AdditionalKeys,
     createBaseView,
-    div,
-    p,
 } from 'crt';
+
+import { div, p } from '../h.js';
 
 import { appOutlets } from '../outlets.js';
 import { focusInto } from '../navigation.js';
@@ -17,38 +17,58 @@ import { focusInto } from '../navigation.js';
 import { registerPopup } from '../libs/registerPopup';
 
 /**
+ * @typedef {import('../libs/registerPopup').RegisteredPopup} RegisteredPopup
+ */
+
+/**
+ * @typedef {import('crt/types').BaseViewInstance & {
+ *  popup: RegisteredPopup | null,
+ *  pressHandleCleanup: (() => void) | null,
+ *  destructor: () => void,
+ *  viewDidLoad: () => void,
+ *  handlePresses: (event: KeyboardEvent | MouseEvent) => void,
+ *  handlePopup: (id: string) => void,
+ *  openPopup: () => void,
+ *  render: () => HTMLElement
+ * }} PopupDemoViewInstance
+ */
+
+/**
  * @param {import('crt/types').ViewOptions} options
- * @returns {import('crt/types').BaseViewInstance}
+ * @returns {PopupDemoViewInstance}
  */
 export function createPopupDemoView(options) {
     const base = createBaseView(options);
 
-    const buttonEl = Button(
-        {
-            id: 'btn-show-popup',
-        },
-        'Show Popup'
-    );
-
+    /** @type {PopupDemoViewInstance} */
     const popupDemoView = {
         ...base,
         popup: null,
         pressHandleCleanup: null,
 
         destructor: function () {
-            if (this.pressHandleCleanup) {
-                this.pressHandleCleanup();
-            }
-            if (this.popup && this.popup.destroy) {
-                this.popup.destroy();
+            if (this.pressHandleCleanup) this.pressHandleCleanup();
+            if (this.popup && this.popup.close) {
+                this.popup.close();
             }
         },
 
         viewDidLoad: function () {
+            if (!this.viewEl) return;
+
+            const buttonEl = this.viewEl.querySelector('#btn-show-popup');
+            if (!buttonEl || !(buttonEl instanceof HTMLElement)) return;
+
+            if (!appOutlets.popups) return;
+
             this.pressHandleCleanup = handleKeydownOnElement(
                 buttonEl,
                 this.handlePresses.bind(this)
             );
+
+            const dialogEl = createDialog();
+            const handler = this.handlePopup.bind(this);
+            this.popup = registerPopup(dialogEl, handler, appOutlets.popups);
         },
 
         handlePresses: function (event) {
@@ -56,9 +76,8 @@ export function createPopupDemoView(options) {
 
             if (
                 elTarget instanceof HTMLElement &&
-                (event instanceof MouseEvent ||
-                    (event instanceof KeyboardEvent &&
-                        assertKey(event, AdditionalKeys.ENTER)))
+                event instanceof KeyboardEvent &&
+                assertKey(event, AdditionalKeys.ENTER)
             ) {
                 if (elTarget.id === 'btn-show-popup') {
                     this.openPopup();
@@ -67,15 +86,17 @@ export function createPopupDemoView(options) {
         },
 
         handlePopup: function (id) {
+            if (!this.viewEl) return;
+
             switch (id) {
                 case 'btn-cancel':
                 case 'dialog-close':
-                    this.popup.close();
+                    if (this.popup) this.popup.close();
                     focusInto(this.viewEl);
                     break;
                 case 'btn-ok':
                     // go off and do whatever the OK is for: i.e: save some user settings
-                    this.popup.close();
+                    if (this.popup) this.popup.close();
                     focusInto(this.viewEl);
                     break;
                 case 'open':
@@ -86,31 +107,33 @@ export function createPopupDemoView(options) {
         },
 
         openPopup: function () {
-            this.popup.open();
+            if (this.popup) this.popup.open();
         },
 
         render: function () {
+            const buttonEl = Button(
+                {
+                    id: 'btn-show-popup',
+                },
+                'Show Popup'
+            );
             return div({ className: 'view', id: this.id }, buttonEl);
         },
     };
 
-    const dialogEl = Dialog(
+    return popupDemoView;
+}
+
+function createDialog() {
+    return Dialog(
         {
             title: 'My Title',
             id: 'my-title',
         },
         [
-            p(
-                { className: 'my-popup-text' },
-                'Hey, I have something to tell you...'
-            ),
+            p({}, 'Hey, I have something to tell you...'),
             Button({ id: 'btn-ok' }, 'OK'),
             Button({ id: 'btn-cancel' }, 'Cancel'),
         ]
     );
-
-    const handler = popupDemoView.handlePopup.bind(popupDemoView);
-    popupDemoView.popup = registerPopup(dialogEl, handler, appOutlets.popups);
-
-    return popupDemoView;
 }

@@ -5,9 +5,8 @@ import { initNavigation } from './navigation.js';
 import { routes } from './routes.js';
 import { appOutlets } from './outlets.js';
 
-import { Nav } from './components/Nav.js';
-
 import { createHomeView } from './views/home.js';
+import { createMainNavView } from './views/mainNav.js';
 import { createSearchView } from './views/search.js';
 import { createShowView } from './views/show.js';
 import { createDiffView } from './views/diff.js';
@@ -32,12 +31,34 @@ function loadView(createView, options) {
         ...options,
     });
 
-    currentView.attach(appOutlets.main);
+    if (appOutlets.main) {
+        currentView.attach(appOutlets.main);
+    }
 }
 
 function App() {
-    appOutlets.nav = Nav();
     appOutlets.main = main({ id: 'main-outlet' });
+
+    const navItems = Object.keys(routes)
+        .filter((key) => routes[key].nav)
+        .map((key) => {
+            const route = routes[key];
+            const href = route.navId
+                ? route.pattern.replace('{id}', route.navId)
+                : route.pattern;
+
+            return {
+                id: `nav-${key.toLowerCase()}`,
+                title: route.title,
+                href: `#${href}`,
+            };
+        });
+
+    const mainNavView = createMainNavView({ id: 'main-nav', navItems });
+
+    // Render the view and attach it to both the DOM and its controller logic
+    appOutlets.nav = mainNavView.render();
+    mainNavView.attach(appOutlets.nav);
 
     return div({ id: 'app-container', className: s.container }, [
         appOutlets.nav,

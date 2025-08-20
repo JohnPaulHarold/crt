@@ -1,4 +1,5 @@
-import { div, cx } from 'crt';
+import { cx } from 'crt';
+import { div } from '../h.js';
 
 import s from './Notification.scss';
 

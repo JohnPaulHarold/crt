@@ -8,12 +8,27 @@ import { Nav } from '../components/Nav.js';
  */
 
 /**
- * @param {import('crt/types').ViewOptions} options
- * @returns {import('crt/types').BaseViewInstance}
+ * @typedef {import('crt/types').BaseViewInstance & {
+ *  navItems: import('../components/Nav').NavItem[],
+ *  boundUpdateActive?: () => void,
+ *  destructor: () => void,
+ *  viewDidLoad: () => void,
+ *  listenToHashChange: (listen: boolean) => void,
+ *  updateActive: () => void,
+ *  listenForFocus: (listen: boolean) => void,
+ *  updateMenu: (eventName: 'focusin' | 'focusout') => void,
+ *  render: () => HTMLElement
+ * }} MainNavViewInstance
+ */
+
+/**
+ * @param {NavViewOptions} options
+ * @returns {MainNavViewInstance}
  */
 export function createMainNavView(options) {
     const base = createBaseView(options);
 
+    /** @type {MainNavViewInstance} */
     const mainNavView = {
         ...base,
         navItems: options.navItems,
@@ -76,6 +91,7 @@ export function createMainNavView(options) {
                 id: this.id,
                 navItems: this.navItems,
                 blockExit: 'up down left',
+                backStop: true,
             });
         },
     };
