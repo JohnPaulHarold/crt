@@ -1,7 +1,6 @@
 import { getNextFocus } from '@bbc/tv-lrud-spatial';
 
 import {
-    scrollAction,
     $dataGet,
     $dataSet,
     assertKey,
@@ -14,7 +13,7 @@ import {
 } from 'crt';
 
 import { animations } from './config/animations.js';
-
+import { scrollAction } from './libs/deadSea.js';
 import { PubSub } from './state/PubSub.js';
 
 /** @type {HTMLElement|undefined} */

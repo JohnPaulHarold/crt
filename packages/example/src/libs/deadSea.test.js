@@ -2,8 +2,8 @@
  * @vitest-environment jsdom
  */
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
+import { Orientation } from 'crt';
 import { scrollAction, clearDeadSeaCache } from './deadSea.js';
-import { Orientation } from './models/Orientation.js';
 
 // Helper to convert kebab-case to camelCase
 /**
