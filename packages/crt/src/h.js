@@ -16,8 +16,15 @@ const logr = loga.create('h');
  * @typedef {function(...any): HTMLElement} ShorthandMakeElement
  */
 
+/**
+ * A whitelist of valid HTML/SVG attributes that are not direct properties on
+ * an element's prototype. These attributes must be set with `setAttribute`.
+ * This is particularly useful for SVG attributes and attributes like 'for'
+ * (which corresponds to the `htmlFor` property).
+ */
 const attributeExceptions = [
-    'role',
+    // 'role' was previously here, but it's a direct property on HTMLElement,
+    // so it's correctly handled by the `propName in el` check.
     'd',
     'r',
     'cx',
@@ -91,6 +98,19 @@ function setData(el, dataset) {
 }
 
 /**
+ * Sets ARIA attributes on an element from an object.
+ * @param {HTMLElement} el The element to apply attributes to.
+ * @param {Record<string, string | number | boolean | undefined>} aria The object of ARIA attributes.
+ */
+function setAria(el, aria) {
+    Object.keys(aria).forEach((key) => {
+        const value = aria[key];
+        // Set the attribute only if the value is not null or undefined.
+        if (value != null) el.setAttribute(`aria-${key}`, String(value));
+    });
+}
+
+/**
  * @param {string} type
  * @param {Record<string, any> | ChildInput} [textOrPropsOrChild] - Optional.
  *   Either an object of attributes/properties for the element,
@@ -117,19 +137,23 @@ export function h(type, textOrPropsOrChild, ...otherChildren) {
         !Array.isArray(textOrPropsOrChild) // Ensure it's not an array (already handled)
     ) {
         Object.keys(textOrPropsOrChild).forEach((propName) => {
-            if (propName in el || attributeExceptions.indexOf(propName) > -1) {
-                const value = textOrPropsOrChild[propName];
+            const value = textOrPropsOrChild[propName];
 
-                if (propName === 'dataset') {
-                    setData(el, value);
-                } else if (propName === 'style') {
-                    setStyles(el, value);
-                } else if (value != null) {
-                    // Use `!= null` to allow setting falsy values like empty strings,
-                    // `false`, and `0`, but not `null` or `undefined`.
-                    // @ts-ignore fixme
-                    el[propName] = value;
-                }
+            if (value == null) return; // Skip null and undefined values for cleaner output
+
+            if (propName === 'style') {
+                setStyles(el, value);
+            } else if (propName === 'dataset') {
+                setData(el, value);
+            } else if (propName === 'aria') {
+                setAria(el, value);
+            } else if (propName in el) {
+                // It's a known property on the element, so set it directly.
+                // @ts-ignore - We are intentionally setting a dynamic property.
+                el[propName] = value;
+            } else if (attributeExceptions.includes(propName)) {
+                // It's a known exception (like 'role'), so use setAttribute.
+                el.setAttribute(propName, String(value));
             } else {
                 logr.warn(`${propName} is not a valid property of a <${type}>`);
             }

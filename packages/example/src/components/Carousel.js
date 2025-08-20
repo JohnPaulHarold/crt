@@ -36,20 +36,45 @@ export const Carousel = (props, children) => {
         : '';
     const sectionCx = cx(s.carousel, props.className || '', s[orientation]);
     const sliderCx = cx(s.carouselSlider, transitions);
+    const headingId = props.title ? `heading-${props.id}` : undefined;
+
+    // Add positional data attributes to each child element for accessibility announcements.
+    const childElements = Array.isArray(children) ? children : [children];
+    const totalItems = childElements.length;
+
+    childElements.forEach((child, index) => {
+        if (child instanceof HTMLElement) {
+            // Use 1-based index for user-facing announcements.
+            child.dataset.itemIndex = String(index + 1);
+            child.dataset.totalItems = String(totalItems);
+        }
+    });
 
     return section(
         {
             id: props.id,
             className: sectionCx,
+            role: 'region', // 'role' is not an ARIA attribute, so it stays top-level
+            aria: {
+                labelledby: headingId,
+            },
             dataset: {
                 blockExit: props.blockExit,
             },
         },
         props.title &&
-            Heading({ level: 'h2', className: s.carouselTitle }, props.title),
+            Heading(
+                { id: headingId, level: 'h2', className: s.carouselTitle },
+                props.title
+            ),
         div(
             {
                 className: sliderCx,
+                role: 'group', // 'role' is not an ARIA attribute
+                aria: {
+                    labelledby: headingId,
+                    orientation: props.orientation,
+                },
                 dataset: {
                     deadseaId: props.id,
                     deadseaStartOffset: props.startOffset || 0,
@@ -59,7 +84,7 @@ export const Carousel = (props, children) => {
                     backStop: props.backStop || '',
                 },
             },
-            children
+            childElements
         )
     );
 };
