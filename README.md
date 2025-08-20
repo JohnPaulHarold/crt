@@ -1,8 +1,13 @@
 # crt
 
-A simple single page app. Very old school, for very old school TV devices. This exists because of past experiences working with low spec set top boxes, old TVs etc, and trying to figure out how to make TV apps that aren't consuming too much memory.
+A monorepo containing the `crt` UI library and an example application. `crt` is designed for building simple, memory-efficient single-page applications for very old-school TV devices.
 
-It is currently only concerning itself with UI constructs, players are a whole other bag of cats. There are several screens (views) in the app, but they are mostly serving as experiments for particular concepts, such DOM diffing, forms, virtual lists etc.
+## Packages
+
+This monorepo is managed using npm workspaces and contains the following packages:
+
+- `packages/crt`: A lightweight UI library for creating DOM elements and managing views. It is designed with low-spec set-top boxes and older TVs in mind.
+- `packages/example`: A sample single-page application that demonstrates how to use the `crt` library. It includes views for various concepts like DOM diffing, forms, and virtual lists.
 
 ## tech
 
@@ -36,33 +41,39 @@ Another point to note is how styling is done. In your `.sass` file you will defi
 
 ## commands
 
+All commands should be run from the root of the monorepo.
+
 `npm run dev`
 
-spins up a simple dev-server, watching for changes
+Builds the `crt` library and then starts the `example` application's dev server, watching for changes.
 
 `npm run build`
 
-builds the app, outputting to `/dist`
+Builds the `crt` library, outputting to `packages/crt/dist`.
+
+`npm run build:example`
+
+Builds the `example` application, outputting to `packages/example/dist`.
 
 `npm run typecheck`
 
-checks types. Note: types are currently expressed as JSDoc types
+Checks types across the entire monorepo using TypeScript project references. Note: types are currently expressed as JSDoc types.
 
 `npm run lint:js`
 
-runs eslint on `src/`. Currently this script is informative only, and does not block builds, or commits.
+Runs ESLint on all packages.
 
 `npm run lint:prettier`
 
-does a [`prettier`](https://prettier.io/) pass, writing the changes.
+Formats all files in the monorepo using Prettier.
 
 `npm run test`
 
-runs through tests, watching by default. This command uses [Vitest](https://vitest.dev/).
+Runs the Vitest test suite for the entire monorepo.
 
 `npm run coverage`
 
-creates a code coverage report. Currently found in `/coverage/index.html`
+Creates a code coverage report for the test suite.
 
 ## License
 
