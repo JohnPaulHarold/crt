@@ -15,7 +15,7 @@ import { Button } from '../components/Button.js';
 import { Carousel } from '../components/Carousel.js';
 import { Heading } from '../components/Heading.js';
 
-import { handleKeyDown, registerCustomFocusHandler } from '../navigation.js';
+import { navigationService } from '../services/navigationService.js';
 import { appOutlets } from '../outlets.js';
 
 import { showData } from '../stubData/showData.js';
@@ -36,7 +36,10 @@ import s from './show.scss';
  *  destructor: () => void,
  *  viewDidLoad: () => void,
  *  animateFold: () => void,
- *  customHandleKeyDown: (event: KeyboardEvent) => void,
+ *  customHandleKeyDown: (
+ *      event: KeyboardEvent,
+ *      defaultKeyDownHandler: (event: KeyboardEvent, scope?: HTMLElement) => void
+ *  ) => void,
  *  render: () => HTMLElement
  * }} ShowViewInstance
  */
@@ -74,9 +77,10 @@ export function createShowView(options) {
                 this.logoEl = this.viewEl.querySelector(`.${s.showLogo}`);
                 this.overlayEl = this.viewEl.querySelector(`.${s.showOverlay}`);
             }
-            this.customKeyDownHandlerCleanup = registerCustomFocusHandler(
-                this.customHandleKeyDown.bind(this)
-            );
+            this.customKeyDownHandlerCleanup =
+                navigationService.registerCustomFocusHandler(
+                    this.customHandleKeyDown.bind(this)
+                );
         },
 
         animateFold: function () {
@@ -97,7 +101,7 @@ export function createShowView(options) {
             }
         },
 
-        customHandleKeyDown: function (event) {
+        customHandleKeyDown: function (event, defaultKeyDownHandler) {
             const elTarget = normaliseEventTarget(event);
             const onNav =
                 elTarget &&
@@ -108,14 +112,14 @@ export function createShowView(options) {
 
             if (isUpOrDown && this.viewEl && !onNav) {
                 this.animateFold();
-                handleKeyDown(event, this.viewEl);
+                defaultKeyDownHandler(event, this.viewEl);
                 this.belowFold = !this.belowFold;
                 // we will also need to load any images
                 // this is horrible, and it would be much, much, much better to
                 // use IntersectionObserver
                 checkImages(this.viewEl, 200);
             } else {
-                handleKeyDown(event);
+                defaultKeyDownHandler(event);
             }
         },
 

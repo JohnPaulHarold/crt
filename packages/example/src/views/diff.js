@@ -11,7 +11,7 @@ import { div, p } from '../h.js';
 
 import { Button } from '../components/Button.js';
 
-import { focusInto, isElementFocused } from '../navigation.js';
+import { navigationService } from '../services/navigationService.js';
 
 const lyrics = [
     'All men have secrets and here is mine',
@@ -79,7 +79,7 @@ function updateDiff(newState) {
         diff(vdom, dom);
 
         if (newState.lyricCount < 1) {
-            focusInto(dom);
+            navigationService.focusInto(dom);
         }
     }
 }
@@ -99,7 +99,9 @@ function getTemplate() {
         this.state.lyricCount < lyrics.length &&
             Button(
                 {
-                    className: isElementFocused('add-lyric') ? 'focused' : '',
+                    className: navigationService.isElementFocused('add-lyric')
+                        ? 'focused'
+                        : '',
                     id: 'add-lyric',
                 },
                 'Add line'
@@ -107,7 +109,9 @@ function getTemplate() {
         this.state.lyricCount > 0 &&
             Button(
                 {
-                    className: isElementFocused('remove-lyric')
+                    className: navigationService.isElementFocused(
+                        'remove-lyric'
+                    )
                         ? 'focused'
                         : '',
                     id: 'remove-lyric',

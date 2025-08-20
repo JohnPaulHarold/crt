@@ -12,7 +12,7 @@ import {
 import { div, p } from '../h.js';
 
 import { appOutlets } from '../outlets.js';
-import { focusInto } from '../navigation.js';
+import { navigationService } from '../services/navigationService.js';
 
 import { registerPopup } from '../libs/registerPopup';
 
@@ -92,12 +92,12 @@ export function createPopupDemoView(options) {
                 case 'btn-cancel':
                 case 'dialog-close':
                     if (this.popup) this.popup.close();
-                    focusInto(this.viewEl);
+                    navigationService.focusInto(this.viewEl);
                     break;
                 case 'btn-ok':
                     // go off and do whatever the OK is for: i.e: save some user settings
                     if (this.popup) this.popup.close();
-                    focusInto(this.viewEl);
+                    navigationService.focusInto(this.viewEl);
                     break;
                 case 'open':
                     break;

@@ -2,7 +2,7 @@ import { loga } from 'crt';
 import { div, main } from './h.js';
 
 import { historyRouter } from './libs/router/router.js';
-import { initNavigation } from './navigation.js';
+import { navigationService } from './services/navigationService.js';
 import { routes } from './routes.js';
 import { appOutlets } from './outlets.js';
 
@@ -97,5 +97,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     historyRouter.config('/', 'hash');
 
-    initNavigation();
+    navigationService.init();
 });

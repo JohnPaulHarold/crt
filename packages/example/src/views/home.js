@@ -14,8 +14,7 @@ import { pageData } from '../stubData/pageData.js';
 import { Carousel } from '../components/Carousel.js';
 import { Tile } from '../components/Tile.js';
 import { Spinner } from '../components/Spinner.js';
-
-import { focusInto } from '../navigation.js';
+import { navigationService } from '../services/navigationService.js';
 import { appOutlets } from '../outlets.js';
 
 /**
@@ -73,8 +72,7 @@ function findNextBackStop(el) {
  */
 function focusPage(el) {
     if (!el) return;
-
-    focusInto(el);
+    navigationService.focusInto(el);
 }
 
 /**
@@ -103,14 +101,13 @@ function handleBack(event) {
             const nextBack = findNextBackStop(elTarget);
 
             if (nextBack) {
-                focusInto(nextBack);
+                navigationService.focusInto(nextBack);
             } else {
                 // focus into the menu
                 const navEl = appOutlets['nav'];
 
                 if (!navEl) return;
-
-                focusInto(navEl);
+                navigationService.focusInto(navEl);
             }
         }
     }
