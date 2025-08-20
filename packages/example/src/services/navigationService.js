@@ -15,6 +15,7 @@ import {
 import { animations } from '../config/animations.js';
 import { scrollAction } from '../libs/deadSea.js';
 import { pubSub } from '../state/PubSub.js';
+import { speechService } from './speechService.js';
 
 export const NavigationEvents = {
     MOVE: 'lrud:move',
@@ -234,6 +235,54 @@ function createNavigationService() {
         }
     }
 
+    /**
+     * Determines the accessible name of a container element (e.g., a carousel).
+     * @private
+     * @param {HTMLElement} containerEl
+     * @returns {string}
+     */
+    function getContainerName(containerEl) {
+        const labelledby = containerEl.getAttribute('aria-labelledby');
+        if (labelledby) {
+            const labelEl = document.getElementById(labelledby);
+            if (labelEl) {
+                return (labelEl.textContent || '').trim();
+            }
+        }
+        return '';
+    }
+
+    /**
+     * Determines the accessible name of a focusable item, including positional info.
+     * @private
+     * @param {HTMLElement} itemEl
+     * @returns {string}
+     */
+    function getItemName(itemEl) {
+        // Prefer an explicit aria-label if one is provided.
+        const ariaLabel = itemEl.getAttribute('aria-label');
+        if (ariaLabel) {
+            return ariaLabel;
+        }
+
+        // Otherwise, construct the name from its text content and positional data.
+        let baseName = (itemEl.textContent || '').trim();
+
+        if (itemEl.dataset.totalItems && itemEl.dataset.itemIndex) {
+            const total = itemEl.dataset.totalItems;
+            const index = itemEl.dataset.itemIndex;
+            // Append positional info, e.g., "My Tile, 1 of 8"
+            if (baseName) {
+                baseName = `${baseName}, ${index} of ${total}`;
+            } else {
+                // If there's no text, just announce the position.
+                baseName = `Item ${index} of ${total}`;
+            }
+        }
+
+        return baseName;
+    }
+
     /** @type {NavigationServiceInstance} */
     const service = {
         /**
@@ -297,6 +346,33 @@ function createNavigationService() {
             }
 
             focus(toEl);
+
+            const [toContainer] = getElementContainer(toEl);
+            const [fromContainer] = fromEl
+                ? getElementContainer(fromEl)
+                : [undefined];
+
+            let announcement = '';
+
+            // If we entered a new container, announce its title.
+            if (toContainer && toContainer !== fromContainer) {
+                const containerName = getContainerName(toContainer);
+                if (containerName) {
+                    announcement = containerName;
+                }
+            }
+
+            // Then, announce the focused item itself.
+            const itemName = getItemName(toEl);
+
+            // Combine them for a comprehensive announcement, e.g., "Suggestions. My Tile, 1 of 8."
+            if (announcement && itemName) {
+                announcement += `. ${itemName}`;
+            } else {
+                announcement = announcement || itemName;
+            }
+
+            speechService.speak(announcement);
 
             const useTransforms = animations.transforms;
             scrollAction(toEl, useTransforms);
