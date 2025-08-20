@@ -5,39 +5,60 @@ import { initNavigation } from './navigation.js';
 import { routes } from './routes.js';
 import { appOutlets } from './outlets.js';
 
-import { Nav } from './components/Nav.js';
-
-import { Home } from './views/home.js';
-import { Search } from './views/search.js';
-import { Show } from './views/show.js';
-import { Diff } from './views/diff.js';
-import { VList } from './views/vlist.js';
+import { createHomeView } from './views/home.js';
+import { createMainNavView } from './views/mainNav.js';
+import { createSearchView } from './views/search.js';
+import { createShowView } from './views/show.js';
+import { createDiffView } from './views/diff.js';
+import { createVListView } from './views/vlist.js';
 
 import s from './index.scss';
 
-/** @type {import('crt').BaseViewInstance | null} */
+/** @type {import('crt/types').BaseViewInstance | null} */
 let currentView = null;
 
 /**
- * @param {any} View - The view constructor.
+ * @param {(options: import('crt/types').ViewOptions) => import('crt/types').BaseViewInstance} createView - The view factory function.
  * @param {import('./libs/hashish').HandlerArgs} options
  */
-function loadView(View, options) {
+function loadView(createView, options) {
     if (currentView) {
         currentView.detach();
     }
 
-    currentView = new View({
+    currentView = createView({
         id: options.pattern,
         ...options,
     });
 
-    currentView.attach(appOutlets.main);
+    if (appOutlets.main) {
+        currentView.attach(appOutlets.main);
+    }
 }
 
 function App() {
-    appOutlets.nav = Nav();
     appOutlets.main = main({ id: 'main-outlet' });
+
+    const navItems = Object.keys(routes)
+        .filter((key) => routes[key].nav)
+        .map((key) => {
+            const route = routes[key];
+            const href = route.navId
+                ? route.pattern.replace('{id}', route.navId)
+                : route.pattern;
+
+            return {
+                id: `nav-${key.toLowerCase()}`,
+                title: route.title,
+                href: `#${href}`,
+            };
+        });
+
+    const mainNavView = createMainNavView({ id: 'main-nav', navItems });
+
+    // Render the view and attach it to both the DOM and its controller logic
+    appOutlets.nav = mainNavView.render();
+    mainNavView.attach(appOutlets.nav);
 
     return div({ id: 'app-container', className: s.container }, [
         appOutlets.nav,
@@ -55,11 +76,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const app = App();
     root.appendChild(app);
 
-    hashish.registerRoute(routes.HOME, (opts) => loadView(Home, opts));
-    hashish.registerRoute(routes.SEARCH, (opts) => loadView(Search, opts));
-    hashish.registerRoute(routes.SHOW, (opts) => loadView(Show, opts));
-    hashish.registerRoute(routes.DIFF, (opts) => loadView(Diff, opts));
-    hashish.registerRoute(routes.VLIST, (opts) => loadView(VList, opts));
+    hashish.registerRoute(routes.HOME, (opts) => loadView(createHomeView, opts));
+    hashish.registerRoute(routes.SEARCH, (opts) => loadView(createSearchView, opts));
+    hashish.registerRoute(routes.SHOW, (opts) => loadView(createShowView, opts));
+    hashish.registerRoute(routes.DIFF, (opts) => loadView(createDiffView, opts));
+    hashish.registerRoute(routes.VLIST, (opts) => loadView(createVListView, opts));
 
     hashish.config('/');
 

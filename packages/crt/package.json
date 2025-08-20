@@ -9,9 +9,19 @@
   "files": [
     "dist"
   ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types.js",
+      "types": "./dist/types/types.d.ts"
+    }
+  },
   "scripts": {
-    "build": "rm -rf dist && babel src --out-dir dist --copy-files",
-    "typecheck": "tsc --declaration --emitDeclarationOnly --outDir dist/types"
+    "build": "rm -rf dist && npm run typecheck && babel src --out-dir dist --copy-files",
+    "typecheck": "tsc -p tsconfig.json"
   },
   "license": "Apache-2.0"
 }

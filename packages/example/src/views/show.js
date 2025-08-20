@@ -1,9 +1,9 @@
 import {
-    BaseView,
     assertKey,
     normaliseEventTarget,
     Orientation,
     Direction,
+    createBaseView,
 } from 'crt';
 import { checkImages } from '../libs/indolence.js';
 
@@ -16,6 +16,7 @@ import { Carousel } from '../components/Carousel.js';
 import { Heading } from '../components/Heading.js';
 
 import { handleKeyDown, registerCustomFocusHandler } from '../navigation.js';
+import { appOutlets } from '../outlets.js';
 
 import { showData } from '../stubData/showData.js';
 
@@ -24,150 +25,163 @@ import Logo from '../assets/Public_Domain_Mark_button.svg.png';
 import s from './show.scss';
 
 /**
- * @typedef {BaseView & Show} ShowView
- */
+ * @typedef {import('crt/types').BaseViewInstance & {
+*  info: Record<string, any> | undefined,
+*  search: Record<string, any> | undefined,
+*  belowFold: boolean,
+*  showName: string,
+*  customKeyDownHandlerCleanup: (() => void) | null,
+*  logoEl: Element | null,
+*  overlayEl: Element | null,
+*  destructor: () => void,
+*  viewDidLoad: () => void,
+*  animateFold: () => void,
+*  customHandleKeyDown: (event: KeyboardEvent) => void,
+*  render: () => HTMLElement
+* }} ShowViewInstance
+*/
 
 /**
- * @constructor
- * @param {import('../libs/baseView').ViewOptions} options
- * @this {ShowView}
+ * @param {import('crt/types').ViewOptions} options
+ * @returns {ShowViewInstance}
  */
-export function Show(options) {
-    BaseView.call(this, options);
+export function createShowView(options) {
+    const base = createBaseView(options);
 
-    this.info = options.params;
-    this.search = options.search;
+    /** @type {ShowViewInstance} */
+    const showView = {
+        ...base,
+        info: options.params,
+        search: options.search,
+        // whether we are focused on the bottom rails or not
+        // if we're not, we want to show the description, buttons
+        // if we are then we hide them
+        belowFold: false,
+        showName: '',
+        customKeyDownHandlerCleanup: null,
+        logoEl: null,
+        overlayEl: null,
 
-    // whether we are focused on the bottom rails or not
-    // if we're not, we want to show the description, buttons
-    // if we are then we hide them
-    this.belowFold = false;
+        destructor: function () {
+            if (this.customKeyDownHandlerCleanup) {
+                this.customKeyDownHandlerCleanup();
+            }
+        },
 
-    this.showName = '';
+        viewDidLoad: function () {
+            if (this.viewEl) {
+                checkImages(this.viewEl);
+                this.logoEl = this.viewEl.querySelector(`.${s.showLogo}`);
+                this.overlayEl = this.viewEl.querySelector(`.${s.showOverlay}`);
+            }
+            this.customKeyDownHandlerCleanup = registerCustomFocusHandler(
+                this.customHandleKeyDown.bind(this)
+            );
+        },
 
-    if (
-        this.search &&
-        this.search.name &&
-        typeof this.search.name === 'string'
-    ) {
-        this.showName = decodeURI(this.search.name);
-    }
+        animateFold: function () {
+            if (!this.belowFold) {
+                if (this.overlayEl instanceof HTMLElement) {
+                    this.overlayEl.style.opacity = '0';
+                }
+                if (this.logoEl instanceof HTMLElement) {
+                    this.logoEl.style.opacity = '0.5';
+                }
+            } else {
+                if (this.overlayEl instanceof HTMLElement) {
+                    this.overlayEl.style.opacity = '1';
+                }
+                if (this.logoEl instanceof HTMLElement) {
+                    this.logoEl.style.opacity = '1';
+                }
+            }
+        },
 
-    this.bleedImage = LazyImage({
-        className: s.showBleedImage,
-        src:
-            'https://picsum.photos/seed/' +
-            decodeURI(this.showName).replace(' ', '') +
-            '/1280/720',
-    });
+        customHandleKeyDown: function (event) {
+            const elTarget = normaliseEventTarget(event);
+            const onNav =
+                elTarget &&
+                elTarget instanceof HTMLElement &&
+                appOutlets.nav &&
+                appOutlets.nav.contains(elTarget);
+                const isUpOrDown = assertKey(event, [Direction.UP, Direction.DOWN]);
 
-    registerCustomFocusHandler(this.customHandleKeyDown.bind(this));
-}
+                if (isUpOrDown && this.viewEl && !onNav) {
+                    this.animateFold();
+                handleKeyDown(event, this.viewEl);
+                this.belowFold = !this.belowFold;
+                // we will also need to load any images
+                // this is horrible, and it would be much, much, much better to
+                // use IntersectionObserver
+                checkImages(this.viewEl, 200);
+            } else {
+                handleKeyDown(event);
+            }
+        },
 
-// inherit from BaseView
-Show.prototype = Object.create(BaseView.prototype);
-// Set the constructor back
-Show.prototype.constructor = Show;
+        render: function () {
+            if (
+                this.search &&
+                this.search.name &&
+                typeof this.search.name === 'string'
+            ) {
+                this.showName = decodeURI(this.search.name);
+            }
 
-Show.prototype.animateFold = function () {
-    const logoEl = document.querySelector(`.${s.showLogo}`);
-    const overlayEl = document.querySelector(`.${s.showOverlay}`);
+            const bleedImage = LazyImage({
+                className: s.showBleedImage,
+                src:
+                    'https://picsum.photos/seed/' +
+                    this.showName.replace(' ', '') +
+                    '/1280/720',
+            });
 
-    if (!this.belowFold) {
-        if (overlayEl instanceof HTMLElement) {
-            overlayEl.style.opacity = '0';
-        }
-        if (logoEl instanceof HTMLElement) {
-            logoEl.style.opacity = '0.5';
-        }
-    } else {
-        if (overlayEl instanceof HTMLElement) {
-            overlayEl.style.opacity = '1';
-        }
-        if (logoEl instanceof HTMLElement) {
-            logoEl.style.opacity = '1';
-        }
-    }
-}
+            return div(
+                { className: 'view', id: this.id },
+                // full bleed image
+                bleedImage,
+                LazyImage({ src: Logo, className: s.showLogo }),
+                Carousel(
+                    {
+                        id: 'showCarousel',
+                        orientation: Orientation.VERTICAL,
+                        childQuery: `.${s.showOverlay}, .${s.suggestions}`,
+                        blockExit: 'up right down',
+                    },
+                    [
+                        div(
+                            { className: s.showOverlay },
+                            Heading(
+                                { level: 'h1', className: s.showTitle },
+                                'Show ' + this.showName
+                            ),
+                            p(
+                                { className: s.showDescription },
+                                showData.description
+                            ),
+                            div(
+                                { className: s.buttonRow + ' lrud-container' },
+                                Button({ id: 'play' }, 'PLAY'),
+                                Button({ id: 'play-trailer' }, 'TRAILER')
+                            )
+                        ),
+                        Grid(
+                            { className: s.suggestions, columns: 4 },
+                            showData.related.suggestions.map((suggestion) =>
+                                a(
+                                    { id: suggestion.id },
+                                    LazyImage({
+                                        id: suggestion.id,
+                                        src: suggestion.imageUrl,
+                                    })
+                                )
+                            )
+                        ),
+                    ]
+                )
+            );
+        },
+    };
 
-/**
- * @param {KeyboardEvent} event
- */
-Show.prototype.customHandleKeyDown = function (event) {
-    const elTarget = normaliseEventTarget(event);
-    const navEl =
-        elTarget &&
-        elTarget instanceof HTMLElement &&
-        elTarget.id.match(/nav/);
-    const isUpOrDown = assertKey(event, [Direction.UP, Direction.DOWN]);
-
-    if (isUpOrDown && this.scope && !navEl) {
-        this.animateFold();
-        handleKeyDown(event, this.scope);
-        this.belowFold = !this.belowFold;
-        // we will also need to load any images
-        // this is horrible, and it would be much, much, much better to
-        // use IntersectionObserver
-        this.scope && checkImages(this.scope, 200);
-    } else {
-        handleKeyDown(event);
-    }
-}
-
-/**
- * @this {ShowView}
- */
-Show.prototype.viewDidLoad = function () {
-    this.scope = this.viewEl;
-    checkImages(this.scope);
-}
-
-/**
- * @this {ShowView}
- */
-Show.prototype.render = function () {
-    return div(
-        { className: 'view', id: this.id },
-        // full bleed image
-        this.bleedImage,
-        LazyImage({ src: Logo, className: s.showLogo }),
-        Carousel(
-            {
-                id: 'showCarousel',
-                orientation: Orientation.VERTICAL,
-                childQuery: `.${s.showOverlay}, .${s.suggestions}`,
-                blockExit: 'up right down',
-            },
-            [
-                div(
-                    { className: s.showOverlay },
-                    Heading(
-                        { level: 'h1', className: s.showTitle },
-                        'Show ' + this.showName
-                    ),
-                    p(
-                        { className: s.showDescription },
-                        showData.description
-                    ),
-                    div(
-                        { className: s.buttonRow + ' lrud-container' },
-                        Button({ id: 'play' }, 'PLAY'),
-                        Button({ id: 'play-trailer' }, 'TRAILER')
-                    )
-                ),
-                Grid(
-                    { className: s.suggestions, columns: 4 },
-                    showData.related.suggestions.map((suggestion) =>
-                        a(
-                            { id: suggestion.id },
-                            LazyImage({
-                                id: suggestion.id,
-                                src: suggestion.imageUrl,
-                            })
-                        )
-                    )
-                ),
-            ]
-        )
-    );
+    return showView;
 }

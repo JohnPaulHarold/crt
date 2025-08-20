@@ -1,13 +1,8 @@
-/**
- * @callback keydownCallback
- * @param {KeyboardEvent | MouseEvent} event
- */
-
 import { assertKey } from '../keys';
 
 /**
  * @param {HTMLElement} el
- * @param {keydownCallback} callback
+ * @param {import('../../types').keydownCallback} callback
  * @param {string[]} [allowedKeys]
  */
 export function handleKeydownOnElement(el, callback, allowedKeys) {

@@ -3,6 +3,10 @@ import { cx } from 'crt';
 import { div } from '../../h';
 
 import s from './Codec.scss';
+import { DrmNames } from './DrmNames';
+import { DrmType } from './DrmType';
+import { DrmLevels } from './DrmLevels';
+import { getValidClass } from './getValidClass';
 
 /**
  * @typedef {object} securityLevel

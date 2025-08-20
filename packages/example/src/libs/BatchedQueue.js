@@ -20,7 +20,7 @@ export function BatchedQueue(handleFull, batchInterval, size) {
     this.data = [];
     this.size = size || defaultSize;
     this.handleFull = handleFull || noop;
-    /** @type {NodeJS.Timeout|null} */
+    /** @type {number|null} */
     this.timer = null;
     this.batchInterval = batchInterval || defaultBatchInterval;
 }
@@ -56,7 +56,7 @@ BatchedQueue.prototype = {
      * @returns
      */
     sweep() {
-        this.timer = setTimeout(() => {
+        this.timer = window.setTimeout(() => {
             /**
              * @type {Array<*>}
              */
@@ -73,7 +73,7 @@ BatchedQueue.prototype = {
      * @memberof BatchedQueue
      */
     clearSweep() {
-        if (this.timer) clearInterval(this.timer);
+        if (this.timer) window.clearTimeout(this.timer);
     },
 
     /**

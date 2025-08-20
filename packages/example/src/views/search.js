@@ -1,6 +1,6 @@
 import {
-    BaseView,
     $dataGet,
+    createBaseView,
     assertKey,
     handleKeydownOnElement,
     AdditionalKeys,
@@ -20,62 +20,20 @@ import { Carousel } from '../components/Carousel.js';
 import s from './search.scss';
 
 /**
- * @extends BaseView
- * @typedef {BaseView & Search} SearchView
+ * @this {SearchViewInstance}
  */
-
-/**
- * @constructor
- * @param {import('../libs/baseView').ViewOptions} options
- * @this {SearchView}
- */
-export function Search(options) {
-    BaseView.call(this, options);
-
-    this.keyboard = Keyboard({ keyMap: keyMap });
-    this.searchTerm = '';
-    this.letsSearch = span(
-        { className: s.searchNoResults },
-        "Let's search!"
-    );
-    this.noResults = span(
-        { className: s.searchNoResults },
-        'Found nothing...'
-    );
-    this.searchResults = div(
-        {
-            id: 'search-results',
-            className: s.searchResults,
-        },
-        this.letsSearch
-    );
-
-    this.listenToKeyboard();    
-}
-
-// inherit from BaseView
-Search.prototype = Object.create(BaseView.prototype);
-// Set the constructor back
-Search.prototype.constructor = Search;
-
-Search.prototype.destructor = function () {
-    if (this.keyHandleCleanup) {
-        this.keyHandleCleanup();
-    }
-}
-
-Search.prototype.listenToKeyboard = function () {
-    this.keyHandleCleanup = handleKeydownOnElement(
+function listenToKeyboard() {
+    return handleKeydownOnElement(
         this.keyboard,
         this.handleKeyboard.bind(this)
     );
 }
 
 /**
- *
+ * @this {SearchViewInstance}
  * @param {KeyboardEvent | MouseEvent} event
  */
-Search.prototype.handleKeyboard = function (event) {
+function handleKeyboard(event) {
     const elTarget = normaliseEventTarget(event);
     if (
         elTarget instanceof HTMLElement &&
@@ -93,12 +51,12 @@ Search.prototype.handleKeyboard = function (event) {
 }
 
 /**
- *
+ * @this {SearchViewInstance}
  * @param {string} value
  */
-Search.prototype.updateSearchInput = function (value) {
-    const searchInputEl = document.getElementById('search-input');
-
+function updateSearchInput(value) {
+    // this.viewEl is the root element of the view
+    const searchInputEl = this.viewEl?.querySelector('#search-input');
     if (searchInputEl instanceof HTMLElement) {
         this.searchTerm = searchInputEl.textContent || '';
 
@@ -120,13 +78,13 @@ Search.prototype.updateSearchInput = function (value) {
     this.updateSearchList();
 }
 
-Search.prototype.updateSearchList = function () {
-    const searchResultsEl = document.getElementById('search-results');
-
-    // clear it
-    if (searchResultsEl instanceof HTMLElement) {
-        searchResultsEl.innerHTML = '';
-
+/**
+ * @this {SearchViewInstance}
+ */
+function updateSearchList() {
+    const searchResultsEl = this.searchResults;
+    if (searchResultsEl && this.letsSearch && this.noResults) {
+        searchResultsEl.innerHTML = ''; // clear it
         if (this.searchTerm === '') {
             return searchResultsEl.appendChild(this.letsSearch);
         }
@@ -176,17 +134,80 @@ Search.prototype.updateSearchList = function () {
 }
 
 /**
- * @this {SearchView}
- * @returns {HTMLElement}
+ * @typedef {import('crt/types').BaseViewInstance & {
+ *  keyboard: HTMLElement,
+ *  searchTerm: string,
+ *  keyHandleCleanup: (() => void) | null,
+ *  letsSearch: HTMLElement | null,
+ *  noResults: HTMLElement | null,
+ *  searchResults: HTMLElement | null,
+ *  destructor: () => void,
+ *  viewDidLoad: () => void,
+ *  handleKeyboard: (event: KeyboardEvent | MouseEvent) => void,
+ *  updateSearchInput: (value: string) => void,
+ *  updateSearchList: () => void,
+ *  render: () => HTMLElement
+ * }} SearchViewInstance
  */
-Search.prototype.render = function () {
-    return div(
-        { className: 'view', id: this.id },
-        div({ className: s.searchInput, id: 'search-input' }),
-        div(
-            { className: s.panels2 },
-            this.keyboard,
-            this.searchResults
-        )
-    );
+
+/**
+ * @param {import('crt/types').ViewOptions} options
+ * @returns {SearchViewInstance}
+ */
+export function createSearchView(options) {
+    const base = createBaseView(options);
+
+    /** @type {SearchViewInstance} */
+    const searchView = {
+        ...base,
+        keyboard: Keyboard({ keyMap: keyMap }),
+        searchTerm: '',
+        keyHandleCleanup: null,
+        letsSearch: null,
+        noResults: null,
+        searchResults: null,
+
+        destructor: function () {
+            if (this.keyHandleCleanup) {
+                this.keyHandleCleanup();
+            }
+        },
+        viewDidLoad: function () {
+            this.keyHandleCleanup = listenToKeyboard.call(this);
+        },
+
+        handleKeyboard: handleKeyboard,
+        updateSearchInput: updateSearchInput,
+        updateSearchList: updateSearchList,
+
+        render: function () {
+            this.letsSearch = span(
+                { className: s.searchNoResults },
+                "Let's search!"
+            );
+            this.noResults = span(
+                { className: s.searchNoResults },
+                'Found nothing...'
+            );
+            this.searchResults = div(
+                {
+                    id: 'search-results',
+                    className: s.searchResults,
+                },
+                this.letsSearch
+            );
+
+            return div(
+                { className: 'view', id: this.id },
+                div({ className: s.searchInput, id: 'search-input' }),
+                div(
+                    { className: s.panels2 },
+                    this.keyboard,
+                    this.searchResults
+                )
+            );
+        },
+    };
+
+    return searchView;
 }

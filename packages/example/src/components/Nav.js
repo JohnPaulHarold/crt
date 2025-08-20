@@ -1,29 +1,43 @@
 import { a, li, nav, ul } from '../h.js';
-import { routes } from '../routes.js';
-
 import s from './Nav.scss';
 
-export function Nav() {
+/**
+ * @typedef {object} NavItem
+ * @property {string} id
+ * @property {string} [title]
+ * @property {string} href
+ */
+
+/**
+ * @typedef {object} NavProps
+ * @property {string} [blockExit]
+ * @property {string} id
+ * @property {NavItem[]} navItems
+ * @property {boolean} [backStop]
+ */
+
+/**
+ * @param {NavProps} props
+ * @returns {HTMLElement}
+ */
+export function Nav({ id, navItems, blockExit, backStop }) {
+    const dataset = {};
+    if (blockExit) dataset.blockExit = blockExit;
+    if (backStop) dataset.backStop = 'true';
+
+    const props = Object.assign(
+        {
+            id,
+            className: s.nav,
+        },
+        Object.keys(dataset).length && { dataset }
+    );
+
     return nav(
-        { id: 'main-nav', className: s.nav, 'data-back-stop': 'true' },
+        props,
         ul(
             {},
-            Object.keys(routes)
-                .filter((key) => routes[key].nav)
-                .map((key) => {
-                    const route = routes[key];
-                    const href = route.navId
-                        ? route.pattern.replace('{id}', route.navId)
-                        : route.pattern;
-
-                    return li(
-                        {},
-                        a(
-                            { href: `#${href}`, id: `nav-${key.toLowerCase()}` },
-                            route.title
-                        )
-                    );
-                })
+            navItems.map((item) => li({}, a({ href: item.href, id: item.id }, item.title)))
         )
     );
 }

@@ -4,7 +4,7 @@ import {
     Orientation,
     $dataGet,
     assertKey,
-    BaseView,
+    createBaseView,
 } from 'crt';
 
 import { a, div } from '../h.js';
@@ -69,56 +69,33 @@ function findNextBackStop(el) {
 }
 
 /**
- * @typedef {BaseView & Home} HomeView
- */
-
-/**
- * constructor
- * @param {import('crt').ViewOptions} options
- * @this {HomeView}
- */
-export function Home(options) {
-    BaseView.call(this, options);
-    this.fetchData();
-}
-
-// inherit from BaseView
-Home.prototype = Object.create(BaseView.prototype);
-// Set the constructor back
-Home.prototype.constructor = Home;
-
-// prototype methods
-/**
- * @this {HomeView}
- */
-Home.prototype.viewDidLoad = function () {
-    this.listenForBack(true);
-}
-
-/**
  * @param {HTMLElement} el
  */
-Home.prototype.focusPage = function (el) {
+function focusPage(el) {
+    if (!el) return;
+
     focusInto(el);
 }
 
 /**
- * @this {HomeView}
+ * @this {import('crt/types').BaseViewInstance}
  * @param {boolean} flag
  */
-Home.prototype.listenForBack = function (flag) {
+function listenForBack(flag) {
+    if (!this.viewEl) return;
+
     const method = flag 
         ? this.viewEl.addEventListener
         : this.viewEl.removeEventListener;
 
-    method('keydown', this.handleBack.bind(this));
+    method('keydown', handleBack);
 }
 
 /**
  *
  * @param {KeyboardEvent} event
  */
-Home.prototype.handleBack = function (event) {
+function handleBack(event) {
     if (assertKey(event, AdditionalKeys.BACKSPACE)) {
         const elTarget = normaliseEventTarget(event);
 
@@ -130,6 +107,9 @@ Home.prototype.handleBack = function (event) {
             } else {
                 // focus into the menu
                 const navEl = appOutlets['nav'];
+
+                if (!navEl) return;
+
                 focusInto(navEl);
             } 
         }
@@ -137,30 +117,11 @@ Home.prototype.handleBack = function (event) {
 }
 
 /**
- *
- * @param {KeyboardEvent | MouseEvent} event
- */
-Home.prototype.handleKeyboard = function (event) {
-    const elTarget = normaliseEventTarget(event);
-    if (
-        elTarget instanceof HTMLAnchorElement &&
-        (
-            event instanceof MouseEvent ||
-            event instanceof KeyboardEvent && assertKey(event, AdditionalKeys.ENTER)
-        )
-    ) {
-        const keyPressValue = elTarget.href;
-        window.location.href = keyPressValue;
-    }
-}
-
-/**
- *
  * @param {PageData} data
  * @returns {HTMLElement}
  */
-Home.prototype.buildCarousels = function (data) {
-    this.carousels = Carousel(
+function buildCarousels(data) {
+    return Carousel(
         {
             id: data.id,
             orientation: Orientation.VERTICAL,
@@ -191,55 +152,75 @@ Home.prototype.buildCarousels = function (data) {
             )
         )
     );
-
-    return this.carousels;
 }
 
 /**
- * 
- * @this {HomeView}
+ * @typedef {import('crt/types').BaseViewInstance & {
+ *  data: PageData | null,
+ *  carousels: HTMLElement | null,
+ *  fetchData: () => void,
+ *  updateRender: (el?: HTMLElement) => void
+ * }} HomeViewInstance
  */
-Home.prototype.fetchData = function () {
-    setTimeout(() => {
-        this.data = pageData;
-        this.updateRender();
-    }, 500);
-
-    return;
-}
 
 /**
- * updateRender
- * @param {HTMLElement} [el]
- * @this {HomeView}
+ * @param {import('crt/types').ViewOptions} options
+ * @returns {HomeViewInstance}
  */
-Home.prototype.updateRender = function (el) {
-    let target = this.viewEl;
+export function createHomeView(options) {
+    const base = createBaseView(options);
 
-    if (el) {
-        target = el;
-    }
+    const homeView = {
+        ...base,
+        /** @type {PageData | null} */
+        data: null,
+        /** @type {HTMLElement | null} */
+        carousels: null,
 
-    if (target && this.data) {
-        target.innerHTML = '';
-        const el = this.buildCarousels(this.data);
-        target.appendChild(el);
+        viewDidLoad: function () {
+            listenForBack.call(this, true);
+        },
 
-        this.focusPage(el);
-    }
-}
+        fetchData: function () {
+            setTimeout(() => {
+                this.data = pageData;
+                this.updateRender();
+            }, 500);
+        },
 
-/**
- * @this {HomeView}
- * @returns {HTMLElement}
- */
-Home.prototype.render = function () {
-    if (!this.data) {
-        return div(
-            { className: 'view', id: this.id },
-            Spinner({ message: 'Hold on!' })
-        );
-    }
+        /**
+         * 
+         * @param {HTMLElement} [el] 
+         */
+        updateRender: function (el) {
+            let target = this.viewEl;
 
-    return div({ className: 'view', id: this.id });
+            if (el) {
+                target = el;
+            }
+
+            if (target && this.data) {
+                target.innerHTML = '';
+                this.carousels = buildCarousels(this.data);
+                target.appendChild(this.carousels);
+
+                focusPage(this.carousels);
+            }
+        },
+
+        render: function () {
+            if (!this.data) {
+                return div(
+                    { className: 'view', id: this.id },
+                    Spinner({ message: 'Hold on!' })
+                );
+            }
+
+            return div({ className: 'view', id: this.id });
+        },
+    };
+
+    homeView.fetchData();
+
+    return homeView;
 }

@@ -4,7 +4,7 @@
 
 import { describe, expect, test } from 'vitest';
 import { Carousel } from './Carousel';
-import { div } from 'crt';
+import { div } from '../h.js';
 
 describe('Carousel', () => {
     test('construction', () => {

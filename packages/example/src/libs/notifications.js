@@ -15,7 +15,7 @@ function handleNotification() {
  * @typedef {Object} NotificationsService
  * @property {HTMLElement} outlet
  * @property {number} count
- * @property {{ [index: string]: NodeJS.Timer }} timers
+ * @property {Record<string, number>} timers
  * @property {*} notificationsQueue
  * @property {(el: HTMLElement) => void} sendNotification
  * @property {(id: string) => void} clearNotification
@@ -42,15 +42,9 @@ export const NotificationsService = {
 
         that.count++;
 
-        that.timers[hex] = (function (id) {
-            return setTimeout(function () {
-                /**
-                 * @type {NotificationsService} this
-                 */
-
-                that.clearNotification(id);
-            }, 3e3);
-        })(hex);
+        that.timers[hex] = window.setTimeout(() => {
+            that.clearNotification(hex);
+        }, 3000);
     },
 
     /**

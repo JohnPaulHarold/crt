@@ -1,7 +1,6 @@
 import {
-    BaseView,
+    createBaseView,
     Direction,
-    Orientation,
     getBaseFontSize,
     removeElement,
     parseDecimal,
@@ -16,8 +15,7 @@ import { NavigationEvents, navigationBus } from '../navigation.js';
 import s from './vlist.scss';
 
 /**
- * 
- * @param {*} props 
+ * @param {{id: string, className: string}} props
  */
 function VirtualList(props) {
   return section({
@@ -27,29 +25,34 @@ function VirtualList(props) {
 }
 
 /**
- * 
- * @param {number} dec 
- * @returns 
+ * @typedef {object} VListItem
+ * @property {number} d Decimal
+ * @property {string} b Binary
+ * @property {string} h Hex
+ */
+
+/**
+ * @param {number} dec
+ * @returns {string}
  */
 function dec2bin(dec) {
   return (dec >>> 0).toString(2);
 }
 
 /**
- * 
- * @param {number} dec 
- * @returns 
+ * @param {number} dec
+ * @returns {string}
  */
 function dec2hex(dec) {
   return (dec >>> 0).toString(16);
 }
 
 /**
- * 
- * @param {number} bigNumber 
- * @returns 
+ * @param {number} bigNumber
+ * @returns {VListItem[]}
  */
 function buildBigData(bigNumber) {
+  /** @type {VListItem[]} */
   const bigData = [];
 
   for (let i = 0; i < bigNumber; i++) {
@@ -64,238 +67,269 @@ function buildBigData(bigNumber) {
 }
 
 /**
- * 
- * @param {Object} options 
- * @param {*[]} options.data
- * @param {Orientation} [options.orientation]
- * @param {string} options.container expects a queryString
- * @param {function} options.renderRow
- * @param {number} options.elHeight
- * @param {number} [options.elWidth]
- * @param {number} [options.bufferAmount]
- * @param {number} [options.visibleEls]
- */
-function VL(options) {
-  this.data = options.data;
-  this.visibleEls = options.visibleEls || 10;
-  this.bufferAmount = options.bufferAmount || 5;
-  this.container = options.container;
-  this.containerEl = null;
-  this.renderRow = options.renderRow;
-  this.sliderEl = document.createElement('div');
-  this.sliderEl.style.transition = "transform 250ms ease";
-
-  const baseFontSize = getBaseFontSize();
-  /**
-   * @type {number}
-   * @description for now, this is required while an approach to dyanmic sized elements is thought up
-   * @memberof VL
-   */
-  this.elHeight = pxToRem(options.elHeight, baseFontSize);
-  this.paddingTop = 0;
-
-  /**
-   * @type {number[]}
-   * @memberof VL
-   * @description describe what this concept is all about. I've forgotten
-   */
-  this.window = [];
-}
-
-VL.prototype = {
-  init() {
-    this.containerEl = document.querySelector(this.container);
-    this.window = [0, this.visibleEls - 1];
-
-    const slice = this.getNextData(0, this.visibleEls);
-
-    slice.forEach((bd) => {
-      const el = this.renderRow(bd);
-      // apply the height, for now
-      el.style.height = this.elHeight + "rem";
-      this.sliderEl.appendChild(el);
-    });
-
-    if (this.containerEl) {
-      this.containerEl.appendChild(this.sliderEl)
-    }
-  },
-
-  /**
-   * 
-   * @param {number} start 
-   * @param {number} end 
-   */
-  getNextData(start, end) {
-    return this.data.slice(start, end);
-  },
-
-  updateContainer() {
-
-  },
-
-  /**
-   * @memberof VL
-   * @param {Direction} direction 
-   * @param {number} position 
-   */
-  updateList(direction, position) {
-    const lowerBound = this.window[0];
-    const upperBound = this.window[1];
-
-    // @ts-ignore
-    this.sliderEl.style[transformProp] = 'translateY(' + -(position * this.elHeight) + 'rem)';
-
-    /**
-     * @todo could not the prepend and append operations be combined?
-     */
-    if (direction === Direction.DOWN && position >= upperBound - this.bufferAmount) {
-      // get a new page of data
-      const frag = document.createDocumentFragment();
-      const slice = this.getNextData(upperBound + 1, upperBound + 1 + this.visibleEls);
-      slice.forEach((bd) => {
-        const el = this.renderRow(bd);
-        // apply the height, for now
-        el.style.height = this.elHeight + "rem";
-        frag.appendChild(el);
-      });
-      this.sliderEl.appendChild(frag);
-      this.window[1] = this.window[1] + this.visibleEls;
-    }
-
-    if (direction === Direction.DOWN && position > lowerBound + this.visibleEls + this.bufferAmount) {
-      // remove defined amount from start of DOM list
-      let i = this.visibleEls - 1;
-      while (i >= 0) {
-        const el = this.sliderEl.children[i];
-        removeElement(el);
-        i--;
-      }
-
-      this.paddingTop = this.paddingTop + (this.visibleEls * this.elHeight);
-      this.sliderEl.style.paddingTop = this.paddingTop + "rem";
-      this.window[0] = this.window[0] + this.visibleEls;
-    }
-
-    if (direction === Direction.UP && position <= lowerBound + this.bufferAmount) {
-      const frag = document.createDocumentFragment();
-      const slice = this.getNextData(lowerBound - this.visibleEls, lowerBound);
-
-      slice.forEach((bd) => {
-        const el = this.renderRow(bd);
-        // apply the height, for now
-        el.style.height = this.elHeight + "rem";
-        frag.appendChild(el);
-      });
-
-      /**
-       * @todo this is bugged
-       */
-      this.sliderEl.prepend(frag);
-
-      this.paddingTop = this.paddingTop - (slice.length * this.elHeight);
-      this.sliderEl.style.paddingTop = this.paddingTop + "rem";
-      this.window[0] = Math.max(this.window[0] - this.visibleEls, 0);
-    }
-  }
-};
-
-/**
- * @extends BaseView
- * @typedef {BaseView & VList} VListView
+ * @typedef {object} VLOptions
+ * @property {VListItem[]} data
+ * @property {string} options.container expects a queryString
+ * @property {(item: VListItem) => HTMLElement} options.renderRow
+ * @property {number} options.elHeight
+ * @property {number} [options.bufferAmount]
+ * @property {number} [options.visibleEls]
  */
 
 /**
- * @constructor
- * @param {import('../libs/baseView').ViewOptions} options
- * @this {VListView}
+ * @typedef {object} VLInstance
+ * @property {VListItem[]} data
+ * @property {number} visibleEls
+ * @property {number} bufferAmount
+ * @property {string} container
+ * @property {HTMLElement | null} containerEl
+ * @property {(item: VListItem) => HTMLElement} renderRow
+ * @property {HTMLElement} sliderEl
+ * @property {number} elHeight
+ * @property {number} paddingTop
+ * @property {number[]} window
+ * @property {() => void} init
+ * @property {(start: number, end: number) => VListItem[]} getNextData
+ * @property {(direction: Direction, position: number) => void} updateList
  */
-export function VList(options) {
-  BaseView.call(this, options);
-  /**
-   * @todo temp stub data
-   */
-  this.bigData = buildBigData(600);
 
-  navigationBus.on(
-    NavigationEvents.MOVE,
-    this.handleMove.bind(this)
-  )
+/**
+ * @param {VLOptions} options
+ * @returns {VLInstance}
+ */
+function createVL(options) {
+    /** @type {VLInstance} */
+    const vl = {
+        data: options.data,
+        visibleEls: options.visibleEls || 10,
+        bufferAmount: options.bufferAmount || 5,
+        container: options.container,
+        containerEl: null,
+        renderRow: options.renderRow,
+        sliderEl: document.createElement('div'),
+        elHeight: 0,
+        paddingTop: 0,
+        window: [],
 
-  this.containerId = 'my-vlist'
-  const vlOpts = {
-    container: '#' + this.containerId,
-    data: this.bigData,
-    renderRow: this.renderRow.bind(this),
-    /**
-     * @todo elHeight will be resolution dependent
-     */
-    elHeight: 220,
-    /**
-     * @description number of rows that are buffered offscreen
-     */
-    bufferAmount: 5,
-    visibleEls: 10,
-  };
+        /**
+         * @this {VLInstance}
+         */
+        init() {
+            this.containerEl = document.querySelector(this.container);
+            this.window = [0, this.visibleEls - 1];
 
-  this.vl = new VL(vlOpts);
-}
+            const slice = this.getNextData(0, this.visibleEls);
 
-// inherit from BaseView
-VList.prototype = Object.create(BaseView.prototype);
-// Set the constructor back
-VList.prototype.constructor = VList;
+            slice.forEach((bd) => {
+                const el = this.renderRow(bd);
+                el.style.height = this.elHeight + 'rem';
+                this.sliderEl.appendChild(el);
+            });
 
-VList.prototype.destructor = function () {
-  navigationBus.off(
-    NavigationEvents.MOVE,
-  )
-}
+            if (this.containerEl) {
+                this.containerEl.appendChild(this.sliderEl);
+            }
+        },
 
-VList.prototype.viewDidLoad = function () {
-  this.vl.init()
+        /**
+         * @this {VLInstance}
+         */
+        getNextData(start, end) {
+            return this.data.slice(start, end);
+        },
+
+        /**
+         * @this {VLInstance}
+         */
+        updateList(direction, position) {
+            const lowerBound = this.window[0];
+            const upperBound = this.window[1];
+
+            // @ts-ignore
+            this.sliderEl.style[transformProp] =
+                'translateY(' + -(position * this.elHeight) + 'rem)';
+
+            if (
+                direction === Direction.DOWN &&
+                position >= upperBound - this.bufferAmount
+            ) {
+                const frag = document.createDocumentFragment();
+                const slice = this.getNextData(
+                    upperBound + 1,
+                    upperBound + 1 + this.visibleEls
+                );
+                slice.forEach((bd) => {
+                    const el = this.renderRow(bd);
+                    el.style.height = this.elHeight + 'rem';
+                    frag.appendChild(el);
+                });
+                this.sliderEl.appendChild(frag);
+                this.window[1] = this.window[1] + this.visibleEls;
+            }
+
+            if (
+                direction === Direction.DOWN &&
+                position > lowerBound + this.visibleEls + this.bufferAmount
+            ) {
+                let i = this.visibleEls - 1;
+                while (i >= 0) {
+                    const el = this.sliderEl.children[i];
+                    removeElement(el);
+                    i--;
+                }
+
+                this.paddingTop =
+                    this.paddingTop + this.visibleEls * this.elHeight;
+                this.sliderEl.style.paddingTop = this.paddingTop + 'rem';
+                this.window[0] = this.window[0] + this.visibleEls;
+            }
+
+            if (
+                direction === Direction.UP &&
+                position <= lowerBound + this.bufferAmount
+            ) {
+                const frag = document.createDocumentFragment();
+                const slice = this.getNextData(
+                    lowerBound - this.visibleEls,
+                    lowerBound
+                );
+
+                slice.forEach((bd) => {
+                    const el = this.renderRow(bd);
+                    el.style.height = this.elHeight + 'rem';
+                    frag.appendChild(el);
+                });
+
+                this.sliderEl.prepend(frag);
+
+                this.paddingTop =
+                    this.paddingTop - slice.length * this.elHeight;
+                this.sliderEl.style.paddingTop = this.paddingTop + 'rem';
+                this.window[0] = Math.max(
+                    this.window[0] - this.visibleEls,
+                    0
+                );
+            }
+        },
+    };
+
+    vl.sliderEl.style.transition = 'transform 250ms ease';
+    const baseFontSize = getBaseFontSize();
+    vl.elHeight = pxToRem(options.elHeight, baseFontSize);
+
+    return vl;
 }
 
 /**
- * 
- * @param {*} event 
+ * @typedef {object} MoveEventPayloadDetail
+ * @property {Direction} direction
+ * @property {HTMLElement} lastElement
+ * @property {HTMLElement} nextElement
+ * @property {HTMLElement} lastContainer
+ * @property {HTMLElement} nextContainer
  */
-VList.prototype.handleMove = function (event) {
-  if (event.detail && event.detail.nextContainer.id === this.containerId) {
-    const direction = event.detail.direction;
-    const position = parseDecimal(event.detail.nextElement.dataset.vlIndex);
-
-    this.vl.updateList(direction, position);
-  }
-}
 
 /**
- * 
- * @param {*} bd 
- * @returns 
+ * @typedef {object} MoveEventPayload
+ * @property {string} type
+ * @property {MoveEventPayloadDetail} detail
  */
-VList.prototype.renderRow = function (bd) {
-  const indexOf = this.bigData.indexOf(bd);
-
-  return a({
-    className: s.data,
-    dataset: { vlIndex: indexOf }
-  },
-    div({},
-      p({}, "Decimal: " + bd.d),
-      p({}, "Binary: " + bd.b),
-      p({}, "Hex: " + bd.h)
-    ))
-}
 
 /**
- * @this {VListView}
- * @returns {HTMLElement}
+ * @typedef {import('crt/types').BaseViewInstance & {
+ *  bigData: VListItem[],
+ *  containerId: string,
+ *  vl: VLInstance | null,
+ *  boundHandleMove: ((event: any) => void) | null,
+ *  destructor: () => void,
+ *  viewDidLoad: () => void,
+ *  handleMove: (event: any) => void,
+ *  renderRow: (bd: VListItem) => HTMLElement,
+ *  render: () => HTMLElement
+ * }} VListViewInstance
  */
-VList.prototype.render = function () {
-  return div(
-    { className: 'view', id: this.id },
 
-    VirtualList({ id: 'my-vlist', className: 'my-vlist' })
-  );
+/**
+ * @param {import('crt/types').ViewOptions} options
+ * @returns {VListViewInstance}
+ */
+export function createVListView(options) {
+    const base = createBaseView(options);
+
+    /** @type {VListViewInstance} */
+    const vListView = {
+        ...base,
+        bigData: buildBigData(600),
+        containerId: 'my-vlist',
+        vl: null,
+        boundHandleMove: null,
+
+        destructor: function () {
+            if (this.boundHandleMove) {
+                navigationBus.off(NavigationEvents.MOVE, this.boundHandleMove);
+            }
+        },
+
+        viewDidLoad: function () {
+            const vlOpts = {
+                container: '#' + this.containerId,
+                data: this.bigData,
+                renderRow: this.renderRow.bind(this),
+                elHeight: 220,
+                bufferAmount: 5,
+                visibleEls: 10,
+            };
+
+            this.vl = createVL(vlOpts);
+            this.vl.init();
+
+            this.boundHandleMove = this.handleMove.bind(this);
+            navigationBus.on(NavigationEvents.MOVE, this.boundHandleMove);
+        },
+
+        handleMove: function (event) {
+            /** @type {MoveEventPayload} */
+            const moveEvent = event;
+
+            if (
+                this.vl &&
+                moveEvent.detail &&
+                moveEvent.detail.nextContainer &&
+                moveEvent.detail.nextContainer.id === this.containerId
+            ) {
+                const direction = moveEvent.detail.direction;
+                const position = parseDecimal(
+                    moveEvent.detail.nextElement.dataset.vlIndex || '0'
+                );
+
+                this.vl.updateList(direction, position);
+            }
+        },
+
+        renderRow: function (bd) {
+            const indexOf = this.bigData.indexOf(bd);
+
+            return a(
+                {
+                    className: s.data,
+                    dataset: { vlIndex: indexOf },
+                },
+                div(
+                    {},
+                    p({}, 'Decimal: ' + bd.d),
+                    p({}, 'Binary: ' + bd.b),
+                    p({}, 'Hex: ' + bd.h)
+                )
+            );
+        },
+
+        render: function () {
+            return div(
+                { className: 'view', id: this.id },
+                VirtualList({ id: 'my-vlist', className: 'my-vlist' })
+            );
+        },
+    };
+
+    return vListView;
 }

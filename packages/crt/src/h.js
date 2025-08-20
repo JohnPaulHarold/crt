@@ -120,7 +120,9 @@ export function h(type, textOrPropsOrChild, ...otherChildren) {
                     setData(el, value);
                 } else if (propName === 'style') {
                     setStyles(el, value);
-                } else if (typeof value === 'number' || value) {
+                } else if (value != null) {
+                    // Use `!= null` to allow setting falsy values like empty strings,
+                    // `false`, and `0`, but not `null` or `undefined`.
                     // @ts-ignore fixme
                     el[propName] = value;
                 }
