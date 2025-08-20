@@ -25,8 +25,8 @@ import s from './canivideo.scss';
  */
 
 /**
- * @param {import('crt/types').ViewOptions} options
- * @returns {import('crt/types').BaseViewInstance}
+ * @param {import('crt').ViewOptions} options
+ * @returns {import('crt').BaseViewInstance}
  */
 export function createCanivideoView(options) {
     const base = createBaseView(options);

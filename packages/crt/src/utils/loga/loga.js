@@ -148,39 +148,63 @@ export const loga = {
             _logWithStyle('error', STYLES.ERROR, '[ERROR]', args);
     },
 
+    /**
+     * @param {string} componentPrefix
+     * @returns {PrefixedLogaInstance}
+     */
     create: (componentPrefix) => {
-        const prefixedLogger = /** @type {PrefixedLogaInstance} */ ({});
-
-        Object.keys(LOG_METHODS_CONFIG).forEach((methodKey) => {
-            const config =
-                LOG_METHODS_CONFIG[
-                    /** @type {keyof typeof LOG_METHODS_CONFIG} */ (methodKey)
-                ];
-            const fullPrefix = `${config.prefix}[${componentPrefix}]`;
-
-            prefixedLogger[
-                /** @type {keyof PrefixedLogaInstance} */ (methodKey)
-            ] = (...args) => {
-                if (DEBUG_MODE && CURRENT_LOG_LEVEL >= config.level) {
-                    _logWithStyle(
-                        config.consoleMethod,
-                        config.style,
-                        fullPrefix,
-                        args
-                    );
+        const createLoggerMethod = (
+            /** @type {ConsoleMethodName} */ methodName,
+            /** @type {string} */ style,
+            /** @type {string} */ basePrefix,
+            /** @type {number} */ messageLogLevel
+        ) => {
+            const fullPrefix = `${basePrefix}[${componentPrefix}]`;
+            /**
+             * @param {...any} args
+             */
+            return (...args) => {
+                if (DEBUG_MODE && CURRENT_LOG_LEVEL >= messageLogLevel) {
+                    _logWithStyle(methodName, style, fullPrefix, args);
                 }
             };
-        });
+        };
 
-        return prefixedLogger;
+        // Note: This method returns a static object literal instead of dynamically
+        // building it in a loop. While a loop would be more DRY, this explicit
+        // approach is more robust for static analysis and prevents type inference
+        // issues with TypeScript's `checkJs`.
+        return {
+            log: createLoggerMethod('log', STYLES.LOG, '[LOG]', LogLevel.LOG),
+            info: createLoggerMethod(
+                'info',
+                STYLES.INFO,
+                '[INFO]',
+                LogLevel.INFO
+            ),
+            warn: createLoggerMethod(
+                'warn',
+                STYLES.WARN,
+                '[WARN]',
+                LogLevel.WARN
+            ),
+            error: createLoggerMethod(
+                'error',
+                STYLES.ERROR,
+                '[ERROR]',
+                LogLevel.ERROR
+            ),
+            success: createLoggerMethod(
+                'log',
+                STYLES.SUCCESS,
+                '[SUCCESS]',
+                LogLevel.SUCCESS
+            ),
+        };
     },
     setLogLevel: (level) => {
         // Check if the provided level is a valid value in the LogLevel enum
-        // Using Object.keys and .some for ES2015 compatibility.
-        const isValid = Object.keys(LogLevel).some(
-            (key) =>
-                LogLevel[/** @type {keyof typeof LogLevel} */ (key)] === level
-        );
+        const isValid = Object.values(LogLevel).includes(level);
         if (isValid) {
             CURRENT_LOG_LEVEL = level;
         } else {

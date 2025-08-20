@@ -18,7 +18,7 @@ import { focusInto, setLrudScope } from '../navigation.js';
  * @returns {RegisteredPopup}
  */
 export function registerPopup(popupEl, handler, outlet) {
-    /** @type { import('crt/types').keydownCallback }  */
+    /** @type { import('crt').keydownCallback }  */
     const popupCallback = (event) => {
         const elTarget = normaliseEventTarget(event);
 

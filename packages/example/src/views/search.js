@@ -37,9 +37,10 @@ function handleKeyboard(event) {
     const elTarget = normaliseEventTarget(event);
     if (
         elTarget instanceof HTMLElement &&
-        (event instanceof MouseEvent ||
-            (event instanceof KeyboardEvent &&
-                assertKey(event, AdditionalKeys.ENTER)))
+        (
+            event instanceof MouseEvent ||
+            event instanceof KeyboardEvent && assertKey(event, AdditionalKeys.ENTER)
+        )
     ) {
         const keyPressValue = $dataGet(elTarget, 'keyValue');
 
@@ -117,7 +118,10 @@ function updateSearchList() {
                             href: res.url,
                             id: res.id,
                         },
-                        div({ className: s.searchResult }, span({}, res.title))
+                        div(
+                            { className: s.searchResult },
+                            span({}, res.title)
+                        )
                     )
                 )
             );
@@ -130,7 +134,7 @@ function updateSearchList() {
 }
 
 /**
- * @typedef {import('crt/types').BaseViewInstance & {
+ * @typedef {import('crt').BaseViewInstance & {
  *  keyboard: HTMLElement,
  *  searchTerm: string,
  *  keyHandleCleanup: (() => void) | null,
@@ -147,7 +151,7 @@ function updateSearchList() {
  */
 
 /**
- * @param {import('crt/types').ViewOptions} options
+ * @param {import('crt').ViewOptions} options
  * @returns {SearchViewInstance}
  */
 export function createSearchView(options) {
@@ -196,7 +200,11 @@ export function createSearchView(options) {
             return div(
                 { className: 'view', id: this.id },
                 div({ className: s.searchInput, id: 'search-input' }),
-                div({ className: s.panels2 }, this.keyboard, this.searchResults)
+                div(
+                    { className: s.panels2 },
+                    this.keyboard,
+                    this.searchResults
+                )
             );
         },
     };

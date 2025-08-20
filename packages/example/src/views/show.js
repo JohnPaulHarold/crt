@@ -25,7 +25,7 @@ import Logo from '../assets/Public_Domain_Mark_button.svg.png';
 import s from './show.scss';
 
 /**
- * @typedef {import('crt/types').BaseViewInstance & {
+ * @typedef {import('crt').BaseViewInstance & {
  *  info: Record<string, any> | undefined,
  *  search: Record<string, any> | undefined,
  *  belowFold: boolean,
@@ -42,7 +42,7 @@ import s from './show.scss';
  */
 
 /**
- * @param {import('crt/types').ViewOptions} options
+ * @param {import('crt').ViewOptions} options
  * @returns {ShowViewInstance}
  */
 export function createShowView(options) {
