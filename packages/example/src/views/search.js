@@ -25,22 +25,14 @@ import s from './search.scss';
  * @this {SearchViewInstance}
  * @param {KeyboardEvent | MouseEvent} event
  */
-function handleInteraction(event) {
+function handleClick(event) {
     const elTarget = normaliseEventTarget(event);
-    if (
-        elTarget instanceof HTMLElement &&
-        (event instanceof MouseEvent ||
-            (event instanceof KeyboardEvent &&
-                assertKey(event, AdditionalKeys.ENTER)))
-    ) {
-        // If the event is from a keyboard, prevent the default action.
-        // This stops the browser from also firing a 'click' event for an Enter key press on a button.
-        if (event instanceof KeyboardEvent) {
-            event.preventDefault();
-        }
+    if (elTarget instanceof HTMLElement) {
         const value = $dataGet(elTarget, 'keyValue');
         if (typeof value !== 'string') return;
 
+        // The navigationService now handles translating 'Enter' keydowns into clicks,
+        // so this handler only needs to deal with the resulting click event.
         const currentTerm = this.searchTerm.getValue();
         let newTerm = currentTerm;
 
@@ -112,7 +104,7 @@ function getTemplate() {
  * @typedef {import('crt').BaseViewInstance & {
  *  keyboard: HTMLElement,
  *  searchTerm: import('crt').SignallerInstance,
- *  boundHandleInteraction?: (event: KeyboardEvent | MouseEvent) => void,
+ *  boundHandleClick?: (event: MouseEvent) => void,
  *  stopWatching?: () => void,
  *  destructor: () => void,
  *  viewDidLoad: () => void,
@@ -132,19 +124,12 @@ export function createSearchView(options) {
         ...base,
         searchTerm: createSignaller(''),
         keyboard: Keyboard({ keyMap: keyMap }),
-        boundHandleInteraction: undefined,
+        boundHandleClick: undefined,
         stopWatching: undefined,
 
         destructor: function () {
-            if (this.viewEl && this.boundHandleInteraction) {
-                this.viewEl.removeEventListener(
-                    'click',
-                    this.boundHandleInteraction
-                );
-                this.viewEl.removeEventListener(
-                    'keydown',
-                    this.boundHandleInteraction
-                );
+            if (this.viewEl && this.boundHandleClick) {
+                this.viewEl.removeEventListener('click', this.boundHandleClick);
             }
             if (this.stopWatching) {
                 this.stopWatching();
@@ -155,15 +140,8 @@ export function createSearchView(options) {
 
         viewDidLoad: function () {
             if (this.viewEl) {
-                this.boundHandleInteraction = handleInteraction.bind(this);
-                this.viewEl.addEventListener(
-                    'click',
-                    this.boundHandleInteraction
-                );
-                this.viewEl.addEventListener(
-                    'keydown',
-                    this.boundHandleInteraction
-                );
+                this.boundHandleClick = handleClick.bind(this);
+                this.viewEl.addEventListener('click', this.boundHandleClick);
 
                 const handler = () => {
                     if (this.viewEl) {

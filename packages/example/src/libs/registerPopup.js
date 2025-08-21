@@ -1,8 +1,4 @@
-import {
-    AdditionalKeys,
-    handleKeydownOnElement,
-    normaliseEventTarget,
-} from 'crt';
+import { normaliseEventTarget } from 'crt';
 import { navigationService } from '../services/navigationService.js';
 
 /**
@@ -18,8 +14,10 @@ import { navigationService } from '../services/navigationService.js';
  * @returns {RegisteredPopup}
  */
 export function registerPopup(popupEl, handler, outlet) {
-    /** @type { import('crt').keydownCallback }  */
-    const popupCallback = (event) => {
+    /**
+     * @param {MouseEvent} event
+     */
+    const handleClick = (event) => {
         const elTarget = normaliseEventTarget(event);
 
         if (elTarget instanceof HTMLElement) {
@@ -27,9 +25,7 @@ export function registerPopup(popupEl, handler, outlet) {
         }
     };
 
-    const cleanup = handleKeydownOnElement(popupEl, popupCallback, [
-        AdditionalKeys.ENTER,
-    ]);
+    popupEl.addEventListener('click', handleClick);
 
     return {
         open: () => {
@@ -44,7 +40,7 @@ export function registerPopup(popupEl, handler, outlet) {
             navigationService.setScope(undefined);
             handler('close');
             outlet.removeChild(popupEl);
-            cleanup();
+            popupEl.removeEventListener('click', handleClick);
         },
     };
 }

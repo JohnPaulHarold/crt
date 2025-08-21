@@ -1,7 +1,14 @@
 /**
+ * @description
+ * Ensures a reliable DOM element is returned from an event.
  *
- * @param {KeyboardEvent | MouseEvent} event
- * @returns
+ * In some edge cases, especially with keyboard navigation, `event.target` can
+ * be ambiguous (e.g., the `window` object or `null`). This function provides a
+ * safe fallback to `document.activeElement` in such cases, ensuring that
+ * event handlers always have a meaningful element to operate on.
+ *
+ * @param {KeyboardEvent | MouseEvent} event The event object.
+ * @returns {EventTarget | Element | null} The normalized event target.
  */
 export function normaliseEventTarget(event) {
     return event.target && event.target !== window

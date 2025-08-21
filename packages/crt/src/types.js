@@ -1,4 +1,18 @@
 /**
+ * @typedef {object} ComponentProps
+ * @property {string} [id]
+ * @property {string} [className]
+ * @property {Record<string, string>} [dataset]
+ * @property {Partial<CSSStyleDeclaration>} [style]
+ * @property {() => void} [onclick]
+ * @property {() => void} [onfocus]
+ * @property {() => void} [onblur]
+ * @property {(event: KeyboardEvent) => void} [onkeydown]
+ * @property {(event: KeyboardEvent) => void} [onkeyup]
+ * @property {(event: KeyboardEvent) => void} [onkeypress]
+ */
+
+/**
  * @typedef {object} ViewOptions
  * @property {string} id
  */

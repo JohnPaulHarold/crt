@@ -3,7 +3,7 @@ import { div, span } from '../h.js';
 import s from './Tile.scss';
 
 /**
- * @typedef {BaseComponentProps & {
+ * @typedef {import('crt').ComponentProps & {
  *  title: string;
  * }} TileProps
  */

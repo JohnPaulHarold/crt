@@ -3,7 +3,7 @@ import { img } from '../h.js';
 import s from './LazyImage.scss';
 
 /**
- * @typedef {BaseComponentProps & {
+ * @typedef {import('crt').ComponentProps & {
  *  src: string;
  * }} LazyImageProps
  */
