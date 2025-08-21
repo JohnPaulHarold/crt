@@ -17,14 +17,14 @@
  * window.addEventListener('resize', handleResize);
  */
 export function createDebounce(callback, time) {
-    /** @type {number | undefined} */
-    let timer; // This timer is private to each created function's closure.
+	/** @type {number | undefined} */
+	let timer; // This timer is private to each created function's closure.
 
-    return function (...args) {
-        window.clearTimeout(timer);
-        timer = window.setTimeout(() => {
-            // @ts-ignore - `this` is correctly preserved from the calling context of the debounced function.
-            callback.apply(this, args);
-        }, time);
-    };
+	return function (...args) {
+		window.clearTimeout(timer);
+		timer = window.setTimeout(() => {
+			// @ts-ignore - `this` is correctly preserved from the calling context of the debounced function.
+			callback.apply(this, args);
+		}, time);
+	};
 }

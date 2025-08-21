@@ -1,9 +1,9 @@
 import {
-    Orientation,
-    collectionToArray,
-    $dataGet,
-    transformProp,
-    loga,
+	Orientation,
+	collectionToArray,
+	$dataGet,
+	transformProp,
+	loga,
 } from 'crt';
 
 const logr = loga.create('deadsea');
@@ -18,13 +18,13 @@ const focusedQuery = '.focused';
  * @returns {HTMLElement=}
  */
 function getScrollEl(el) {
-    if (!el || !el.parentElement) return;
+	if (!el || !el.parentElement) return;
 
-    if (el.dataset.deadseaOrientation) {
-        return el;
-    }
+	if (el.dataset.deadseaOrientation) {
+		return el;
+	}
 
-    return getScrollEl(el.parentElement);
+	return getScrollEl(el.parentElement);
 }
 
 /**
@@ -33,24 +33,24 @@ function getScrollEl(el) {
  * @returns {[HTMLElement, number]}
  */
 function findScrollableFromFocusEl(el, scrollables) {
-    let directChildIndex = scrollables.indexOf(el);
-    if (directChildIndex > -1) {
-        return [scrollables[directChildIndex], directChildIndex];
-    }
+	let directChildIndex = scrollables.indexOf(el);
+	if (directChildIndex > -1) {
+		return [scrollables[directChildIndex], directChildIndex];
+	}
 
-    /** @type {HTMLElement} */
-    let matched = el; // set to satisfy TypeScript
+	/** @type {HTMLElement} */
+	let matched = el; // set to satisfy TypeScript
 
-    for (let i = 0, l = scrollables.length; i < l; i++) {
-        const scrollable = scrollables[i];
-        if (scrollable.contains(el)) {
-            matched = scrollable;
-            directChildIndex = i;
-            break;
-        }
-    }
+	for (let i = 0, l = scrollables.length; i < l; i++) {
+		const scrollable = scrollables[i];
+		if (scrollable.contains(el)) {
+			matched = scrollable;
+			directChildIndex = i;
+			break;
+		}
+	}
 
-    return [matched, directChildIndex];
+	return [matched, directChildIndex];
 }
 
 /**
@@ -59,7 +59,7 @@ function findScrollableFromFocusEl(el, scrollables) {
  * @param {number} startOffset
  */
 function calculateOffset(offsets, scrollableIndex, startOffset) {
-    return offsets[Math.max(0, scrollableIndex - startOffset)];
+	return offsets[Math.max(0, scrollableIndex - startOffset)];
 }
 
 /**
@@ -67,85 +67,83 @@ function calculateOffset(offsets, scrollableIndex, startOffset) {
  * @param {boolean} useTransforms
  */
 function doTheHardWork(scrollEl, useTransforms) {
-    const scrollId = $dataGet(scrollEl, 'deadseaId');
-    if (!scrollId) {
-        logr.error(
-            'DeadSea element requires a "data-deadsea-id" attribute for caching.',
-            scrollEl
-        );
-        return;
-    }
+	const scrollId = $dataGet(scrollEl, 'deadseaId');
+	if (!scrollId) {
+		logr.error(
+			'DeadSea element requires a "data-deadsea-id" attribute for caching.',
+			scrollEl
+		);
+		return;
+	}
 
-    const focusedEl = document.querySelector(focusedQuery);
+	const focusedEl = document.querySelector(focusedQuery);
 
-    const orientation =
-        $dataGet(scrollEl, 'deadseaOrientation') || Orientation.HORIZONTAL;
-    const childQuery = $dataGet(scrollEl, 'deadseaChildQuery');
-    const startOffset = parseInt(
-        $dataGet(scrollEl, 'deadseaStartOffset') || '0',
-        10
-    );
-    const startQs = $dataGet(scrollEl, 'deadseaScrollStartQuery');
-    const offsetProp =
-        orientation === Orientation.HORIZONTAL ? 'offsetLeft' : 'offsetTop';
+	const orientation =
+		$dataGet(scrollEl, 'deadseaOrientation') || Orientation.HORIZONTAL;
+	const childQuery = $dataGet(scrollEl, 'deadseaChildQuery');
+	const startOffset = parseInt(
+		$dataGet(scrollEl, 'deadseaStartOffset') || '0',
+		10
+	);
+	const startQs = $dataGet(scrollEl, 'deadseaScrollStartQuery');
+	const offsetProp =
+		orientation === Orientation.HORIZONTAL ? 'offsetLeft' : 'offsetTop';
 
-    const scrollables = childQuery
-        ? collectionToArray(scrollEl.querySelectorAll(childQuery))
-        : collectionToArray(scrollEl.children);
+	const scrollables = childQuery
+		? collectionToArray(scrollEl.querySelectorAll(childQuery))
+		: collectionToArray(scrollEl.children);
 
-    if (scrollables.length === 0) {
-        return; // Nothing to scroll.
-    }
+	if (scrollables.length === 0) {
+		return; // Nothing to scroll.
+	}
 
-    const scrollableIndex =
-        focusedEl instanceof HTMLElement
-            ? findScrollableFromFocusEl(focusedEl, scrollables)[1]
-            : 0;
+	const scrollableIndex =
+		focusedEl instanceof HTMLElement
+			? findScrollableFromFocusEl(focusedEl, scrollables)[1]
+			: 0;
 
-    const startEl = startQs ? document.querySelector(startQs) : null;
-    let startElOffsetInPx = 0;
-    if (startEl instanceof HTMLElement) {
-        startElOffsetInPx = startEl[offsetProp];
-    }
+	const startEl = startQs ? document.querySelector(startQs) : null;
+	let startElOffsetInPx = 0;
+	if (startEl instanceof HTMLElement) {
+		startElOffsetInPx = startEl[offsetProp];
+	}
 
-    // get all the offsets and cache them against the id of the carousel
-    if (!offsetCache[scrollId]) {
-        offsetCache[scrollId] = scrollables.map(
-            (s) =>
-                /** @type {HTMLElement} */ (s)[offsetProp] - startElOffsetInPx
-        );
-    }
+	// get all the offsets and cache them against the id of the carousel
+	if (!offsetCache[scrollId]) {
+		offsetCache[scrollId] = scrollables.map(
+			(s) => /** @type {HTMLElement} */ (s)[offsetProp] - startElOffsetInPx
+		);
+	}
 
-    const newOffset = calculateOffset(
-        offsetCache[scrollId],
-        scrollableIndex,
-        startOffset
-    );
+	const newOffset = calculateOffset(
+		offsetCache[scrollId],
+		scrollableIndex,
+		startOffset
+	);
 
-    // Guard against invalid offset (e.g., from empty cache or bad index)
-    if (typeof newOffset !== 'number' || !isFinite(newOffset)) {
-        return;
-    }
+	// Guard against invalid offset (e.g., from empty cache or bad index)
+	if (typeof newOffset !== 'number' || !isFinite(newOffset)) {
+		return;
+	}
 
-    if (scrollableIndex >= startOffset) {
-        if (!useTransforms) {
-            const axis =
-                orientation === Orientation.HORIZONTAL ? 'left' : 'top';
-            scrollEl.style[axis] = -newOffset + 'px';
-        } else if (transformProp) {
-            const axis = orientation === Orientation.HORIZONTAL ? 'X' : 'Y';
-            const style = /** @type {any} */ (scrollEl.style);
-            style[transformProp] = `translate${axis}(${-newOffset}px)`;
-        }
-    } else {
-        // Reset scroll position if we are before the start offset
-        scrollEl.style.left = '0px';
-        scrollEl.style.top = '0px';
-        if (transformProp) {
-            const style = /** @type {any} */ (scrollEl.style);
-            style[transformProp] = '';
-        }
-    }
+	if (scrollableIndex >= startOffset) {
+		if (!useTransforms) {
+			const axis = orientation === Orientation.HORIZONTAL ? 'left' : 'top';
+			scrollEl.style[axis] = -newOffset + 'px';
+		} else if (transformProp) {
+			const axis = orientation === Orientation.HORIZONTAL ? 'X' : 'Y';
+			const style = /** @type {any} */ (scrollEl.style);
+			style[transformProp] = `translate${axis}(${-newOffset}px)`;
+		}
+	} else {
+		// Reset scroll position if we are before the start offset
+		scrollEl.style.left = '0px';
+		scrollEl.style.top = '0px';
+		if (transformProp) {
+			const style = /** @type {any} */ (scrollEl.style);
+			style[transformProp] = '';
+		}
+	}
 }
 
 /**
@@ -153,15 +151,15 @@ function doTheHardWork(scrollEl, useTransforms) {
  * @param {boolean} useTransforms
  */
 export function scrollAction(el, useTransforms) {
-    let scrollEl = getScrollEl(el);
+	let scrollEl = getScrollEl(el);
 
-    while (scrollEl) {
-        doTheHardWork(scrollEl, useTransforms);
-        scrollEl =
-            scrollEl.parentElement instanceof HTMLElement
-                ? getScrollEl(scrollEl.parentElement)
-                : undefined;
-    }
+	while (scrollEl) {
+		doTheHardWork(scrollEl, useTransforms);
+		scrollEl =
+			scrollEl.parentElement instanceof HTMLElement
+				? getScrollEl(scrollEl.parentElement)
+				: undefined;
+	}
 }
 
 /**
@@ -170,5 +168,5 @@ export function scrollAction(el, useTransforms) {
  * @param {string} scrollId The `data-deadsea-id` of the container.
  */
 export function clearDeadSeaCache(scrollId) {
-    delete offsetCache[scrollId];
+	delete offsetCache[scrollId];
 }

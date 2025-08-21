@@ -14,16 +14,16 @@ import s from './Spinner.scss';
  * @returns {HTMLElement}
  */
 export const Spinner = (props) => {
-    const spinnerCx = cx(s.spinnerContainer, (props && props.className) || '');
+	const spinnerCx = cx(s.spinnerContainer, (props && props.className) || '');
 
-    return div(
-        {
-            className: spinnerCx,
-            id: (props && props.id) || '',
-        },
-        div(
-            { className: s.spinnerInner },
-            span(props && props.message ? props.message : 'Loading...')
-        )
-    );
+	return div(
+		{
+			className: spinnerCx,
+			id: (props && props.id) || '',
+		},
+		div(
+			{ className: s.spinnerInner },
+			span(props && props.message ? props.message : 'Loading...')
+		)
+	);
 };

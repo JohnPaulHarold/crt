@@ -6,35 +6,35 @@
  * @returns {() => void} A function to stop watching.
  */
 export function watch(signallers, handler) {
-    let isScheduled = false;
-    /** @type {import('../../types.js').SignallerInstance[]} */
-    let changed = [];
+	let isScheduled = false;
+	/** @type {import('../../types.js').SignallerInstance[]} */
+	let changed = [];
 
-    /**
-     * @param {import('../../types.js').SignallerInstance} signaller
-     */
-    const callback = (signaller) => {
-        if (changed.indexOf(signaller) === -1) {
-            changed.push(signaller);
-        }
-        if (!isScheduled) {
-            isScheduled = true;
-            // Use setTimeout to batch all changes that occur in the same tick.
-            setTimeout(wake, 0);
-        }
-    };
+	/**
+	 * @param {import('../../types.js').SignallerInstance} signaller
+	 */
+	const callback = (signaller) => {
+		if (changed.indexOf(signaller) === -1) {
+			changed.push(signaller);
+		}
+		if (!isScheduled) {
+			isScheduled = true;
+			// Use setTimeout to batch all changes that occur in the same tick.
+			setTimeout(wake, 0);
+		}
+	};
 
-    const wake = () => {
-        const signalsToProcess = changed;
-        changed = [];
-        isScheduled = false;
-        handler(signalsToProcess);
-    };
+	const wake = () => {
+		const signalsToProcess = changed;
+		changed = [];
+		isScheduled = false;
+		handler(signalsToProcess);
+	};
 
-    signallers.forEach((s) => s.wait(callback));
+	signallers.forEach((s) => s.wait(callback));
 
-    /**
-     * The function returned to the caller to stop watching.
-     */
-    return () => signallers.forEach((s) => s.unwait(callback));
+	/**
+	 * The function returned to the caller to stop watching.
+	 */
+	return () => signallers.forEach((s) => s.unwait(callback));
 }

@@ -4,42 +4,42 @@
 @use '../styles/funcs' as fn;
 
 .nav {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: fn.px-to-rem(250px);
-    height: 100%;
-    transition: width 250ms ease-in-out;
-    z-index: 100;
-    padding-top: fn.px-to-rem(120px);
-    background: sc.adjust(col.$onyx, $alpha: -0.2);
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: fn.px-to-rem(250px);
+	height: 100%;
+	transition: width 250ms ease-in-out;
+	z-index: 100;
+	padding-top: fn.px-to-rem(120px);
+	background: sc.adjust(col.$onyx, $alpha: -0.2);
 }
 
 .nav:global(.collapsed) {
-    width: fn.px-to-rem(150px);
-    background-color: transparent;
+	width: fn.px-to-rem(150px);
+	background-color: transparent;
 }
 
 .nav ul li {
-    margin-bottom: fn.px-to-rem(24px);
+	margin-bottom: fn.px-to-rem(24px);
 }
 
 .nav a {
-    padding: fn.px-to-rem(12px);
-    width: 100%;
-    display: block;
-    box-sizing: border-box;
-    border-radius: 0 fn.px-to-rem(24px) fn.px-to-rem(24px) 0;
-    color: col.$white;
-    text-decoration: none;
-    font-weight: bold;
+	padding: fn.px-to-rem(12px);
+	width: 100%;
+	display: block;
+	box-sizing: border-box;
+	border-radius: 0 fn.px-to-rem(24px) fn.px-to-rem(24px) 0;
+	color: col.$white;
+	text-decoration: none;
+	font-weight: bold;
 }
 
 .nav a:focus {
-    color: col.$black;
-    background-color: col.$primary;
+	color: col.$black;
+	background-color: col.$primary;
 }
 
 .nav a:active {
-    background-color: col.$shadow;
+	background-color: col.$shadow;
 }

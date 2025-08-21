@@ -1,43 +1,43 @@
 /* onscreen logger */
 .event-log-contents {
-    padding: 1rem;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: rgba(0, 0, 0, 0.6);
-    color: greenyellow;
-    width: 800px;
-    height: 500px;
-    overflow: hidden;
-    z-index: 1000;
-    font-family: 'Courier New', Courier, monospace;
+	padding: 1rem;
+	position: fixed;
+	top: 0;
+	left: 0;
+	background-color: rgba(0, 0, 0, 0.6);
+	color: greenyellow;
+	width: 800px;
+	height: 500px;
+	overflow: hidden;
+	z-index: 1000;
+	font-family: 'Courier New', Courier, monospace;
 }
 
 .event-log-contents .log-string {
 }
 
 .event-log-contents .log-number {
-    color: white;
+	color: white;
 }
 
 /* reset */
 a,
 button {
-    border: none;
-    outline: none;
-    text-decoration: none;
+	border: none;
+	outline: none;
+	text-decoration: none;
 }
 
 ol,
 ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
+	margin: 0;
+	padding: 0;
+	list-style: none;
 }
 
 h1,
 h2 {
-    margin: 0;
-    padding: 0;
-    font-size: reset;
+	margin: 0;
+	padding: 0;
+	font-size: reset;
 }

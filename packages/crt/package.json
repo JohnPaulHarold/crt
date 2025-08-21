@@ -1,17 +1,17 @@
 {
-    "name": "crt",
-    "version": "0.1.0",
-    "description": "A simple UI library for resource-constrained TV devices.",
-    "type": "module",
-    "main": "dist/index.js",
-    "module": "dist/index.js",
-    "types": "dist/types/index.d.ts",
-    "files": [
-        "dist"
-    ],
-    "scripts": {
-        "build": "rm -rf dist && npm run typecheck && babel src --out-dir dist --copy-files",
-        "typecheck": "tsc -p tsconfig.json"
-    },
-    "license": "Apache-2.0"
+	"name": "crt",
+	"version": "0.1.0",
+	"description": "A simple UI library for resource-constrained TV devices.",
+	"type": "module",
+	"main": "dist/index.js",
+	"module": "dist/index.js",
+	"types": "dist/types/index.d.ts",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "rm -rf dist && npm run typecheck && babel src --out-dir dist --copy-files",
+		"typecheck": "tsc -p tsconfig.json"
+	},
+	"license": "Apache-2.0"
 }

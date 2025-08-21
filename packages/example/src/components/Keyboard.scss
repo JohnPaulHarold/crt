@@ -2,23 +2,23 @@
 @use '../styles/funcs' as fn;
 
 .keyboardKey {
-    width: fn.px-to-rem(72px);
-    height: fn.px-to-rem(72px);
-    margin-right: fn.px-to-rem(24px);
-    margin-bottom: fn.px-to-rem(24px);
-    background-color: col.$shadow;
-    color: col.$white;
-    border: none;
-    border-radius: fn.px-to-rem(3px);
-    font-size: 1.5rem;
-    padding: 0;
+	width: fn.px-to-rem(72px);
+	height: fn.px-to-rem(72px);
+	margin-right: fn.px-to-rem(24px);
+	margin-bottom: fn.px-to-rem(24px);
+	background-color: col.$shadow;
+	color: col.$white;
+	border: none;
+	border-radius: fn.px-to-rem(3px);
+	font-size: 1.5rem;
+	padding: 0;
 }
 
 .keyboardKey:global(.focused) {
-    color: col.$charcoal;
-    background-color: col.$white;
+	color: col.$charcoal;
+	background-color: col.$white;
 }
 
 .w2 {
-    width: fn.px-to-rem(168px);
+	width: fn.px-to-rem(168px);
 }

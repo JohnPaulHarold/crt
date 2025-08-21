@@ -2,5 +2,5 @@
  * @param {string} numStr
  */
 export function parseDecimal(numStr) {
-    return parseInt(numStr, 10);
+	return parseInt(numStr, 10);
 }

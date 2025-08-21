@@ -1,4 +1,4 @@
 {
-    "files": [],
-    "references": [{ "path": "packages/crt" }, { "path": "packages/example" }]
+	"files": [],
+	"references": [{ "path": "packages/crt" }, { "path": "packages/example" }]
 }

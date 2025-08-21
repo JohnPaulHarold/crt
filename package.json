@@ -1,38 +1,38 @@
 {
-    "name": "crt-monorepo",
-    "private": true,
-    "description": "A simple UI lib for low spec TV devices.",
-    "type": "module",
-    "workspaces": [
-        "packages/*"
-    ],
-    "scripts": {
-        "dev": "npm run build -w crt && npm run dev -w example",
-        "build": "npm run build -w crt",
-        "build:example": "npm run build -w example",
-        "nuke": "node scripts/nuke.js",
-        "test": "npm run build && vitest run",
-        "test:watch": "npm run build && vitest watch",
-        "coverage": "node scripts/coverage.js",
-        "lint:js": "eslint .",
-        "lint:prettier": "prettier --write .",
-        "typecheck": "tsc -b"
-    },
-    "devDependencies": {
-        "@babel/cli": "^7.24.7",
-        "@babel/core": "^7.24.7",
-        "@babel/preset-env": "^7.24.7",
-        "@eslint/js": "^9.5.0",
-        "@vitest/coverage-v8": "^3.2.4",
-        "eslint": "^9.5.0",
-        "globals": "^15.6.0",
-        "jsdom": "^24.1.0",
-        "prettier": "^3.3.2",
-        "typescript": "^5.4.5",
-        "vitest": "^3.2.4"
-    },
-    "engines": {
-        "npm": ">=10.9.2",
-        "node": ">=22.13.0"
-    }
+	"name": "crt-monorepo",
+	"private": true,
+	"description": "A simple UI lib for low spec TV devices.",
+	"type": "module",
+	"workspaces": [
+		"packages/*"
+	],
+	"scripts": {
+		"dev": "npm run build -w crt && npm run dev -w example",
+		"build": "npm run build -w crt",
+		"build:example": "npm run build -w example",
+		"nuke": "node scripts/nuke.js",
+		"test": "npm run build && vitest run",
+		"test:watch": "npm run build && vitest watch",
+		"coverage": "node scripts/coverage.js",
+		"lint:js": "eslint .",
+		"lint:prettier": "prettier --write .",
+		"typecheck": "tsc -b"
+	},
+	"devDependencies": {
+		"@babel/cli": "^7.24.7",
+		"@babel/core": "^7.24.7",
+		"@babel/preset-env": "^7.24.7",
+		"@eslint/js": "^9.5.0",
+		"@vitest/coverage-v8": "^3.2.4",
+		"eslint": "^9.5.0",
+		"globals": "^15.6.0",
+		"jsdom": "^24.1.0",
+		"prettier": "^3.3.2",
+		"typescript": "^5.4.5",
+		"vitest": "^3.2.4"
+	},
+	"engines": {
+		"npm": ">=10.9.2",
+		"node": ">=22.13.0"
+	}
 }

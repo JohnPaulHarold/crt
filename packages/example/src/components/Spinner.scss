@@ -1,19 +1,19 @@
 @use '../styles/colours' as col;
 
 .spinnerContainer {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    color: col.$white;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	color: col.$white;
 }
 
 .spinnerInner {
-    top: 50%;
-    position: relative;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: inline-block;
-    font-size: 5rem;
+	top: 50%;
+	position: relative;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	display: inline-block;
+	font-size: 5rem;
 }

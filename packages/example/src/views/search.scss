@@ -2,52 +2,52 @@
 @use '../styles/funcs' as fn;
 
 .searchInput {
-    display: block;
-    font-size: 5rem;
-    min-height: fn.px-to-rem(144px);
-    background-color: col.$onyx;
-    color: col.$white;
-    margin-bottom: fn.px-to-rem(24px);
+	display: block;
+	font-size: 5rem;
+	min-height: fn.px-to-rem(144px);
+	background-color: col.$onyx;
+	color: col.$white;
+	margin-bottom: fn.px-to-rem(24px);
 }
 
 .searchResults {
-    max-height: fn.px-to-rem(192px);
-    overflow: hidden;
+	max-height: fn.px-to-rem(192px);
+	overflow: hidden;
 }
 
 .searchNoResults {
-    font-size: 2rem;
+	font-size: 2rem;
 }
 
 .searchResult {
-    height: fn.px-to-rem(72px);
-    background-color: col.$slate;
-    margin-bottom: fn.px-to-rem(24px);
-    padding: 0 fn.px-to-rem(24px);
-    color: col.$white;
-    border-radius: fn.px-to-rem(6px);
-    font-size: 2rem;
+	height: fn.px-to-rem(72px);
+	background-color: col.$slate;
+	margin-bottom: fn.px-to-rem(24px);
+	padding: 0 fn.px-to-rem(24px);
+	color: col.$white;
+	border-radius: fn.px-to-rem(6px);
+	font-size: 2rem;
 }
 
 :global(.focused) > .searchResult {
-    background: col.$brandPurple;
+	background: col.$brandPurple;
 }
 
 .searchResultsSlider {
-    transition: transform 0.25s ease-in-out 0;
+	transition: transform 0.25s ease-in-out 0;
 }
 
 .searchResultsSlider > a {
-    display: block;
-    text-decoration: none;
+	display: block;
+	text-decoration: none;
 }
 
 .panels2 {
-    width: 100%;
+	width: 100%;
 }
 
 .panels2 > * {
-    width: 50%;
-    display: inline-block;
-    vertical-align: top;
+	width: 50%;
+	display: inline-block;
+	vertical-align: top;
 }

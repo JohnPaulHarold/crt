@@ -1,4 +1,4 @@
 export namespace animations {
-    let transforms: boolean;
-    let transitions: boolean;
+	let transforms: boolean;
+	let transitions: boolean;
 }

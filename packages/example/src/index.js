@@ -34,80 +34,80 @@ let currentView = null;
  * @param {import('./libs/router/router.js').HandlerArgs} options
  */
 function loadView(createView, options) {
-    if (currentView) {
-        currentView.detach();
-    }
+	if (currentView) {
+		currentView.detach();
+	}
 
-    currentView = createView({
-        id: options.pattern,
-        ...options,
-    });
+	currentView = createView({
+		id: options.pattern,
+		...options,
+	});
 
-    if (appOutlets.main) {
-        currentView.attach(appOutlets.main);
-    }
+	if (appOutlets.main) {
+		currentView.attach(appOutlets.main);
+	}
 }
 
 function App() {
-    appOutlets.main = main({ id: 'main-outlet' });
+	appOutlets.main = main({ id: 'main-outlet' });
 
-    const navItems = Object.keys(routes)
-        .filter((key) => routes[key].nav)
-        .map((key) => {
-            const route = routes[key];
-            const href = route.navId
-                ? route.pattern.replace('{id}', route.navId)
-                : route.pattern;
+	const navItems = Object.keys(routes)
+		.filter((key) => routes[key].nav)
+		.map((key) => {
+			const route = routes[key];
+			const href = route.navId
+				? route.pattern.replace('{id}', route.navId)
+				: route.pattern;
 
-            return {
-                id: `nav-${key.toLowerCase()}`,
-                title: route.title,
-                href: `#${href}`,
-            };
-        });
+			return {
+				id: `nav-${key.toLowerCase()}`,
+				title: route.title,
+				href: `#${href}`,
+			};
+		});
 
-    const mainNavView = createMainNavView({ id: 'main-nav', navItems });
+	const mainNavView = createMainNavView({ id: 'main-nav', navItems });
 
-    // Render the view and attach it to both the DOM and its controller logic
-    appOutlets.nav = mainNavView.render();
-    mainNavView.attach(appOutlets.nav);
+	// Render the view and attach it to both the DOM and its controller logic
+	appOutlets.nav = mainNavView.render();
+	mainNavView.attach(appOutlets.nav);
 
-    return div({ id: 'app-container', className: s.container }, [
-        appOutlets.nav,
-        appOutlets.main,
-    ]);
+	return div({ id: 'app-container', className: s.container }, [
+		appOutlets.nav,
+		appOutlets.main,
+	]);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const root = document.getElementById('root');
-    if (!root) {
-        logr.error('Root element #root not found');
-        return;
-    }
+	const root = document.getElementById('root');
+	if (!root) {
+		logr.error('Root element #root not found');
+		return;
+	}
 
-    const app = App();
-    root.appendChild(app);
+	const app = App();
+	root.appendChild(app);
 
-    historyRouter.registerRoute(routes.HOME, (opts) =>
-        loadView(createHomeView, opts)
-    );
-    historyRouter.registerRoute(routes.SEARCH, (opts) =>
-        loadView(createSearchView, opts)
-    );
-    historyRouter.registerRoute(routes.SHOW, (opts) =>
-        loadView(createShowView, opts)
-    );
-    historyRouter.registerRoute(routes.DIFF, (opts) =>
-        loadView(createDiffView, opts)
-    );
-    historyRouter.registerRoute(routes.VLIST, (opts) =>
-        loadView(createVListView, opts)
-    );
-    historyRouter.registerRoute(routes.PLAYER, (opts) =>
-        loadView(createPlayerView, opts)
-    );
+	historyRouter.registerRoute(routes.HOME, (opts) =>
+		loadView(createHomeView, opts)
+	);
+	historyRouter.registerRoute(routes.SEARCH, (opts) =>
+		loadView(createSearchView, opts)
+	);
+	historyRouter.registerRoute(routes.SHOW, (opts) =>
+		loadView(createShowView, opts)
+	);
+	historyRouter.registerRoute(routes.DIFF, (opts) =>
+		loadView(createDiffView, opts)
+	);
+	historyRouter.registerRoute(routes.VLIST, (opts) =>
+		loadView(createVListView, opts)
+	);
+	historyRouter.registerRoute(routes.PLAYER, (opts) =>
+		loadView(createPlayerView, opts)
+	);
 
-    historyRouter.config('/', 'hash');
+	historyRouter.config('/', 'hash');
 
-    navigationService.init();
+	navigationService.init();
 });

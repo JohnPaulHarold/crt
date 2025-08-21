@@ -23,17 +23,17 @@ const logr = loga.create('h');
  * (which corresponds to the `htmlFor` property).
  */
 const attributeExceptions = [
-    // 'role' was previously here, but it's a direct property on HTMLElement,
-    // so it's correctly handled by the `propName in el` check.
-    'd',
-    'r',
-    'cx',
-    'cy',
-    'width',
-    'height',
-    'viewBox',
-    'fill',
-    'for',
+	// 'role' was previously here, but it's a direct property on HTMLElement,
+	// so it's correctly handled by the `propName in el` check.
+	'd',
+	'r',
+	'cx',
+	'cy',
+	'width',
+	'height',
+	'viewBox',
+	'fill',
+	'for',
 ];
 
 /**
@@ -41,8 +41,8 @@ const attributeExceptions = [
  * @param {string} text
  */
 function appendText(el, text) {
-    const textNode = document.createTextNode(text);
-    el.appendChild(textNode);
+	const textNode = document.createTextNode(text);
+	el.appendChild(textNode);
 }
 
 /**
@@ -53,15 +53,15 @@ function appendText(el, text) {
  *   if necessary, though the primary expectation is `string | Element`.
  */
 function appendArray(el, children) {
-    children.forEach((child) => {
-        if (Array.isArray(child)) {
-            appendArray(el, child);
-        } else if (child instanceof window.Element) {
-            el.appendChild(child);
-        } else if (typeof child === 'string') {
-            appendText(el, child);
-        }
-    });
+	children.forEach((child) => {
+		if (Array.isArray(child)) {
+			appendArray(el, child);
+		} else if (child instanceof window.Element) {
+			el.appendChild(child);
+		} else if (typeof child === 'string') {
+			appendText(el, child);
+		}
+	});
 }
 
 /**
@@ -70,21 +70,21 @@ function appendArray(el, children) {
  * @returns
  */
 function setStyles(el, styles) {
-    if (!styles) {
-        el.removeAttribute('styles');
-        return;
-    }
+	if (!styles) {
+		el.removeAttribute('styles');
+		return;
+	}
 
-    Object.keys(styles).forEach((styleName) => {
-        if (styleName in el.style) {
-            // @ts-ignore see https://github.com/microsoft/TypeScript/issues/17827
-            el.style[styleName] = styles[styleName];
-        } else {
-            logr.warn(
-                `[setStyles] ${styleName} is not a valid style for a <${el.tagName.toLowerCase()}>`
-            );
-        }
-    });
+	Object.keys(styles).forEach((styleName) => {
+		if (styleName in el.style) {
+			// @ts-ignore see https://github.com/microsoft/TypeScript/issues/17827
+			el.style[styleName] = styles[styleName];
+		} else {
+			logr.warn(
+				`[setStyles] ${styleName} is not a valid style for a <${el.tagName.toLowerCase()}>`
+			);
+		}
+	});
 }
 
 /**
@@ -92,9 +92,9 @@ function setStyles(el, styles) {
  * @param {Record<string, string>} dataset
  */
 function setData(el, dataset) {
-    Object.keys(dataset).forEach((datakey) => {
-        el.dataset[datakey] = dataset[datakey];
-    });
+	Object.keys(dataset).forEach((datakey) => {
+		el.dataset[datakey] = dataset[datakey];
+	});
 }
 
 /**
@@ -103,11 +103,11 @@ function setData(el, dataset) {
  * @param {Record<string, string | number | boolean | undefined>} aria The object of ARIA attributes.
  */
 function setAria(el, aria) {
-    Object.keys(aria).forEach((key) => {
-        const value = aria[key];
-        // Set the attribute only if the value is not null or undefined.
-        if (value != null) el.setAttribute(`aria-${key}`, String(value));
-    });
+	Object.keys(aria).forEach((key) => {
+		const value = aria[key];
+		// Set the attribute only if the value is not null or undefined.
+		if (value != null) el.setAttribute(`aria-${key}`, String(value));
+	});
 }
 
 /**
@@ -123,49 +123,49 @@ function setAria(el, aria) {
  * @example h('div', { id: 'foo' }, 'Hello', h('span', 'World'))
  */
 export function h(type, textOrPropsOrChild, ...otherChildren) {
-    const el = document.createElement(type);
+	const el = document.createElement(type);
 
-    if (Array.isArray(textOrPropsOrChild)) {
-        appendArray(el, textOrPropsOrChild);
-    } else if (textOrPropsOrChild instanceof window.Element) {
-        el.appendChild(textOrPropsOrChild);
-    } else if (typeof textOrPropsOrChild === 'string') {
-        appendText(el, textOrPropsOrChild);
-    } else if (
-        typeof textOrPropsOrChild === 'object' &&
-        textOrPropsOrChild !== null && // Ensure it's not null
-        !Array.isArray(textOrPropsOrChild) // Ensure it's not an array (already handled)
-    ) {
-        Object.keys(textOrPropsOrChild).forEach((propName) => {
-            const value = textOrPropsOrChild[propName];
+	if (Array.isArray(textOrPropsOrChild)) {
+		appendArray(el, textOrPropsOrChild);
+	} else if (textOrPropsOrChild instanceof window.Element) {
+		el.appendChild(textOrPropsOrChild);
+	} else if (typeof textOrPropsOrChild === 'string') {
+		appendText(el, textOrPropsOrChild);
+	} else if (
+		typeof textOrPropsOrChild === 'object' &&
+		textOrPropsOrChild !== null && // Ensure it's not null
+		!Array.isArray(textOrPropsOrChild) // Ensure it's not an array (already handled)
+	) {
+		Object.keys(textOrPropsOrChild).forEach((propName) => {
+			const value = textOrPropsOrChild[propName];
 
-            if (value == null) return; // Skip null and undefined values for cleaner output
+			if (value == null) return; // Skip null and undefined values for cleaner output
 
-            if (propName === 'style') {
-                setStyles(el, value);
-            } else if (propName === 'dataset') {
-                setData(el, value);
-            } else if (propName === 'aria') {
-                setAria(el, value);
-            } else if (propName in el) {
-                // It's a known property on the element, so set it directly.
-                // @ts-ignore - We are intentionally setting a dynamic property.
-                el[propName] = value;
-            } else if (attributeExceptions.includes(propName)) {
-                // It's a known exception (like 'role'), so use setAttribute.
-                el.setAttribute(propName, String(value));
-            } else {
-                logr.warn(`${propName} is not a valid property of a <${type}>`);
-            }
-        });
-    }
+			if (propName === 'style') {
+				setStyles(el, value);
+			} else if (propName === 'dataset') {
+				setData(el, value);
+			} else if (propName === 'aria') {
+				setAria(el, value);
+			} else if (propName in el) {
+				// It's a known property on the element, so set it directly.
+				// @ts-ignore - We are intentionally setting a dynamic property.
+				el[propName] = value;
+			} else if (attributeExceptions.includes(propName)) {
+				// It's a known exception (like 'role'), so use setAttribute.
+				el.setAttribute(propName, String(value));
+			} else {
+				logr.warn(`${propName} is not a valid property of a <${type}>`);
+			}
+		});
+	}
 
-    // otherChildren is an array of ChildInput elements.
-    // appendArray expects a single array, so we pass otherChildren directly.
-    // It will iterate through each ChildInput in otherChildren.
-    if (otherChildren.length > 0) appendArray(el, otherChildren);
+	// otherChildren is an array of ChildInput elements.
+	// appendArray expects a single array, so we pass otherChildren directly.
+	// It will iterate through each ChildInput in otherChildren.
+	if (otherChildren.length > 0) appendArray(el, otherChildren);
 
-    return el;
+	return el;
 }
 
 // Kept for compatibility

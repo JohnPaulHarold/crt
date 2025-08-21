@@ -5,12 +5,12 @@
  * @returns {number} The value in rems.
  */
 export function pxToRem(px, baseFontSize = 10) {
-    if (
-        typeof px !== 'number' ||
-        typeof baseFontSize !== 'number' ||
-        baseFontSize === 0
-    ) {
-        return 0;
-    }
-    return px / baseFontSize;
+	if (
+		typeof px !== 'number' ||
+		typeof baseFontSize !== 'number' ||
+		baseFontSize === 0
+	) {
+		return 0;
+	}
+	return px / baseFontSize;
 }

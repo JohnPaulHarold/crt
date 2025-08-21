@@ -28,21 +28,21 @@ import s from './Keyboard.scss';
  * @returns {HTMLElement}
  */
 const KeyButton = (props) => {
-    const buttonCx = cx(
-        'keyboard-key',
-        s.keyboardKey,
-        typeof props.width === 'number' && s['w' + props.width]
-    );
+	const buttonCx = cx(
+		'keyboard-key',
+		s.keyboardKey,
+		typeof props.width === 'number' && s['w' + props.width]
+	);
 
-    return Button(
-        {
-            className: buttonCx,
-            dataset: {
-                keyValue: props.value,
-            },
-        },
-        props.display
-    );
+	return Button(
+		{
+			className: buttonCx,
+			dataset: {
+				keyValue: props.value,
+			},
+		},
+		props.display
+	);
 };
 
 /**
@@ -51,13 +51,13 @@ const KeyButton = (props) => {
  * @returns {HTMLElement}
  */
 export const Keyboard = (props) => {
-    return div(
-        { className: s.keyboard },
-        props.keyMap.map((row) =>
-            div(
-                { className: s.keyboardRow },
-                row.map((key) => KeyButton(key))
-            )
-        )
-    );
+	return div(
+		{ className: s.keyboard },
+		props.keyMap.map((row) =>
+			div(
+				{ className: s.keyboardRow },
+				row.map((key) => KeyButton(key))
+			)
+		)
+	);
 };

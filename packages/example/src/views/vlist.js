@@ -1,17 +1,17 @@
 import {
-    createBaseView,
-    Direction,
-    getBaseFontSize,
-    removeElement,
-    transformProp,
-    pxToRem,
+	createBaseView,
+	Direction,
+	getBaseFontSize,
+	removeElement,
+	transformProp,
+	pxToRem,
 } from 'crt';
 
 import { a, div, p, section } from '../h.js';
 
 import {
-    NavigationEvents,
-    navigationService,
+	NavigationEvents,
+	navigationService,
 } from '../services/navigationService.js';
 import { parseDecimal } from '../utils/math/parseDecimal.js';
 
@@ -21,10 +21,10 @@ import s from './vlist.scss';
  * @param {{id: string, className: string}} props
  */
 function VirtualList(props) {
-    return section({
-        className: 'virtual-list' + ' ' + props.className,
-        id: props.id,
-    });
+	return section({
+		className: 'virtual-list' + ' ' + props.className,
+		id: props.id,
+	});
 }
 
 /**
@@ -39,7 +39,7 @@ function VirtualList(props) {
  * @returns {string}
  */
 function dec2bin(dec) {
-    return (dec >>> 0).toString(2);
+	return (dec >>> 0).toString(2);
 }
 
 /**
@@ -47,7 +47,7 @@ function dec2bin(dec) {
  * @returns {string}
  */
 function dec2hex(dec) {
-    return (dec >>> 0).toString(16);
+	return (dec >>> 0).toString(16);
 }
 
 /**
@@ -55,18 +55,18 @@ function dec2hex(dec) {
  * @returns {VListItem[]}
  */
 function buildBigData(bigNumber) {
-    /** @type {VListItem[]} */
-    const bigData = [];
+	/** @type {VListItem[]} */
+	const bigData = [];
 
-    for (let i = 0; i < bigNumber; i++) {
-        bigData.push({
-            d: i,
-            b: dec2bin(i),
-            h: dec2hex(i),
-        });
-    }
+	for (let i = 0; i < bigNumber; i++) {
+		bigData.push({
+			d: i,
+			b: dec2bin(i),
+			h: dec2hex(i),
+		});
+	}
 
-    return bigData;
+	return bigData;
 }
 
 /**
@@ -101,123 +101,121 @@ function buildBigData(bigNumber) {
  * @returns {VLInstance}
  */
 function createVL(options) {
-    /** @type {VLInstance} */
-    const vl = {
-        data: options.data,
-        visibleEls: options.visibleEls || 10,
-        bufferAmount: options.bufferAmount || 5,
-        container: options.container,
-        containerEl: null,
-        renderRow: options.renderRow,
-        sliderEl: document.createElement('div'),
-        elHeight: 0,
-        paddingTop: 0,
-        window: [],
+	/** @type {VLInstance} */
+	const vl = {
+		data: options.data,
+		visibleEls: options.visibleEls || 10,
+		bufferAmount: options.bufferAmount || 5,
+		container: options.container,
+		containerEl: null,
+		renderRow: options.renderRow,
+		sliderEl: document.createElement('div'),
+		elHeight: 0,
+		paddingTop: 0,
+		window: [],
 
-        /**
-         * @this {VLInstance}
-         */
-        init() {
-            this.containerEl = document.querySelector(this.container);
-            this.window = [0, this.visibleEls - 1];
+		/**
+		 * @this {VLInstance}
+		 */
+		init() {
+			this.containerEl = document.querySelector(this.container);
+			this.window = [0, this.visibleEls - 1];
 
-            const slice = this.getNextData(0, this.visibleEls);
+			const slice = this.getNextData(0, this.visibleEls);
 
-            slice.forEach((bd) => {
-                const el = this.renderRow(bd);
-                el.style.height = this.elHeight + 'rem';
-                this.sliderEl.appendChild(el);
-            });
+			slice.forEach((bd) => {
+				const el = this.renderRow(bd);
+				el.style.height = this.elHeight + 'rem';
+				this.sliderEl.appendChild(el);
+			});
 
-            if (this.containerEl) {
-                this.containerEl.appendChild(this.sliderEl);
-            }
-        },
+			if (this.containerEl) {
+				this.containerEl.appendChild(this.sliderEl);
+			}
+		},
 
-        /**
-         * @this {VLInstance}
-         */
-        getNextData(start, end) {
-            return this.data.slice(start, end);
-        },
+		/**
+		 * @this {VLInstance}
+		 */
+		getNextData(start, end) {
+			return this.data.slice(start, end);
+		},
 
-        /**
-         * @this {VLInstance}
-         */
-        updateList(direction, position) {
-            const lowerBound = this.window[0];
-            const upperBound = this.window[1];
+		/**
+		 * @this {VLInstance}
+		 */
+		updateList(direction, position) {
+			const lowerBound = this.window[0];
+			const upperBound = this.window[1];
 
-            // @ts-ignore
-            this.sliderEl.style[transformProp] =
-                'translateY(' + -(position * this.elHeight) + 'rem)';
+			// @ts-ignore
+			this.sliderEl.style[transformProp] =
+				'translateY(' + -(position * this.elHeight) + 'rem)';
 
-            if (
-                direction === Direction.DOWN &&
-                position >= upperBound - this.bufferAmount
-            ) {
-                const frag = document.createDocumentFragment();
-                const slice = this.getNextData(
-                    upperBound + 1,
-                    upperBound + 1 + this.visibleEls
-                );
-                slice.forEach((bd) => {
-                    const el = this.renderRow(bd);
-                    el.style.height = this.elHeight + 'rem';
-                    frag.appendChild(el);
-                });
-                this.sliderEl.appendChild(frag);
-                this.window[1] = this.window[1] + this.visibleEls;
-            }
+			if (
+				direction === Direction.DOWN &&
+				position >= upperBound - this.bufferAmount
+			) {
+				const frag = document.createDocumentFragment();
+				const slice = this.getNextData(
+					upperBound + 1,
+					upperBound + 1 + this.visibleEls
+				);
+				slice.forEach((bd) => {
+					const el = this.renderRow(bd);
+					el.style.height = this.elHeight + 'rem';
+					frag.appendChild(el);
+				});
+				this.sliderEl.appendChild(frag);
+				this.window[1] = this.window[1] + this.visibleEls;
+			}
 
-            if (
-                direction === Direction.DOWN &&
-                position > lowerBound + this.visibleEls + this.bufferAmount
-            ) {
-                let i = this.visibleEls - 1;
-                while (i >= 0) {
-                    const el = this.sliderEl.children[i];
-                    removeElement(el);
-                    i--;
-                }
+			if (
+				direction === Direction.DOWN &&
+				position > lowerBound + this.visibleEls + this.bufferAmount
+			) {
+				let i = this.visibleEls - 1;
+				while (i >= 0) {
+					const el = this.sliderEl.children[i];
+					removeElement(el);
+					i--;
+				}
 
-                this.paddingTop =
-                    this.paddingTop + this.visibleEls * this.elHeight;
-                this.sliderEl.style.paddingTop = this.paddingTop + 'rem';
-                this.window[0] = this.window[0] + this.visibleEls;
-            }
+				this.paddingTop = this.paddingTop + this.visibleEls * this.elHeight;
+				this.sliderEl.style.paddingTop = this.paddingTop + 'rem';
+				this.window[0] = this.window[0] + this.visibleEls;
+			}
 
-            if (
-                direction === Direction.UP &&
-                position <= lowerBound + this.bufferAmount
-            ) {
-                const frag = document.createDocumentFragment();
-                const slice = this.getNextData(
-                    lowerBound - this.visibleEls,
-                    lowerBound
-                );
+			if (
+				direction === Direction.UP &&
+				position <= lowerBound + this.bufferAmount
+			) {
+				const frag = document.createDocumentFragment();
+				const slice = this.getNextData(
+					lowerBound - this.visibleEls,
+					lowerBound
+				);
 
-                slice.forEach((bd) => {
-                    const el = this.renderRow(bd);
-                    el.style.height = this.elHeight + 'rem';
-                    frag.appendChild(el);
-                });
+				slice.forEach((bd) => {
+					const el = this.renderRow(bd);
+					el.style.height = this.elHeight + 'rem';
+					frag.appendChild(el);
+				});
 
-                this.sliderEl.prepend(frag);
+				this.sliderEl.prepend(frag);
 
-                this.paddingTop =
-                    this.paddingTop - slice.length * this.elHeight;
-                this.sliderEl.style.paddingTop = this.paddingTop + 'rem';
-                this.window[0] = Math.max(this.window[0] - this.visibleEls, 0);
-            }
-        },
-    };
+				this.paddingTop = this.paddingTop - slice.length * this.elHeight;
+				this.sliderEl.style.paddingTop = this.paddingTop + 'rem';
+				this.window[0] = Math.max(this.window[0] - this.visibleEls, 0);
+			}
+		},
+	};
 
-    vl.sliderEl.style.transition = 'transform 250ms ease';
-    const baseFontSize = getBaseFontSize();
-    vl.elHeight = pxToRem(options.elHeight, baseFontSize);
+	vl.sliderEl.style.transition = 'transform 250ms ease';
+	const baseFontSize = getBaseFontSize();
+	vl.elHeight = pxToRem(options.elHeight, baseFontSize);
 
-    return vl;
+	return vl;
 }
 
 /**
@@ -254,86 +252,86 @@ function createVL(options) {
  * @returns {VListViewInstance}
  */
 export function createVListView(options) {
-    const base = createBaseView(options);
+	const base = createBaseView(options);
 
-    /** @type {VListViewInstance} */
-    const vListView = {
-        ...base,
-        bigData: buildBigData(600),
-        containerId: 'my-vlist',
-        vl: null,
-        boundHandleMove: null,
+	/** @type {VListViewInstance} */
+	const vListView = {
+		...base,
+		bigData: buildBigData(600),
+		containerId: 'my-vlist',
+		vl: null,
+		boundHandleMove: null,
 
-        destructor: function () {
-            if (this.boundHandleMove) {
-                navigationService
-                    .getBus()
-                    .off(NavigationEvents.MOVE, this.boundHandleMove);
-            }
-        },
+		destructor: function () {
+			if (this.boundHandleMove) {
+				navigationService
+					.getBus()
+					.off(NavigationEvents.MOVE, this.boundHandleMove);
+			}
+		},
 
-        viewDidLoad: function () {
-            const vlOpts = {
-                container: '#' + this.containerId,
-                data: this.bigData,
-                renderRow: this.renderRow.bind(this),
-                elHeight: 220,
-                bufferAmount: 5,
-                visibleEls: 10,
-            };
+		viewDidLoad: function () {
+			const vlOpts = {
+				container: '#' + this.containerId,
+				data: this.bigData,
+				renderRow: this.renderRow.bind(this),
+				elHeight: 220,
+				bufferAmount: 5,
+				visibleEls: 10,
+			};
 
-            this.vl = createVL(vlOpts);
-            this.vl.init();
+			this.vl = createVL(vlOpts);
+			this.vl.init();
 
-            this.boundHandleMove = this.handleMove.bind(this);
-            navigationService
-                .getBus()
-                .on(NavigationEvents.MOVE, this.boundHandleMove);
-        },
+			this.boundHandleMove = this.handleMove.bind(this);
+			navigationService
+				.getBus()
+				.on(NavigationEvents.MOVE, this.boundHandleMove);
+		},
 
-        handleMove: function (event) {
-            /** @type {MoveEventPayload} */
-            const moveEvent = event;
+		handleMove: function (event) {
+			/** @type {MoveEventPayload} */
+			const moveEvent = event;
 
-            if (
-                this.vl &&
-                moveEvent.detail &&
-                moveEvent.detail.nextContainer &&
-                moveEvent.detail.nextContainer.id === this.containerId
-            ) {
-                const direction = moveEvent.detail.direction;
-                const position = parseDecimal(
-                    moveEvent.detail.nextElement.dataset.vlIndex || '0'
-                );
+			if (
+				this.vl &&
+				moveEvent.detail &&
+				moveEvent.detail.nextContainer &&
+				moveEvent.detail.nextContainer.id === this.containerId
+			) {
+				const direction = moveEvent.detail.direction;
+				const position = parseDecimal(
+					moveEvent.detail.nextElement.dataset.vlIndex || '0'
+				);
 
-                this.vl.updateList(direction, position);
-            }
-        },
+				this.vl.updateList(direction, position);
+			}
+		},
 
-        renderRow: function (bd) {
-            const indexOf = this.bigData.indexOf(bd);
+		renderRow: function (bd) {
+			const indexOf = this.bigData.indexOf(bd);
 
-            return a(
-                {
-                    className: s.data,
-                    dataset: { vlIndex: indexOf },
-                },
-                div(
-                    {},
-                    p({}, 'Decimal: ' + bd.d),
-                    p({}, 'Binary: ' + bd.b),
-                    p({}, 'Hex: ' + bd.h)
-                )
-            );
-        },
+			return a(
+				{
+					className: s.data,
+					dataset: { vlIndex: indexOf },
+				},
+				div(
+					{},
+					p({}, 'Decimal: ' + bd.d),
+					p({}, 'Binary: ' + bd.b),
+					p({}, 'Hex: ' + bd.h)
+				)
+			);
+		},
 
-        render: function () {
-            return div(
-                { className: 'view', id: this.id },
-                VirtualList({ id: 'my-vlist', className: 'my-vlist' })
-            );
-        },
-    };
+		render: function () {
+			return div(
+				{ className: 'view', id: this.id },
+				VirtualList({ id: 'my-vlist', className: 'my-vlist' })
+			);
+		},
+	};
 
-    return vListView;
+	return vListView;
 }

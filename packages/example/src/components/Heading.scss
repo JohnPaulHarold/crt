@@ -1,17 +1,17 @@
 @use '../styles/colours' as col;
 
 .primary {
-    color: col.$white;
+	color: col.$white;
 }
 .secondary {
-    color: col.$neutral;
+	color: col.$neutral;
 }
 .highlight {
-    color: col.$primary;
+	color: col.$primary;
 }
 .disabled {
-    color: col.$dust;
+	color: col.$dust;
 }
 .error {
-    color: col.$error;
+	color: col.$error;
 }

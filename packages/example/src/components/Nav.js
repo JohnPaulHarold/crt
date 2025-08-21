@@ -21,25 +21,25 @@ import s from './Nav.scss';
  * @returns {HTMLElement}
  */
 export function Nav({ id, navItems, blockExit, backStop }) {
-    const dataset = {};
-    if (blockExit) dataset.blockExit = blockExit;
-    if (backStop) dataset.backStop = 'true';
+	const dataset = {};
+	if (blockExit) dataset.blockExit = blockExit;
+	if (backStop) dataset.backStop = 'true';
 
-    const props = Object.assign(
-        {
-            id,
-            className: s.nav,
-        },
-        Object.keys(dataset).length && { dataset }
-    );
+	const props = Object.assign(
+		{
+			id,
+			className: s.nav,
+		},
+		Object.keys(dataset).length && { dataset }
+	);
 
-    return nav(
-        props,
-        ul(
-            {},
-            navItems.map((item) =>
-                li({}, a({ href: item.href, id: item.id }, item.title))
-            )
-        )
-    );
+	return nav(
+		props,
+		ul(
+			{},
+			navItems.map((item) =>
+				li({}, a({ href: item.href, id: item.id }, item.title))
+			)
+		)
+	);
 }

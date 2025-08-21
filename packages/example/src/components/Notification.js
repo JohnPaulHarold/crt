@@ -14,12 +14,12 @@ import s from './Notification.scss';
  * @returns {HTMLElement}
  */
 export function Notification(props) {
-    const cxNotification = cx(s.notification, props.className || '');
+	const cxNotification = cx(s.notification, props.className || '');
 
-    return div(
-        {
-            className: cxNotification,
-        },
-        props.message
-    );
+	return div(
+		{
+			className: cxNotification,
+		},
+		props.message
+	);
 }
