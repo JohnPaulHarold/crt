@@ -9,6 +9,20 @@ This monorepo is managed using npm workspaces and contains the following package
 - `packages/crt`: A lightweight UI library for creating DOM elements and managing views. It is designed with low-spec set-top boxes and older TVs in mind.
 - `packages/example`: A sample single-page application that demonstrates how to use the `crt` library. It includes views for various concepts like DOM diffing, forms, and virtual lists.
 
+## Example Application
+
+The `packages/example` application is a functional single-page app that serves as a living demonstration of the `crt` library's features. It showcases various patterns and components for building TV-first user interfaces.
+
+Key features demonstrated:
+
+- **Reactive UI Pattern**: The **Player**, **Search**, and **Diff** views are built using the new declarative reactive pattern (`createSignaller`, `watch`, `diff`), showing how to build dynamic UIs that automatically update when state changes.
+- **Spatial Navigation**: A robust `navigationService` that wraps `@bbc/tv-lrud-spatial` to provide keyboard-based 2D navigation, a core requirement for TV applications.
+- **Component-Based Architecture**: Reusable components like `Carousel`, `Tile`, `Keyboard`, and `Dialog` are used to build complex views.
+- **DOM Diffing**: The **Diff** view provides a clear example of the VDOM diffing engine in action, efficiently updating the DOM to reflect state changes.
+- **Virtual List**: The **VList** view demonstrates how to render long, scrollable lists of data performantly by only rendering the visible items.
+- **Routing**: A simple but effective hash-based router (`historyRouter`) manages different views and URL states.
+- **Lifecycle Management**: Views demonstrate `viewDidLoad` and `destructor` lifecycle methods for setting up and tearing down event listeners and other resources.
+
 ## tech
 
 This repo is trying to be light with regards JavaScript, so with that in mind it's deliberatly old fashioned looking in places. The thinking is that if you're writing code for devices that are 8+ years old using browser tech that might be even older, perhaps also write in idioms contemporary to it. Until the hardware landscape changes and progresses, most of the code is written like it's ES5, with some occasional ES6 thrown in and a light Babel pass at the end. This is normally the point where most developers jump ship.

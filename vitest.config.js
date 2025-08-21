@@ -2,13 +2,22 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
     test: {
-        // Use jsdom to simulate a browser environment for tests
-        environment: 'jsdom',
-        // A glob pattern to find all test files in all packages
-        include: ['packages/**/*.{test,spec}.{js,ts}'],
-        // Clear cache before running tests to avoid stale file issues
-        clearCache: {
-            onStart: true,
+        coverage: {
+            // Using 'v8' is recommended for projects that don't require complex
+            // source map transformations and is generally faster.
+            provider: 'v8',
+            reporter: ['text', 'json', 'html'],
+
+            // This is the key part: exclude build artifacts, dependencies,
+            // and the test files themselves from the coverage report.
+            exclude: [
+                '**/dist/**',
+                '**/node_modules/**',
+                '**/*.test.js',
+                '**/*.d.ts',
+                '**/*.config.js',
+                '**/rollup.*.{js|mjs}',
+            ],
         },
     },
 });

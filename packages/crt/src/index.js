@@ -17,6 +17,8 @@ export { createBaseView } from './createBaseView.js';
 
 // Reactive
 export { createReactive } from './utils/object/createReactive.js';
+export { createSignaller } from './utils/reactive/createSignaller.js';
+export { watch } from './utils/reactive/watch.js';
 
 // Utils - DOM
 export { $dataGet } from './utils/dom/$dataGet.js';

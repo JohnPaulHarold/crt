@@ -1,0 +1,58 @@
+.playerContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.player {
+    width: 800px;
+    padding: 20px;
+    background: #333;
+    border-radius: 8px;
+}
+
+.progress {
+    height: 24px;
+    background: #555;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.progressBar {
+    height: 100%;
+    background: #2ecc71;
+    transition: width 0.2s linear;
+}
+
+.controls {
+    text-align: center;
+}
+
+.controls button {
+    font-size: 1.8rem;
+    padding: 12px 24px;
+    margin: 0 15px;
+    border: 3px solid transparent;
+    border-radius: 8px;
+    background-color: #4f4f4f;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.controls button:global(.focused),
+.controls button:focus {
+    border-color: #ffde2b;
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(255, 222, 43, 0.5);
+}
+
+.subtitles {
+    margin-top: 20px;
+    color: #aaa;
+    text-align: center;
+    font-family: monospace;
+    min-height: 1.5em;
+}

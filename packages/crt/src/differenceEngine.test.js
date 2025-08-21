@@ -1,8 +1,7 @@
 /**
  * @vitest-environment jsdom
  */
-
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import { diff, stringToHTML } from './differenceEngine.js';
 
 describe('differenceEngine', () => {
@@ -29,10 +28,10 @@ describe('differenceEngine', () => {
             </div>
         `);
 
-        diff(template, existing);
+        diff(template.cloneNode(true), existing);
 
         expect(existing).toEqual(template);
-        expect(existing.querySelector('.x')).toBeTruthy();
+        expect(existing.classList.contains('x')).toBe(true);
         ['a', 'b', 'c', 'd'].forEach((id) => {
             expect(existing.querySelector(`li#${id}`)).toBeTruthy();
         });
@@ -61,7 +60,7 @@ describe('differenceEngine', () => {
             </div>
         `);
 
-        diff(template, existing);
+        diff(template.cloneNode(true), existing);
 
         expect(existing).toEqual(template);
         expect(existing.querySelector('.x')).toBeFalsy();
@@ -79,7 +78,7 @@ describe('differenceEngine', () => {
             <div class="x y"></div>
         `);
 
-        diff(template, existing);
+        diff(template.cloneNode(true), existing);
 
         expect(existing).toEqual(template);
         expect(existing.querySelector('.z')).toBeFalsy();
@@ -94,10 +93,10 @@ describe('differenceEngine', () => {
             <div class="x y z"></div>
         `);
 
-        diff(template, existing);
+        diff(template.cloneNode(true), existing);
 
         expect(existing).toEqual(template);
-        expect(existing.querySelector('.z')).toBeTruthy();
+        expect(existing.classList.contains('z')).toBe(true);
     });
 
     test('it adds nodes', () => {
@@ -122,7 +121,7 @@ describe('differenceEngine', () => {
             </div>
         `);
 
-        diff(template, existing);
+        diff(template.cloneNode(true), existing);
 
         expect(existing.querySelector('.image')).toBeTruthy();
         expect(existing).toEqual(template);
@@ -150,7 +149,7 @@ describe('differenceEngine', () => {
             </div>
         `);
 
-        diff(template, existing);
+        diff(template.cloneNode(true), existing);
 
         expect(existing).toEqual(template);
         expect(existing.querySelector('.image')).toBeFalsy();
@@ -172,8 +171,96 @@ describe('differenceEngine', () => {
                 <script>document.write("x")</script>
             </div>
         `);
-        diff(template, existing);
+        diff(template.cloneNode(true), existing);
         expect(existing).not.toEqual(template);
         expect(existing.getElementsByTagName('script')).toHaveLength(0);
+    });
+});
+
+describe('differenceEngine - advanced diffing', () => {
+    test('it updates text content', () => {
+        const existing = stringToHTML(`<p>Old text</p>`);
+        const template = stringToHTML(`<p>New text</p>`);
+        diff(template.cloneNode(true), existing);
+        expect(existing.textContent).toBe('New text');
+    });
+
+    test('it replaces a node if the tag name is different', () => {
+        const parent = document.createElement('div');
+        const existing = stringToHTML(`<span>Old node</span>`);
+        parent.appendChild(existing);
+        const template = stringToHTML(`<p>New node</p>`);
+
+        diff(template, existing); // Pass the template directly, it will be moved
+
+        expect(parent.innerHTML).toBe('<p>New node</p>');
+        expect(parent.children[0].tagName).toBe('P');
+    });
+
+    test('it preserves focus on an element after a diff', () => {
+        const parent = document.createElement('div');
+        const existing = stringToHTML(`
+            <div>
+                <button id="btn1">One</button>
+                <button id="btn2">Two</button>
+            </div>
+        `);
+        parent.appendChild(existing);
+        document.body.appendChild(parent); // Element must be in document to receive focus
+
+        const btn2 = parent.querySelector('#btn2');
+        btn2.focus();
+        expect(document.activeElement).toBe(btn2);
+
+        // A new VDOM where the text of the focused button changes
+        const template = stringToHTML(`
+            <div>
+                <button id="btn1">One</button>
+                <button id="btn2">Two Updated</button>
+            </div>
+        `);
+
+        diff(template, existing);
+
+        // Focus should be restored to the element with the same ID
+        const newBtn2 = parent.querySelector('#btn2');
+        expect(document.activeElement).toBe(newBtn2);
+        expect(newBtn2.textContent).toBe('Two Updated');
+
+        document.body.removeChild(parent); // Clean up
+    });
+
+    test('it updates stale event handlers', () => {
+        const handler1 = vi.fn();
+        const handler2 = vi.fn();
+
+        const existing = stringToHTML(`<button id="btn">Click</button>`);
+        existing.onclick = handler1;
+
+        const template = stringToHTML(`<button id="btn">Click</button>`);
+        template.onclick = handler2; // New handler
+
+        diff(template, existing);
+
+        existing.click();
+
+        expect(handler1).not.toHaveBeenCalled();
+        expect(handler2).toHaveBeenCalledTimes(1);
+    });
+
+    test('it updates stale form field values', () => {
+        const existing = stringToHTML(`<input type="text" value="old">`);
+        const template = stringToHTML(`<input type="text" value="new">`);
+
+        diff(template, existing);
+
+        expect(existing.value).toBe('new');
+    });
+
+    test('stringToHTML should convert a valid HTML string to a DOM node', () => {
+        const html = '<div><span>Test</span></div>';
+        const node = stringToHTML(html);
+        expect(node).toBeInstanceOf(HTMLDivElement);
+        expect(node.querySelector('span').textContent).toBe('Test');
     });
 });

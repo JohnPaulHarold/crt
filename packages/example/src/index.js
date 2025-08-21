@@ -12,16 +12,25 @@ import { createSearchView } from './views/search.js';
 import { createShowView } from './views/show.js';
 import { createDiffView } from './views/diff.js';
 import { createVListView } from './views/vlist.js';
+import { createPlayerView } from './views/player.js';
 
 import s from './index.scss';
 
 const logr = loga.create('example');
 
+/**
+ * @typedef {import('crt').ViewOptions & {
+ *  pattern: string;
+ *  params: import('./routes.js').RouteParams;
+ *  search: import('./routes.js').RouteSearch;
+ * }} AppViewOptions
+ */
+
 /** @type {import('crt').BaseViewInstance | null} */
 let currentView = null;
 
 /**
- * @param {(options: import('crt').ViewOptions) => import('crt').BaseViewInstance} createView - The view factory function.
+ * @param {(options: AppViewOptions) => import('crt').BaseViewInstance} createView - The view factory function.
  * @param {import('./libs/router/router.js').HandlerArgs} options
  */
 function loadView(createView, options) {
@@ -93,6 +102,9 @@ document.addEventListener('DOMContentLoaded', () => {
     );
     historyRouter.registerRoute(routes.VLIST, (opts) =>
         loadView(createVListView, opts)
+    );
+    historyRouter.registerRoute(routes.PLAYER, (opts) =>
+        loadView(createPlayerView, opts)
     );
 
     historyRouter.config('/', 'hash');

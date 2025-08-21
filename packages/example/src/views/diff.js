@@ -1,10 +1,11 @@
 import {
     normaliseEventTarget,
-    createReactive,
     AdditionalKeys,
     assertKey,
     diff,
     createBaseView,
+    createSignaller,
+    watch,
 } from 'crt';
 
 import { div, p } from '../h.js';
@@ -40,17 +41,10 @@ const lyrics = [
 ];
 
 /**
- * @typedef {object} DiffState
- * @property {number} lyricCount
- */
-
-/**
  * @this {DiffViewInstance}
  * @param {KeyboardEvent | MouseEvent} event
  */
 function handlePress(event) {
-    if (!this.state) return div({ className: 'view', id: this.id });
-
     const elTarget = normaliseEventTarget(event);
 
     if (
@@ -60,26 +54,9 @@ function handlePress(event) {
                 assertKey(event, AdditionalKeys.ENTER)))
     ) {
         if (elTarget.id === 'add-lyric') {
-            this.state.lyricCount++;
+            this.lyricCount.setValue(this.lyricCount.getValue() + 1);
         } else {
-            this.state.lyricCount--;
-        }
-    }
-}
-
-/**
- * @this {DiffViewInstance}
- * @param {DiffState} newState
- */
-function updateDiff(newState) {
-    const vdom = getTemplate.call(this);
-    const dom = this.viewEl;
-
-    if (dom) {
-        diff(vdom, dom);
-
-        if (newState.lyricCount < 1) {
-            navigationService.focusInto(dom);
+            this.lyricCount.setValue(this.lyricCount.getValue() - 1);
         }
     }
 }
@@ -89,14 +66,14 @@ function updateDiff(newState) {
  * @this {DiffViewInstance}
  */
 function getTemplate() {
-    if (!this.state) return div({ className: 'view', id: this.id });
+    const count = this.lyricCount.getValue();
 
     const el = div(
         { className: 'diff', id: this.id },
         lyrics
-            .slice(0, this.state.lyricCount)
+            .slice(0, count)
             .map((lyric) => p({ className: 'lyric-line' }, lyric)),
-        this.state.lyricCount < lyrics.length &&
+        count < lyrics.length &&
             Button(
                 {
                     className: navigationService.isElementFocused('add-lyric')
@@ -106,7 +83,7 @@ function getTemplate() {
                 },
                 'Add line'
             ),
-        this.state.lyricCount > 0 &&
+        count > 0 &&
             Button(
                 {
                     className: navigationService.isElementFocused(
@@ -125,8 +102,9 @@ function getTemplate() {
 
 /**
  * @typedef {import('crt').BaseViewInstance & {
- *  state: DiffState | null,
+ *  lyricCount: import('crt').SignallerInstance,
  *  boundHandlePress?: (event: KeyboardEvent | MouseEvent) => void,
+ *  stopWatching?: () => void,
  *  destructor: () => void,
  *  viewDidLoad: () => void,
  *  render: () => HTMLElement
@@ -134,7 +112,7 @@ function getTemplate() {
  */
 
 /**
- * @param {import('crt').ViewOptions} options
+ * @param {import('../index.js').AppViewOptions} options
  * @returns {DiffViewInstance}
  */
 export function createDiffView(options) {
@@ -143,13 +121,16 @@ export function createDiffView(options) {
     /** @type {DiffViewInstance} */
     const diffView = {
         ...base,
-        /** @type {DiffState | null} */
-        state: null,
+        lyricCount: createSignaller(0),
         boundHandlePress: undefined,
+        stopWatching: undefined,
 
         destructor: function () {
             if (this.viewEl && this.boundHandlePress) {
                 this.viewEl.removeEventListener('click', this.boundHandlePress);
+            }
+            if (this.stopWatching) {
+                this.stopWatching();
             }
         },
 
@@ -157,6 +138,15 @@ export function createDiffView(options) {
             if (this.viewEl) {
                 this.boundHandlePress = handlePress.bind(this);
                 this.viewEl.addEventListener('click', this.boundHandlePress);
+
+                const handler = () => {
+                    if (this.viewEl) {
+                        const vdom = getTemplate.call(this);
+                        diff(vdom, this.viewEl);
+                    }
+                };
+
+                this.stopWatching = watch([this.lyricCount], handler);
             }
         },
 
@@ -164,9 +154,6 @@ export function createDiffView(options) {
             return getTemplate.call(this);
         },
     };
-
-    const boundUpdateDiff = updateDiff.bind(diffView);
-    diffView.state = createReactive({ lyricCount: 0 }, boundUpdateDiff);
 
     return diffView;
 }
