@@ -1,5 +1,5 @@
 /**
- * @typedef {BaseComponentProps & {
+ * @typedef {import('crt').ComponentProps & {
  *  blockExit?: string;
  *  childQuery?: string;
  *  id: string;

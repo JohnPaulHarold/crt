@@ -175,15 +175,18 @@ function createNavigationService() {
         event.preventDefault();
         const elTarget = normaliseEventTarget(event);
 
-        if (
-            elTarget &&
-            elTarget instanceof HTMLAnchorElement &&
-            elTarget.nodeName === 'A'
-        ) {
-            if ($dataGet(elTarget, 'external')) {
-                window.location.href = elTarget.href;
-            } else if (elTarget.hash) {
-                window.location.hash = elTarget.hash;
+        if (elTarget && elTarget instanceof HTMLElement) {
+            // If it's an anchor, navigate. This is the primary action.
+            if (elTarget instanceof HTMLAnchorElement) {
+                if ($dataGet(elTarget, 'external')) {
+                    window.location.href = elTarget.href;
+                } else if (elTarget.hash) {
+                    window.location.hash = elTarget.hash;
+                }
+            } else {
+                // For any other focusable element (like a button), dispatch a click event.
+                // This unifies keyboard and pointer interaction.
+                elTarget.click();
             }
         }
     }

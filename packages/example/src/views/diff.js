@@ -42,20 +42,17 @@ const lyrics = [
 
 /**
  * @this {DiffViewInstance}
- * @param {KeyboardEvent | MouseEvent} event
+ * @param {MouseEvent} event
  */
-function handlePress(event) {
+function handleClick(event) {
     const elTarget = normaliseEventTarget(event);
 
-    if (
-        elTarget instanceof HTMLElement &&
-        (event instanceof MouseEvent ||
-            (event instanceof KeyboardEvent &&
-                assertKey(event, AdditionalKeys.ENTER)))
-    ) {
+    if (elTarget instanceof HTMLElement) {
+        // The navigationService now handles translating 'Enter' keydowns into clicks,
+        // so this handler only needs to deal with the resulting click event.
         if (elTarget.id === 'add-lyric') {
             this.lyricCount.setValue(this.lyricCount.getValue() + 1);
-        } else {
+        } else if (elTarget.id === 'remove-lyric') {
             this.lyricCount.setValue(this.lyricCount.getValue() - 1);
         }
     }
@@ -103,7 +100,7 @@ function getTemplate() {
 /**
  * @typedef {import('crt').BaseViewInstance & {
  *  lyricCount: import('crt').SignallerInstance,
- *  boundHandlePress?: (event: KeyboardEvent | MouseEvent) => void,
+ *  boundHandleClick?: (event: MouseEvent) => void,
  *  stopWatching?: () => void,
  *  destructor: () => void,
  *  viewDidLoad: () => void,
@@ -122,12 +119,12 @@ export function createDiffView(options) {
     const diffView = {
         ...base,
         lyricCount: createSignaller(0),
-        boundHandlePress: undefined,
+        boundHandleClick: undefined,
         stopWatching: undefined,
 
         destructor: function () {
-            if (this.viewEl && this.boundHandlePress) {
-                this.viewEl.removeEventListener('click', this.boundHandlePress);
+            if (this.viewEl && this.boundHandleClick) {
+                this.viewEl.removeEventListener('click', this.boundHandleClick);
             }
             if (this.stopWatching) {
                 this.stopWatching();
@@ -136,8 +133,8 @@ export function createDiffView(options) {
 
         viewDidLoad: function () {
             if (this.viewEl) {
-                this.boundHandlePress = handlePress.bind(this);
-                this.viewEl.addEventListener('click', this.boundHandlePress);
+                this.boundHandleClick = handleClick.bind(this);
+                this.viewEl.addEventListener('click', this.boundHandleClick);
 
                 const handler = () => {
                     if (this.viewEl) {

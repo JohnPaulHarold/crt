@@ -6,7 +6,7 @@ import { Heading } from './Heading';
 import s from './Dialog.scss';
 
 /**
- * @typedef {BaseComponentProps & {
+ * @typedef {import('crt').ComponentProps & {
  *  title?: string
  * }} DialogProps
  */

@@ -4,7 +4,7 @@ import { div } from '../h.js';
 import s from './Notification.scss';
 
 /**
- * @typedef {BaseComponentProps & {
+ * @typedef {import('crt').ComponentProps & {
  *  message: string;
  * }} NotificationProps
  */

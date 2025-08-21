@@ -4,7 +4,7 @@ import { div, span } from '../h.js';
 import s from './Spinner.scss';
 
 /**
- * @typedef {BaseComponentProps & {
+ * @typedef {import('crt').ComponentProps & {
  *  message?: string;
  * }} SpinnerProps
  */

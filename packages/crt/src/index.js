@@ -29,7 +29,6 @@ export { cx } from './utils/dom/cx.js';
 
 // Utils - Input
 export { assertKey, getDirectionFromKeyCode } from './utils/keys.js';
-export { handleKeydownOnElement } from './utils/dom/handleKeydownOnElement.js';
 
 // Utils - Style
 export { getBaseFontSize } from './utils/dom/getBaseFontSize.js';
