@@ -15,26 +15,26 @@ import s from './Grid.scss';
  * @returns {HTMLElement}
  */
 export const Grid = (props, children) => {
-    /**
-     * @type {HTMLElement[]}
-     */
-    const gridRows = [];
+	/**
+	 * @type {HTMLElement[]}
+	 */
+	const gridRows = [];
 
-    /**
-     * @type {HTMLElement}
-     */
-    let rowEl;
-    let rowCount = 0;
+	/**
+	 * @type {HTMLElement}
+	 */
+	let rowEl;
+	let rowCount = 0;
 
-    children.forEach((c, i) => {
-        if (i % props.columns === 0) {
-            rowEl = div({ className: s.gridRow + ' row' + rowCount });
-            gridRows.push(rowEl);
-            rowCount++;
-        }
+	children.forEach((c, i) => {
+		if (i % props.columns === 0) {
+			rowEl = div({ className: s.gridRow + ' row' + rowCount });
+			gridRows.push(rowEl);
+			rowCount++;
+		}
 
-        rowEl && rowEl.appendChild(c);
-    });
+		rowEl && rowEl.appendChild(c);
+	});
 
-    return section({ className: 'grid ' + props.className || '' }, gridRows);
+	return section({ className: 'grid ' + props.className || '' }, gridRows);
 };

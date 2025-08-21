@@ -17,17 +17,17 @@
  * window.addEventListener('keydown', handleKeyDown);
  */
 export function createThrottle(callback, time) {
-    /** @type {boolean | undefined} */
-    let throttlePause; // This flag is private to each created function's closure.
+	/** @type {boolean | undefined} */
+	let throttlePause; // This flag is private to each created function's closure.
 
-    return function (...args) {
-        if (throttlePause) return;
-        throttlePause = true;
+	return function (...args) {
+		if (throttlePause) return;
+		throttlePause = true;
 
-        setTimeout(() => {
-            // @ts-ignore - `this` is correctly preserved from the calling context of the throttled function.
-            callback.apply(this, args);
-            throttlePause = false;
-        }, time);
-    };
+		setTimeout(() => {
+			// @ts-ignore - `this` is correctly preserved from the calling context of the throttled function.
+			callback.apply(this, args);
+			throttlePause = false;
+		}, time);
+	};
 }

@@ -4,5 +4,5 @@
  * @returns {number}
  */
 export function pxToVh(h) {
-    return (h / window.innerHeight) * 100;
+	return (h / window.innerHeight) * 100;
 }

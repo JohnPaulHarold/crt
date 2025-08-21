@@ -3,12 +3,12 @@
  * where different parts of the application can be rendered.
  */
 export const appOutlets = {
-    /** @type {HTMLElement | null} */
-    nav: null,
-    /** @type {HTMLElement | null} */
-    main: null,
-    /** @type {HTMLElement | null} */
-    popups: null,
-    /** @type {HTMLElement | null} */
-    notifications: null,
+	/** @type {HTMLElement | null} */
+	nav: null,
+	/** @type {HTMLElement | null} */
+	main: null,
+	/** @type {HTMLElement | null} */
+	popups: null,
+	/** @type {HTMLElement | null} */
+	notifications: null,
 };

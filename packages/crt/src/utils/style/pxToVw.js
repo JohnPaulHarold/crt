@@ -4,5 +4,5 @@
  * @returns {number}
  */
 export function pxToVw(w) {
-    return (w / window.innerWidth) * 100;
+	return (w / window.innerWidth) * 100;
 }

@@ -11,7 +11,7 @@
  * @returns {EventTarget | Element | null} The normalized event target.
  */
 export function normaliseEventTarget(event) {
-    return event.target && event.target !== window
-        ? event.target
-        : document.activeElement;
+	return event.target && event.target !== window
+		? event.target
+		: document.activeElement;
 }

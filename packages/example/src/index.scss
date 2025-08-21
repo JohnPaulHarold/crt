@@ -1,64 +1,64 @@
 @use 'styles/funcs' as fn;
 
 :global {
-    html {
-        font-size: 16px;
-    }
+	html {
+		font-size: 16px;
+	}
 
-    /* Scale up font size for 1080p resolution. */
-    @media screen and (min-width: 1920px) {
-        html {
-            font-size: 24px;
-        }
-    }
+	/* Scale up font size for 1080p resolution. */
+	@media screen and (min-width: 1920px) {
+		html {
+			font-size: 24px;
+		}
+	}
 
-    body {
-        margin: 0;
-        font-family: sans-serif;
-        background-color: #333;
-        color: #eee;
-        overflow: hidden;
-    }
+	body {
+		margin: 0;
+		font-family: sans-serif;
+		background-color: #333;
+		color: #eee;
+		overflow: hidden;
+	}
 
-    #root {
-        height: 100vh;
-        width: 100vw;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+	#root {
+		height: 100vh;
+		width: 100vw;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
 
-    #app-container {
-        max-width: 1280px;
-        max-height: 720px;
-        position: relative;
-    }
+	#app-container {
+		max-width: 1280px;
+		max-height: 720px;
+		position: relative;
+	}
 
-    @media screen and (min-width: 1920px) {
-        #app-container {
-            max-width: 1920px;
-            max-height: 1080px;
-        }
-    }
+	@media screen and (min-width: 1920px) {
+		#app-container {
+			max-width: 1920px;
+			max-height: 1080px;
+		}
+	}
 
-    #main-outlet {
-        flex-grow: 1;
-        position: relative;
-        overflow: hidden;
-        /* Push content to the right to make space for the absolute-positioned nav. */
-        padding-left: fn.px-to-rem(250px);
-    }
+	#main-outlet {
+		flex-grow: 1;
+		position: relative;
+		overflow: hidden;
+		/* Push content to the right to make space for the absolute-positioned nav. */
+		padding-left: fn.px-to-rem(250px);
+	}
 
-    .view {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-    }
+	.view {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+	}
 }
 
 .container {
-    display: flex;
-    flex-direction: row;
-    height: 100%;
-    width: 100%;
+	display: flex;
+	flex-direction: row;
+	height: 100%;
+	width: 100%;
 }

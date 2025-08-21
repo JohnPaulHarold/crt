@@ -14,8 +14,8 @@ import s from './Tile.scss';
  * @returns {Element}
  */
 export const Tile = (props) => {
-    return div(
-        { className: `tile ${s.tile}`, id: 'title-' + props.id },
-        span({}, props.title)
-    );
+	return div(
+		{ className: `tile ${s.tile}`, id: 'title-' + props.id },
+		span({}, props.title)
+	);
 };

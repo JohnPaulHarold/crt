@@ -1,13 +1,13 @@
 import {
-    $dataGet,
-    createBaseView,
-    assertKey,
-    AdditionalKeys,
-    Orientation,
-    normaliseEventTarget,
-    createSignaller,
-    watch,
-    diff,
+	$dataGet,
+	createBaseView,
+	assertKey,
+	AdditionalKeys,
+	Orientation,
+	normaliseEventTarget,
+	createSignaller,
+	watch,
+	diff,
 } from 'crt';
 
 import { a, div, span } from '../h.js';
@@ -26,29 +26,29 @@ import s from './search.scss';
  * @param {KeyboardEvent | MouseEvent} event
  */
 function handleClick(event) {
-    const elTarget = normaliseEventTarget(event);
-    if (elTarget instanceof HTMLElement) {
-        const value = $dataGet(elTarget, 'keyValue');
-        if (typeof value !== 'string') return;
+	const elTarget = normaliseEventTarget(event);
+	if (elTarget instanceof HTMLElement) {
+		const value = $dataGet(elTarget, 'keyValue');
+		if (typeof value !== 'string') return;
 
-        // The navigationService now handles translating 'Enter' keydowns into clicks,
-        // so this handler only needs to deal with the resulting click event.
-        const currentTerm = this.searchTerm.getValue();
-        let newTerm = currentTerm;
+		// The navigationService now handles translating 'Enter' keydowns into clicks,
+		// so this handler only needs to deal with the resulting click event.
+		const currentTerm = this.searchTerm.getValue();
+		let newTerm = currentTerm;
 
-        switch (value) {
-            case 'SPACE':
-                newTerm += ' ';
-                break;
-            case 'DEL':
-                newTerm = newTerm.slice(0, -1);
-                break;
-            default:
-                newTerm += value;
-                break;
-        }
-        this.searchTerm.setValue(newTerm);
-    }
+		switch (value) {
+			case 'SPACE':
+				newTerm += ' ';
+				break;
+			case 'DEL':
+				newTerm = newTerm.slice(0, -1);
+				break;
+			default:
+				newTerm += value;
+				break;
+		}
+		this.searchTerm.setValue(newTerm);
+	}
 }
 
 /**
@@ -57,11 +57,11 @@ function handleClick(event) {
  * @returns {import('./home.js').RailItem[]} The filtered results.
  */
 function getFilteredResults(term) {
-    if (!term) return [];
-    const lowerCaseTerm = term.toLowerCase();
-    return searchData.filter((d) =>
-        d.title.toLowerCase().includes(lowerCaseTerm)
-    );
+	if (!term) return [];
+	const lowerCaseTerm = term.toLowerCase();
+	return searchData.filter((d) =>
+		d.title.toLowerCase().includes(lowerCaseTerm)
+	);
 }
 
 /**
@@ -69,35 +69,35 @@ function getFilteredResults(term) {
  * @this {SearchViewInstance}
  */
 function getTemplate() {
-    const searchTerm = this.searchTerm.getValue();
-    const filteredResults = getFilteredResults(searchTerm);
+	const searchTerm = this.searchTerm.getValue();
+	const filteredResults = getFilteredResults(searchTerm);
 
-    let resultsEl;
-    if (searchTerm === '') {
-        resultsEl = span({ className: s.searchNoResults }, "Let's search!");
-    } else if (filteredResults.length > 0) {
-        resultsEl = Carousel(
-            {
-                id: 'search-results-list',
-                orientation: Orientation.VERTICAL,
-                blockExit: 'right down',
-            },
-            filteredResults.map((res) =>
-                a(
-                    { href: res.url, id: res.id },
-                    div({ className: s.searchResult }, span({}, res.title))
-                )
-            )
-        );
-    } else {
-        resultsEl = span({ className: s.searchNoResults }, 'Found nothing...');
-    }
+	let resultsEl;
+	if (searchTerm === '') {
+		resultsEl = span({ className: s.searchNoResults }, "Let's search!");
+	} else if (filteredResults.length > 0) {
+		resultsEl = Carousel(
+			{
+				id: 'search-results-list',
+				orientation: Orientation.VERTICAL,
+				blockExit: 'right down',
+			},
+			filteredResults.map((res) =>
+				a(
+					{ href: res.url, id: res.id },
+					div({ className: s.searchResult }, span({}, res.title))
+				)
+			)
+		);
+	} else {
+		resultsEl = span({ className: s.searchNoResults }, 'Found nothing...');
+	}
 
-    return div(
-        { className: 'view', id: this.id },
-        div({ className: s.searchInput, id: 'search-input' }, searchTerm),
-        div({ className: s.panels2 }, this.keyboard, resultsEl)
-    );
+	return div(
+		{ className: 'view', id: this.id },
+		div({ className: s.searchInput, id: 'search-input' }, searchTerm),
+		div({ className: s.panels2 }, this.keyboard, resultsEl)
+	);
 }
 
 /**
@@ -117,46 +117,46 @@ function getTemplate() {
  * @returns {SearchViewInstance}
  */
 export function createSearchView(options) {
-    const base = createBaseView(options);
+	const base = createBaseView(options);
 
-    /** @type {SearchViewInstance} */
-    const searchView = {
-        ...base,
-        searchTerm: createSignaller(''),
-        keyboard: Keyboard({ keyMap: keyMap }),
-        boundHandleClick: undefined,
-        stopWatching: undefined,
+	/** @type {SearchViewInstance} */
+	const searchView = {
+		...base,
+		searchTerm: createSignaller(''),
+		keyboard: Keyboard({ keyMap: keyMap }),
+		boundHandleClick: undefined,
+		stopWatching: undefined,
 
-        destructor: function () {
-            if (this.viewEl && this.boundHandleClick) {
-                this.viewEl.removeEventListener('click', this.boundHandleClick);
-            }
-            if (this.stopWatching) {
-                this.stopWatching();
-            }
-            // Reset state for when view is re-created
-            this.searchTerm.setValue('');
-        },
+		destructor: function () {
+			if (this.viewEl && this.boundHandleClick) {
+				this.viewEl.removeEventListener('click', this.boundHandleClick);
+			}
+			if (this.stopWatching) {
+				this.stopWatching();
+			}
+			// Reset state for when view is re-created
+			this.searchTerm.setValue('');
+		},
 
-        viewDidLoad: function () {
-            if (this.viewEl) {
-                this.boundHandleClick = handleClick.bind(this);
-                this.viewEl.addEventListener('click', this.boundHandleClick);
+		viewDidLoad: function () {
+			if (this.viewEl) {
+				this.boundHandleClick = handleClick.bind(this);
+				this.viewEl.addEventListener('click', this.boundHandleClick);
 
-                const handler = () => {
-                    if (this.viewEl) {
-                        const vdom = getTemplate.call(this);
-                        diff(vdom, this.viewEl);
-                    }
-                };
-                this.stopWatching = watch([this.searchTerm], handler);
-            }
-        },
+				const handler = () => {
+					if (this.viewEl) {
+						const vdom = getTemplate.call(this);
+						diff(vdom, this.viewEl);
+					}
+				};
+				this.stopWatching = watch([this.searchTerm], handler);
+			}
+		},
 
-        render: function () {
-            return getTemplate.call(this);
-        },
-    };
+		render: function () {
+			return getTemplate.call(this);
+		},
+	};
 
-    return searchView;
+	return searchView;
 }

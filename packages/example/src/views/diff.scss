@@ -2,7 +2,7 @@
 @use '../styles/funcs' as fn;
 
 button {
-    background: col.$primary;
-    columns: col.$black;
-    padding: fn.px-to-rem(24px);
+	background: col.$primary;
+	columns: col.$black;
+	padding: fn.px-to-rem(24px);
 }

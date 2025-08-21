@@ -2,54 +2,54 @@
 @use '../styles/funcs' as fn;
 
 .showBleedImage {
-    position: absolute;
+	position: absolute;
 }
 
 .showOverlay {
-    position: relative;
-    max-width: 50%;
+	position: relative;
+	max-width: 50%;
 }
 
 .showLogo {
-    position: relative;
-    transform: scale(1);
-    transform-origin: left top;
-    transition: transform 250ms ease;
-    height: fn.px-to-rem(240px);
+	position: relative;
+	transform: scale(1);
+	transform-origin: left top;
+	transition: transform 250ms ease;
+	height: fn.px-to-rem(240px);
 }
 
 .showLogo:global(.min) {
-    transform: scale(0.25);
+	transform: scale(0.25);
 }
 
 .showTitle {
-    font-size: 4rem;
+	font-size: 4rem;
 }
 
 .showDescription {
-    white-space: normal;
-    /*! autoprefixer: off */
-    display: -webkit-box;
-    -webkit-line-clamp: 6;
-    -webkit-box-orient: vertical;
-    /* autoprefixer: on */
-    overflow: hidden;
-    text-overflow: ellipsis;
+	white-space: normal;
+	/*! autoprefixer: off */
+	display: -webkit-box;
+	-webkit-line-clamp: 6;
+	-webkit-box-orient: vertical;
+	/* autoprefixer: on */
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .suggestions {
-    position: relative;
-    margin-top: fn.px-to-rem(240px);
+	position: relative;
+	margin-top: fn.px-to-rem(240px);
 }
 
 .suggestions :global(.lazy-image) {
-    width: fn.px-to-rem(384px);
-    height: fn.px-to-rem(216px);
-    margin: 0 fn.px-to-rem(24px) fn.px-to-rem(24px) 0;
-    border: fn.px-to-rem(6px) solid transparent;
-    border-radius: fn.px-to-rem(12px);
+	width: fn.px-to-rem(384px);
+	height: fn.px-to-rem(216px);
+	margin: 0 fn.px-to-rem(24px) fn.px-to-rem(24px) 0;
+	border: fn.px-to-rem(6px) solid transparent;
+	border-radius: fn.px-to-rem(12px);
 }
 
 .suggestions a:global(.focused) :global(.lazy-image) {
-    border: fn.px-to-rem(6px) solid col.$primary;
+	border: fn.px-to-rem(6px) solid col.$primary;
 }

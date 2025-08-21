@@ -23,38 +23,38 @@ import { createSignaller } from 'crt';
  * }}
  */
 export function createFakePlayer(options = {}) {
-    const duration = options.duration || 100;
+	const duration = options.duration || 100;
 
-    const state = {
-        isPlaying: createSignaller(false),
-        isMuted: createSignaller(false),
-        currentTime: createSignaller(0),
-        duration: duration,
-    };
+	const state = {
+		isPlaying: createSignaller(false),
+		isMuted: createSignaller(false),
+		currentTime: createSignaller(0),
+		duration: duration,
+	};
 
-    const intervalId = window.setInterval(() => {
-        if (state.isPlaying.getValue()) {
-            const newTime = (state.currentTime.getValue() + 1) % (duration + 1);
-            state.currentTime.setValue(newTime);
-        }
-    }, 1000);
+	const intervalId = window.setInterval(() => {
+		if (state.isPlaying.getValue()) {
+			const newTime = (state.currentTime.getValue() + 1) % (duration + 1);
+			state.currentTime.setValue(newTime);
+		}
+	}, 1000);
 
-    const controls = {
-        togglePlay: () => {
-            state.isPlaying.setValue(!state.isPlaying.getValue());
-        },
-        toggleMute: () => {
-            state.isMuted.setValue(!state.isMuted.getValue());
-        },
-    };
+	const controls = {
+		togglePlay: () => {
+			state.isPlaying.setValue(!state.isPlaying.getValue());
+		},
+		toggleMute: () => {
+			state.isMuted.setValue(!state.isMuted.getValue());
+		},
+	};
 
-    const destroy = () => {
-        window.clearInterval(intervalId);
-        // Reset state for a clean slate
-        state.isPlaying.setValue(false);
-        state.currentTime.setValue(0);
-        state.isMuted.setValue(false);
-    };
+	const destroy = () => {
+		window.clearInterval(intervalId);
+		// Reset state for a clean slate
+		state.isPlaying.setValue(false);
+		state.currentTime.setValue(0);
+		state.isMuted.setValue(false);
+	};
 
-    return { state, controls, destroy };
+	return { state, controls, destroy };
 }

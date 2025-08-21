@@ -3,30 +3,30 @@
 @use './local-colours' as lc;
 
 .type-wrapper {
-    padding: fn.px-to-rem(9px);
-    background-color: lc.$background;
-    margin: fn.px-to-rem(9px) 0;
-    border-radius: fn.px-to-rem(6px);
-    box-shadow: lc.$shadow 0 fn.px-to-rem(6px) fn.px-to-rem(12px);
+	padding: fn.px-to-rem(9px);
+	background-color: lc.$background;
+	margin: fn.px-to-rem(9px) 0;
+	border-radius: fn.px-to-rem(6px);
+	box-shadow: lc.$shadow 0 fn.px-to-rem(6px) fn.px-to-rem(12px);
 }
 
 .type-wrapper a,
 .type-wrapper a:link,
 .type-wrapper a:visited {
-    color: col.$slate;
+	color: col.$slate;
 }
 
 .title {
-    font-weight: bold;
-    font-size: 140%;
-    color: col.$slate;
+	font-weight: bold;
+	font-size: 140%;
+	color: col.$slate;
 }
 
 .codec {
-    display: block;
+	display: block;
 }
 
 a.codec:focus {
-    outline: inset fn.px-to-rem(9px) solid col.$brandOrange;
-    border-radius: fn.px-to-rem(6px);
+	outline: inset fn.px-to-rem(9px) solid col.$brandOrange;
+	border-radius: fn.px-to-rem(6px);
 }

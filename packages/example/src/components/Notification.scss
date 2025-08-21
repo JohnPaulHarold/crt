@@ -2,7 +2,7 @@
 @use '../styles/funcs' as fn;
 
 .notification {
-    background: col.$pewter;
-    padding: fn.px-to-rem(48px);
-    text-align: center;
+	background: col.$pewter;
+	padding: fn.px-to-rem(48px);
+	text-align: center;
 }

@@ -2,24 +2,24 @@
 @use '../styles/funcs' as fn;
 
 .tile {
-    width: fn.px-to-rem(480px);
-    height: fn.px-to-rem(270px);
-    display: inline-block;
-    background-color: col.$brandPurple;
-    color: col.$white;
-    font-size: 2rem;
-    overflow: hidden;
-    position: relative;
+	width: fn.px-to-rem(480px);
+	height: fn.px-to-rem(270px);
+	display: inline-block;
+	background-color: col.$brandPurple;
+	color: col.$white;
+	font-size: 2rem;
+	overflow: hidden;
+	position: relative;
 }
 
 .tile > span {
-    display: inline-block;
-    left: 50%;
-    position: relative;
-    top: 50%;
-    transform: translate(-50%, -50%);
+	display: inline-block;
+	left: 50%;
+	position: relative;
+	top: 50%;
+	transform: translate(-50%, -50%);
 }
 
 :global(a.focused) .tile {
-    background-color: col.$brandOrange;
+	background-color: col.$brandOrange;
 }

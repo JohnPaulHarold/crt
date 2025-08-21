@@ -6,12 +6,12 @@
 
 // For CSS Modules (files ending in .scss, .css, etc.)
 declare module '*.scss' {
-    const content: Record<string, string>;
-    export default content;
+	const content: Record<string, string>;
+	export default content;
 }
 
 // For image assets (png, jpg, svg, etc.)
 declare module '*.png' {
-    const value: string;
-    export default value;
+	const value: string;
+	export default value;
 }

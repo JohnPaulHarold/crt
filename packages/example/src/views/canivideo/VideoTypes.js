@@ -3,7 +3,7 @@
  * @todo this probably isn't an enum
  */
 export const VideoTypes = [
-    'video/mp4',
-    'video/webm',
-    'application/vnd.apple.mpegurl',
+	'video/mp4',
+	'video/webm',
+	'application/vnd.apple.mpegurl',
 ];
