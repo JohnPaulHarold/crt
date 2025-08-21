@@ -2,9 +2,9 @@
  * @vitest-environment jsdom
  */
 import { describe, expect, test, vi, beforeEach, afterEach } from 'vitest';
-import { debounce } from './debounce.js';
+import { createDebounce } from './debounce.js';
 
-describe('debounce', () => {
+describe('createDebounce', () => {
     beforeEach(() => {
         vi.useFakeTimers();
     });
@@ -15,7 +15,8 @@ describe('debounce', () => {
 
     test('should call the callback after the specified delay', () => {
         const callback = vi.fn();
-        debounce(callback, 200);
+        const debouncedFn = createDebounce(callback, 200);
+        debouncedFn();
 
         // Immediately, the callback should not have been called
         expect(callback).not.toHaveBeenCalled();
@@ -29,16 +30,17 @@ describe('debounce', () => {
 
     test('should reset the timer if called again before the delay has passed', () => {
         const callback = vi.fn();
+        const debouncedFn = createDebounce(callback, 200);
 
         // First call
-        debounce(callback, 200);
+        debouncedFn();
 
         // Advance time, but not enough for the timer to fire
         vi.advanceTimersByTime(100);
         expect(callback).not.toHaveBeenCalled();
 
         // Second call, which should reset the timer
-        debounce(callback, 200);
+        debouncedFn();
 
         // Advance time again, just past the original firing time
         vi.advanceTimersByTime(100);
@@ -51,24 +53,28 @@ describe('debounce', () => {
 
     test('should only execute the final call when called multiple times rapidly', () => {
         const callback = vi.fn();
+        const debouncedFn = createDebounce(callback, 100);
 
-        debounce(callback, 100);
-        debounce(callback, 100);
-        debounce(callback, 100);
+        debouncedFn();
+        debouncedFn();
+        debouncedFn();
 
         vi.advanceTimersByTime(100);
         expect(callback).toHaveBeenCalledTimes(1);
     });
 
-    test('should be cancelled by a subsequent call with a different callback', () => {
+    test('should not be cancelled by a subsequent call with a different callback', () => {
         const callback1 = vi.fn();
         const callback2 = vi.fn();
 
-        debounce(callback1, 100);
-        debounce(callback2, 100); // This cancels the timer for callback1
+        const debouncedFn1 = createDebounce(callback1, 100);
+        const debouncedFn2 = createDebounce(callback2, 100);
+
+        debouncedFn1();
+        debouncedFn2(); // This should NOT cancel the timer for callback1
 
         vi.advanceTimersByTime(100);
-        expect(callback1).not.toHaveBeenCalled();
+        expect(callback1).toHaveBeenCalledTimes(1);
         expect(callback2).toHaveBeenCalledTimes(1);
     });
 });

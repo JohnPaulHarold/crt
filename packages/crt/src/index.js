@@ -38,8 +38,8 @@ export { transformProp } from './utils/style/prefix.js';
 
 export { collectionToArray } from './utils/dom/collectionToArray.js';
 
-export { throttle } from './utils/function/throttle.js';
-export { debounce } from './utils/function/debounce.js';
+export { createThrottle } from './utils/function/throttle.js';
+export { createDebounce } from './utils/function/debounce.js';
 export { noop } from './utils/function/noop.js';
 
 // VDOM
