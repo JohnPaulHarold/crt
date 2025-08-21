@@ -1,27 +1,29 @@
 /**
  * @typedef {object} ViewOptions
- * @property {string} id - A unique identifier for the view instance.
- * @property {string} [title] - An optional title for the view.
- * @property {Record<string, any>} [params] - Route parameters.
- * @property {Record<string, any>} [search] - Query string parameters.
+ * @property {string} id
  */
 
 /**
  * @typedef {object} BaseViewInstance
- * @property {string} id - The unique identifier for the view instance.
- * @property {HTMLElement | null} viewEl - The root DOM element for the view.
- * @property {Record<string, any> | undefined} [params] - Route parameters.
- * @property {Record<string, any> | undefined} [search] - Query string parameters.
- * @property {() => void} [destructor] - Cleans up the view before it's detached.
- * @property {() => void} [viewDidLoad] - Called after the view's element is attached to the DOM.
- * @property {() => HTMLElement} render - Renders the view's DOM element.
- * @property {(parentEl: HTMLElement) => void} attach - Attaches the view to a parent element.
- * @property {() => void} detach - Detaches the view from the DOM.
+ * @property {string} id
+ * @property {HTMLElement | null} viewEl
+ * @property {(parentEl: HTMLElement) => void} attach
+ * @property {() => void} detach
+ * @property {() => HTMLElement} render
+ * @property {() => void} [viewDidLoad]
+ * @property {() => void} [destructor]
  */
 
 /**
- * @callback keydownCallback
- * @param {KeyboardEvent | MouseEvent} event
+ * @typedef {object} SignallerInstance
+ * @property {() => any} getValue - Gets the current value.
+ * @property {(newValue: any) => void} setValue - Sets a new value and signals listeners if it changed.
+ * @property {(callback: (instance: SignallerInstance) => void) => void} wait - Adds a callback to be called on the next change.
+ * @property {(callback: (instance: SignallerInstance) => void) => void} unwait - Removes a callback.
+ */
+
+/**
+ * @typedef {(event: KeyboardEvent | MouseEvent) => void} keydownCallback
  */
 
 export {};

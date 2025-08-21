@@ -15,4 +15,5 @@ export const routes = {
     SHOW: { pattern: '/show/{id}', title: 'Show', nav: false, navId: '123' },
     DIFF: { pattern: '/diff', title: 'Diff', nav: true },
     VLIST: { pattern: '/vlist', title: 'VList', nav: true },
+    PLAYER: { pattern: '/player', title: 'Player', nav: true },
 };

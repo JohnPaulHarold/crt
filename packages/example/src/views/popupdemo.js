@@ -34,7 +34,7 @@ import { registerPopup } from '../libs/registerPopup';
  */
 
 /**
- * @param {import('crt').ViewOptions} options
+ * @param {import('../index.js').AppViewOptions} options
  * @returns {PopupDemoViewInstance}
  */
 export function createPopupDemoView(options) {

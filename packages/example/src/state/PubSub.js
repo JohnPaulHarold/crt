@@ -7,7 +7,7 @@ import { loga } from 'crt';
  * @property {(id: string, payload: any) => void} emit
  * @property {(id: string, callback: (...args: any[]) => void, once?: boolean) => void} on
  * @property {(id: string, callback: (...args: any[]) => void) => void} once
- * @property {(id: string) => void} off
+ * @property {(id: string, callback?: (...args: any[]) => void) => void} off
  */
 
 /**
@@ -43,18 +43,18 @@ function createPubSub() {
                 );
                 return;
             }
-
             listeners[id] = listeners[id] || [];
-            /**
-             * @param {...any} args
-             */
-            const handler = (...args) => {
-                callback(...args);
-                if (once) {
-                    instance.off(id);
-                }
-            };
-            listeners[id].push(handler);
+
+            if (once) {
+                const onceWrapper = (/** @type {any[]} */ ...args) => {
+                    // Remove this specific listener before executing the callback.
+                    instance.off(id, onceWrapper);
+                    callback(...args);
+                };
+                listeners[id].push(onceWrapper);
+            } else {
+                listeners[id].push(callback);
+            }
         },
 
         once(id, callback) {
@@ -67,8 +67,21 @@ function createPubSub() {
             instance.on(id, callback, true);
         },
 
-        off(id) {
-            if (listeners[id]) {
+        off(id, callback) {
+            const callbacks = listeners[id];
+            if (!callbacks) return;
+
+            if (callback) {
+                // Remove the specific listener
+                const index = callbacks.indexOf(callback);
+                if (index > -1) {
+                    callbacks.splice(index, 1);
+                }
+                if (callbacks.length === 0) {
+                    delete listeners[id];
+                }
+            } else {
+                // Remove all listeners for this event id
                 delete listeners[id];
             }
         },

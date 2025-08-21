@@ -17,8 +17,6 @@ export function createBaseView(options) {
     /** @type {import('./types').BaseViewInstance} */
     const view = {
         id: options.id,
-        params: options.params,
-        search: options.search,
         viewEl: null, // Initialize as null, not undefined
 
         /**

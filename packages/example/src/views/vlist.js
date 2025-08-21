@@ -250,7 +250,7 @@ function createVL(options) {
  */
 
 /**
- * @param {import('crt').ViewOptions} options
+ * @param {import('../index.js').AppViewOptions} options
  * @returns {VListViewInstance}
  */
 export function createVListView(options) {

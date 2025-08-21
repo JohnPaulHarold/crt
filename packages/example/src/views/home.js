@@ -162,7 +162,7 @@ function buildCarousels(data) {
  */
 
 /**
- * @param {import('crt').ViewOptions} options
+ * @param {import('../index.js').AppViewOptions} options
  * @returns {HomeViewInstance}
  */
 export function createHomeView(options) {

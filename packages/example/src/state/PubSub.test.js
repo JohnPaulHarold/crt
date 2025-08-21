@@ -40,10 +40,39 @@ describe('PubSub', () => {
 
         expect(m).toHaveBeenCalledWith(p);
 
-        pubSub.off(n);
+        pubSub.off(n, m);
         pubSub.emit(n, p);
 
         expect(m).toHaveBeenCalledTimes(1);
+    });
+
+    test('`off` without a callback should remove all listeners for an event', () => {
+        const m1 = vi.fn();
+        const m2 = vi.fn();
+        const n = 'test';
+
+        pubSub.on(n, m1);
+        pubSub.on(n, m2);
+
+        pubSub.off(n); // No callback, should remove all
+        pubSub.emit(n, {});
+
+        expect(m1).not.toHaveBeenCalled();
+        expect(m2).not.toHaveBeenCalled();
+    });
+
+    test('`once` should only remove itself, not other listeners for the same event', () => {
+        const onceCb = vi.fn();
+        const onCb = vi.fn();
+        const n = 'test';
+        pubSub.once(n, onceCb);
+        pubSub.on(n, onCb);
+        pubSub.emit(n, {}); // First emit
+        expect(onceCb).toHaveBeenCalledTimes(1);
+        expect(onCb).toHaveBeenCalledTimes(1);
+        pubSub.emit(n, {}); // Second emit
+        expect(onceCb).toHaveBeenCalledTimes(1); // Should not be called again
+        expect(onCb).toHaveBeenCalledTimes(2); // Should be called again
     });
 
     test('`broadcast`', () => {

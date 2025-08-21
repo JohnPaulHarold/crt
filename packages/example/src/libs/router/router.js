@@ -1,5 +1,5 @@
 /**
- * @typedef {Record<string, string | number | boolean>} RouteParams
+ * @typedef {Record<string, string>} RouteParams
  */
 
 /**

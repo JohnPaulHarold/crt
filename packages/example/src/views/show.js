@@ -45,7 +45,7 @@ import s from './show.scss';
  */
 
 /**
- * @param {import('crt').ViewOptions} options
+ * @param {import('../index.js').AppViewOptions} options
  * @returns {ShowViewInstance}
  */
 export function createShowView(options) {
