@@ -5,7 +5,7 @@ import {
     $dataSet,
     assertKey,
     getDirectionFromKeyCode,
-    throttle,
+    createThrottle,
     collectionToArray,
     normaliseEventTarget,
     AdditionalKeys,
@@ -36,6 +36,7 @@ export const NavigationEvents = {
  * @property {(id: string) => boolean} isElementFocused - Checks if an element with a given ID is currently focused.
  * @property {() => {el: Element, id: string|null} | undefined} getCurrentFocus - Gets the currently focused element.
  * @property {() => PubSubInstance} getBus - Returns the internal event bus instance.
+ * @property {() => void} [_resetForTesting] - Clears state for test isolation.
  */
 
 /**
@@ -47,6 +48,8 @@ function createNavigationService() {
     let _scope = undefined;
     /** @type {HTMLElement|undefined} */
     let _lastFocus;
+    /** @type {((...args: any[]) => void) | null} */
+    let _throttledKeyDownHandler = null;
 
     const navigationBus = pubSub;
 
@@ -289,9 +292,19 @@ function createNavigationService() {
          * Initializes the navigation service by setting up global listeners.
          */
         init() {
-            window.addEventListener('keydown', (...args) => {
-                throttle(_handleKeyDown, 60, args);
-            });
+            // If a handler already exists, remove it before adding a new one.
+            // This makes `init` idempotent for the listener part.
+            if (_throttledKeyDownHandler) {
+                window.removeEventListener('keydown', _throttledKeyDownHandler);
+            }
+
+            // This intermediate function ensures that we always call the *current*
+            // value of `_handleKeyDown`, which can be swapped out by the
+            // custom focus handler.
+            const handler = (/** @type {KeyboardEvent} */ event) =>
+                _handleKeyDown(event);
+            _throttledKeyDownHandler = createThrottle(handler, 60);
+            window.addEventListener('keydown', _throttledKeyDownHandler);
 
             const initialFocus = getNextFocus(null, -1);
 
@@ -432,6 +445,22 @@ function createNavigationService() {
          */
         getBus() {
             return navigationBus;
+        },
+
+        /**
+         * Clears state and listeners for test isolation.
+         */
+        _resetForTesting() {
+            if (_throttledKeyDownHandler) {
+                window.removeEventListener('keydown', _throttledKeyDownHandler);
+                _throttledKeyDownHandler = null;
+            }
+            _scope = undefined;
+            _lastFocus = undefined;
+            _handleKeyDown = handleKeyDown;
+            if (navigationBus._resetForTesting) {
+                navigationBus._resetForTesting();
+            }
         },
     };
 

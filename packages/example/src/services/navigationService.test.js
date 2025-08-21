@@ -41,6 +41,11 @@ describe('navigationService', () => {
 
         // Reset mocks before each test
         vi.clearAllMocks();
+
+        // Reset the service's internal state and listeners for test isolation
+        if (navigationService._resetForTesting) {
+            navigationService._resetForTesting();
+        }
     });
 
     afterEach(() => {
@@ -130,6 +135,10 @@ describe('navigationService', () => {
             const customHandler = vi.fn();
             vi.useFakeTimers();
 
+            // Note: The navigationService is a singleton that adds a global event listener.
+            // For this test to work, we must initialize it to attach the listener.
+            navigationService.init();
+
             const restoreDefault =
                 navigationService.registerCustomFocusHandler(customHandler);
 
@@ -196,6 +205,10 @@ describe('navigationService', () => {
             const moveHandler = vi.fn();
             navigationService.getBus().on(NavigationEvents.MOVE, moveHandler);
             vi.useFakeTimers();
+
+            // Note: The navigationService is a singleton that adds a global event listener.
+            // For this test to work, we must initialize it to attach the listener.
+            navigationService.init();
 
             const fromEl = document.getElementById('nav-home');
             const toEl = document.getElementById('nav-search');
