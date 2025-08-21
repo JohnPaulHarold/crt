@@ -1,3 +1,7 @@
+/**
+ * @vitest-environment jsdom
+ */
+
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { pubSub } from './PubSub';
 
