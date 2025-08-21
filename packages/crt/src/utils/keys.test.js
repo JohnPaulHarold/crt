@@ -67,16 +67,16 @@ describe('keys utilities', () => {
 
         test('should return true if key is in an array of expectations', () => {
             const event = /** @type {KeyboardEvent} */ ({ keyCode: 39 });
-            expect(
-                assertKey(event, [Direction.LEFT, Direction.RIGHT])
-            ).toBe(true);
+            expect(assertKey(event, [Direction.LEFT, Direction.RIGHT])).toBe(
+                true
+            );
         });
 
         test('should return false if key is not in an array of expectations', () => {
             const event = /** @type {KeyboardEvent} */ ({ keyCode: 38 });
-            expect(
-                assertKey(event, [Direction.LEFT, Direction.RIGHT])
-            ).toBe(false);
+            expect(assertKey(event, [Direction.LEFT, Direction.RIGHT])).toBe(
+                false
+            );
         });
     });
 

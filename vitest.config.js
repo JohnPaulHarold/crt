@@ -16,7 +16,7 @@ export default defineConfig({
                 '**/*.test.js',
                 '**/*.d.ts',
                 '**/*.config.js',
-                '**/rollup.*.{js|mjs}'
+                '**/rollup.*.{js|mjs}',
             ],
         },
     },
