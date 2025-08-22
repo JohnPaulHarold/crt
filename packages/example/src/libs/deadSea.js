@@ -5,6 +5,7 @@ import {
 	transformProp,
 	loga,
 } from 'crt';
+import { navigationService } from '../services/navigationService.js';
 
 const logr = loga.create('deadsea');
 
@@ -149,26 +150,97 @@ function doTheHardWork(scrollEl, useTransforms) {
 }
 
 /**
- * @param {HTMLElement} el
- * @param {boolean} useTransforms
- */
-export function scrollAction(el, useTransforms) {
-	let scrollEl = getScrollEl(el);
-
-	while (scrollEl) {
-		doTheHardWork(scrollEl, useTransforms);
-		scrollEl =
-			scrollEl.parentElement instanceof HTMLElement
-				? getScrollEl(scrollEl.parentElement)
-				: undefined;
-	}
-}
-
-/**
  * Clears the cached offsets for a given scroll container.
  * Call this when the container is destroyed to prevent memory leaks.
  * @param {string} scrollId The `data-deadsea-id` of the container.
  */
-export function clearDeadSeaCache(scrollId) {
+function clearCache(scrollId) {
 	delete offsetCache[scrollId];
 }
+
+/**
+ * @typedef {object} DeadSeaService
+ * @property {(el: HTMLElement, useTransforms?: boolean) => void} scrollAction
+ * @property {(scrollId: string) => void} clearCache
+ * @property {(scrollId: string, direction: 'forward' | 'backward') => void} page
+ */
+
+/** @type {DeadSeaService} */
+export const deadSeaService = {
+	/**
+	 * @param {HTMLElement} el
+	 * @param {boolean} [useTransforms]
+	 */
+	scrollAction(el, useTransforms) {
+		let scrollEl = getScrollEl(el);
+
+		while (scrollEl) {
+			doTheHardWork(scrollEl, !!useTransforms);
+			scrollEl =
+				scrollEl.parentElement instanceof HTMLElement
+					? getScrollEl(scrollEl.parentElement)
+					: undefined;
+		}
+	},
+
+	clearCache: clearCache,
+
+	/**
+	 * @param {string} scrollId
+	 * @param {'forward' | 'backward'} direction
+	 */
+	page(scrollId, direction) {
+		const scrollEl = document.querySelector(`[data-deadsea-id="${scrollId}"]`);
+		if (!scrollEl || !(scrollEl instanceof HTMLElement)) {
+			logr.warn(
+				`[deadSea.page] Could not find element with data-deadsea-id: ${scrollId}`
+			);
+			return;
+		}
+
+		const orientation =
+			$dataGet(scrollEl, 'deadseaOrientation') || Orientation.HORIZONTAL;
+		const isHorizontal = orientation === Orientation.HORIZONTAL;
+		const childQuery = $dataGet(scrollEl, 'deadseaChildQuery') || '[id]';
+		const items = collectionToArray(scrollEl.querySelectorAll(childQuery));
+
+		if (items.length === 0) return;
+
+		const containerRect = scrollEl.getBoundingClientRect();
+
+		if (direction === 'forward') {
+			for (let i = 0; i < items.length; i++) {
+				const item = items[i];
+				if (item instanceof HTMLElement) {
+					const itemRect = item.getBoundingClientRect();
+					if (isHorizontal) {
+						if (itemRect.left >= containerRect.right) {
+							return navigationService.moveFocus(item);
+						}
+					} else {
+						if (itemRect.top >= containerRect.bottom) {
+							return navigationService.moveFocus(item);
+						}
+					}
+				}
+			}
+		} else {
+			// 'backward'
+			for (let i = items.length - 1; i >= 0; i--) {
+				const item = items[i];
+				if (item instanceof HTMLElement) {
+					const itemRect = item.getBoundingClientRect();
+					if (isHorizontal) {
+						if (itemRect.right <= containerRect.left) {
+							return navigationService.moveFocus(item);
+						}
+					} else {
+						if (itemRect.bottom <= containerRect.top) {
+							return navigationService.moveFocus(item);
+						}
+					}
+				}
+			}
+		}
+	},
+};

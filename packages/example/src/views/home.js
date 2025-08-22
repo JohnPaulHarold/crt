@@ -145,7 +145,9 @@ function buildCarousels(data) {
 			childQuery: `#${data.id} .home-carousel`,
 			blockExit: 'up down right',
 			backStop: 'viewStart',
-			showArrows: true
+			showArrows: true,
+			width: 1670,
+			height: 1080,
 		},
 		data.items.map((rail) =>
 			Carousel(
@@ -159,6 +161,7 @@ function buildCarousels(data) {
 					backStop: 'viewStart',
 					// Use itemMargin to create a gap between tiles
 					itemMargin: 24,
+					width: 1670,
 				},
 				rail.items.map((railItem) =>
 					a(
@@ -215,9 +218,7 @@ export function createHomeView(options) {
 					// After the DOM is updated, if we have carousels, focus them.
 					const data = this.pageData.getValue();
 					if (data) {
-						const carouselsEl = this.viewEl.querySelector(
-							'#' + data.id
-						);
+						const carouselsEl = this.viewEl.querySelector('#' + data.id);
 						if (carouselsEl) {
 							focusPage(carouselsEl);
 						}
@@ -237,7 +238,7 @@ export function createHomeView(options) {
 		render: function () {
 			// The initial render will be based on the initial state (null data).
 			return getTemplate.call(this);
-		}
+		},
 	};
 
 	homeView.fetchData();

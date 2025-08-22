@@ -13,7 +13,7 @@ import {
 } from 'crt';
 
 import { animations } from '../config/animations.js';
-import { scrollAction } from '../libs/deadSea.js';
+import { deadSeaService } from '../libs/deadSea.js';
 import { pubSub } from '../state/PubSub.js';
 import { speechService } from './speechService.js';
 
@@ -387,7 +387,7 @@ function createNavigationService() {
 			speechService.speak(announcement);
 
 			const useTransforms = animations.transforms;
-			scrollAction(toEl, useTransforms);
+			deadSeaService.scrollAction(toEl, useTransforms);
 		},
 
 		/**
