@@ -89,6 +89,8 @@ function doTheHardWork(scrollEl, useTransforms) {
 	const offsetProp =
 		orientation === Orientation.HORIZONTAL ? 'offsetLeft' : 'offsetTop';
 
+	// how to do "generics"...
+	/** @type {HTMLElement[]} */
 	const scrollables = childQuery
 		? collectionToArray(scrollEl.querySelectorAll(childQuery))
 		: collectionToArray(scrollEl.children);

@@ -1,65 +1,88 @@
-@use '../styles/funcs' as fn;
+.carouselWrapper {
+    position: relative; // This is the positioning context for the arrows
+    overflow: hidden; // This clips the inner scrollable area
+
+    &.horizontal {
+        > .carousel {
+            white-space: nowrap; // Prevent inline-block items from wrapping
+        }
+        > .arrow {
+            top: 50%;
+            transform: translateY(-50%);
+            height: 100%;
+        }
+
+        .arrow.prev {
+            left: 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .arrow.next {
+            right: 0;
+            border-radius: 8px 0 0 8px;
+        }
+    }
+
+    &.vertical {
+        > .carousel {
+            white-space: normal; // Allow items to stack
+        }
+        > .carousel > * {
+            display: block; // Stack items vertically
+        }
+
+        > .arrow {
+            // Reposition for vertical layout
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%; // Don't take full width
+            height: 40px;
+        }
+
+        .arrow.prev {
+            top: 0;
+            border-radius: 8px;
+        }
+
+        .arrow.next {
+            bottom: 0;
+            top: auto;
+            border-radius: 8px;
+        }
+    }
+}
+
+.heading {
+    // Add styles for the optional heading here
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    color: #eee;
+}
 
 .carousel {
-	display: block;
-	margin-bottom: fn.px-to-rem(48px);
+    position: relative;
+    transition: all 0.3s ease-in-out;
+    // This is a classic technique to remove whitespace between inline-block elements
+    font-size: 0;
 }
 
-.carouselTitle {
-	font-weight: bold;
-	font-size: 1.5rem;
-	margin-bottom: fn.px-to-rem(24px);
+.carousel > * {
+    display: inline-block;
+    vertical-align: top; // Align items to the top
+    font-size: 1rem; // Reset font-size for the content
+    white-space: normal; // Allow text inside items to wrap
 }
 
-.carouselInner {
-	display: block;
-	position: relative;
-	overflow: hidden;
-	min-height: fn.px-to-rem(180px);
-}
+.arrow {
+    position: absolute;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
 
-.orientVertical .carouselInner {
-	height: 100%;
-}
-
-.orientHorizontal .carouselInner {
-	height: auto;
-}
-
-.transition {
-	transition: transform 0.25s ease-in-out;
-}
-
-.orientVertical .transitionNoTransform {
-	transition: top 0.25s ease-in-out;
-}
-
-.orientHorizontal .transitionNoTransform {
-	transition: left 0.25s ease-in-out;
-}
-
-.carouselSlider {
-	position: relative;
-	white-space: nowrap;
-}
-
-.carouselSlider > a {
-	display: inline-block;
-	width: auto;
-	height: auto;
-	margin-right: fn.px-to-rem(24px);
-}
-
-.orientVertical > .carouselSlider {
-	width: 100%;
-}
-
-.orientVertical > .carouselSlider > a {
-	display: block;
-	margin-right: 0;
-}
-
-.orientHorizontal > .carouselSlider {
-	white-space: nowrap;
-	width: 100%;
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+    }
 }

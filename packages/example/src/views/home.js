@@ -5,6 +5,9 @@ import {
 	$dataGet,
 	assertKey,
 	createBaseView,
+	createSignaller,
+	watch,
+	diff,
 } from 'crt';
 
 import { a, div } from '../h.js';
@@ -31,6 +34,23 @@ import { appOutlets } from '../outlets.js';
  * @property {Orientation} [orientation]
  * @property {RailItem[]} items
  */
+
+/**
+ * @returns {HTMLElement}
+ * @this {HomeViewInstance}
+ */
+function getTemplate() {
+	const data = this.pageData.getValue();
+	let content;
+
+	if (!data) {
+		content = Spinner({ message: 'Hold on!' });
+	} else {
+		content = buildCarousels(data);
+	}
+
+	return div({ className: 'view', id: this.id }, content);
+}
 
 /**
  * @typedef {object} PageData
@@ -125,16 +145,20 @@ function buildCarousels(data) {
 			childQuery: `#${data.id} .home-carousel`,
 			blockExit: 'up down right',
 			backStop: 'viewStart',
+			showArrows: true
 		},
 		data.items.map((rail) =>
 			Carousel(
 				{
 					id: rail.id,
-					title: rail.title,
+					showArrows: true,
+					heading: rail.title, // Use the restored 'heading' prop
 					className: 'home-carousel',
 					orientation: Orientation.HORIZONTAL,
 					blockExit: 'right',
 					backStop: 'viewStart',
+					// Use itemMargin to create a gap between tiles
+					itemMargin: 24,
 				},
 				rail.items.map((railItem) =>
 					a(
@@ -153,11 +177,10 @@ function buildCarousels(data) {
 
 /**
  * @typedef {import('crt').BaseViewInstance & {
- *  data: PageData | null,
+ *  pageData: import('crt').SignallerInstance,
+ *  stopWatching?: () => void,
  *  destructor: () => void,
- *  carousels: HTMLElement | null,
  *  fetchData: () => void,
- *  updateRender: (el?: HTMLElement) => void
  * }} HomeViewInstance
  */
 
@@ -171,56 +194,50 @@ export function createHomeView(options) {
 	/** @type {HomeViewInstance} */
 	const homeView = {
 		...base,
-		/** @type {PageData | null} */
-		data: null,
-		/** @type {HTMLElement | null} */
-		carousels: null,
+		pageData: createSignaller(null),
+		stopWatching: undefined,
 
 		destructor: function () {
 			listenForBack.call(this, false);
+			if (this.stopWatching) {
+				this.stopWatching();
+			}
 		},
 
 		viewDidLoad: function () {
 			listenForBack.call(this, true);
+
+			const handler = () => {
+				if (this.viewEl) {
+					const vdom = getTemplate.call(this);
+					diff(vdom, this.viewEl);
+
+					// After the DOM is updated, if we have carousels, focus them.
+					const data = this.pageData.getValue();
+					if (data) {
+						const carouselsEl = this.viewEl.querySelector(
+							'#' + data.id
+						);
+						if (carouselsEl) {
+							focusPage(carouselsEl);
+						}
+					}
+				}
+			};
+
+			this.stopWatching = watch([this.pageData], handler);
 		},
 
 		fetchData: function () {
 			setTimeout(() => {
-				this.data = pageData;
-				this.updateRender();
+				this.pageData.setValue(pageData);
 			}, 500);
 		},
 
-		/**
-		 *
-		 * @param {HTMLElement} [el]
-		 */
-		updateRender: function (el) {
-			let target = this.viewEl;
-
-			if (el) {
-				target = el;
-			}
-
-			if (target && this.data) {
-				target.innerHTML = '';
-				this.carousels = buildCarousels(this.data);
-				target.appendChild(this.carousels);
-
-				focusPage(this.carousels);
-			}
-		},
-
 		render: function () {
-			if (!this.data) {
-				return div(
-					{ className: 'view', id: this.id },
-					Spinner({ message: 'Hold on!' })
-				);
-			}
-
-			return div({ className: 'view', id: this.id });
-		},
+			// The initial render will be based on the initial state (null data).
+			return getTemplate.call(this);
+		}
 	};
 
 	homeView.fetchData();
