@@ -166,6 +166,17 @@ function createNavigationService() {
 	}
 
 	/**
+	 * Finds the first focusable element within a given container.
+	 * @private
+	 * @param {HTMLElement} containerEl
+	 * @returns {HTMLElement | null}
+	 */
+	function _getFocusableChildFromContainer(containerEl) {
+		// getNextFocus with a null `from` element gets the first focusable.
+		return getNextFocus(null, -1, containerEl);
+	}
+
+	/**
 	 * Handles the 'Enter' key press.
 	 * @private
 	 * @param {KeyboardEvent} event
@@ -231,8 +242,8 @@ function createNavigationService() {
 				if (_lastFocus) {
 					emitMoveEvent(event, _lastFocus, nextFocus);
 				}
-				service.moveFocus(nextFocus, _lastFocus);
-				_lastFocus = nextFocus;
+				// moveFocus will now handle blurring the last focused element and updating the state.
+				service.moveFocus(nextFocus);
 			}
 		}
 	}
@@ -351,43 +362,60 @@ function createNavigationService() {
 		 * @param {HTMLElement} [fromEl]
 		 */
 		moveFocus(toEl, fromEl) {
-			if (fromEl) {
-				blur(fromEl);
+			const elementToBlur = fromEl || _lastFocus;
+
+			// 1. Handle blurring the old element
+			if (elementToBlur) {
+				blur(elementToBlur);
 			} else {
 				clearFocus();
 			}
 
-			focus(toEl);
+			// 2. Determine the actual element to focus. If `toEl` is a container,
+			// we need to find the first focusable child inside it.
+			let actualToEl = toEl;
+			if (toEl.matches('nav, section, .lrud-container')) {
+				const firstFocusableChild = _getFocusableChildFromContainer(toEl);
+				if (firstFocusableChild) {
+					actualToEl = firstFocusableChild;
+				} else {
+					// This is a fallback, but a container should ideally always have focusable children.
+					console.warn(
+						`[navigationService] LRUD container ${toEl.id || toEl.tagName} has no focusable children. Focusing container itself.`
+					);
+				}
+			}
 
-			const [toContainer] = getElementContainer(toEl);
+			// 3. Focus the determined element
+			focus(actualToEl);
+
+			// Update the internal state to track the newly focused element.
+			_lastFocus = actualToEl;
+
+			// 4. Announce the move for accessibility
+			const [toContainer] = getElementContainer(actualToEl);
 			const [fromContainer] = fromEl
 				? getElementContainer(fromEl)
 				: [undefined];
 
 			let announcement = '';
-
-			// If we entered a new container, announce its title.
 			if (toContainer && toContainer !== fromContainer) {
 				const containerName = getContainerName(toContainer);
 				if (containerName) {
 					announcement = containerName;
 				}
 			}
-
-			// Then, announce the focused item itself.
-			const itemName = getItemName(toEl);
-
-			// Combine them for a comprehensive announcement, e.g., "Suggestions. My Tile, 1 of 8."
+			const itemName = getItemName(actualToEl);
 			if (announcement && itemName) {
 				announcement += `. ${itemName}`;
 			} else {
 				announcement = announcement || itemName;
 			}
-
 			speechService.speak(announcement);
 
+			// 5. Trigger the scroll action
 			const useTransforms = animations.transforms;
-			deadSeaService.scrollAction(toEl, useTransforms);
+			deadSeaService.scrollAction(actualToEl, useTransforms);
 		},
 
 		/**
@@ -396,20 +424,10 @@ function createNavigationService() {
 		 */
 		focusInto(scopeEl) {
 			if (scopeEl instanceof HTMLElement) {
-				const nextFocus = getNextFocus(null, -1, scopeEl);
+				const nextFocus = _getFocusableChildFromContainer(scopeEl);
 
 				if (nextFocus) {
-					if (nextFocus.id) {
-						const containers = getElementContainer(nextFocus);
-						const container = containers[0];
-
-						if ($dataGet(container, 'focus')) {
-							$dataSet(container, 'focus', nextFocus.id);
-						}
-					}
-
 					this.moveFocus(nextFocus);
-					_lastFocus = nextFocus;
 				}
 			}
 		},

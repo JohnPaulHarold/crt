@@ -9,8 +9,11 @@ import { navigationService } from '../services/navigationService.js';
 
 const logr = loga.create('deadsea');
 
-/** @type {Record<string, number[]>} */
-const offsetCache = {};
+/**
+ * A cache to store pre-calculated geometry for each registered carousel.
+ * @type {Record<string, { offsets: number[], scrollables: HTMLElement[] }>}
+ */
+const geometryCache = {};
 
 const focusedQuery = '.focused';
 
@@ -26,6 +29,62 @@ function getScrollEl(el) {
 	}
 
 	return getScrollEl(el.parentElement);
+}
+
+/**
+ * Gets the geometry from the cache for a given scroll element.
+ * This function assumes the geometry has already been registered.
+ *
+ * @param {HTMLElement} scrollEl The scrollable container element.
+ * @returns {{ offsets: number[], scrollables: HTMLElement[] } | null} The cached geometry or null if not found.
+ */
+function getCachedGeometry(scrollEl) {
+	const scrollId = $dataGet(scrollEl, 'deadseaId');
+	if (!scrollId) {
+		logr.error(
+			'DeadSea element requires a "data-deadsea-id" attribute for caching.',
+			scrollEl
+		);
+		return null;
+	}
+
+	if (!geometryCache[scrollId]) {
+		logr.warn(
+			`[deadSea] Geometry for scrollId "${scrollId}" not found in cache. Was it registered?`
+		);
+		return null;
+	}
+
+	return geometryCache[scrollId];
+}
+
+/**
+ * Builds the geometry for a scrollable element.
+ * @param {HTMLElement} scrollEl
+ * @returns {{ offsets: number[], scrollables: HTMLElement[] } | null}
+ */
+function buildGeometry(scrollEl) {
+	const orientation =
+		$dataGet(scrollEl, 'deadseaOrientation') || Orientation.HORIZONTAL;
+	const childQuery = $dataGet(scrollEl, 'deadseaChildQuery');
+	const startQs = $dataGet(scrollEl, 'deadseaScrollStartQuery');
+	const offsetProp =
+		orientation === Orientation.HORIZONTAL ? 'offsetLeft' : 'offsetTop';
+
+	const scrollables = childQuery
+		? collectionToArray(scrollEl.querySelectorAll(childQuery))
+		: collectionToArray(scrollEl.children);
+
+	if (scrollables.length === 0) return null;
+
+	const startEl = startQs ? document.querySelector(startQs) : null;
+	let startElOffsetInPx = 0;
+	if (startEl instanceof HTMLElement) {
+		startElOffsetInPx = startEl[offsetProp];
+	}
+
+	const offsets = scrollables.map((s) => s[offsetProp] - startElOffsetInPx);
+	return { offsets, scrollables };
 }
 
 /**
@@ -68,61 +127,27 @@ function calculateOffset(offsets, scrollableIndex, startOffset) {
  * @param {boolean} useTransforms
  */
 function doTheHardWork(scrollEl, useTransforms) {
-	const scrollId = $dataGet(scrollEl, 'deadseaId');
-	if (!scrollId) {
-		logr.error(
-			'DeadSea element requires a "data-deadsea-id" attribute for caching.',
-			scrollEl
-		);
+	const geometry = getCachedGeometry(scrollEl);
+	if (!geometry) {
 		return;
 	}
 
+	const { offsets, scrollables } = geometry;
 	const focusedEl = document.querySelector(focusedQuery);
 
 	const orientation =
 		$dataGet(scrollEl, 'deadseaOrientation') || Orientation.HORIZONTAL;
-	const childQuery = $dataGet(scrollEl, 'deadseaChildQuery');
 	const startOffset = parseInt(
 		$dataGet(scrollEl, 'deadseaStartOffset') || '0',
 		10
 	);
-	const startQs = $dataGet(scrollEl, 'deadseaScrollStartQuery');
-	const offsetProp =
-		orientation === Orientation.HORIZONTAL ? 'offsetLeft' : 'offsetTop';
-
-	// how to do "generics"...
-	/** @type {HTMLElement[]} */
-	const scrollables = childQuery
-		? collectionToArray(scrollEl.querySelectorAll(childQuery))
-		: collectionToArray(scrollEl.children);
-
-	if (scrollables.length === 0) {
-		return; // Nothing to scroll.
-	}
 
 	const scrollableIndex =
 		focusedEl instanceof HTMLElement
 			? findScrollableFromFocusEl(focusedEl, scrollables)[1]
 			: 0;
 
-	const startEl = startQs ? document.querySelector(startQs) : null;
-	let startElOffsetInPx = 0;
-	if (startEl instanceof HTMLElement) {
-		startElOffsetInPx = startEl[offsetProp];
-	}
-
-	// get all the offsets and cache them against the id of the carousel
-	if (!offsetCache[scrollId]) {
-		offsetCache[scrollId] = scrollables.map(
-			(s) => /** @type {HTMLElement} */ (s)[offsetProp] - startElOffsetInPx
-		);
-	}
-
-	const newOffset = calculateOffset(
-		offsetCache[scrollId],
-		scrollableIndex,
-		startOffset
-	);
+	const newOffset = calculateOffset(offsets, scrollableIndex, startOffset);
 
 	// Guard against invalid offset (e.g., from empty cache or bad index)
 	if (typeof newOffset !== 'number' || !isFinite(newOffset)) {
@@ -150,18 +175,11 @@ function doTheHardWork(scrollEl, useTransforms) {
 }
 
 /**
- * Clears the cached offsets for a given scroll container.
- * Call this when the container is destroyed to prevent memory leaks.
- * @param {string} scrollId The `data-deadsea-id` of the container.
- */
-function clearCache(scrollId) {
-	delete offsetCache[scrollId];
-}
-
-/**
  * @typedef {object} DeadSeaService
  * @property {(el: HTMLElement, useTransforms?: boolean) => void} scrollAction
- * @property {(scrollId: string) => void} clearCache
+ * @property {(scrollEl: HTMLElement) => void} register - Registers a carousel and builds its geometry cache.
+ * @property {(scrollId: string) => void} unregister - Removes a carousel from the cache.
+ * @property {() => void} unregisterAll - Clears all cached geometries.
  * @property {(scrollId: string, direction: 'forward' | 'backward') => void} page
  */
 
@@ -183,7 +201,41 @@ export const deadSeaService = {
 		}
 	},
 
-	clearCache: clearCache,
+	/**
+	 * Registers a scrollable element with the service, building and caching its geometry.
+	 * @param {HTMLElement} scrollEl The scrollable element (the one with `data-deadsea-id`).
+	 */
+	register(scrollEl) {
+		const scrollId = $dataGet(scrollEl, 'deadseaId');
+		if (!scrollId) {
+			logr.error(
+				'[deadSea.register] Cannot register an element without a "data-deadsea-id".',
+				scrollEl
+			);
+			return;
+		}
+		logr.info(
+			`[deadSea] Registering and building cache for scrollId: "${scrollId}"`
+		);
+		const geometry = buildGeometry(scrollEl);
+		if (geometry) {
+			geometryCache[scrollId] = geometry;
+		}
+	},
+
+	/**
+	 * Removes a scrollable element's geometry from the cache.
+	 * @param {string} scrollId The `data-deadsea-id` of the container to unregister.
+	 */
+	unregister(scrollId) {
+		logr.info(`[deadSea] Unregistering scrollId: "${scrollId}"`);
+		delete geometryCache[scrollId];
+	},
+
+	unregisterAll() {
+		logr.info(`[deadSea] Unregistering all carousels.`);
+		Object.keys(geometryCache).forEach((key) => delete geometryCache[key]);
+	},
 
 	/**
 	 * @param {string} scrollId
@@ -198,13 +250,15 @@ export const deadSeaService = {
 			return;
 		}
 
+		const geometry = getCachedGeometry(scrollEl);
+		if (!geometry) return;
+
+		const { scrollables: items } = geometry;
 		const orientation =
 			$dataGet(scrollEl, 'deadseaOrientation') || Orientation.HORIZONTAL;
 		const isHorizontal = orientation === Orientation.HORIZONTAL;
-		const childQuery = $dataGet(scrollEl, 'deadseaChildQuery') || '[id]';
-		const items = collectionToArray(scrollEl.querySelectorAll(childQuery));
 
-		if (items.length === 0) return;
+		// The `items` are now retrieved from the cache.
 
 		const containerRect = scrollEl.getBoundingClientRect();
 
@@ -213,33 +267,65 @@ export const deadSeaService = {
 				const item = items[i];
 				if (item instanceof HTMLElement) {
 					const itemRect = item.getBoundingClientRect();
+					let targetFound = false;
 					if (isHorizontal) {
-						if (itemRect.left >= containerRect.right) {
-							return navigationService.moveFocus(item);
+						// Find the first item whose right edge is outside the container's right boundary.
+						if (itemRect.right > containerRect.right) {
+							targetFound = true;
 						}
 					} else {
-						if (itemRect.top >= containerRect.bottom) {
-							return navigationService.moveFocus(item);
+						// Find the first item whose bottom edge is outside the container's bottom boundary.
+						if (itemRect.bottom > containerRect.bottom) {
+							targetFound = true;
 						}
+					}
+
+					if (targetFound) {
+						// If the target is a container, focus into it, otherwise focus the item directly.
+						if (item.matches('nav, section, .lrud-container')) {
+							return navigationService.focusInto(item);
+						}
+						return navigationService.moveFocus(item);
 					}
 				}
 			}
 		} else {
-			// 'backward'
-			for (let i = items.length - 1; i >= 0; i--) {
+			let targetItem = null;
+
+			// Find the last item that is off-screen to the left/top by iterating from the start.
+			for (let i = 0; i < items.length; i++) {
 				const item = items[i];
 				if (item instanceof HTMLElement) {
 					const itemRect = item.getBoundingClientRect();
+					let isOffscreen = false;
 					if (isHorizontal) {
+						// An item is off-screen to the left if its right edge is at or before the container's left edge.
 						if (itemRect.right <= containerRect.left) {
-							return navigationService.moveFocus(item);
+							isOffscreen = true;
 						}
 					} else {
+						// An item is off-screen to the top if its bottom edge is at or before the container's top edge.
 						if (itemRect.bottom <= containerRect.top) {
-							return navigationService.moveFocus(item);
+							isOffscreen = true;
 						}
 					}
+
+					if (isOffscreen) {
+						// This item is a candidate. We keep overwriting it to find the *last* one.
+						targetItem = item;
+					} else {
+						// As soon as we find an item that is even partially visible, we stop.
+						// The last `targetItem` we found is the one we want to focus.
+						break;
+					}
 				}
+			}
+
+			if (targetItem) {
+				if (targetItem.matches('nav, section, .lrud-container')) {
+					return navigationService.focusInto(targetItem);
+				}
+				return navigationService.moveFocus(targetItem);
 			}
 		}
 	},

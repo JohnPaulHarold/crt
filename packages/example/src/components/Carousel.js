@@ -1,6 +1,5 @@
 import { div, h2, section } from '../h.js';
 import { Orientation } from 'crt';
-import { navigationService } from '../services/navigationService.js';
 import { Button } from './Button.js';
 import { deadSeaService } from '../libs/deadSea.js';
 import s from './Carousel.scss';
@@ -43,7 +42,7 @@ export function Carousel(props, children) {
 
 	// TODO: should be using px-to-rem...
 	const width = props.width ? props.width + 'px' : '100%';
-	const height = props.height ? props.height + 'px' : '100%';
+	const height = props.height ? props.height + 'px' : 'auto';
 
 	// Apply margin directly to children to ensure it's part of the layout
 	// that deadSea.js can measure correctly.

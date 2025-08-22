@@ -8,6 +8,7 @@ import {
 	createSignaller,
 	watch,
 	diff,
+	loga,
 } from 'crt';
 
 import { a, div } from '../h.js';
@@ -18,7 +19,10 @@ import { Carousel } from '../components/Carousel.js';
 import { Tile } from '../components/Tile.js';
 import { Spinner } from '../components/Spinner.js';
 import { navigationService } from '../services/navigationService.js';
+import { deadSeaService } from '../libs/deadSea.js';
 import { appOutlets } from '../outlets.js';
+
+const logr = loga.create('home');
 
 /**
  * @typedef {object} RailItem
@@ -205,6 +209,9 @@ export function createHomeView(options) {
 			if (this.stopWatching) {
 				this.stopWatching();
 			}
+			// When the view is destroyed, all its carousels are also destroyed,
+			// so we should clear their geometry from the cache.
+			deadSeaService.unregisterAll();
 		},
 
 		viewDidLoad: function () {
@@ -215,11 +222,25 @@ export function createHomeView(options) {
 					const vdom = getTemplate.call(this);
 					diff(vdom, this.viewEl);
 
-					// After the DOM is updated, if we have carousels, focus them.
+					// After the DOM is updated, the view is responsible for finding
+					// all its carousels and registering them with the deadSeaService.
 					const data = this.pageData.getValue();
 					if (data) {
+						const scrollAreas =
+							this.viewEl.querySelectorAll('[data-deadsea-id]');
+						scrollAreas.forEach((el) => {
+							if (!(el instanceof HTMLElement)) {
+								logr.error(
+									'[viewDidLoad] a scrollArea was an Element other than HTMLElement'
+								);
+								return;
+							}
+							deadSeaService.register(el);
+						});
+
+						// Now that they are registered, we can focus the main container.
 						const carouselsEl = this.viewEl.querySelector('#' + data.id);
-						if (carouselsEl) {
+						if (carouselsEl && carouselsEl instanceof HTMLElement) {
 							focusPage(carouselsEl);
 						}
 					}

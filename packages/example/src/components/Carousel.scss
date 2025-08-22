@@ -36,13 +36,16 @@
 		// Use flexbox for the main vertical layout to correctly size the
 		// header and the scrollable content area.
 		display: flex;
-		flex-direction: row; // use row, as it lays it out better. No, I have no idea.
+		flex-direction: column;
 
 		> .heading {
 			flex-shrink: 0; // Prevent the heading from shrinking
 		}
 
 		> .scrollAndArrowWrapper {
+			flex-grow: 1; // Allow the scroll area to fill the remaining space
+			min-height: 0; // A flexbox hack to allow the inner carousel to scroll correctly
+
 			> .carousel {
 				white-space: normal; // Allow items to stack
 			}
@@ -55,7 +58,7 @@
 				// Reposition for vertical layout
 				left: 50%;
 				transform: translateX(-50%);
-				width: 90%; // Don't take full width
+				width: 40%; // Don't take full width
 				// TODO: all styles should be using px-to-rem
 
 				height: 80px;
@@ -91,6 +94,7 @@
 	transition: all 0.3s ease-in-out;
 	// This is a classic technique to remove whitespace between inline-block elements
 	font-size: 0;
+	height: 100%; // Ensure the scroll area fills its wrapper
 }
 
 .carousel > * {
