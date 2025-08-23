@@ -129,7 +129,7 @@ describe('deadSeaService', () => {
 				{
 					'data-deadsea-id': 'test-h-style',
 					'data-deadsea-orientation': Orientation.HORIZONTAL,
-					'data-deadsea-start-offset': '0',
+					'data-deadsea-start-padding-items': '0',
 				},
 				[child1, child2, child3]
 			);
@@ -167,7 +167,7 @@ describe('deadSeaService', () => {
 				{
 					'data-deadsea-id': 'test-v-transform',
 					'data-deadsea-orientation': Orientation.VERTICAL,
-					'data-deadsea-start-offset': '1', // Scroll if item at index 1 or greater is focused
+					'data-deadsea-start-padding-items': '1', // Scroll if item at index 1 or greater is focused
 				},
 				[child1, child2, child3]
 			);
@@ -200,7 +200,7 @@ describe('deadSeaService', () => {
 				{
 					'data-deadsea-id': 'test-no-scroll-offset',
 					'data-deadsea-orientation': Orientation.VERTICAL,
-					'data-deadsea-start-offset': '1',
+					'data-deadsea-start-padding-items': '1',
 				},
 				[child1, child2]
 			);
@@ -240,7 +240,7 @@ describe('deadSeaService', () => {
 				{
 					'data-deadsea-id': 'test-child-query',
 					'data-deadsea-orientation': Orientation.HORIZONTAL,
-					'data-deadsea-start-offset': '0',
+					'data-deadsea-start-padding-items': '0',
 					'data-deadsea-child-query': '.scroll-item',
 				},
 				[wrapper1, wrapper2]
@@ -282,7 +282,7 @@ describe('deadSeaService', () => {
 				{
 					'data-deadsea-id': 'test-scroll-start-query',
 					'data-deadsea-orientation': Orientation.HORIZONTAL,
-					'data-deadsea-start-offset': '0',
+					'data-deadsea-start-padding-items': '0',
 					'data-deadsea-scroll-start-query': '#scroll-start-here',
 				},
 				[startMarker, child1, child2] // scrollables will be these three
@@ -317,7 +317,7 @@ describe('deadSeaService', () => {
 				{
 					'data-deadsea-id': 'inner-nested',
 					'data-deadsea-orientation': Orientation.HORIZONTAL,
-					'data-deadsea-start-offset': '0',
+					'data-deadsea-start-padding-items': '0',
 					style: { width: '200px', display: 'flex' }, // Important for child offsetLeft
 				},
 				[innerChild1, innerChild2]
@@ -349,7 +349,7 @@ describe('deadSeaService', () => {
 				{
 					'data-deadsea-id': 'outer-nested',
 					'data-deadsea-orientation': Orientation.HORIZONTAL,
-					'data-deadsea-start-offset': '0',
+					'data-deadsea-start-padding-items': '0',
 					style: { width: '600px', display: 'flex' }, // Important for child offsetLeft
 				},
 				[outerItem1, outerItem2AsInnerScrollEl, outerItem3]
@@ -384,7 +384,7 @@ describe('deadSeaService', () => {
 				{
 					'data-deadsea-id': 'test-no-actual-focus',
 					'data-deadsea-orientation': Orientation.HORIZONTAL,
-					'data-deadsea-start-offset': '0',
+					'data-deadsea-start-padding-items': '0',
 				},
 				[child1, child2]
 			);
@@ -411,7 +411,7 @@ describe('deadSeaService', () => {
 			const scrollEl = createElement('div', {
 				'data-deadsea-id': 'test-empty-scrollables',
 				'data-deadsea-orientation': Orientation.HORIZONTAL,
-				'data-deadsea-start-offset': '0',
+				'data-deadsea-start-padding-items': '0',
 				// No children added to scrollEl here
 			});
 			container.appendChild(scrollEl);
@@ -445,7 +445,7 @@ describe('deadSeaService', () => {
 				{
 					'data-deadsea-id': 'test-cache',
 					'data-deadsea-orientation': Orientation.HORIZONTAL,
-					'data-deadsea-start-offset': '0',
+					'data-deadsea-start-padding-items': '0',
 				},
 				[child1, child2]
 			);
@@ -489,6 +489,71 @@ describe('deadSeaService', () => {
 			);
 			expect(scrollEl.style.left).toBe('');
 			consoleWarnSpy.mockRestore();
+		});
+
+		test('should not scroll if content is smaller than or equal to the container', () => {
+			const scrollEl = createElement('div', {
+				'data-deadsea-id': 'test-no-scroll-needed',
+				'data-deadsea-orientation': Orientation.HORIZONTAL,
+				style: { width: '300px' },
+			});
+			// Mock the element's live size property
+			Object.defineProperty(scrollEl, 'offsetWidth', {
+				configurable: true,
+				value: 300,
+			});
+
+			const child1 = createElement('div', { style: { width: '100px' } });
+			const child2 = createElement('div', {
+				class: 'focused',
+				style: { width: '200px' },
+			});
+			Object.defineProperty(child1, 'offsetLeft', {
+				configurable: true,
+				value: 0,
+			});
+			Object.defineProperty(child2, 'offsetLeft', {
+				configurable: true,
+				value: 100,
+			});
+			Object.defineProperty(child2, 'offsetWidth', {
+				configurable: true,
+				value: 200,
+			}); // Total content width is 100 + 200 = 300
+
+			scrollEl.append(child1, child2);
+			container.appendChild(scrollEl);
+
+			deadSeaService.register(scrollEl);
+			deadSeaService.scrollAction(child2, false);
+
+			expect(scrollEl.style.left).toBe('0px');
+		});
+
+		test('should not scroll past the last item', () => {
+			// Container is 300px wide. Content is 350px wide.
+			const scrollEl = createElement('div', {
+				'data-deadsea-id': 'test-no-overscroll',
+				'data-deadsea-orientation': Orientation.HORIZONTAL,
+				style: { width: '300px' },
+			});
+			Object.defineProperty(scrollEl, 'offsetWidth', { value: 300 });
+
+			const children = [
+				createElement('div', { style: { width: '100px' } }), // 0
+				createElement('div', { style: { width: '100px' } }), // 100
+				createElement('div', { class: 'focused', style: { width: '150px' } }), // 200, total width 350
+			];
+			Object.defineProperty(children[0], 'offsetLeft', { value: 0 });
+			Object.defineProperty(children[1], 'offsetLeft', { value: 100 });
+			Object.defineProperty(children[2], 'offsetLeft', { value: 200 });
+			Object.defineProperty(children[2], 'offsetWidth', { value: 150 });
+			scrollEl.append(...children);
+			container.appendChild(scrollEl);
+			deadSeaService.register(scrollEl);
+			deadSeaService.scrollAction(children[2], false);
+			// maxScrollOffset = 350 - 300 = 50. Should scroll to -50px.
+			expect(scrollEl.style.left).toBe('-50px');
 		});
 	});
 
@@ -650,7 +715,7 @@ describe('deadSeaService', () => {
 			const scrollEl = createElement('div', {
 				'data-deadsea-id': scrollId,
 				'data-deadsea-orientation': Orientation.HORIZONTAL,
-				'data-deadsea-start-offset': '0',
+				'data-deadsea-start-padding-items': '0',
 			});
 			scrollEl.appendChild(child1);
 			container.appendChild(scrollEl);

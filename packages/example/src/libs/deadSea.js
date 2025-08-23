@@ -1,3 +1,34 @@
+/**
+ * @module deadSea
+ * @description
+ * A utility for managing smooth, hardware-accelerated scrolling for spatial
+ * navigation containers (carousels). It works by calculating the necessary
+ * transform to apply to a scrollable element to bring a focused child into view.
+ *
+ * It is designed to be highly performant by caching the geometry of registered
+ * carousels, avoiding expensive DOM measurements on every scroll action.
+ *
+ * ### Configuration
+ * The behavior of a `deadSea` container is configured via `data-` attributes
+ * on the scrollable element itself.
+ *
+ * @property {string} data-deadsea-id (Required)
+ *   A unique identifier for this scroll container. This ID is used as the key
+ *   for caching the container's geometry.
+ *
+ * @property {'horizontal' | 'vertical'} [data-deadsea-orientation='horizontal'] (Optional)
+ *   The scrolling direction of the container.
+ *
+ * @property {string} [data-deadsea-child-query] (Optional)
+ *   A CSS selector used to find the focusable/scrollable children within the
+ *   container. If not provided, it defaults to the direct children of the
+ *   scrollable element. This is useful when children are wrapped in other elements.
+ *
+ * @property {number} [data-deadsea-start-padding-items=0] (Optional)
+ *   The number of items to keep visible at the start of the list as a visual
+ *   padding. The container will only start scrolling once the focused item's
+ *   index is greater than this value.
+ */
 import {
 	Orientation,
 	collectionToArray,
@@ -10,7 +41,7 @@ const logr = loga.create('deadsea');
 
 /**
  * A cache to store pre-calculated geometry for each registered carousel.
- * @type {Record<string, { offsets: number[], scrollables: HTMLElement[] }>}
+ * @type {Record<string, { offsets: number[], scrollables: HTMLElement[], totalContentSize: number }>}
  */
 const geometryCache = {};
 
@@ -31,11 +62,18 @@ function getScrollEl(el) {
 }
 
 /**
+ * @typedef {object} CachedGeometry
+ * @property {number[]} offsets
+ * @property {HTMLElement[]} scrollables
+ * @property {number} totalContentSize
+ */
+
+/**
  * Gets the geometry from the cache for a given scroll element.
  * This function assumes the geometry has already been registered.
  *
  * @param {HTMLElement} scrollEl The scrollable container element.
- * @returns {{ offsets: number[], scrollables: HTMLElement[] } | null} The cached geometry or null if not found.
+ * @returns {CachedGeometry | null} The cached geometry or null if not found.
  */
 function getCachedGeometry(scrollEl) {
 	const scrollId = $dataGet(scrollEl, 'deadseaId');
@@ -60,7 +98,7 @@ function getCachedGeometry(scrollEl) {
 /**
  * Builds the geometry for a scrollable element.
  * @param {HTMLElement} scrollEl
- * @returns {{ offsets: number[], scrollables: HTMLElement[] } | null}
+ * @returns {CachedGeometry | null}
  */
 function buildGeometry(scrollEl) {
 	const orientation =
@@ -69,6 +107,8 @@ function buildGeometry(scrollEl) {
 	const startQs = $dataGet(scrollEl, 'deadseaScrollStartQuery');
 	const offsetProp =
 		orientation === Orientation.HORIZONTAL ? 'offsetLeft' : 'offsetTop';
+	const dimensionProp =
+		orientation === Orientation.HORIZONTAL ? 'offsetWidth' : 'offsetHeight';
 
 	const scrollables = childQuery
 		? collectionToArray(scrollEl.querySelectorAll(childQuery))
@@ -83,7 +123,12 @@ function buildGeometry(scrollEl) {
 	}
 
 	const offsets = scrollables.map((s) => s[offsetProp] - startElOffsetInPx);
-	return { offsets, scrollables };
+
+	const lastItem = scrollables[scrollables.length - 1];
+	const totalContentSize =
+		lastItem[offsetProp] + lastItem[dimensionProp] - startElOffsetInPx;
+
+	return { offsets, scrollables, totalContentSize };
 }
 
 /**
@@ -115,29 +160,41 @@ function findScrollableFromFocusEl(el, scrollables) {
 /**
  * @param {number[]} offsets
  * @param {number} scrollableIndex
- * @param {number} startOffset
+ * @param {number} startPaddingItems
  */
-function calculateOffset(offsets, scrollableIndex, startOffset) {
-	return offsets[Math.max(0, scrollableIndex - startOffset)];
+function calculateOffset(offsets, scrollableIndex, startPaddingItems) {
+	return offsets[Math.max(0, scrollableIndex - startPaddingItems)];
 }
 
 /**
  * @param {HTMLElement} scrollEl
  * @param {boolean} useTransforms
  */
-function doTheHardWork(scrollEl, useTransforms) {
+function updateScrollPosition(scrollEl, useTransforms) {
 	const geometry = getCachedGeometry(scrollEl);
 	if (!geometry) {
 		return;
 	}
 
-	const { offsets, scrollables } = geometry;
+	const { offsets, scrollables, totalContentSize } = geometry;
 	const focusedEl = document.querySelector(focusedQuery);
 
 	const orientation =
 		$dataGet(scrollEl, 'deadseaOrientation') || Orientation.HORIZONTAL;
-	const startOffset = parseInt(
-		$dataGet(scrollEl, 'deadseaStartOffset') || '0',
+	const containerSize =
+		orientation === Orientation.HORIZONTAL
+			? scrollEl.offsetWidth
+			: scrollEl.offsetHeight;
+
+	// If all content fits within the container, no scrolling is needed.
+	// Reset any existing scroll and exit.
+	if (totalContentSize <= containerSize) {
+		resetScroll(scrollEl);
+		return;
+	}
+
+	const startPaddingItems = parseInt(
+		$dataGet(scrollEl, 'deadseaStartPaddingItems') || '0',
 		10
 	);
 
@@ -146,14 +203,20 @@ function doTheHardWork(scrollEl, useTransforms) {
 			? findScrollableFromFocusEl(focusedEl, scrollables)[1]
 			: 0;
 
-	const newOffset = calculateOffset(offsets, scrollableIndex, startOffset);
+	let newOffset = calculateOffset(offsets, scrollableIndex, startPaddingItems);
+
+	// Cap the new offset to prevent scrolling past the end of the content.
+	const maxScrollOffset = totalContentSize - containerSize;
+	if (newOffset > maxScrollOffset) {
+		newOffset = maxScrollOffset;
+	}
 
 	// Guard against invalid offset (e.g., from empty cache or bad index)
 	if (typeof newOffset !== 'number' || !isFinite(newOffset)) {
 		return;
 	}
 
-	if (scrollableIndex >= startOffset) {
+	if (scrollableIndex >= startPaddingItems) {
 		if (!useTransforms) {
 			const axis = orientation === Orientation.HORIZONTAL ? 'left' : 'top';
 			scrollEl.style[axis] = -newOffset + 'px';
@@ -164,12 +227,19 @@ function doTheHardWork(scrollEl, useTransforms) {
 		}
 	} else {
 		// Reset scroll position if we are before the start offset
-		scrollEl.style.left = '0px';
-		scrollEl.style.top = '0px';
-		if (transformProp) {
-			const style = /** @type {any} */ (scrollEl.style);
-			style[transformProp] = '';
-		}
+		resetScroll(scrollEl);
+	}
+}
+
+/**
+ * Resets the scroll position of an element to zero.
+ * @param {HTMLElement} scrollEl
+ */
+function resetScroll(scrollEl) {
+	scrollEl.style.left = '0px';
+	scrollEl.style.top = '0px';
+	if (transformProp) {
+		/** @type {any} */ (scrollEl.style)[transformProp] = '';
 	}
 }
 
@@ -192,7 +262,7 @@ export const deadSeaService = {
 		let scrollEl = getScrollEl(el);
 
 		while (scrollEl) {
-			doTheHardWork(scrollEl, !!useTransforms);
+			updateScrollPosition(scrollEl, !!useTransforms);
 			scrollEl =
 				scrollEl.parentElement instanceof HTMLElement
 					? getScrollEl(scrollEl.parentElement)
