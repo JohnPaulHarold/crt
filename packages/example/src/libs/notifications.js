@@ -1,14 +1,15 @@
 import { removeElement, loga } from 'crt';
-import { BatchedQueue } from './BatchedQueue';
+import { createBatchedQueue } from './BatchedQueue.js';
 
 const logr = loga.create('notifications');
 
-function handleNotification() {
-	logr.log('[handleNotification]', arguments);
-	const notifications = arguments[0];
+/**
+ * @param {HTMLElement[]} notifications
+ */
+function handleNotification(notifications) {
+	logr.log('[handleNotification]', notifications);
 
-	for (let index = 0; index < notifications.length; index++) {
-		const notificationEl = notifications[index];
+	for (const notificationEl of notifications) {
 		NotificationsService.outlet.append(notificationEl);
 	}
 }
@@ -18,9 +19,10 @@ function handleNotification() {
  * @property {HTMLElement} outlet
  * @property {number} count
  * @property {Record<string, number>} timers
- * @property {*} notificationsQueue
+ * @property {import('./BatchedQueue.js').BatchedQueueInstance<HTMLElement>} notificationsQueue
  * @property {(el: HTMLElement) => void} sendNotification
  * @property {(id: string) => void} clearNotification
+ * @property {() => void} [_resetForTesting]
  */
 
 /**
@@ -30,7 +32,7 @@ export const NotificationsService = {
 	outlet: document.createElement('div'),
 	count: 0,
 	timers: {},
-	notificationsQueue: new BatchedQueue(handleNotification, 100, 5),
+	notificationsQueue: createBatchedQueue(handleNotification, 100, 5),
 
 	/**
 	 * @param {HTMLElement} el
@@ -63,4 +65,33 @@ export const NotificationsService = {
 		clearTimeout(this.timers[id]);
 		delete this.timers[id];
 	},
+
+	/**
+	 * Resets the service's state for test isolation.
+	 * This method is only available in a test environment.
+	 */
+	_resetForTesting:
+		process.env.NODE_ENV === 'test'
+			? function () {
+					// Referencing the service directly avoids ambiguity with `this` context,
+					// which resolves the TypeScript errors.
+					if (
+						NotificationsService.notificationsQueue &&
+						NotificationsService.notificationsQueue.clearSweep
+					) {
+						NotificationsService.notificationsQueue.clearSweep();
+					}
+					NotificationsService.outlet.innerHTML = '';
+					NotificationsService.count = 0;
+					for (const timerId in NotificationsService.timers) {
+						clearTimeout(NotificationsService.timers[timerId]);
+					}
+					NotificationsService.timers = {};
+					NotificationsService.notificationsQueue = createBatchedQueue(
+						handleNotification,
+						100,
+						5
+					);
+				}
+			: undefined,
 };

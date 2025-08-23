@@ -1,132 +1,118 @@
 import { noop } from 'crt';
 
 /**
+ * @template T
  * @callback HandleFullCallback
- * @param {*} data
+ * @param {T[]} data
  */
 
 /**
- * @param {HandleFullCallback} handleFull
- * @param {number} batchInterval
- * @param {number} size
+ * @template T
+ * @typedef {object} BatchedQueueInstance
+ * @property {(element: T) => void} enqueue
+ * @property {() => void} sweep
+ * @property {() => void} clearSweep
+ * @property {() => number} length
+ * @property {() => boolean} isEmpty
+ * @property {() => T | undefined} getFront
+ * @property {() => T | undefined} getLast
+ * @property {() => T | undefined} dequeue
+ * @property {(len: number) => void} clear
+ * @property {() => { data: T[], size: number, batchInterval: number, handleFull: HandleFullCallback<T> } | undefined} [_getInternalStateForTesting]
  */
-export function BatchedQueue(handleFull, batchInterval, size) {
+
+/**
+ * @template T
+ * @param {HandleFullCallback<T>} handleFull
+ * @param {number} [batchInterval]
+ * @param {number} [size]
+ * @returns {BatchedQueueInstance<T>}
+ */
+export function createBatchedQueue(handleFull, batchInterval, size) {
 	const defaultSize = 10;
 	const defaultBatchInterval = 5e3;
 
-	/**
-	 * @type {Array<*>}
-	 */
-	this.data = [];
-	this.size = size || defaultSize;
-	this.handleFull = handleFull || noop;
-	/** @type {number|null} */
-	this.timer = null;
-	this.batchInterval = batchInterval || defaultBatchInterval;
-}
+	/** @type {T[]} */
+	let data = [];
+	const queueSize = size || defaultSize;
+	const onFull = handleFull || noop;
+	/** @type {number | null} */
+	let timer = null;
+	const interval = batchInterval || defaultBatchInterval;
 
-BatchedQueue.prototype = {
-	/**
-	 * @memberof BatchedQueue
-	 * @param {*} element
-	 */
-	enqueue(element) {
-		this.clearSweep();
+	/** @type {BatchedQueueInstance<T>} */
+	const publicApi = {
+		enqueue(element) {
+			publicApi.clearSweep();
+			data.push(element);
 
-		if (this.data.length < this.size) {
-			this.data.push(element);
-		} else {
-			/**
-			 * @type {Array<*>}
-			 */
-			const data = /** @type {Array<*>}*/ ([]).concat(this.data);
-
-			this.handleFull(data);
-			this.clear(data.length);
-
-			this.data.push(element);
-		}
-
-		// restart the sweep
-		this.sweep();
-	},
-
-	/**
-	 * @memberof BatchedQueue
-	 * @returns
-	 */
-	sweep() {
-		this.timer = window.setTimeout(() => {
-			/**
-			 * @type {Array<*>}
-			 */
-			const data = /** @type {Array<*>}*/ ([]).concat(this.data);
-
-			if (data.length > 0) {
-				this.handleFull(data);
-				this.clear(data.length);
+			// If the queue is now full, process it immediately.
+			if (data.length >= queueSize) {
+				const batch = [...data];
+				onFull(batch);
+				publicApi.clear(batch.length);
+			} else {
+				// Otherwise, if the queue is not full, set a timer for the next sweep.
+				publicApi.sweep();
 			}
-		}, this.batchInterval);
-	},
+		},
 
-	/**
-	 * @memberof BatchedQueue
-	 */
-	clearSweep() {
-		if (this.timer) window.clearTimeout(this.timer);
-	},
+		sweep() {
+			timer = window.setTimeout(() => {
+				const batch = [...data];
+				if (batch.length > 0) {
+					onFull(batch);
+					publicApi.clear(batch.length);
+				}
+			}, interval);
+		},
 
-	/**
-	 * @memberof BatchedQueue
-	 * @returns
-	 */
-	length() {
-		return this.data.length;
-	},
+		clearSweep() {
+			if (timer) window.clearTimeout(timer);
+			timer = null;
+		},
 
-	/**
-	 * @memberof BatchedQueue
-	 * @returns
-	 */
-	isEmpty() {
-		return this.data.length === 0;
-	},
+		length() {
+			return data.length;
+		},
 
-	/**
-	 * @memberof BatchedQueue
-	 * @returns
-	 */
-	getFront() {
-		if (this.isEmpty() === false) {
-			return this.data[0];
-		}
-	},
+		isEmpty() {
+			return data.length === 0;
+		},
 
-	/**
-	 * @memberof BatchedQueue
-	 * @returns
-	 */
-	getLast() {
-		if (!this.isEmpty()) {
-			return this.data[this.data.length - 1];
-		}
-	},
+		getFront() {
+			if (!publicApi.isEmpty()) {
+				return data[0];
+			}
+		},
 
-	/**
-	 * @memberof BatchedQueue
-	 * @returns
-	 */
-	dequeue() {
-		if (!this.isEmpty()) {
-			return this.data.shift();
-		}
-	},
+		getLast() {
+			if (!publicApi.isEmpty()) {
+				return data[data.length - 1];
+			}
+		},
 
-	/**
-	 * @memberof BatchedQueue
-	 * @param {*} len
-	 */
-	clear(len) {
-		this.data = this.data.slice(len);
-	},
-};
+		dequeue() {
+			if (!publicApi.isEmpty()) {
+				return data.shift();
+			}
+		},
+
+		clear(len) {
+			data = data.slice(len);
+		},
+
+		// Expose internal state for testing purposes only
+		_getInternalStateForTesting:
+			process.env.NODE_ENV === 'test'
+				? () => ({
+						data,
+						size: queueSize,
+						batchInterval: interval,
+						handleFull: onFull,
+					})
+				: undefined,
+	};
+
+	return publicApi;
+}
