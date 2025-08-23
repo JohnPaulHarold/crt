@@ -38,7 +38,7 @@ describe('Carousel', () => {
 			{
 				id: 'xyz',
 				orientation: 'horizontal',
-				title,
+				heading: title,
 			},
 			[div({}, 'X'), div({}, 'Y'), div({}, 'Z')]
 		);

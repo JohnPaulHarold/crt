@@ -1,9 +1,18 @@
 /**
  * @vitest-environment jsdom
  */
-import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
-import { Orientation } from 'crt';
-import { scrollAction, clearDeadSeaCache } from './deadSea.js';
+import {
+	describe,
+	test,
+	expect,
+	beforeEach,
+	afterEach,
+	vi,
+	beforeAll,
+	afterAll,
+} from 'vitest';
+import { Orientation, loga } from 'crt';
+import { deadSeaService } from './deadSea.js';
 
 // Helper to convert kebab-case to camelCase
 /**
@@ -39,20 +48,50 @@ const createElement = (tag, attributes = {}, children = []) => {
 	return el;
 };
 
-describe('deadSea', () => {
+/**
+ * Local definition of LogLevel enum to control logging verbosity in tests.
+ * This avoids needing to export it from the core `crt` package if it's not already.
+ * @readonly
+ * @enum {number}
+ */
+const LogLevel = {
+	NONE: 0,
+	ERROR: 1,
+	WARN: 2,
+	INFO: 4,
+	LOG: 5,
+};
+
+describe('deadSeaService', () => {
+	/** @type { number | undefined } */
+	let originalLogLevel;
+
+	beforeAll(() => {
+		originalLogLevel = loga.getLogLevel();
+		// Suppress informational logs during tests to keep the output clean, but allow warnings and errors.
+		loga.setLogLevel(LogLevel.WARN);
+	});
+
+	afterAll(() => {
+		// Restore the original log level after all tests in this suite have run.
+		if (originalLogLevel !== undefined) {
+			loga.setLogLevel(originalLogLevel);
+		}
+	});
+
 	/** @type {*} */
 	let container;
 
 	beforeEach(() => {
 		container = document.createElement('div');
 		document.body.appendChild(container);
-		// offsetCache is module-scoped. Tests use unique IDs to avoid collision.
+		// Reset the service's internal state for test isolation
+		deadSeaService.unregisterAll();
 	});
 
 	afterEach(() => {
 		if (container) {
 			document.body.removeChild(container);
-			container = null;
 		}
 
 		document.body.innerHTML = ''; // Clean up focused elements etc.
@@ -96,7 +135,8 @@ describe('deadSea', () => {
 			);
 			container.appendChild(scrollEl);
 
-			scrollAction(child2, false); // child2 is focused, el to start search from
+			deadSeaService.register(scrollEl);
+			deadSeaService.scrollAction(child2, false); // child2 is focused, el to start search from
 
 			expect(scrollEl.style.left).toBe('-100px');
 		});
@@ -133,7 +173,8 @@ describe('deadSea', () => {
 			);
 			container.appendChild(scrollEl);
 
-			scrollAction(child3, true); // child3 is at index 2
+			deadSeaService.register(scrollEl);
+			deadSeaService.scrollAction(child3, true); // child3 is at index 2
 
 			expect(scrollEl.style.transform).toBe('translateY(-50px)');
 		});
@@ -165,7 +206,8 @@ describe('deadSea', () => {
 			);
 			container.appendChild(scrollEl);
 
-			scrollAction(child1, true); // child1 is at index 0
+			deadSeaService.register(scrollEl);
+			deadSeaService.scrollAction(child1, true); // child1 is at index 0
 
 			// It should reset the scroll position
 			expect(scrollEl.style.transform).toBe('');
@@ -205,7 +247,8 @@ describe('deadSea', () => {
 			);
 			container.appendChild(scrollEl);
 
-			scrollAction(actualChild2, false);
+			deadSeaService.register(scrollEl);
+			deadSeaService.scrollAction(actualChild2, false);
 
 			expect(scrollEl.style.left).toBe('-100px');
 		});
@@ -246,15 +289,9 @@ describe('deadSea', () => {
 			);
 			container.appendChild(scrollEl);
 
-			scrollAction(child2, false);
-			// scrollables: [startMarker, child1, child2]
-			// startElOffsetInPx = startMarker.offsetLeft = 30
-			// offsetCache:
-			//  startMarker: 30 - 30 = 0
-			//  child1: 30 - 30 = 0
-			//  child2: 130 - 30 = 100
-			// cache = [0, 0, 100]. Focused is child2 (index 2). scrollableIndex = 2.
-			// newOffset = cache[Math.max(0, 2 - 0)] = cache[2] = 100.
+			deadSeaService.register(scrollEl);
+			deadSeaService.scrollAction(child2, false);
+
 			expect(scrollEl.style.left).toBe('-100px');
 		});
 
@@ -319,7 +356,9 @@ describe('deadSea', () => {
 			);
 			container.appendChild(outerScrollEl);
 
-			scrollAction(innerChild2, false); // Focus is deep inside
+			deadSeaService.register(innerScrollEl);
+			deadSeaService.register(outerScrollEl);
+			deadSeaService.scrollAction(innerChild2, false); // Focus is deep inside
 
 			expect(innerScrollEl.style.left).toBe('-50px');
 			// outerItem2AsInnerScrollEl is at index 1 in outerScrollEl's children
@@ -351,11 +390,9 @@ describe('deadSea', () => {
 			);
 			container.appendChild(scrollEl);
 
-			// Call scrollAction with an element that isn't '.focused'.
-			// The internal query for '.focused' will return null.
-			scrollAction(child1, false);
+			deadSeaService.register(scrollEl);
+			deadSeaService.scrollAction(child1, false);
 
-			// scrollableIndex defaults to 0. newOffset will be offsetCache[0], which is 0.
 			expect(scrollEl.style.left).toBe('0px');
 		});
 
@@ -363,7 +400,7 @@ describe('deadSea', () => {
 			const el = createElement('div'); // No data-deadsea attributes on el or parents
 			container.appendChild(el);
 
-			expect(() => scrollAction(el, false)).not.toThrow();
+			expect(() => deadSeaService.scrollAction(el, false)).not.toThrow();
 			// Check that no style attributes were added by deadSea
 			expect(el.style.left).toBe('');
 			expect(el.style.top).toBe('');
@@ -379,31 +416,10 @@ describe('deadSea', () => {
 			});
 			container.appendChild(scrollEl);
 
-			// Add a dummy focused element to the document body so querySelector('.focused') finds something,
-			// but it's not within scrollEl's context for findScrollableFromFocusEl if scrollables is empty.
-			// Or, more accurately, findScrollableFromFocusEl will be called with this dummy.
-			const dummyFocusedGlobal = createElement('div', {
-				class: 'focused',
-			});
-			document.body.appendChild(dummyFocusedGlobal);
+			deadSeaService.register(scrollEl);
+			deadSeaService.scrollAction(scrollEl, false);
 
-			// scrollAction is called with scrollEl itself.
-			// getScrollEl(scrollEl) returns scrollEl.
-			// doTheHardWork(scrollEl, false) is called.
-			// scrollables = collectionToArray(scrollEl.children) will be an empty array.
-			// offsetCache['test-empty-scrollables'] will be [].
-			// scrollableIndex will be 0 (default as focusedEl is not in empty scrollables).
-			// calculateOffset([], 0, 0) will try to access [][0] -> undefined.
-			// newOffset will be undefined.
-			// scrollEl.style.left = -undefined + 'px' = 'NaNpx'.
-			scrollAction(scrollEl, false);
-
-			// If newOffset is undefined, a robust implementation should not set style to 'NaNpx'.
-			// It might leave it as '', or set it to '0px'.
-			// Since the actual result is '', we expect ''.
 			expect(scrollEl.style.left).toBe('');
-
-			document.body.removeChild(dummyFocusedGlobal); // Clean up
 		});
 
 		test('should use cached offsets on subsequent calls for the same scrollId', () => {
@@ -436,134 +452,285 @@ describe('deadSea', () => {
 			container.appendChild(scrollEl);
 
 			// First call: populates cache
-			scrollAction(child2, false);
+			deadSeaService.register(scrollEl);
+			deadSeaService.scrollAction(child2, false);
 			expect(scrollEl.style.left).toBe('-100px');
 			expect(mockOffsetLeftChild1).toHaveBeenCalledTimes(1);
 			expect(mockOffsetLeftChild2).toHaveBeenCalledTimes(1);
 
-			// Change focused element (or just call again)
-			// To truly test cache, ensure offset properties are not read again.
-			// Let's focus child1 now.
 			child2.classList.remove('focused');
 			child1.classList.add('focused');
 
-			scrollAction(child1, false);
+			deadSeaService.scrollAction(child1, false);
 			expect(scrollEl.style.left).toBe('0px'); // Scrolls to child1
 			// Offset getters should not have been called again
 			expect(mockOffsetLeftChild1).toHaveBeenCalledTimes(1);
 			expect(mockOffsetLeftChild2).toHaveBeenCalledTimes(1);
 		});
+
+		test('should warn and do nothing if scrollAction is called on an unregistered element', () => {
+			const consoleWarnSpy = vi
+				.spyOn(console, 'warn')
+				.mockImplementation(() => {});
+			const scrollEl = createElement('div', {
+				'data-deadsea-id': 'unregistered',
+				'data-deadsea-orientation': Orientation.HORIZONTAL,
+			});
+			const child = createElement('div', { class: 'focused' });
+			scrollEl.appendChild(child);
+			container.appendChild(scrollEl);
+
+			deadSeaService.scrollAction(child, false);
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining('[WARN][deadsea]'),
+				expect.any(String),
+				'[deadSea] Geometry for scrollId "unregistered" not found in cache. Was it registered?'
+			);
+			expect(scrollEl.style.left).toBe('');
+			consoleWarnSpy.mockRestore();
+		});
 	});
 
-	// Minimal tests for getScrollEl logic (implicitly tested by scrollAction)
-	describe('getScrollEl behavior (implicitly tested)', () => {
-		test('scrollAction works when the triggered element is the scrollEl', () => {
-			const scrollEl = createElement('div', {
-				'data-deadsea-orientation': 'horizontal',
-				'data-deadsea-id': 'getscroll-self',
-				'data-deadsea-start-offset': '0',
-				class: 'focused', // scrollEl itself is focused for simplicity of test
+	describe('page', () => {
+		test('should return the first off-screen element when paging forward (horizontal)', () => {
+			const child1 = createElement('div');
+			const child2 = createElement('div');
+			const child3 = createElement('div'); // This one should be returned
+			const scrollEl = createElement(
+				'div',
+				{ 'data-deadsea-id': 'page-h-fwd' },
+				[child1, child2, child3]
+			);
+			container.appendChild(scrollEl);
+
+			// Mock geometry
+			vi.spyOn(scrollEl, 'getBoundingClientRect').mockReturnValue({
+				left: 0,
+				right: 200,
+				width: 200,
+				height: 0,
+				x: 0,
+				y: 0,
+				bottom: 0,
+				top: 0,
+				toJSON: function () {
+					throw new Error('Function not implemented.');
+				},
 			});
-			const child = createElement('div', { style: { width: '100px' } });
-			Object.defineProperty(child, 'offsetLeft', {
+			vi.spyOn(child1, 'getBoundingClientRect').mockReturnValue({
+				left: 0,
+				right: 100,
+				height: 0,
+				width: 0,
+				x: 0,
+				y: 0,
+				bottom: 0,
+				top: 0,
+				toJSON: function () {
+					throw new Error('Function not implemented.');
+				},
+			});
+			vi.spyOn(child2, 'getBoundingClientRect').mockReturnValue({
+				left: 100,
+				right: 200,
+				height: 0,
+				width: 0,
+				x: 0,
+				y: 0,
+				bottom: 0,
+				top: 0,
+				toJSON: function () {
+					throw new Error('Function not implemented.');
+				},
+			});
+			vi.spyOn(child3, 'getBoundingClientRect').mockReturnValue({
+				left: 200,
+				right: 300,
+				height: 0,
+				width: 0,
+				x: 0,
+				y: 0,
+				bottom: 0,
+				top: 0,
+				toJSON: function () {
+					throw new Error('Function not implemented.');
+				},
+			});
+
+			deadSeaService.register(scrollEl);
+			const nextEl = deadSeaService.page('page-h-fwd', 'forward');
+
+			expect(nextEl).toBe(child3);
+		});
+
+		test('should return the correct element when paging backward (vertical)', () => {
+			const child1 = createElement('div'); // This one should be returned
+			const child2 = createElement('div');
+			const child3 = createElement('div');
+			const scrollEl = createElement(
+				'div',
+				{
+					'data-deadsea-id': 'page-v-bwd',
+					'data-deadsea-orientation': Orientation.VERTICAL,
+				},
+				[child1, child2, child3]
+			);
+			container.appendChild(scrollEl);
+
+			// Mock geometry: child1 is off-screen top, child2/3 are visible
+			vi.spyOn(scrollEl, 'getBoundingClientRect').mockReturnValue({
+				top: 0,
+				bottom: 200,
+				height: 200,
+				width: 0,
+				x: 0,
+				y: 0,
+				left: 0,
+				right: 0,
+				toJSON: function () {
+					throw new Error('Function not implemented.');
+				},
+			});
+			vi.spyOn(child1, 'getBoundingClientRect').mockReturnValue({
+				top: -100,
+				bottom: 0,
+				height: 0,
+				width: 0,
+				x: 0,
+				y: 0,
+				left: 0,
+				right: 0,
+				toJSON: function () {
+					throw new Error('Function not implemented.');
+				},
+			});
+			vi.spyOn(child2, 'getBoundingClientRect').mockReturnValue({
+				top: 0,
+				bottom: 100,
+				height: 0,
+				width: 0,
+				x: 0,
+				y: 0,
+				left: 0,
+				right: 0,
+				toJSON: function () {
+					throw new Error('Function not implemented.');
+				},
+			});
+			vi.spyOn(child3, 'getBoundingClientRect').mockReturnValue({
+				top: 100,
+				bottom: 200,
+				height: 0,
+				width: 0,
+				x: 0,
+				y: 0,
+				left: 0,
+				right: 0,
+				toJSON: function () {
+					throw new Error('Function not implemented.');
+				},
+			});
+
+			deadSeaService.register(scrollEl);
+			const prevEl = deadSeaService.page('page-v-bwd', 'backward');
+
+			expect(prevEl).toBe(child1);
+		});
+	});
+
+	describe('unregister', () => {
+		test('unregister should remove the specified entry from the cache', () => {
+			const scrollId = 'test-cache-clear';
+			const child1 = createElement('div', { class: 'focused' });
+			Object.defineProperty(child1, 'offsetLeft', {
 				configurable: true,
 				value: 0,
 			});
-			scrollEl.appendChild(child); // scrollEl needs children for offset calculation
+			const scrollEl = createElement('div', {
+				'data-deadsea-id': scrollId,
+				'data-deadsea-orientation': Orientation.HORIZONTAL,
+				'data-deadsea-start-offset': '0',
+			});
+			scrollEl.appendChild(child1);
 			container.appendChild(scrollEl);
 
-			// Here, the focused element is scrollEl.
-			// findScrollableFromFocusEl(scrollEl, [child]) will likely result in index 0 or an issue
-			// Let's make a child focused instead for a more realistic getScrollEl test.
-			scrollEl.classList.remove('focused');
-			child.classList.add('focused');
+			deadSeaService.register(scrollEl);
 
-			scrollAction(scrollEl, false); // Start search from scrollEl, getScrollEl(scrollEl) returns scrollEl
-			expect(scrollEl.style.left).toBe('0px');
+			// To prove it's cached, we spy on the offsetLeft getter.
+			// It should NOT be called on the second scrollAction.
+			const offsetLeftGetter = vi.spyOn(child1, 'offsetLeft', 'get');
+			deadSeaService.scrollAction(child1, false);
+			expect(offsetLeftGetter).not.toHaveBeenCalled();
+
+			// Now unregister the cache
+			deadSeaService.unregister(scrollId);
+
+			// Call again. Since the cache is gone, it will try to re-register
+			// (and fail, logging a warning, because we're calling scrollAction directly).
+			// A better test is to register again and see if the getter is called.
+			deadSeaService.register(scrollEl);
+			expect(offsetLeftGetter).toHaveBeenCalled();
 		});
-	});
-});
 
-describe('clearDeadSeaCache', () => {
-	/** @type {*} */
-	let container;
+		test('unregisterAll should clear all caches', () => {
+			const scrollId1 = 'test-cache-clear-1';
+			const scrollId2 = 'test-cache-clear-2';
+			const child1 = createElement('div', { class: 'focused' });
+			const child2 = createElement('div', { class: 'focused' });
 
-	beforeEach(() => {
-		container = document.createElement('div');
-		document.body.appendChild(container);
-	});
+			const scrollEl1 = createElement('div', { 'data-deadsea-id': scrollId1 });
+			scrollEl1.appendChild(child1);
+			const scrollEl2 = createElement('div', { 'data-deadsea-id': scrollId2 });
+			scrollEl2.appendChild(child2);
 
-	afterEach(() => {
-		if (container) {
-			document.body.removeChild(container);
-			container = null;
-		}
-		vi.restoreAllMocks();
-	});
+			container.append(scrollEl1, scrollEl2);
 
-	test('should remove the specified entry from the cache', () => {
-		const scrollId = 'test-cache-clear';
-		const child1 = document.createElement('div');
-		child1.className = 'focused';
-		Object.defineProperty(child1, 'offsetLeft', {
-			configurable: true,
-			value: 0,
+			deadSeaService.register(scrollEl1);
+			deadSeaService.register(scrollEl2);
+
+			// To prove they are cached, we'll spy on the warning when we try to page.
+			const consoleWarnSpy = vi
+				.spyOn(console, 'warn')
+				.mockImplementation(() => {});
+
+			deadSeaService.unregisterAll();
+
+			deadSeaService.page(scrollId1, 'forward');
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining('[WARN][deadsea]'),
+				expect.any(String),
+				`[deadSea] Geometry for scrollId "${scrollId1}" not found in cache. Was it registered?`
+			);
+
+			deadSeaService.page(scrollId2, 'forward');
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining('[WARN][deadsea]'),
+				expect.any(String),
+				`[deadSea] Geometry for scrollId "${scrollId2}" not found in cache. Was it registered?`
+			);
+
+			consoleWarnSpy.mockRestore();
 		});
-		const scrollEl = document.createElement('div');
-		scrollEl.dataset.deadseaId = scrollId;
-		scrollEl.dataset.deadseaOrientation = Orientation.HORIZONTAL;
-		scrollEl.dataset.deadseaStartOffset = '0';
-		scrollEl.appendChild(child1);
-		container.appendChild(scrollEl);
 
-		// First call to populate the cache
-		scrollAction(child1, false);
+		test('should log an error if trying to register an element without a data-deadsea-id', () => {
+			const consoleErrorSpy = vi
+				.spyOn(console, 'error')
+				.mockImplementation(() => {});
+			const scrollEl = createElement('div', {
+				'data-deadsea-orientation': Orientation.HORIZONTAL,
+			});
+			container.appendChild(scrollEl);
 
-		const offsetLeftGetter = vi.spyOn(child1, 'offsetLeft', 'get');
-		scrollAction(child1, false);
-		expect(offsetLeftGetter).not.toHaveBeenCalled(); // Should use cache
+			deadSeaService.register(scrollEl);
 
-		// Now clear the cache
-		clearDeadSeaCache(scrollId);
-
-		// Call again, the cache should be repopulated, so the getter is called
-		scrollAction(child1, false);
-		expect(offsetLeftGetter).toHaveBeenCalled();
-	});
-});
-
-describe('error handling and edge cases', () => {
-	/** @type {HTMLElement} */
-	let container;
-
-	beforeEach(() => {
-		container = document.createElement('div');
-		document.body.appendChild(container);
-	});
-
-	afterEach(() => {
-		if (container) {
-			document.body.removeChild(container);
-		}
-		document.body.innerHTML = ''; // Clean up focused elements etc.
-		vi.restoreAllMocks();
-	});
-
-	test('should log an error and do nothing if data-deadsea-id is missing', () => {
-		const consoleErrorSpy = vi
-			.spyOn(console, 'error')
-			.mockImplementation(() => {});
-		const scrollEl = document.createElement('div');
-		scrollEl.dataset.deadseaOrientation = Orientation.HORIZONTAL;
-		container.appendChild(scrollEl);
-		scrollAction(scrollEl, false);
-		expect(consoleErrorSpy).toHaveBeenCalledWith(
-			expect.any(String),
-			expect.any(String),
-			'DeadSea element requires a "data-deadsea-id" attribute for caching.',
-			scrollEl
-		);
-		expect(scrollEl.style.left).toBe('');
-		consoleErrorSpy.mockRestore();
+			expect(consoleErrorSpy).toHaveBeenCalledWith(
+				expect.stringContaining('[ERROR][deadsea]'),
+				expect.any(String),
+				'[deadSea.register] Cannot register an element without a "data-deadsea-id".',
+				scrollEl
+			);
+			consoleErrorSpy.mockRestore();
+		});
 	});
 });

@@ -166,12 +166,24 @@ function createNavigationService() {
 	}
 
 	/**
-	 * Finds the first focusable element within a given container.
+	 * Finds the initial element to focus within a container.
+	 * It prioritizes an element specified by a 'data-focus' attribute
+	 * and falls back to the first focusable element.
 	 * @private
 	 * @param {HTMLElement} containerEl
 	 * @returns {HTMLElement | null}
 	 */
-	function _getFocusableChildFromContainer(containerEl) {
+	function _getInitialFocusInContainer(containerEl) {
+		const lastFocusedId = $dataGet(containerEl, 'focus');
+		if (lastFocusedId && typeof lastFocusedId === 'string') {
+			// Query within the container for the element with the stored ID.
+			const lastFocusedEl = containerEl.querySelector('#' + lastFocusedId);
+			if (lastFocusedEl instanceof HTMLElement) {
+				return lastFocusedEl;
+			}
+		}
+
+		// Fallback: get the first focusable element in the container.
 		// getNextFocus with a null `from` element gets the first focusable.
 		return getNextFocus(null, -1, containerEl);
 	}
@@ -375,7 +387,7 @@ function createNavigationService() {
 			// we need to find the first focusable child inside it.
 			let actualToEl = toEl;
 			if (toEl.matches('nav, section, .lrud-container')) {
-				const firstFocusableChild = _getFocusableChildFromContainer(toEl);
+				const firstFocusableChild = _getInitialFocusInContainer(toEl);
 				if (firstFocusableChild) {
 					actualToEl = firstFocusableChild;
 				} else {
@@ -424,7 +436,7 @@ function createNavigationService() {
 		 */
 		focusInto(scopeEl) {
 			if (scopeEl instanceof HTMLElement) {
-				const nextFocus = _getFocusableChildFromContainer(scopeEl);
+				const nextFocus = _getInitialFocusInContainer(scopeEl);
 
 				if (nextFocus) {
 					this.moveFocus(nextFocus);

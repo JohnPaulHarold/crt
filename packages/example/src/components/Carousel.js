@@ -1,6 +1,7 @@
 import { div, h2, section } from '../h.js';
 import { Orientation } from 'crt';
 import { Button } from './Button.js';
+import { navigationService } from '../services/navigationService.js';
 import { deadSeaService } from '../libs/deadSea.js';
 import s from './Carousel.scss';
 
@@ -16,6 +17,7 @@ import s from './Carousel.scss';
  *  backStop?: string
  *  width?: number;
  *  height?: number;
+ *  scrollStartQuery?: string;
  * }} CarouselProps
  */
 
@@ -74,12 +76,20 @@ export function Carousel(props, children) {
 
 	const handleNextClick = () => {
 		const id = props.id || scrollArea.dataset.deadseaId;
-		if (id) deadSeaService.page(id, 'forward');
+		if (id) {
+			const nextEl = deadSeaService.page(id, 'forward');
+			if (nextEl) {
+				navigationService.moveFocus(nextEl);
+			}
+		}
 	};
 
 	const handlePrevClick = () => {
 		const id = props.id || scrollArea.dataset.deadseaId;
-		if (id) deadSeaService.page(id, 'backward');
+		if (id) {
+			const prevEl = deadSeaService.page(id, 'backward');
+			if (prevEl) navigationService.moveFocus(prevEl);
+		}
 	};
 
 	// This div acts as the positioning context for the arrows.

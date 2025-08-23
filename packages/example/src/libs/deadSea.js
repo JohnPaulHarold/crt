@@ -5,7 +5,6 @@ import {
 	transformProp,
 	loga,
 } from 'crt';
-import { navigationService } from '../services/navigationService.js';
 
 const logr = loga.create('deadsea');
 
@@ -180,7 +179,7 @@ function doTheHardWork(scrollEl, useTransforms) {
  * @property {(scrollEl: HTMLElement) => void} register - Registers a carousel and builds its geometry cache.
  * @property {(scrollId: string) => void} unregister - Removes a carousel from the cache.
  * @property {() => void} unregisterAll - Clears all cached geometries.
- * @property {(scrollId: string, direction: 'forward' | 'backward') => void} page
+ * @property {(scrollId: string, direction: 'forward' | 'backward') => HTMLElement | undefined} page
  */
 
 /** @type {DeadSeaService} */
@@ -240,6 +239,7 @@ export const deadSeaService = {
 	/**
 	 * @param {string} scrollId
 	 * @param {'forward' | 'backward'} direction
+	 * @returns {HTMLElement | undefined} The element to focus, or undefined if none found.
 	 */
 	page(scrollId, direction) {
 		const scrollEl = document.querySelector(`[data-deadsea-id="${scrollId}"]`);
@@ -281,52 +281,64 @@ export const deadSeaService = {
 					}
 
 					if (targetFound) {
-						// If the target is a container, focus into it, otherwise focus the item directly.
-						if (item.matches('nav, section, .lrud-container')) {
-							return navigationService.focusInto(item);
-						}
-						return navigationService.moveFocus(item);
+						return item;
 					}
 				}
 			}
 		} else {
-			let targetItem = null;
+			// Paging backward is more complex. We need to find the item that represents
+			// the start of the "previous page".
+			let firstVisibleItem = null;
 
-			// Find the last item that is off-screen to the left/top by iterating from the start.
-			for (let i = 0; i < items.length; i++) {
-				const item = items[i];
+			// 1. Find the first item that is currently visible in the viewport.
+			for (const item of items) {
 				if (item instanceof HTMLElement) {
 					const itemRect = item.getBoundingClientRect();
-					let isOffscreen = false;
-					if (isHorizontal) {
-						// An item is off-screen to the left if its right edge is at or before the container's left edge.
-						if (itemRect.right <= containerRect.left) {
-							isOffscreen = true;
-						}
-					} else {
-						// An item is off-screen to the top if its bottom edge is at or before the container's top edge.
-						if (itemRect.bottom <= containerRect.top) {
-							isOffscreen = true;
-						}
-					}
-
-					if (isOffscreen) {
-						// This item is a candidate. We keep overwriting it to find the *last* one.
-						targetItem = item;
-					} else {
-						// As soon as we find an item that is even partially visible, we stop.
-						// The last `targetItem` we found is the one we want to focus.
+					const isVisible = isHorizontal
+						? itemRect.right > containerRect.left &&
+							itemRect.left < containerRect.right
+						: itemRect.bottom > containerRect.top &&
+							itemRect.top < containerRect.bottom;
+					if (isVisible) {
+						firstVisibleItem = item;
 						break;
 					}
 				}
 			}
 
-			if (targetItem) {
-				if (targetItem.matches('nav, section, .lrud-container')) {
-					return navigationService.focusInto(targetItem);
-				}
-				return navigationService.moveFocus(targetItem);
+			if (!firstVisibleItem) {
+				// If nothing is visible (e.g., scrolled way too far), return the last item as a fallback.
+				return items[items.length - 1];
 			}
+
+			// 2. Calculate the ideal starting position of the "previous page".
+			const firstVisibleRect = firstVisibleItem.getBoundingClientRect();
+			const targetPos = isHorizontal
+				? firstVisibleRect.left - containerRect.width
+				: firstVisibleRect.top - containerRect.height;
+
+			// 3. Find the item whose start edge is closest to that target position.
+			let bestCandidate = null;
+			let minDistance = Infinity;
+
+			for (const item of items) {
+				if (item instanceof HTMLElement) {
+					const itemRect = item.getBoundingClientRect();
+					const itemPos = isHorizontal ? itemRect.left : itemRect.top;
+					const distance = Math.abs(itemPos - targetPos);
+
+					if (distance < minDistance) {
+						minDistance = distance;
+						bestCandidate = item;
+					} else {
+						// Optimization: Since items are ordered, once the distance starts
+						// increasing, we've passed the best candidate.
+						break;
+					}
+				}
+			}
+
+			return bestCandidate || undefined;
 		}
 	},
 };

@@ -10,12 +10,14 @@ vi.mock('@bbc/tv-lrud-spatial', () => ({
 }));
 
 vi.mock('../libs/deadSea.js', () => ({
-	scrollAction: vi.fn(),
+	deadSeaService: {
+		scrollAction: vi.fn(),
+	},
 }));
 
 // Import mocks after vi.mock calls so we can control them
 import { getNextFocus } from '@bbc/tv-lrud-spatial';
-import { scrollAction } from '../libs/deadSea.js';
+import { deadSeaService } from '../libs/deadSea.js';
 
 describe('navigationService', () => {
 	/** @type {HTMLElement | null} */
@@ -73,7 +75,7 @@ describe('navigationService', () => {
 			);
 			expect(getNextFocus).toHaveBeenCalledWith(null, -1);
 			expect(initialEl.classList.contains('focused')).toBe(true);
-			expect(scrollAction).toHaveBeenCalledWith(initialEl, true);
+			expect(deadSeaService.scrollAction).toHaveBeenCalledWith(initialEl, true);
 		});
 	});
 
@@ -90,7 +92,7 @@ describe('navigationService', () => {
 
 			expect(fromEl.classList.contains('focused')).toBe(false);
 			expect(toEl.classList.contains('focused')).toBe(true);
-			expect(scrollAction).toHaveBeenCalledWith(toEl, true);
+			expect(deadSeaService.scrollAction).toHaveBeenCalledWith(toEl, true);
 		});
 
 		test('should clear previous focus if fromEl is not provided', () => {
