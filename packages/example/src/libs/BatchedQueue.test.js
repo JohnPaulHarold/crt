@@ -59,7 +59,7 @@ describe('BatchedQueue', () => {
 		queue.enqueue(2);
 
 		expect(queue.length()).toBe(2);
-		expect(getQueueState(queue).data).toEqual([1, 2]);
+		expect(getQueueState(queue).data.map((d) => d.item)).toEqual([1, 2]);
 	});
 
 	test('enqueue should trigger handleFull when queue reaches size limit', () => {
@@ -138,6 +138,52 @@ describe('BatchedQueue', () => {
 		expect(handleFull).not.toHaveBeenCalled();
 	});
 
+	test('enqueue should order items by priority', () => {
+		const /** @type {import('./BatchedQueue.js').BatchedQueueInstance<string>} */ queue =
+				createBatchedQueue(vi.fn(), 1000, 10);
+
+		queue.enqueue('low_priority', 20);
+		queue.enqueue('high_priority', 1);
+		queue.enqueue('medium_priority', 10);
+		queue.enqueue('another_high_priority', 1);
+
+		const state = getQueueState(queue);
+		const items = state.data.map((d) => d.item);
+
+		expect(items).toEqual([
+			'high_priority',
+			'another_high_priority',
+			'medium_priority',
+			'low_priority',
+		]);
+	});
+
+	test('flush should manually process the queue and clear it', () => {
+		const handleFull = vi.fn();
+		const /** @type {import('./BatchedQueue.js').BatchedQueueInstance<number>} */ queue =
+				createBatchedQueue(handleFull, 5000, 10);
+
+		queue.enqueue(1);
+		queue.enqueue(2);
+		queue.enqueue(3);
+
+		expect(handleFull).not.toHaveBeenCalled();
+
+		queue.flush();
+
+		expect(handleFull).toHaveBeenCalledTimes(1);
+		expect(handleFull).toHaveBeenCalledWith([1, 2, 3]);
+		expect(queue.isEmpty()).toBe(true);
+	});
+
+	test('flush on an empty queue should do nothing', () => {
+		const handleFull = vi.fn();
+		const queue = createBatchedQueue(handleFull, 5000, 10);
+
+		expect(() => queue.flush()).not.toThrow();
+		expect(handleFull).not.toHaveBeenCalled();
+	});
+
 	test('utility methods should work correctly', () => {
 		const /** @type {import('./BatchedQueue.js').BatchedQueueInstance<string>} */ queue =
 				createBatchedQueue(vi.fn(), 1000, 5);
@@ -161,6 +207,6 @@ describe('BatchedQueue', () => {
 		queue.enqueue('d');
 		// queue is now ['b', 'c', 'd']
 		queue.clear(2);
-		expect(getQueueState(queue).data).toEqual(['d']);
+		expect(getQueueState(queue).data.map((d) => d.item)).toEqual(['d']);
 	});
 });
