@@ -1,65 +1,126 @@
-@use '../styles/funcs' as fn;
+.carouselWrapper {
+	position: relative; // This is the positioning context for the arrows
+	overflow: hidden; // This clips the inner scrollable area
+
+	.scrollAndArrowWrapper {
+		position: relative; // Positioning context for arrows
+	}
+
+	&.horizontal {
+		> .scrollAndArrowWrapper {
+			> .carousel {
+				white-space: nowrap; // Prevent inline-block items from wrapping
+			}
+
+			> .arrow {
+				top: 50%;
+				transform: translateY(-50%);
+				height: 100%;
+
+				&.arrow.prev {
+					left: 0;
+					// TODO: all styles should be using px-to-rem
+					border-radius: 0 8px 8px 0;
+				}
+
+				&.arrow.next {
+					right: 0;
+					// TODO: all styles should be using px-to-rem
+					border-radius: 8px 0 0 8px;
+				}
+			}
+		}
+	}
+
+	&.vertical {
+		// Use flexbox for the main vertical layout to correctly size the
+		// header and the scrollable content area.
+		display: flex;
+		flex-direction: column;
+
+		> .heading {
+			flex-shrink: 0; // Prevent the heading from shrinking
+		}
+
+		> .scrollAndArrowWrapper {
+			flex-grow: 1; // Allow the scroll area to fill the remaining space
+			min-height: 0; // A flexbox hack to allow the inner carousel to scroll correctly
+
+			> .carousel {
+				white-space: normal; // Allow items to stack
+			}
+
+			> .carousel > * {
+				display: block; // Stack items vertically
+			}
+
+			> .arrow {
+				// Reposition for vertical layout
+				left: 50%;
+				transform: translateX(-50%);
+				width: 40%; // Don't take full width
+				// TODO: all styles should be using px-to-rem
+
+				height: 80px;
+
+				&.arrow.prev {
+					top: 0;
+					// TODO: all styles should be using px-to-rem
+					border-radius: 8px;
+				}
+
+				&.arrow.next {
+					bottom: 0;
+					top: auto;
+					// TODO: all styles should be using px-to-rem
+					border-radius: 8px;
+				}
+			}
+		}
+	}
+}
+
+.heading {
+	// Add styles for the optional heading here
+	// TODO: all styles should be using px-to-rem
+
+	margin-bottom: 1rem;
+	font-size: 1.5rem;
+	color: #eee;
+}
 
 .carousel {
-	display: block;
-	margin-bottom: fn.px-to-rem(48px);
-}
-
-.carouselTitle {
-	font-weight: bold;
-	font-size: 1.5rem;
-	margin-bottom: fn.px-to-rem(24px);
-}
-
-.carouselInner {
-	display: block;
 	position: relative;
-	overflow: hidden;
-	min-height: fn.px-to-rem(180px);
+	transition: all 0.3s ease-in-out;
+	// This is a classic technique to remove whitespace between inline-block elements
+	font-size: 0;
+	height: 100%; // Ensure the scroll area fills its wrapper
 }
 
-.orientVertical .carouselInner {
-	height: 100%;
-}
-
-.orientHorizontal .carouselInner {
-	height: auto;
-}
-
-.transition {
-	transition: transform 0.25s ease-in-out;
-}
-
-.orientVertical .transitionNoTransform {
-	transition: top 0.25s ease-in-out;
-}
-
-.orientHorizontal .transitionNoTransform {
-	transition: left 0.25s ease-in-out;
-}
-
-.carouselSlider {
-	position: relative;
-	white-space: nowrap;
-}
-
-.carouselSlider > a {
+.carousel > * {
 	display: inline-block;
-	width: auto;
-	height: auto;
-	margin-right: fn.px-to-rem(24px);
+	vertical-align: top; // Align items to the top
+	// TODO: all styles should be using px-to-rem
+
+	font-size: 1rem; // Reset font-size for the content
+	white-space: normal; // Allow text inside items to wrap
 }
 
-.orientVertical > .carouselSlider {
-	width: 100%;
-}
+.arrow {
+	position: absolute;
+	z-index: 10;
+	background-color: rgba(0, 0, 0, 0.5);
+	border: none;
+	color: white;
+	// TODO: all styles should be using px-to-rem
 
-.orientVertical > .carouselSlider > a {
-	display: block;
-	margin-right: 0;
-}
+	font-size: 2rem;
+	// TODO: all styles should be using px-to-rem
 
-.orientHorizontal > .carouselSlider {
-	white-space: nowrap;
-	width: 100%;
+	width: 80px; // Default width for horizontal arrows
+	cursor: pointer;
+
+	&:hover {
+		background-color: rgba(0, 0, 0, 0.8);
+	}
 }

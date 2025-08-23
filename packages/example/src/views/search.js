@@ -1,13 +1,12 @@
 import {
 	$dataGet,
 	createBaseView,
-	assertKey,
-	AdditionalKeys,
 	Orientation,
 	normaliseEventTarget,
 	createSignaller,
 	watch,
 	diff,
+	loga,
 } from 'crt';
 
 import { a, div, span } from '../h.js';
@@ -18,8 +17,11 @@ import { searchData } from '../stubData/searchData.js';
 
 import { Keyboard } from '../components/Keyboard.js';
 import { Carousel } from '../components/Carousel.js';
+import { deadSeaService } from '../libs/deadSea.js';
 
 import s from './search.scss';
+
+const logr = loga.create('search');
 
 /**
  * @this {SearchViewInstance}
@@ -76,16 +78,22 @@ function getTemplate() {
 	if (searchTerm === '') {
 		resultsEl = span({ className: s.searchNoResults }, "Let's search!");
 	} else if (filteredResults.length > 0) {
-		resultsEl = Carousel(
-			{
-				id: 'search-results-list',
-				orientation: Orientation.VERTICAL,
-				blockExit: 'right down',
-			},
-			filteredResults.map((res) =>
-				a(
-					{ href: res.url, id: res.id },
-					div({ className: s.searchResult }, span({}, res.title))
+		resultsEl = div(
+			{},
+			Carousel(
+				{
+					id: 'search-results-list',
+					orientation: Orientation.VERTICAL,
+					showArrows: true,
+					blockExit: 'right down',
+					width: 700,
+					height: 900,
+				},
+				filteredResults.map((res) =>
+					a(
+						{ href: res.url, id: res.id },
+						div({ className: s.searchResult }, span({}, res.title))
+					)
 				)
 			)
 		);
@@ -144,9 +152,45 @@ export function createSearchView(options) {
 				this.viewEl.addEventListener('click', this.boundHandleClick);
 
 				const handler = () => {
+					// This handler is called whenever the search term changes.
+					// It's the view's responsibility to manage the lifecycle of the
+					// results carousel.
 					if (this.viewEl) {
+						// 1. Before diffing, find the old carousel and unregister it.
+						const oldCarousel = this.viewEl.querySelector(
+							'#search-results-list .carousel'
+						);
+
+						if (!(oldCarousel instanceof HTMLElement)) {
+							logr.error(
+								'[viewDidLoad] a scrollArea was an Element other than HTMLElement'
+							);
+							return;
+						}
+
+						if (oldCarousel && oldCarousel.dataset.deadseaId) {
+							deadSeaService.unregister(oldCarousel.dataset.deadseaId);
+						}
+
+						// 2. Render the new VDOM and apply the diff.
 						const vdom = getTemplate.call(this);
 						diff(vdom, this.viewEl);
+
+						// 3. After diffing, find the new carousel (if it exists) and register it.
+						const newCarousel = this.viewEl.querySelector(
+							'#search-results-list .carousel'
+						);
+
+						if (!(newCarousel instanceof HTMLElement)) {
+							logr.error(
+								'[viewDidLoad] newCarousel was an Element other than HTMLElement'
+							);
+							return;
+						}
+
+						if (newCarousel) {
+							deadSeaService.register(newCarousel);
+						}
 					}
 				};
 				this.stopWatching = watch([this.searchTerm], handler);
