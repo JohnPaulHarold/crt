@@ -1,0 +1,37 @@
+@use '../styles/colours' as col;
+@use '../styles/funcs' as fn;
+
+.virtualList {
+	// Hide the scrollbar across different browsers for a clean TV UI.
+	-ms-overflow-style: none; /* IE and Edge */
+	scrollbar-width: none; /* Firefox */
+
+	&::-webkit-scrollbar {
+		display: none; /* Chrome, Safari, and Opera */
+	}
+}
+
+.vlistItem {
+	display: block; // Ensure the anchor tag takes up the full block space
+	color: white;
+
+	&:focus,
+	&.focused {
+		background-color: #777;
+	}
+}
+
+.vlistItemInner {
+	height: 100%; // Ensure inner content fills the item's height.
+	box-sizing: border-box;
+	border-bottom: fn.px-to-rem(3px) solid #333;
+	display: flex;
+	flex-direction: column;
+	justify-content: center; // Vertically center the text
+	padding: 0 fn.px-to-rem(24px);
+
+	p {
+		margin: 0; // Reset default paragraph margins to ensure consistent item height
+		padding: fn.px-to-rem(4px) 0;
+	}
+}

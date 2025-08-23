@@ -30,9 +30,10 @@ export { cx } from './utils/dom/cx.js';
 // Utils - Input
 export { assertKey, getDirectionFromKeyCode } from './utils/keys.js';
 
-// Utils - Style
-export { getBaseFontSize } from './utils/dom/getBaseFontSize.js';
-export { pxToRem } from './utils/style/pxToRem.js';
+// Utils - Style, units
+export { pxToRem } from './utils/units/pxToRem.js';
+export { getBaseFontSize } from './utils/units/getBaseFontSize.js';
+export { scale } from './utils/units/scale.js';
 export { transformProp } from './utils/style/prefix.js';
 
 export { collectionToArray } from './utils/dom/collectionToArray.js';
