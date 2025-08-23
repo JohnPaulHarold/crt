@@ -13,6 +13,7 @@ import { createShowView } from './views/show.js';
 import { createDiffView } from './views/diff.js';
 import { createVListView } from './views/vlist.js';
 import { createPlayerView } from './views/player.js';
+import { createReactiveVListView } from './views/reactiveVListView.js';
 
 import s from './index.scss';
 
@@ -105,6 +106,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	);
 	historyRouter.registerRoute(routes.PLAYER, (opts) =>
 		loadView(createPlayerView, opts)
+	);
+	historyRouter.registerRoute(routes.REACTIVE_VLIST, (opts) =>
+		loadView(createReactiveVListView, opts)
 	);
 
 	historyRouter.config('/', 'hash');

@@ -1,4 +1,5 @@
-@use 'styles/funcs' as fn;
+@use './styles/funcs' as fn;
+@use './styles/colours' as col;
 
 :global {
 	html {
@@ -15,7 +16,7 @@
 	body {
 		margin: 0;
 		font-family: sans-serif;
-		background-color: #333;
+		background-color: col.$pewter;
 		color: #eee;
 		overflow: hidden;
 	}

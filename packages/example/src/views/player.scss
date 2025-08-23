@@ -1,3 +1,6 @@
+@use '../styles/colours' as col;
+@use '../styles/funcs' as fn;
+
 .playerContainer {
 	display: flex;
 	align-items: center;
@@ -6,23 +9,23 @@
 }
 
 .player {
-	width: 800px;
-	padding: 20px;
-	background: #333;
-	border-radius: 8px;
+	width: fn.px-to-rem(800);
+	padding: fn.px-to-rem(20);
+	background: col.$pewter;
+	border-radius: fn.px-to-rem(8);
 }
 
 .progress {
-	height: 24px;
-	background: #555;
-	border-radius: 12px;
+	height: fn.px-to-rem(24);
+	background: col.$graphite;
+	border-radius: fn.px-to-rem(12);
 	overflow: hidden;
-	margin-bottom: 20px;
+	margin-bottom: fn.px-to-rem(20);
 }
 
 .progressBar {
 	height: 100%;
-	background: #2ecc71;
+	background: col.$success;
 	transition: width 0.2s linear;
 }
 
@@ -31,13 +34,13 @@
 }
 
 .controls button {
-	font-size: 1.8rem;
-	padding: 12px 24px;
-	margin: 0 15px;
-	border: 3px solid transparent;
-	border-radius: 8px;
-	background-color: #4f4f4f;
-	color: white;
+	font-size: fn.px-to-rem(42);
+	padding: fn.px-to-rem(12) fn.px-to-rem(24);
+	margin: 0 fn.px-to-rem(15);
+	border: fn.px-to-rem(3) solid transparent;
+	border-radius: fn.px-to-rem(8);
+	background: col.$graphite;
+	color: col.$white;
 	cursor: pointer;
 	transition: all 0.2s ease;
 }
@@ -46,13 +49,13 @@
 .controls button:focus {
 	border-color: #ffde2b;
 	transform: scale(1.05);
-	box-shadow: 0 0 15px rgba(255, 222, 43, 0.5);
+	box-shadow: 0 0 fn.px-to-rem(15) rgba(255, 222, 43, 0.5);
 }
 
 .subtitles {
-	margin-top: 20px;
+	margin-top: fn.px-to-rem(20);
 	color: #aaa;
 	text-align: center;
 	font-family: monospace;
-	min-height: 1.5em;
+	min-height: fn.px-to-rem(36);
 }
