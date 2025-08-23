@@ -439,6 +439,10 @@ describe('deadSeaService', () => {
 				configurable: true,
 				get: mockOffsetLeftChild2,
 			});
+			Object.defineProperty(child2, 'offsetWidth', {
+				configurable: true,
+				value: 100,
+			});
 
 			const scrollEl = createElement(
 				'div',
