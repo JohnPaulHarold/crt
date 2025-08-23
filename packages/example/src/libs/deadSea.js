@@ -125,8 +125,9 @@ function buildGeometry(scrollEl) {
 	const offsets = scrollables.map((s) => s[offsetProp] - startElOffsetInPx);
 
 	const lastItem = scrollables[scrollables.length - 1];
-	const totalContentSize =
-		lastItem[offsetProp] + lastItem[dimensionProp] - startElOffsetInPx;
+	// The total content size is the offset of the last item plus its own size.
+	const lastItemOffset = offsets[offsets.length - 1];
+	const totalContentSize = lastItemOffset + lastItem[dimensionProp];
 
 	return { offsets, scrollables, totalContentSize };
 }

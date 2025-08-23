@@ -1,13 +1,7 @@
-import {
-	createBaseView,
-	Direction,
-	getBaseFontSize,
-	removeElement,
-	transformProp,
-	pxToRem,
-} from 'crt';
+import { createBaseView, Direction } from 'crt';
 
 import { a, div, p, section } from '../h.js';
+import { createImperativeVirtualList } from '../libs/imperativeVirtualList.js';
 
 import {
 	NavigationEvents,
@@ -70,155 +64,6 @@ function buildBigData(bigNumber) {
 }
 
 /**
- * @typedef {object} VLOptions
- * @property {VListItem[]} data
- * @property {string} options.container expects a queryString
- * @property {(item: VListItem) => HTMLElement} options.renderRow
- * @property {number} options.elHeight
- * @property {number} [options.bufferAmount]
- * @property {number} [options.visibleEls]
- */
-
-/**
- * @typedef {object} VLInstance
- * @property {VListItem[]} data
- * @property {number} visibleEls
- * @property {number} bufferAmount
- * @property {string} container
- * @property {HTMLElement | null} containerEl
- * @property {(item: VListItem) => HTMLElement} renderRow
- * @property {HTMLElement} sliderEl
- * @property {number} elHeight
- * @property {number} paddingTop
- * @property {number[]} window
- * @property {() => void} init
- * @property {(start: number, end: number) => VListItem[]} getNextData
- * @property {(direction: Direction, position: number) => void} updateList
- */
-
-/**
- * @param {VLOptions} options
- * @returns {VLInstance}
- */
-function createVL(options) {
-	/** @type {VLInstance} */
-	const vl = {
-		data: options.data,
-		visibleEls: options.visibleEls || 10,
-		bufferAmount: options.bufferAmount || 5,
-		container: options.container,
-		containerEl: null,
-		renderRow: options.renderRow,
-		sliderEl: document.createElement('div'),
-		elHeight: 0,
-		paddingTop: 0,
-		window: [],
-
-		/**
-		 * @this {VLInstance}
-		 */
-		init() {
-			this.containerEl = document.querySelector(this.container);
-			this.window = [0, this.visibleEls - 1];
-
-			const slice = this.getNextData(0, this.visibleEls);
-
-			slice.forEach((bd) => {
-				const el = this.renderRow(bd);
-				el.style.height = this.elHeight + 'rem';
-				this.sliderEl.appendChild(el);
-			});
-
-			if (this.containerEl) {
-				this.containerEl.appendChild(this.sliderEl);
-			}
-		},
-
-		/**
-		 * @this {VLInstance}
-		 */
-		getNextData(start, end) {
-			return this.data.slice(start, end);
-		},
-
-		/**
-		 * @this {VLInstance}
-		 */
-		updateList(direction, position) {
-			const lowerBound = this.window[0];
-			const upperBound = this.window[1];
-
-			// @ts-ignore
-			this.sliderEl.style[transformProp] =
-				'translateY(' + -(position * this.elHeight) + 'rem)';
-
-			if (
-				direction === Direction.DOWN &&
-				position >= upperBound - this.bufferAmount
-			) {
-				const frag = document.createDocumentFragment();
-				const slice = this.getNextData(
-					upperBound + 1,
-					upperBound + 1 + this.visibleEls
-				);
-				slice.forEach((bd) => {
-					const el = this.renderRow(bd);
-					el.style.height = this.elHeight + 'rem';
-					frag.appendChild(el);
-				});
-				this.sliderEl.appendChild(frag);
-				this.window[1] = this.window[1] + this.visibleEls;
-			}
-
-			if (
-				direction === Direction.DOWN &&
-				position > lowerBound + this.visibleEls + this.bufferAmount
-			) {
-				let i = this.visibleEls - 1;
-				while (i >= 0) {
-					const el = this.sliderEl.children[i];
-					removeElement(el);
-					i--;
-				}
-
-				this.paddingTop = this.paddingTop + this.visibleEls * this.elHeight;
-				this.sliderEl.style.paddingTop = this.paddingTop + 'rem';
-				this.window[0] = this.window[0] + this.visibleEls;
-			}
-
-			if (
-				direction === Direction.UP &&
-				position <= lowerBound + this.bufferAmount
-			) {
-				const frag = document.createDocumentFragment();
-				const slice = this.getNextData(
-					lowerBound - this.visibleEls,
-					lowerBound
-				);
-
-				slice.forEach((bd) => {
-					const el = this.renderRow(bd);
-					el.style.height = this.elHeight + 'rem';
-					frag.appendChild(el);
-				});
-
-				this.sliderEl.prepend(frag);
-
-				this.paddingTop = this.paddingTop - slice.length * this.elHeight;
-				this.sliderEl.style.paddingTop = this.paddingTop + 'rem';
-				this.window[0] = Math.max(this.window[0] - this.visibleEls, 0);
-			}
-		},
-	};
-
-	vl.sliderEl.style.transition = 'transform 250ms ease';
-	const baseFontSize = getBaseFontSize();
-	vl.elHeight = pxToRem(options.elHeight, baseFontSize);
-
-	return vl;
-}
-
-/**
  * @typedef {object} MoveEventPayloadDetail
  * @property {Direction} direction
  * @property {HTMLElement} lastElement
@@ -237,7 +82,7 @@ function createVL(options) {
  * @typedef {import('crt').BaseViewInstance & {
  *  bigData: VListItem[],
  *  containerId: string,
- *  vl: VLInstance | null,
+ *  vl: import('../libs/imperativeVirtualList.js').ImperativeVirtualListInstance<VListItem> | null,
  *  boundHandleMove: ((event: any) => void) | null,
  *  destructor: () => void,
  *  viewDidLoad: () => void,
@@ -280,7 +125,7 @@ export function createVListView(options) {
 				visibleEls: 10,
 			};
 
-			this.vl = createVL(vlOpts);
+			this.vl = createImperativeVirtualList(vlOpts);
 			this.vl.init();
 
 			this.boundHandleMove = this.handleMove.bind(this);
