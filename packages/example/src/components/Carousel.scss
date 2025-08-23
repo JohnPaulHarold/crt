@@ -1,3 +1,6 @@
+@use '../styles/colours' as col;
+@use '../styles/funcs' as fn;
+
 .carouselWrapper {
 	position: relative; // This is the positioning context for the arrows
 	overflow: hidden; // This clips the inner scrollable area
@@ -19,14 +22,12 @@
 
 				&.arrow.prev {
 					left: 0;
-					// TODO: all styles should be using px-to-rem
-					border-radius: 0 8px 8px 0;
+					border-radius: 0 fn.px-to-rem(8) fn.px-to-rem(8) 0;
 				}
 
 				&.arrow.next {
 					right: 0;
-					// TODO: all styles should be using px-to-rem
-					border-radius: 8px 0 0 8px;
+					border-radius: fn.px-to-rem(8) 0 0 fn.px-to-rem(8);
 				}
 			}
 		}
@@ -59,21 +60,17 @@
 				left: 50%;
 				transform: translateX(-50%);
 				width: 40%; // Don't take full width
-				// TODO: all styles should be using px-to-rem
-
-				height: 80px;
+				height: fn.px-to-rem(80);
 
 				&.arrow.prev {
 					top: 0;
-					// TODO: all styles should be using px-to-rem
-					border-radius: 8px;
+					border-radius: fn.px-to-rem(8);
 				}
 
 				&.arrow.next {
 					bottom: 0;
 					top: auto;
-					// TODO: all styles should be using px-to-rem
-					border-radius: 8px;
+					border-radius: fn.px-to-rem(8);
 				}
 			}
 		}
@@ -84,8 +81,8 @@
 	// Add styles for the optional heading here
 	// TODO: all styles should be using px-to-rem
 
-	margin-bottom: 1rem;
-	font-size: 1.5rem;
+	margin-bottom: fn.px-to-rem(24);
+	font-size: fn.px-to-rem(62);
 	color: #eee;
 }
 
@@ -100,9 +97,7 @@
 .carousel > * {
 	display: inline-block;
 	vertical-align: top; // Align items to the top
-	// TODO: all styles should be using px-to-rem
-
-	font-size: 1rem; // Reset font-size for the content
+	font-size: fn.px-to-rem(24); // Reset font-size for the content
 	white-space: normal; // Allow text inside items to wrap
 }
 
@@ -112,12 +107,8 @@
 	background-color: rgba(0, 0, 0, 0.5);
 	border: none;
 	color: white;
-	// TODO: all styles should be using px-to-rem
-
-	font-size: 2rem;
-	// TODO: all styles should be using px-to-rem
-
-	width: 80px; // Default width for horizontal arrows
+	font-size: fn.px-to-rem(48);
+	width: fn.px-to-rem(80); // Default width for horizontal arrows
 	cursor: pointer;
 
 	&:hover {
