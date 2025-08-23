@@ -23,10 +23,27 @@ import { noop } from 'crt';
  */
 
 /**
+ * Creates a queue that processes items in batches. Batches are processed automatically
+ * when the queue reaches its size limit, or after a specified time interval.
+ *
+ * This utility is useful for collecting a series of events (e.g., analytics, logs, notifications)
+ * and handling them together to reduce overhead, rather than processing each one individually.
+ *
+ * ### Priority Queueing
+ * The `enqueue` method accepts an optional `priority` number (lower is higher).
+ * This allows critical items (e.g., error logs) to be placed at the front of the
+ * queue, ensuring they are processed in the next batch.
+ *
+ * ### Manual Flushing
+ * The `flush` method allows for explicit, synchronous processing of all items
+ * currently in the queue. This is useful for ensuring no data is lost during
+ * critical state transitions, such as when a view is being destroyed or the
+ * application is closing.
+ *
  * @template T
- * @param {HandleFullCallback<T>} handleFull
- * @param {number} [batchInterval]
- * @param {number} [size]
+ * @param {HandleFullCallback<T>} handleFull The callback function to execute when the queue is full or flushed.
+ * @param {number} [batchInterval] The time in milliseconds to wait before automatically processing the queue.
+ * @param {number} [size] The maximum number of items the queue can hold before being processed.
  * @returns {BatchedQueueInstance<T>}
  */
 export function createBatchedQueue(handleFull, batchInterval, size) {
