@@ -81,6 +81,16 @@ Generates the API documentation for the `crt` library using TypeDoc, outputting 
 
 Generates the API documentation and then opens it in your default web browser.
 
+### Environment Variables
+
+The project uses a `.env` file for environment-specific configuration. To get started, copy the `.env.example` file to a new file named `.env` in the project root:
+
+`cp .env.example .env`
+
+This file is ignored by Git and can be customized for your local setup. Currently, the following variables are supported:
+
+- `PORT`: Sets the port for the `example` application's development server. Defaults to `3000`.
+
 `npm run lint:js`
 
 Runs ESLint on all packages.
