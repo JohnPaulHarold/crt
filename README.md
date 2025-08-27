@@ -73,6 +73,14 @@ Builds the `example` application, outputting to `packages/example/dist`.
 
 Checks types across the entire monorepo using TypeScript project references. Note: types are currently expressed as JSDoc types.
 
+`npm run docs:generate`
+
+Generates the API documentation for the `crt` library using TypeDoc, outputting to the `docs/` directory.
+
+`npm run docs:view`
+
+Generates the API documentation and then opens it in your default web browser.
+
 `npm run lint:js`
 
 Runs ESLint on all packages.

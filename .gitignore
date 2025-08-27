@@ -132,5 +132,8 @@ dist
 # metadata files
 .DS_Store
 
+# generated documentation
+docs/
+
 # auto-generated types directory
 types/
