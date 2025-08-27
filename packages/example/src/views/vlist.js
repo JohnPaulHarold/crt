@@ -1,6 +1,6 @@
 import { createBaseView, Direction } from 'crt';
 
-import { a, div, p, section } from '../h.js';
+import { a, div, p, section } from '../html.js';
 import { createImperativeVirtualList } from '../libs/imperativeVirtualList.js';
 
 import {

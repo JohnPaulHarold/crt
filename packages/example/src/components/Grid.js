@@ -1,4 +1,4 @@
-import { div, section } from '../h.js';
+import { div, section } from '../html.js';
 
 import s from './Grid.scss';
 

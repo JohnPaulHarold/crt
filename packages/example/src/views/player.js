@@ -1,5 +1,5 @@
 import { createBaseView, watch, diff, noop } from 'crt';
-import { div, button, p } from '../h.js';
+import { div, button, p } from '../html.js';
 import {
 	navigationService,
 	NavigationEvents,

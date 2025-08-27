@@ -8,7 +8,7 @@ import {
 	watch,
 } from 'crt';
 
-import { div, p } from '../h.js';
+import { div, p } from '../html.js';
 
 import { Button } from '../components/Button.js';
 

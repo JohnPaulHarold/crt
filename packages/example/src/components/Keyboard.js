@@ -1,5 +1,5 @@
 import { cx } from 'crt';
-import { div } from '../h.js';
+import { div } from '../html.js';
 import { Button } from './Button.js';
 
 import s from './Keyboard.scss';

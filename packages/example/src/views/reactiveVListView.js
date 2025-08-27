@@ -1,5 +1,5 @@
 import { createBaseView, createSignaller, watch, diff, loga, scale } from 'crt';
-import { div, p, section, a } from '../h.js'; // Assuming div, p, section, a are still needed
+import { div, p, section, a } from '../html.js'; // Assuming div, p, section, a are still needed
 import { createReactiveVirtualList } from '../libs/reactiveVirtualList.js';
 import {
 	navigationService,

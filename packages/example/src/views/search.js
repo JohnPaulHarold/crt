@@ -9,7 +9,7 @@ import {
 	loga,
 } from 'crt';
 
-import { a, div, span } from '../h.js';
+import { a, div, span } from '../html.js';
 
 import { keyMap } from '../config/keyMap.js';
 

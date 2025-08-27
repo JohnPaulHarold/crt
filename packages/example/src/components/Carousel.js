@@ -1,4 +1,4 @@
-import { div, h2, section } from '../h.js';
+import { div, h2, section } from '../html.js';
 import { Orientation } from 'crt';
 import { Button } from './Button.js';
 import { navigationService } from '../services/navigationService.js';

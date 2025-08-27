@@ -1,4 +1,4 @@
-import { a, li, nav, ul } from '../h.js';
+import { a, li, nav, ul } from '../html.js';
 import s from './Nav.scss';
 
 /**
