@@ -9,3 +9,14 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+    # Group non-major updates for dependencies to reduce PR noise
+    groups:
+      dev-dependencies:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+    # Add a prefix to commit messages for better history
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
