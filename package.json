@@ -8,6 +8,8 @@
 	],
 	"scripts": {
 		"dev": "npm run build -w crt && npm run dev -w example",
+		"docs:generate": "typedoc",
+		"docs:view": "npm run docs:generate && open docs/index.html",
 		"build": "npm run build -w crt",
 		"build:example": "npm run build -w example",
 		"nuke": "node scripts/nuke.js",
@@ -28,6 +30,7 @@
 		"globals": "^16.3.0",
 		"jsdom": "^26.1.0",
 		"prettier": "^3.3.2",
+		"typedoc": "^0.28.11",
 		"typescript": "^5.4.5",
 		"vitest": "^3.2.4"
 	},
