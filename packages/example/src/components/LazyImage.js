@@ -1,4 +1,4 @@
-import { img } from '../h.js';
+import { img } from '../html.js';
 
 import s from './LazyImage.scss';
 

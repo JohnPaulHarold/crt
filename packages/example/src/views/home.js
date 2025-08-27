@@ -11,7 +11,7 @@ import {
 	loga,
 } from 'crt';
 
-import { a, div } from '../h.js';
+import { a, div } from '../html.js';
 
 import { pageData } from '../stubData/pageData.js';
 

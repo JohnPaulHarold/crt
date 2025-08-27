@@ -7,7 +7,7 @@ import {
 } from 'crt';
 import { checkImages } from '../libs/indolence.js';
 
-import { a, div, p } from '../h.js';
+import { a, div, p } from '../html.js';
 
 import { LazyImage } from '../components/LazyImage.js';
 import { Grid } from '../components/Grid.js';

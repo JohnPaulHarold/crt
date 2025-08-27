@@ -1,6 +1,6 @@
 import { createBaseView, Orientation } from 'crt';
 
-import { div, a } from '../../h';
+import { div, a } from '../../html';
 
 import { Carousel } from '../../components/Carousel';
 import { Heading } from '../../components/Heading';

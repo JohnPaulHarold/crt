@@ -1,6 +1,6 @@
 import { cx } from 'crt';
 
-import { div } from '../../h';
+import { div } from '../../html';
 
 import s from './Codec.scss';
 import { DrmNames } from './DrmNames';

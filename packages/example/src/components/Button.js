@@ -8,7 +8,7 @@
  */
 
 import { cx } from 'crt';
-import { button } from '../h.js';
+import { button } from '../html.js';
 
 import s from './Button.scss';
 /**

@@ -1,5 +1,5 @@
 import { cx } from 'crt';
-import { div, span } from '../h.js';
+import { div, span } from '../html.js';
 
 import s from './Spinner.scss';
 

@@ -3,7 +3,7 @@ import { Dialog } from '../components/Dialog';
 
 import { createBaseView } from 'crt';
 
-import { div, p } from '../h.js';
+import { div, p } from '../html.js';
 
 import { appOutlets } from '../outlets.js';
 import { navigationService } from '../services/navigationService.js';

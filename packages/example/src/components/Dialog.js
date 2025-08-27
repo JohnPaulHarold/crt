@@ -1,4 +1,4 @@
-import { div } from '../h.js';
+import { div } from '../html.js';
 
 import { Button } from './Button';
 import { Heading } from './Heading';
