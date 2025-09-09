@@ -166,7 +166,8 @@ export function h(type, textOrPropsOrChild, ...otherChildren) {
 				// Server-specific logic: treat everything else as an attribute,
 				// but ignore event handlers.
 				if (!propName.startsWith('on')) {
-					platform.setAttribute(el, propName, String(value));
+					const attrName = propName === 'className' ? 'class' : propName;
+					platform.setAttribute(el, attrName, String(value));
 				}
 			}
 		});

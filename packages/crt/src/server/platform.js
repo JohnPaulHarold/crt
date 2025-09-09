@@ -87,9 +87,12 @@ export const serverPlatform = {
 
 	setData: (el, dataset) => {
 		Object.keys(dataset).forEach((key) => {
-			/** @type {ServerNode} */ (/** @type {any} */ (el)).attributes[
-				`data-${key}`
-			] = String(dataset[key]);
+			const value = dataset[key];
+			if (value != null) {
+				/** @type {ServerNode} */ (/** @type {any} */ (el)).attributes[
+					`data-${key}`
+				] = String(value);
+			}
 		});
 	},
 

@@ -18,7 +18,7 @@ describe('Button', () => {
 	});
 
 	headings.forEach((level) => {
-		const nodeName = `h${level}`;
+		const nodeName = `h${level}`.toUpperCase();
 
 		test(`level prop of ${level} should create a ${nodeName} element type`, () => {
 			const assert = Heading({ level }, 'XYZ');

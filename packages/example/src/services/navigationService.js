@@ -48,6 +48,8 @@ function createNavigationService() {
 	let _scope = undefined;
 	/** @type {HTMLElement|undefined} */
 	let _lastFocus = undefined;
+	/** @type {((event: KeyboardEvent) => void) | null} */
+	let _globalKeyDownHandler = null;
 
 	const navigationBus = pubSub;
 
@@ -322,12 +324,16 @@ function createNavigationService() {
 		 * Initializes the navigation service by setting up global listeners.
 		 */
 		init() {
+			// If a handler is already attached, remove it to make init idempotent.
+			if (_globalKeyDownHandler) {
+				window.removeEventListener('keydown', _globalKeyDownHandler);
+			}
 			// This intermediate function ensures that we always call the *current*
 			// value of `_handleKeyDown`, which can be swapped out by the
 			// custom focus handler.
-			const handler = (/** @type {KeyboardEvent} */ event) =>
+			_globalKeyDownHandler = (/** @type {KeyboardEvent} */ event) =>
 				_handleKeyDown(event);
-			window.addEventListener('keydown', handler);
+			window.addEventListener('keydown', _globalKeyDownHandler);
 
 			const initialFocus = getNextFocus(null, -1);
 
@@ -481,7 +487,10 @@ function createNavigationService() {
 		 * Clears state and listeners for test isolation.
 		 */
 		_resetForTesting() {
-			// In a real app, you might want to remove the listener, but for testing, re-init is often sufficient.
+			if (_globalKeyDownHandler) {
+				window.removeEventListener('keydown', _globalKeyDownHandler);
+				_globalKeyDownHandler = null;
+			}
 			_scope = undefined;
 			_lastFocus = undefined;
 			_handleKeyDown = handleKeyDown;
