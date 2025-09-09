@@ -120,7 +120,7 @@ export function createReactiveVListView(options) {
 		},
 
 		viewDidLoad: function () {
-			if (!this.viewEl) return;
+			if (!(this.viewEl instanceof HTMLElement)) return;
 			/**
 			 * Renders a single row. If the row is not visible, it renders a lightweight
 			 * placeholder to keep the element focusable by lrud-spatial without the

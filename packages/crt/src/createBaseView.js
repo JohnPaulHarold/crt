@@ -23,7 +23,7 @@ export function createBaseView(options) {
 		/**
 		 * Attaches the view's rendered element to a parent element in the DOM.
 		 * It also triggers the `viewDidLoad` lifecycle method if it exists.
-		 * @param {HTMLElement} parentEl - The parent element to attach to.
+		 * @param {Element} parentEl - The parent element to attach to.
 		 */
 		attach(parentEl) {
 			if (!parentEl) {
@@ -38,8 +38,8 @@ export function createBaseView(options) {
 			}
 
 			const platform = getPlatform();
-			// @ts-ignore - this.viewEl is guaranteed to be an HTMLElement here.
-			platform.appendChild(parentEl, this.viewEl);
+			// this.viewEl is guaranteed to be an Element here.
+			platform.appendChild(parentEl, /** @type {Node} */ (this.viewEl));
 
 			// Safely call viewDidLoad after the element is in the DOM.
 			if (this.viewDidLoad) {
@@ -69,7 +69,7 @@ export function createBaseView(options) {
 		/**
 		 * Renders the view's HTML element.
 		 * This method must be implemented by the specific view that extends this base.
-		 * @returns {HTMLElement}
+		 * @returns {Element}
 		 */
 		render() {
 			// This is a placeholder. The actual view must override this method.
@@ -79,7 +79,7 @@ export function createBaseView(options) {
 			const platform = getPlatform();
 			const el = platform.createElement('div');
 			el.id = this.id;
-			return /** @type {HTMLElement} */ (el);
+			return el;
 		},
 	};
 

@@ -1,50 +1,44 @@
-import { cx } from 'crt';
 import { h1, h2, h3, h4, h5, h6 } from '../html.js';
-
-import s from './Heading.scss';
 
 /**
  * @typedef {import('crt').ComponentProps & {
- *  level?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
- *  colour?: 'primary' | 'secondary' | 'highlight' | 'disabled' | 'error';
+ *  level?: 1 | 2 | 3 | 4 | 5 | 6
  * }} HeadingProps
  */
 
 /**
- *
+ * A component that renders a heading element of a specified level.
  * @param {HeadingProps} props
- * @param {*} children
- * @returns
+ * @param {any} children
+ * @returns {HTMLHeadingElement}
  */
-export function Heading(props, children) {
+export const Heading = (props, children) => {
+	const { level = 1, ...rest } = props;
+
+	/**
+	 * A function that creates a heading element. By giving it an explicit type,
+	 * we create a "wider" type that can accept any of the h1-h6 factories.
+	 * @type {(...args: any[]) => HTMLHeadingElement}
+	 */
 	let el = h1;
-	const level = props.level || 'h1';
+
 	switch (level) {
-		case 'h2':
+		case 2:
 			el = h2;
 			break;
-		case 'h3':
+		case 3:
 			el = h3;
 			break;
-		case 'h4':
+		case 4:
 			el = h4;
 			break;
-		case 'h5':
+		case 5:
 			el = h5;
 			break;
-		case 'h6':
+		case 6:
 			el = h6;
-			break;
-		default:
-			el = h1;
 			break;
 	}
 
-	const cxHeading = cx(
-		'heading',
-		props.className || '',
-		props.colour ? s[props.colour] : s.primary
-	);
-
-	return el({ id: props.id || '', className: cxHeading }, children);
-}
+	return el(rest, children);
+};

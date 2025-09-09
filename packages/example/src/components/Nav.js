@@ -33,12 +33,14 @@ export function Nav({ id, navItems, blockExit, backStop }) {
 		Object.keys(dataset).length && { dataset }
 	);
 
-	return nav(
-		props,
-		ul(
-			{},
-			navItems.map((item) =>
-				li({}, a({ href: item.href, id: item.id }, item.title))
+	return /** @type {HTMLElement} */ (
+		nav(
+			props,
+			ul(
+				{},
+				navItems.map((item) =>
+					li({}, a({ href: item.href, id: item.id }, item.title))
+				)
 			)
 		)
 	);

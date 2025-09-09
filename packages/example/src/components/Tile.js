@@ -11,11 +11,13 @@ import s from './Tile.scss';
 /**
  *
  * @param {TileProps} props
- * @returns {Element}
+ * @returns {HTMLElement}
  */
 export const Tile = (props) => {
-	return div(
-		{ className: `tile ${s.tile}`, id: 'title-' + props.id },
-		span({}, props.title)
+	return /** @type {HTMLElement} */ (
+		div(
+			{ className: `tile ${s.tile}`, id: 'title-' + props.id },
+			span({}, props.title)
+		)
 	);
 };

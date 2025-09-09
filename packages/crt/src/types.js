@@ -20,10 +20,10 @@
 /**
  * @typedef {object} BaseViewInstance
  * @property {string} id
- * @property {HTMLElement | null} viewEl
- * @property {(parentEl: HTMLElement) => void} attach
+ * @property {Element | null} viewEl
+ * @property {(parentEl: Element) => void} attach
  * @property {() => void} detach
- * @property {() => HTMLElement} render
+ * @property {() => Element} render
  * @property {() => void} [viewDidLoad]
  * @property {() => void} [destructor]
  */
@@ -41,10 +41,6 @@
  */
 
 /**
- * @callback CreateElementCallback
- * @param {string} tagName
- * @returns {Element}
- *
  * @callback CreateTextNodeCallback
  * @param {string} text
  * @returns {Node}
@@ -86,7 +82,9 @@
  * @typedef {object} Platform
  * @property {boolean} isBrowser
  * @property {boolean} isServer
- * @property {CreateElementCallback} createElement
+ * @property {<K extends keyof HTMLElementTagNameMap>(
+ *  tagName: K
+ * ) => HTMLElementTagNameMap[K]} createElement
  * @property {CreateTextNodeCallback} createTextNode
  * @property {CreateAppendChildCallback} appendChild
  * @property {SetAttributeCallback} setAttribute

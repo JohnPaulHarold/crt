@@ -18,27 +18,29 @@ import s from './Dialog.scss';
  * @returns {HTMLElement}
  */
 export function Dialog(props, children) {
-	return div(
-		{ id: props.id, className: s.dialog },
+	return /** @type {HTMLElement} */ (
 		div(
-			{ className: s.dialogTitleContainer },
-			Button(
-				{
-					id: 'dialog-close',
-					className: s.dialogClose,
-				},
-				'X'
+			{ id: props.id, className: s.dialog },
+			div(
+				{ className: s.dialogTitleContainer },
+				Button(
+					{
+						id: 'dialog-close',
+						className: s.dialogClose,
+					},
+					'X'
+				),
+				props.title
+					? Heading(
+							{
+								level: 1,
+								className: s.dialogTitle,
+							},
+							props.title
+						)
+					: ''
 			),
-			props.title
-				? Heading(
-						{
-							level: 'h1',
-							className: s.dialogTitle,
-						},
-						props.title
-					)
-				: ''
-		),
-		div({ className: s.dialogContent }, children)
+			div({ className: s.dialogContent }, children)
+		)
 	);
 }

@@ -14,7 +14,7 @@ import s from './Button.scss';
 /**
  *
  * @param {ButtonProps} props
- * @param {string | HTMLElement} children
+ * @param {string | Element} children
  * @returns {HTMLElement}
  */
 export const Button = (props, children) => {
@@ -30,5 +30,5 @@ export const Button = (props, children) => {
 	// The `ghost` prop is specific to this component's styling and should not be passed to the DOM.
 	delete allProps.ghost;
 
-	return button(allProps, children);
+	return /** @type {HTMLElement} */ (button(allProps, children));
 };

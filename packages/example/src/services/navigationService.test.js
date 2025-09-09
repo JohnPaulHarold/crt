@@ -147,7 +147,6 @@ describe('navigationService', () => {
 			// Simulate keydown event
 			const event = new KeyboardEvent('keydown', { keyCode: 39 }); // Right arrow
 			window.dispatchEvent(event);
-			vi.advanceTimersByTime(100);
 
 			expect(customHandler).toHaveBeenCalled();
 
@@ -165,7 +164,6 @@ describe('navigationService', () => {
 			);
 
 			window.dispatchEvent(event);
-			vi.advanceTimersByTime(100);
 
 			expect(customHandler).not.toHaveBeenCalled();
 			expect(getNextFocus).toHaveBeenCalled(); // Effect of default handler
@@ -223,7 +221,6 @@ describe('navigationService', () => {
 			// Simulate a keydown event that triggers navigation
 			const event = new KeyboardEvent('keydown', { keyCode: 39 }); // Right arrow
 			window.dispatchEvent(event);
-			vi.advanceTimersByTime(100);
 
 			expect(moveHandler).toHaveBeenCalledTimes(1);
 			const eventPayload = moveHandler.mock.calls[0][0];

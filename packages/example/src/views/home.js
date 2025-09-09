@@ -53,7 +53,9 @@ function getTemplate() {
 		content = buildCarousels(data);
 	}
 
-	return div({ className: 'view', id: this.id }, content);
+	return /** @type {HTMLElement} */ (
+		div({ className: 'view', id: this.id }, content)
+	);
 }
 
 /**
@@ -110,7 +112,7 @@ function listenForBack(flag) {
 		? this.viewEl.addEventListener
 		: this.viewEl.removeEventListener;
 
-	method('keydown', handleBack);
+	method('keydown', /** @type {EventListener} */ (handleBack));
 }
 
 /**
@@ -128,7 +130,7 @@ function handleBack(event) {
 				navigationService.focusInto(nextBack);
 			} else {
 				// focus into the menu
-				const navEl = appOutlets['nav'];
+				const navEl = /** @type {HTMLElement} */ (appOutlets['nav']);
 
 				if (!navEl) return;
 				navigationService.focusInto(navEl);

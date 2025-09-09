@@ -65,31 +65,33 @@ function handleClick(event) {
 function getTemplate() {
 	const count = this.lyricCount.getValue();
 
-	const el = div(
-		{ className: 'diff', id: this.id },
-		lyrics
-			.slice(0, count)
-			.map((lyric) => p({ className: 'lyric-line' }, lyric)),
-		count < lyrics.length &&
-			Button(
-				{
-					className: navigationService.isElementFocused('add-lyric')
-						? 'focused'
-						: '',
-					id: 'add-lyric',
-				},
-				'Add line'
-			),
-		count > 0 &&
-			Button(
-				{
-					className: navigationService.isElementFocused('remove-lyric')
-						? 'focused'
-						: '',
-					id: 'remove-lyric',
-				},
-				'Remove line'
-			)
+	const el = /** @type {HTMLElement} */ (
+		div(
+			{ className: 'diff', id: this.id },
+			lyrics
+				.slice(0, count)
+				.map((lyric) => p({ className: 'lyric-line' }, lyric)),
+			count < lyrics.length &&
+				Button(
+					{
+						className: navigationService.isElementFocused('add-lyric')
+							? 'focused'
+							: '',
+						id: 'add-lyric',
+					},
+					'Add line'
+				),
+			count > 0 &&
+				Button(
+					{
+						className: navigationService.isElementFocused('remove-lyric')
+							? 'focused'
+							: '',
+						id: 'remove-lyric',
+					},
+					'Remove line'
+				)
+		)
 	);
 
 	return el;
@@ -122,7 +124,10 @@ export function createDiffView(options) {
 
 		destructor: function () {
 			if (this.viewEl && this.boundHandleClick) {
-				this.viewEl.removeEventListener('click', this.boundHandleClick);
+				/** @type {HTMLElement} */ (this.viewEl).removeEventListener(
+					'click',
+					this.boundHandleClick
+				);
 			}
 			if (this.stopWatching) {
 				this.stopWatching();
@@ -132,7 +137,10 @@ export function createDiffView(options) {
 		viewDidLoad: function () {
 			if (this.viewEl) {
 				this.boundHandleClick = handleClick.bind(this);
-				this.viewEl.addEventListener('click', this.boundHandleClick);
+				/** @type {HTMLElement} */ (this.viewEl).addEventListener(
+					'click',
+					this.boundHandleClick
+				);
 
 				const handler = () => {
 					if (this.viewEl) {

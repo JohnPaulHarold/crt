@@ -71,7 +71,9 @@ function App() {
 
 	// Render the view and attach it to both the DOM and its controller logic
 	appOutlets.nav = mainNavView.render();
-	mainNavView.attach(appOutlets.nav);
+	if (appOutlets.nav) {
+		mainNavView.attach(appOutlets.nav);
+	}
 
 	return div({ id: 'app-container', className: s.container }, [
 		appOutlets.nav,

@@ -14,8 +14,8 @@ import { createSignaller, h, scale } from 'crt';
  * @property {number} [bufferItemCount=5] The number of off-screen items to render as a buffer.
  * @property {number} [gap=0] The space in pixels between each item.
  * @property {boolean} [animate=false] Whether to animate the scroll transitions.
- * @property {string} [containerTag='div'] The tag to use for the main scrolling container.
- * @property {string} [itemWrapperTag='div'] The tag to use for the wrapper of each list item.
+ * @property {keyof HTMLElementTagNameMap} [containerTag='div'] The tag to use for the main scrolling container.
+ * @property {keyof HTMLElementTagNameMap} [itemWrapperTag='div'] The tag to use for the wrapper of each list item.
  * @property {ScrollAlignment} [scrollAlign='center'] The alignment of the focused item within the viewport.
  */
 
@@ -116,36 +116,38 @@ export function createReactiveVirtualList(options) {
 			const totalHeight =
 				dataSignaller.getValue().length * (itemHeight + gap) - gap;
 
-			return h(
-				containerTag,
-				{
-					className: 'reactive-vlist-slider',
-					style: {
-						// The slider has the height of the entire list and is moved with transform. All values are scaled.
-						position: 'relative',
-						height: `${scale(totalHeight)}px`,
-						transform: `translateY(-${scale(translateY)}px)`,
-						transition: animate ? 'transform 0.2s ease-out' : 'none',
-					},
-				},
-				// The actual rendered items
-				visibleItems.map((item, i) => {
-					const itemIndex = startIndex + i;
-					// The library now creates the positioned and sized wrapper.
-					return h(
-						itemWrapperTag,
-						{
-							style: {
-								position: 'absolute',
-								top: `${scale(itemIndex * (itemHeight + gap))}px`,
-								left: '0',
-								right: '0',
-								height: `${scale(itemHeight)}px`, // Explicitly set height
-							},
+			return /** @type {HTMLElement} */ (
+				h(
+					containerTag,
+					{
+						className: 'reactive-vlist-slider',
+						style: {
+							// The slider has the height of the entire list and is moved with transform. All values are scaled.
+							position: 'relative',
+							height: `${scale(totalHeight)}px`,
+							transform: `translateY(-${scale(translateY)}px)`,
+							transition: animate ? 'transform 0.2s ease-out' : 'none',
 						},
-						renderRow(item, itemIndex, true) // All items in visibleItems are visible
-					);
-				})
+					},
+					// The actual rendered items
+					visibleItems.map((item, i) => {
+						const itemIndex = startIndex + i;
+						// The library now creates the positioned and sized wrapper.
+						return h(
+							itemWrapperTag,
+							{
+								style: {
+									position: 'absolute',
+									top: `${scale(itemIndex * (itemHeight + gap))}px`,
+									left: '0',
+									right: '0',
+									height: `${scale(itemHeight)}px`, // Explicitly set height
+								},
+							},
+							renderRow(item, itemIndex, true) // All items in visibleItems are visible
+						);
+					})
+				)
 			);
 		},
 

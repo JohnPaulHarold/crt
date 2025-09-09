@@ -44,7 +44,8 @@ export function createPopupDemoView(options) {
 		},
 
 		viewDidLoad: function () {
-			if (!appOutlets.popups) return;
+			if (!appOutlets.popups || !(appOutlets.popups instanceof HTMLElement))
+				return;
 
 			const dialogEl = createDialog();
 			const handler = this.handlePopup.bind(this);
@@ -52,7 +53,7 @@ export function createPopupDemoView(options) {
 		},
 
 		handlePopup: function (id) {
-			if (!this.viewEl) return;
+			if (!this.viewEl || !(this.viewEl instanceof HTMLElement)) return;
 
 			switch (id) {
 				case 'btn-cancel':
@@ -84,7 +85,9 @@ export function createPopupDemoView(options) {
 				},
 				'Show Popup'
 			);
-			return div({ className: 'view', id: this.id }, buttonEl);
+			return /** @type {HTMLElement} */ (
+				div({ className: 'view', id: this.id }, buttonEl)
+			);
 		},
 	};
 
@@ -98,7 +101,9 @@ function createDialog() {
 			id: 'my-title',
 		},
 		[
-			p({}, 'Hey, I have something to tell you...'),
+			/** @type {HTMLElement} */ (
+				p({}, 'Hey, I have something to tell you...')
+			),
 			Button({ id: 'btn-ok' }, 'OK'),
 			Button({ id: 'btn-cancel' }, 'Cancel'),
 		]

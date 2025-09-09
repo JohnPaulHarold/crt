@@ -16,10 +16,12 @@ import s from './Notification.scss';
 export function Notification(props) {
 	const cxNotification = cx(s.notification, props.className || '');
 
-	return div(
-		{
-			className: cxNotification,
-		},
-		props.message
+	return /** @type {HTMLElement} */ (
+		div(
+			{
+				className: cxNotification,
+			},
+			props.message
+		)
 	);
 }

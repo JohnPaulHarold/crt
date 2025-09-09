@@ -26,7 +26,7 @@ import s from './Carousel.scss';
  * spatially. Integrates with `deadSea.js` for smooth scrolling.
  *
  * @param {CarouselProps} props
- * @param {HTMLElement[]} children
+ * @param {Element[]} children
  * @returns {HTMLElement}
  */
 export function Carousel(props, children) {
@@ -61,17 +61,19 @@ export function Carousel(props, children) {
 
 	// The scrollable items are always in their own div for layout purposes.
 	// This is the element that deadSea will find and transform.
-	const scrollArea = div(
-		{
-			className: s.carousel,
-			dataset: {
-				deadseaId: props.id || 'carousel' + Date.now(),
-				deadseaOrientation: orientation || Orientation.HORIZONTAL,
-				deadseaChildQuery: childQuery || '[id]', // Target direct children with an ID
-				deadseaStartOffset: '0',
+	const scrollArea = /** @type {HTMLElement} */ (
+		div(
+			{
+				className: s.carousel,
+				dataset: {
+					deadseaId: props.id || 'carousel' + Date.now(),
+					deadseaOrientation: orientation || Orientation.HORIZONTAL,
+					deadseaChildQuery: childQuery || '[id]', // Target direct children with an ID
+					deadseaStartOffset: '0',
+				},
 			},
-		},
-		children
+			children
+		)
 	);
 
 	const handleNextClick = () => {
@@ -132,20 +134,22 @@ export function Carousel(props, children) {
 	}
 	content.push(scrollAndArrowWrapper);
 
-	return section(
-		{
-			...rest,
-			// The section is the LRUD container and the positioning context for the arrows.
-			className: `lrud-container ${s.carouselWrapper} ${orientationClass} ${props.className || ''}`,
-			style: { width: width, height: height },
-			dataset: {
-				// LRUD-specific attributes live on the container.
-				...props.dataset,
-				blockExit: blockExit || '',
-				wrap: wrap ? 'true' : 'false',
-				backStop: backStop,
+	return /** @type {HTMLElement} */ (
+		section(
+			{
+				...rest,
+				// The section is the LRUD container and the positioning context for the arrows.
+				className: `lrud-container ${s.carouselWrapper} ${orientationClass} ${props.className || ''}`,
+				style: { width: width, height: height },
+				dataset: {
+					// LRUD-specific attributes live on the container.
+					...props.dataset,
+					blockExit: blockExit || '',
+					wrap: wrap ? 'true' : 'false',
+					backStop: backStop,
+				},
 			},
-		},
-		content
+			content
+		)
 	);
 }

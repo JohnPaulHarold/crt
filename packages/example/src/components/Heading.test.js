@@ -6,9 +6,9 @@ import { describe, expect, test } from 'vitest';
 import { Heading } from './Heading';
 
 /**
- * @type {Array<'h1'|'h2'|'h3'|'h4'|'h5'|'h6'>}
+ * @type {Array<1 | 2 | 3 | 4 | 5 | 6>}
  */
-const headings = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+const headings = [1, 2, 3, 4, 5, 6];
 
 describe('Button', () => {
 	test('construction', () => {
@@ -18,13 +18,10 @@ describe('Button', () => {
 	});
 
 	headings.forEach((level) => {
-		const nodeName = level.toUpperCase();
-		/**
-		 * @type {'h1'|'h2'|'h3'|'h4'|'h5'|'h6'}
-		 */
-		const lp = level;
-		test(`level prop of ${lp} should create a ${nodeName} element type`, () => {
-			const assert = Heading({ level: lp }, 'XYZ');
+		const nodeName = `h${level}`.toUpperCase();
+
+		test(`level prop of ${level} should create a ${nodeName} element type`, () => {
+			const assert = Heading({ level }, 'XYZ');
 
 			expect(assert.nodeName).toEqual(nodeName);
 		});
