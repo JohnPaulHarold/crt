@@ -1,4 +1,4 @@
-import { createBaseView, watch, diff, noop } from 'crt';
+import { createBaseView, watch, diff, noop, normaliseEventTarget } from 'crt';
 import { div, button, p } from '../html.js';
 import {
 	navigationService,
@@ -84,36 +84,37 @@ export function createPlayerView(options) {
 		boundFocusHandler: null,
 
 		viewDidLoad: function () {
-			const self = this;
+			if (this.viewEl) {
+				const self = this;
 
-			// This handler will be called when any of the watched signals change.
-			const handler = () => {
-				if (self.viewEl) {
-					const newVdom = getTemplate.call(self);
-					diff(newVdom, self.viewEl);
-				}
-			};
+				// This handler will be called when any of the watched signals change.
+				const handler = () => {
+					if (self.viewEl) {
+						const newVdom = getTemplate.call(self);
+						diff(newVdom, self.viewEl);
+					}
+				};
 
-			this.stopWatching = watch(
-				[
-					player.state.isPlaying,
-					player.state.isMuted,
-					player.state.currentTime,
-				],
-				handler
-			);
+				this.stopWatching = watch(
+					[
+						player.state.isPlaying,
+						player.state.isMuted,
+						player.state.currentTime,
+					],
+					handler
+				);
 
-			// Also trigger a re-render on focus changes to update the '.focused' class
-			this.boundFocusHandler = handler;
-			navigationService
-				.getBus()
-				.on(NavigationEvents.MOVE, this.boundFocusHandler);
+				// Also trigger a re-render on focus changes to update the '.focused' class
+				this.boundFocusHandler = handler;
+				navigationService
+					.getBus()
+					.on(NavigationEvents.MOVE, this.boundFocusHandler);
+			}
 		},
 
 		destructor: function () {
 			this.stopWatching();
 			player.destroy();
-			// Clean up the focus listener
 			if (this.boundFocusHandler) {
 				navigationService
 					.getBus()

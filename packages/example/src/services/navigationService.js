@@ -47,9 +47,7 @@ function createNavigationService() {
 	/** @type {HTMLElement|undefined} */
 	let _scope = undefined;
 	/** @type {HTMLElement|undefined} */
-	let _lastFocus;
-	/** @type {((...args: any[]) => void) | null} */
-	let _throttledKeyDownHandler = null;
+	let _lastFocus = undefined;
 
 	const navigationBus = pubSub;
 
@@ -194,22 +192,28 @@ function createNavigationService() {
 	 * @param {KeyboardEvent} event
 	 */
 	function handleEnter(event) {
-		event.preventDefault();
 		const elTarget = normaliseEventTarget(event);
 
 		if (elTarget && elTarget instanceof HTMLElement) {
-			// If it's an anchor, navigate. This is the primary action.
+			// If it's an anchor, decide whether to navigate or to treat it as a click.
 			if (elTarget instanceof HTMLAnchorElement) {
-				if ($dataGet(elTarget, 'external')) {
-					window.location.href = elTarget.href;
-				} else if (elTarget.hash) {
-					window.location.hash = elTarget.hash;
+				// If it has a meaningful hash for routing, or is an external link, navigate.
+				if (
+					$dataGet(elTarget, 'external') ||
+					(elTarget.hash && elTarget.hash.length > 1)
+				) {
+					if ($dataGet(elTarget, 'external')) {
+						window.location.href = elTarget.href;
+					} else {
+						window.location.hash = elTarget.hash;
+					}
+					return; // Navigation handled, we're done.
 				}
-			} else {
-				// For any other focusable element (like a button), dispatch a click event.
-				// This unifies keyboard and pointer interaction.
-				elTarget.click();
 			}
+
+			// For all other elements (buttons, or anchors not used for navigation),
+			// dispatch a click event to unify keyboard and pointer interaction.
+			elTarget.click();
 		}
 	}
 
@@ -220,13 +224,14 @@ function createNavigationService() {
 	 * @param {HTMLElement} [scope]
 	 */
 	function handleKeyDown(event, scope) {
-		event.preventDefault();
-
 		if (scope) {
 			_scope = scope;
 		}
 
 		if (assertKey(event, AdditionalKeys.ENTER)) {
+			// Prevent the browser's default action for Enter (e.g., following a link).
+			event.preventDefault();
+
 			return handleEnter(event);
 		}
 
@@ -238,6 +243,9 @@ function createNavigationService() {
 				Direction.RIGHT,
 			])
 		) {
+			// Prevent the browser's default action for arrow keys (e.g., scrolling).
+			event.preventDefault();
+
 			let nextFocus;
 			const elTarget = normaliseEventTarget(event);
 
@@ -314,19 +322,12 @@ function createNavigationService() {
 		 * Initializes the navigation service by setting up global listeners.
 		 */
 		init() {
-			// If a handler already exists, remove it before adding a new one.
-			// This makes `init` idempotent for the listener part.
-			if (_throttledKeyDownHandler) {
-				window.removeEventListener('keydown', _throttledKeyDownHandler);
-			}
-
 			// This intermediate function ensures that we always call the *current*
 			// value of `_handleKeyDown`, which can be swapped out by the
 			// custom focus handler.
 			const handler = (/** @type {KeyboardEvent} */ event) =>
 				_handleKeyDown(event);
-			_throttledKeyDownHandler = createThrottle(handler, 60);
-			window.addEventListener('keydown', _throttledKeyDownHandler);
+			window.addEventListener('keydown', handler);
 
 			const initialFocus = getNextFocus(null, -1);
 
@@ -480,10 +481,7 @@ function createNavigationService() {
 		 * Clears state and listeners for test isolation.
 		 */
 		_resetForTesting() {
-			if (_throttledKeyDownHandler) {
-				window.removeEventListener('keydown', _throttledKeyDownHandler);
-				_throttledKeyDownHandler = null;
-			}
+			// In a real app, you might want to remove the listener, but for testing, re-init is often sufficient.
 			_scope = undefined;
 			_lastFocus = undefined;
 			_handleKeyDown = handleKeyDown;
