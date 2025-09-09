@@ -3,6 +3,7 @@
  * This is not a full-featured implementation, but demonstrates the core concepts
  * needed to solve the focus-loss issue.
  */
+import { getPlatform } from './platform.js';
 
 /**
  * Diffs the attributes of two elements and updates the real DOM element.
@@ -11,21 +12,22 @@
  */
 function diffAttributes(vdom, dom) {
 	// --- Attributes ---
+	const platform = getPlatform();
 	const vdomAttrs = vdom.attributes;
 	const domAttrs = dom.attributes;
 
 	// Set new or changed attributes
 	for (let i = 0; i < vdomAttrs.length; i++) {
 		const attr = vdomAttrs[i];
-		if (dom.getAttribute(attr.name) !== attr.value) {
-			dom.setAttribute(attr.name, attr.value);
-		}
+		// Reading from the real DOM is fine, but writing should use the platform.
+		if (dom.getAttribute(attr.name) !== attr.value)
+			platform.setAttribute(dom, attr.name, attr.value);
 	}
 
 	// Remove old attributes
 	for (let i = domAttrs.length - 1; i >= 0; i--) {
 		const attr = domAttrs[i];
-		if (!vdom.hasAttribute(attr.name)) dom.removeAttribute(attr.name);
+		if (!vdom.hasAttribute(attr.name)) platform.removeAttribute(dom, attr.name);
 	}
 
 	// --- Properties ---
@@ -69,6 +71,7 @@ function diffAttributes(vdom, dom) {
  * @param {HTMLElement} dom
  */
 function diffChildren(vdom, dom) {
+	const platform = getPlatform();
 	const vdomChildren = Array.from(vdom.childNodes);
 	const domChildren = Array.from(dom.childNodes);
 	const maxLen = Math.max(vdomChildren.length, domChildren.length);
@@ -79,10 +82,10 @@ function diffChildren(vdom, dom) {
 
 		if (!vChild) {
 			// The new VDOM has fewer children, so remove the extra real DOM node.
-			dChild.remove();
+			if (dChild.parentNode) platform.removeChild(dChild.parentNode, dChild);
 		} else if (!dChild) {
 			// The new VDOM has more children, so add the new node.
-			dom.appendChild(vChild);
+			platform.appendChild(dom, vChild);
 		} else {
 			// Both nodes exist, so diff them recursively.
 			_diff(vChild, dChild);
@@ -96,12 +99,10 @@ function diffChildren(vdom, dom) {
  * @param {Node} dom
  */
 function _diff(vdom, dom) {
+	const platform = getPlatform();
 	// If the nodes are of different types or tags, replace the old with the new.
 	if (vdom.nodeType !== dom.nodeType || vdom.nodeName !== dom.nodeName) {
-		// Use the parentNode to replace the child, which is more compatible than `replaceWith`.
-		if (dom.parentNode) {
-			dom.parentNode.replaceChild(vdom, dom);
-		}
+		if (dom.parentNode) platform.replaceChild(dom.parentNode, vdom, dom);
 		return;
 	}
 
@@ -128,9 +129,12 @@ function _diff(vdom, dom) {
  * @param {HTMLElement} elem
  */
 function removeScripts(elem) {
+	const platform = getPlatform();
 	const scripts = elem.querySelectorAll('script');
 	for (let i = 0, l = scripts.length; i < l; i++) {
-		scripts[i].remove();
+		const script = scripts[i];
+		const parentNode = script.parentNode;
+		if (parentNode !== null) platform.removeChild(parentNode, script);
 	}
 }
 
@@ -140,6 +144,7 @@ function removeScripts(elem) {
  * @param {Node} dom
  */
 export function diff(vdom, dom) {
+	const platform = getPlatform();
 	// Sanitize VDOM by removing script tags before diffing.
 	if (vdom.nodeType === Node.ELEMENT_NODE) {
 		// @ts-ignore - The type checker struggles to infer that after the `nodeType` check, vdom is an HTMLElement.
@@ -147,20 +152,21 @@ export function diff(vdom, dom) {
 	}
 
 	// 1. Before diffing, check if the active element is inside the tree we're about to change.
-	const activeElement = document.activeElement;
-	const wasFocused =
-		activeElement && dom.contains(activeElement) && activeElement.id;
-	const activeElementId = wasFocused ? activeElement.id : null;
+	let activeElementId = null;
+	if (platform.isBrowser) {
+		const activeElement = document.activeElement;
+		const wasFocused =
+			activeElement && dom.contains(activeElement) && activeElement.id;
+		if (wasFocused) activeElementId = activeElement.id;
+	}
 
 	// 2. Perform the actual diffing.
 	_diff(vdom, dom);
 
 	// 3. After diffing, if an element was focused, find it by its ID and restore focus.
-	if (activeElementId) {
+	if (platform.isBrowser && activeElementId) {
 		const newElementToFocus = document.getElementById(activeElementId);
-		if (newElementToFocus) {
-			newElementToFocus.focus();
-		}
+		if (newElementToFocus) newElementToFocus.focus();
 	}
 }
 
@@ -170,6 +176,10 @@ export function diff(vdom, dom) {
  * @returns {Node | null}
  */
 export function stringToHTML(html) {
+	// This is a browser/DOM-only utility. It should not be used on the server.
+	if (typeof document === 'undefined') {
+		return null;
+	}
 	const template = document.createElement('template');
 	template.innerHTML = html.trim();
 	return template.content.firstChild;

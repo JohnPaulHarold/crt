@@ -17,12 +17,15 @@
  * window.addEventListener('resize', handleResize);
  */
 export function createDebounce(callback, time) {
-	/** @type {number | undefined} */
+	/**
+	 * The timer ID. This can be a number (browser) or a Timeout object (Node.js).
+	 * @type {number | NodeJS.Timeout | undefined}
+	 */
 	let timer; // This timer is private to each created function's closure.
 
 	return function (...args) {
-		window.clearTimeout(timer);
-		timer = window.setTimeout(() => {
+		clearTimeout(timer);
+		timer = setTimeout(() => {
 			// @ts-ignore - `this` is correctly preserved from the calling context of the debounced function.
 			callback.apply(this, args);
 		}, time);

@@ -1,4 +1,5 @@
 import { loga } from './utils/loga/loga.js';
+import { getPlatform } from './platform.js';
 
 const logr = loga.create('BaseView');
 
@@ -36,7 +37,9 @@ export function createBaseView(options) {
 				this.viewEl = this.render();
 			}
 
-			parentEl.appendChild(this.viewEl);
+			const platform = getPlatform();
+			// @ts-ignore - this.viewEl is guaranteed to be an HTMLElement here.
+			platform.appendChild(parentEl, this.viewEl);
 
 			// Safely call viewDidLoad after the element is in the DOM.
 			if (this.viewDidLoad) {
@@ -56,7 +59,8 @@ export function createBaseView(options) {
 			}
 
 			if (this.viewEl && this.viewEl.parentElement) {
-				this.viewEl.parentElement.removeChild(this.viewEl);
+				const platform = getPlatform();
+				platform.removeChild(this.viewEl.parentElement, this.viewEl);
 			}
 
 			this.viewEl = null;
@@ -72,9 +76,10 @@ export function createBaseView(options) {
 			logr.warn(
 				`[render] The 'render' method for view "${this.id}" is not implemented. Returning an empty div.`
 			);
-			const el = document.createElement('div');
+			const platform = getPlatform();
+			const el = platform.createElement('div');
 			el.id = this.id;
-			return el;
+			return /** @type {HTMLElement} */ (el);
 		},
 	};
 
