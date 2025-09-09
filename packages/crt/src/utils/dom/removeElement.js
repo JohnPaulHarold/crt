@@ -1,9 +1,12 @@
+import { getPlatform } from '../../platform.js';
+
 /**
  * @param {HTMLElement|Element} el
  * @returns {void}
  */
 export function removeElement(el) {
 	if (el.parentElement) {
-		el.parentElement.removeChild(el);
+		const platform = getPlatform();
+		platform.removeChild(el.parentElement, el);
 	}
 }

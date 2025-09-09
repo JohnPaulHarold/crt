@@ -1,4 +1,5 @@
 import { loga } from './utils/loga/loga.js';
+import { getPlatform } from './platform.js';
 
 const logr = loga.create('h');
 
@@ -6,14 +7,14 @@ const logr = loga.create('h');
  * Represents the types of input that can be considered a child or a collection of children
  * for an HTML element. This can be:
  * - A single string (for a text node).
- * - A single HTMLElement.
- * - An array containing strings, HTMLElements, or other nested arrays of the same (any[] for deeper nesting).
- * @typedef {string | HTMLElement | Array<string | HTMLElement | any[]>} ChildInput
+ * - A single Element.
+ * - An array containing strings, Elements, or other nested arrays of the same (any[] for deeper nesting).
+ * @typedef {string | Element | Array<string | Element | any[]>} ChildInput
  */
 
 /**
  * Type definition for the shorthand element creation functions (e.g., div, span).
- * @typedef {function(...any): HTMLElement} ShorthandMakeElement
+ * @typedef {function(...any): Element} ShorthandMakeElement
  */
 
 /**
@@ -37,27 +38,39 @@ const attributeExceptions = [
 ];
 
 /**
- * @param {HTMLElement} el
+ * A duck-typing check to see if an object is a node-like structure.
+ * This works for both browser HTMLElements and our server-side node objects,
+ * as both are expected to have a `tagName` property.
+ * @param {any} thing The item to check.
+ * @returns {boolean}
+ */
+const isNodeLike = (thing) =>
+	typeof thing === 'object' &&
+	thing !== null &&
+	'tagName' in thing &&
+	!Array.isArray(thing);
+
+/**
+ * @param {Element} el
  * @param {string} text
  */
 function appendText(el, text) {
-	const textNode = document.createTextNode(text);
-	el.appendChild(textNode);
+	const platform = getPlatform();
+	const textNode = platform.createTextNode(text);
+	platform.appendChild(el, textNode);
 }
 
 /**
- * @param {HTMLElement} el
+ * @param {Element} el
  * @param {Array<string | Element | Array<any>>} children - An array of child elements.
- *   Each element can be a string (for a text node), an Element, or another array of children
- *   (allowing for nested structures). The `Array<any>` allows for deeper, less strictly-typed nesting
- *   if necessary, though the primary expectation is `string | Element`.
  */
 function appendArray(el, children) {
+	const platform = getPlatform();
 	children.forEach((child) => {
 		if (Array.isArray(child)) {
 			appendArray(el, child);
-		} else if (child instanceof window.Element) {
-			el.appendChild(child);
+		} else if (isNodeLike(child)) {
+			platform.appendChild(el, /** @type {Node} */ (child));
 		} else if (typeof child === 'string') {
 			appendText(el, child);
 		}
@@ -65,79 +78,68 @@ function appendArray(el, children) {
 }
 
 /**
- * @param {HTMLElement} el
- * @param {CSSStyleDeclaration} styles
+ * @param {Element} el
+ * @param {Record<string, string | number>} styles
  * @returns
  */
 function setStyles(el, styles) {
-	if (!styles) {
-		el.removeAttribute('styles');
-		return;
-	}
-
-	Object.keys(styles).forEach((styleName) => {
-		if (styleName in el.style) {
-			// @ts-ignore see https://github.com/microsoft/TypeScript/issues/17827
-			el.style[styleName] = styles[styleName];
-		} else {
-			logr.warn(
-				`[setStyles] ${styleName} is not a valid style for a <${el.tagName.toLowerCase()}>`
-			);
-		}
-	});
+	const platform = getPlatform();
+	// The platform implementation will handle the logic.
+	// For the browser, this might be Object.assign(el.style, styles).
+	// For the server, it will convert the object to a style string.
+	platform.setStyles(el, styles);
 }
 
 /**
- * @param {HTMLElement} el
+ * @param {Element} el
  * @param {Record<string, string>} dataset
  */
 function setData(el, dataset) {
-	Object.keys(dataset).forEach((datakey) => {
-		el.dataset[datakey] = dataset[datakey];
-	});
+	const platform = getPlatform();
+	platform.setData(el, dataset);
 }
 
 /**
  * Sets ARIA attributes on an element from an object.
- * @param {HTMLElement} el The element to apply attributes to.
+ * @param {Element} el The element to apply attributes to.
  * @param {Record<string, string | number | boolean | undefined>} aria The object of ARIA attributes.
  */
 function setAria(el, aria) {
-	Object.keys(aria).forEach((key) => {
-		const value = aria[key];
-		// Set the attribute only if the value is not null or undefined.
-		if (value != null) el.setAttribute(`aria-${key}`, String(value));
-	});
+	const platform = getPlatform();
+	platform.setAria(el, aria);
 }
 
 /**
  * @param {string} type
  * @param {Record<string, any> | ChildInput} [textOrPropsOrChild] - Optional.
  *   Either an object of attributes/properties for the element,
- *   or the first child/collection of children (string, HTMLElement, or array of ChildInput).
+ *   or the first child/collection of children (string, Element, or array of ChildInput).
  * @param {ChildInput[]} otherChildren - Additional children to append. Each argument
  *   is treated as a child or a collection of children.
  * @see {@link https://david-gilbertson.medium.com/how-i-converted-my-react-app-to-vanillajs-and-whether-or-not-it-was-a-terrible-idea-4b14b1b2faff}
  *
- * @returns {HTMLElement}
+ * @returns {Element}
  * @example h('div', { id: 'foo' }, 'Hello', h('span', 'World'))
  */
 export function h(type, textOrPropsOrChild, ...otherChildren) {
-	const el = document.createElement(type);
+	const platform = getPlatform();
+	const el = platform.createElement(type);
 
 	if (Array.isArray(textOrPropsOrChild)) {
 		appendArray(el, textOrPropsOrChild);
-	} else if (textOrPropsOrChild instanceof window.Element) {
-		el.appendChild(textOrPropsOrChild);
+	} else if (isNodeLike(textOrPropsOrChild)) {
+		platform.appendChild(el, /** @type {Node} */ (textOrPropsOrChild));
 	} else if (typeof textOrPropsOrChild === 'string') {
 		appendText(el, textOrPropsOrChild);
 	} else if (
 		typeof textOrPropsOrChild === 'object' &&
-		textOrPropsOrChild !== null && // Ensure it's not null
-		!Array.isArray(textOrPropsOrChild) // Ensure it's not an array (already handled)
+		textOrPropsOrChild !== null
 	) {
 		Object.keys(textOrPropsOrChild).forEach((propName) => {
-			const value = textOrPropsOrChild[propName];
+			// Cast to Record to allow dynamic property access.
+			const value = /** @type {Record<string, any>} */ (textOrPropsOrChild)[
+				propName
+			];
 
 			if (value == null) return; // Skip null and undefined values for cleaner output
 
@@ -147,15 +149,23 @@ export function h(type, textOrPropsOrChild, ...otherChildren) {
 				setData(el, value);
 			} else if (propName === 'aria') {
 				setAria(el, value);
-			} else if (propName in el) {
-				// It's a known property on the element, so set it directly.
-				// @ts-ignore - We are intentionally setting a dynamic property.
-				el[propName] = value;
-			} else if (attributeExceptions.includes(propName)) {
-				// It's a known exception (like 'role'), so use setAttribute.
-				el.setAttribute(propName, String(value));
+			} else if (platform.isBrowser) {
+				// Browser-specific logic
+				if (propName in el) {
+					// It's a known property on the element, so set it directly.
+					// @ts-ignore - We are intentionally setting a dynamic property.
+					el[propName] = value;
+				} else if (attributeExceptions.includes(propName)) {
+					platform.setAttribute(el, propName, String(value));
+				} else {
+					logr.warn(`${propName} is not a valid property of a <${type}>`);
+				}
 			} else {
-				logr.warn(`${propName} is not a valid property of a <${type}>`);
+				// Server-specific logic: treat everything else as an attribute,
+				// but ignore event handlers.
+				if (!propName.startsWith('on')) {
+					platform.setAttribute(el, propName, String(value));
+				}
 			}
 		});
 	}

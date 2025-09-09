@@ -40,4 +40,62 @@
  * @typedef {(event: KeyboardEvent | MouseEvent) => void} keydownCallback
  */
 
+/**
+ * @callback CreateElementCallback
+ * @param {string} tagName
+ * @returns {Element}
+ *
+ * @callback CreateTextNodeCallback
+ * @param {string} text
+ * @returns {Node}
+ *
+ * @callback CreateAppendChildCallback
+ * @param {Node} parent
+ * @param {Node} child
+ *
+ * @callback SetAttributeCallback
+ * @param {Element} el
+ * @param {string} name
+ * @param {string} value
+ *
+ * @callback RemoveAttributeCallback
+ * @param {Element} el
+ * @param {string} name
+ *
+ * @callback RemoveChildCallback
+ * @param {Node} parent
+ * @param {Node} child
+ *
+ * @callback ReplaceChildCallback
+ * @param {Node} parent
+ * @param {Node} newChild
+ * @param {Node} oldChild
+ *
+ * @callback SetStylesCallback
+ * @param {Element} el
+ * @param {Record<string, string | number>} styles
+ *
+ * @callback SetDataCallback
+ * @param {Element} el
+ * @param {Record<string, string>} dataset
+ *
+ * @callback SetAriaCallback
+ * @param {Element} el
+ * @param {Record<string, string | number | boolean | undefined>} aria
+ *
+ * @typedef {object} Platform
+ * @property {boolean} isBrowser
+ * @property {boolean} isServer
+ * @property {CreateElementCallback} createElement
+ * @property {CreateTextNodeCallback} createTextNode
+ * @property {CreateAppendChildCallback} appendChild
+ * @property {SetAttributeCallback} setAttribute
+ * @property {RemoveAttributeCallback} removeAttribute
+ * @property {RemoveChildCallback} removeChild
+ * @property {ReplaceChildCallback} replaceChild
+ * @property {SetStylesCallback} setStyles
+ * @property {SetDataCallback} setData
+ * @property {SetAriaCallback} setAria
+ */
+
 export {};
