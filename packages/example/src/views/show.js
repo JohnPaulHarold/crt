@@ -72,7 +72,7 @@ export function createShowView(options) {
 		},
 
 		viewDidLoad: function () {
-			if (this.viewEl) {
+			if (this.viewEl instanceof HTMLElement) {
 				checkImages(this.viewEl);
 				this.logoEl = this.viewEl.querySelector(`.${s.showLogo}`);
 				this.overlayEl = this.viewEl.querySelector(`.${s.showOverlay}`);
@@ -110,7 +110,7 @@ export function createShowView(options) {
 				appOutlets.nav.contains(elTarget);
 			const isUpOrDown = assertKey(event, [Direction.UP, Direction.DOWN]);
 
-			if (isUpOrDown && this.viewEl && !onNav) {
+			if (isUpOrDown && this.viewEl instanceof HTMLElement && !onNav) {
 				this.animateFold();
 				defaultKeyDownHandler(event, this.viewEl);
 				this.belowFold = !this.belowFold;
@@ -156,7 +156,7 @@ export function createShowView(options) {
 						div(
 							{ className: s.showOverlay },
 							Heading(
-								{ level: 'h1', className: s.showTitle },
+								{ level: 1, className: s.showTitle },
 								'Show ' + this.showName
 							),
 							p({ className: s.showDescription }, showData.description),

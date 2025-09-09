@@ -13,8 +13,9 @@ const logr = loga.create('h');
  */
 
 /**
+ * @template {keyof HTMLElementTagNameMap} K
  * Type definition for the shorthand element creation functions (e.g., div, span).
- * @typedef {function(...any): Element} ShorthandMakeElement
+ * @typedef {(...args: any[]) => HTMLElementTagNameMap[K]} ShorthandMakeElement<K>
  */
 
 /**
@@ -70,7 +71,8 @@ function appendArray(el, children) {
 		if (Array.isArray(child)) {
 			appendArray(el, child);
 		} else if (isNodeLike(child)) {
-			platform.appendChild(el, /** @type {Node} */ (child));
+			// @ts-ignore - JSDoc checker struggles to narrow type with custom isNodeLike guard.
+			platform.appendChild(el, child);
 		} else if (typeof child === 'string') {
 			appendText(el, child);
 		}
@@ -110,7 +112,8 @@ function setAria(el, aria) {
 }
 
 /**
- * @param {string} type
+ * @template {keyof HTMLElementTagNameMap} K
+ * @param {K} type
  * @param {Record<string, any> | ChildInput} [textOrPropsOrChild] - Optional.
  *   Either an object of attributes/properties for the element,
  *   or the first child/collection of children (string, Element, or array of ChildInput).
@@ -118,7 +121,7 @@ function setAria(el, aria) {
  *   is treated as a child or a collection of children.
  * @see {@link https://david-gilbertson.medium.com/how-i-converted-my-react-app-to-vanillajs-and-whether-or-not-it-was-a-terrible-idea-4b14b1b2faff}
  *
- * @returns {Element}
+ * @returns {HTMLElementTagNameMap[K]}
  * @example h('div', { id: 'foo' }, 'Hello', h('span', 'World'))
  */
 export function h(type, textOrPropsOrChild, ...otherChildren) {
@@ -128,7 +131,8 @@ export function h(type, textOrPropsOrChild, ...otherChildren) {
 	if (Array.isArray(textOrPropsOrChild)) {
 		appendArray(el, textOrPropsOrChild);
 	} else if (isNodeLike(textOrPropsOrChild)) {
-		platform.appendChild(el, /** @type {Node} */ (textOrPropsOrChild));
+		// @ts-ignore - JSDoc checker struggles to narrow type with custom isNodeLike guard.
+		platform.appendChild(el, textOrPropsOrChild);
 	} else if (typeof textOrPropsOrChild === 'string') {
 		appendText(el, textOrPropsOrChild);
 	} else if (
@@ -136,10 +140,8 @@ export function h(type, textOrPropsOrChild, ...otherChildren) {
 		textOrPropsOrChild !== null
 	) {
 		Object.keys(textOrPropsOrChild).forEach((propName) => {
-			// Cast to Record to allow dynamic property access.
-			const value = /** @type {Record<string, any>} */ (textOrPropsOrChild)[
-				propName
-			];
+			// @ts-ignore - The preceding `if` checks ensure this is a props object, not an Element.
+			const value = textOrPropsOrChild[propName];
 
 			if (value == null) return; // Skip null and undefined values for cleaner output
 

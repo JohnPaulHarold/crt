@@ -15,10 +15,10 @@
 		"nuke": "node scripts/nuke.js",
 		"test": "npm run build && vitest run",
 		"test:watch": "npm run build && vitest watch",
-		"coverage": "node scripts/coverage.js",
+		"coverage": "vitest run --coverage",
 		"lint:js": "eslint .",
 		"lint:prettier": "prettier --write .",
-		"typecheck": "tsc -b"
+		"typecheck": "npm run build && tsc -b"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.24.7",

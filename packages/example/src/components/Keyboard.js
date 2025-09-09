@@ -51,12 +51,14 @@ const KeyButton = (props) => {
  * @returns {HTMLElement}
  */
 export const Keyboard = (props) => {
-	return div(
-		{ className: s.keyboard },
-		props.keyMap.map((row) =>
-			div(
-				{ className: s.keyboardRow },
-				row.map((key) => KeyButton(key))
+	return /** @type {HTMLElement} */ (
+		div(
+			{ className: s.keyboard },
+			props.keyMap.map((row) =>
+				div(
+					{ className: s.keyboardRow },
+					row.map((key) => KeyButton(key))
+				)
 			)
 		)
 	);

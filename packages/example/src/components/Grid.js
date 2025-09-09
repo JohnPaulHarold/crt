@@ -28,7 +28,9 @@ export const Grid = (props, children) => {
 
 	children.forEach((c, i) => {
 		if (i % props.columns === 0) {
-			rowEl = div({ className: s.gridRow + ' row' + rowCount });
+			rowEl = /** @type {HTMLElement} */ (
+				div({ className: s.gridRow + ' row' + rowCount })
+			);
 			gridRows.push(rowEl);
 			rowCount++;
 		}
@@ -36,5 +38,7 @@ export const Grid = (props, children) => {
 		rowEl && rowEl.appendChild(c);
 	});
 
-	return section({ className: 'grid ' + props.className || '' }, gridRows);
+	return /** @type {HTMLElement} */ (
+		section({ className: 'grid ' + props.className || '' }, gridRows)
+	);
 };

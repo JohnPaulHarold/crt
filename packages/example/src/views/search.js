@@ -115,7 +115,7 @@ function getTemplate() {
  *  stopWatching?: () => void,
  *  destructor: () => void,
  *  viewDidLoad: () => void,
- *  render: () => HTMLElement
+ *  render: () => Element
  * }} SearchViewInstance
  */
 
@@ -135,7 +135,10 @@ export function createSearchView(options) {
 
 		destructor: function () {
 			if (this.viewEl && this.boundHandleClick) {
-				this.viewEl.removeEventListener('click', this.boundHandleClick);
+				this.viewEl.removeEventListener(
+					'click',
+					/** @type {EventListener} */ (this.boundHandleClick)
+				);
 			}
 			if (this.stopWatching) {
 				this.stopWatching();
@@ -147,7 +150,10 @@ export function createSearchView(options) {
 		viewDidLoad: function () {
 			if (this.viewEl) {
 				this.boundHandleClick = handleClick.bind(this);
-				this.viewEl.addEventListener('click', this.boundHandleClick);
+				this.viewEl.addEventListener(
+					'click',
+					/** @type {EventListener} */ (this.boundHandleClick)
+				);
 
 				const handler = () => {
 					// This handler is called whenever the search term changes.

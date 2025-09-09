@@ -131,7 +131,7 @@ export function createCanivideoView(options) {
 		render: function () {
 			return div(
 				{ className: 'view', id: this.id },
-				Heading({ level: 'h1' }, 'CAN I VIDEO?'),
+				Heading({ level: 1 }, 'CAN I VIDEO?'),
 				Carousel(
 					{
 						id: 'codecs-carousel',

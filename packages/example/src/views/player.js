@@ -22,44 +22,46 @@ function getTemplate() {
 	const currentTime = player.state.currentTime.getValue();
 	const progress = (currentTime / player.state.duration) * 100;
 
-	return div(
-		{ className: 'view ' + s.playerContainer, id: this.id },
-		div({ className: s.player }, [
-			div({ className: s.progress }, [
-				div({
-					className: s.progressBar,
-					// Pass a style OBJECT, not a string, to fix the bug.
-					style: { width: `${progress}%` },
-				}),
-			]),
-			div({ className: s.controls }, [
-				button(
-					{
-						id: 'play-pause-btn',
-						className: navigationService.isElementFocused('play-pause-btn')
-							? 'focused'
-							: '',
-						onclick: player.controls.togglePlay,
-					},
-					isPlaying ? 'Pause' : 'Play'
+	return /** @type {HTMLElement} */ (
+		div(
+			{ className: 'view ' + s.playerContainer, id: this.id },
+			div({ className: s.player }, [
+				div({ className: s.progress }, [
+					div({
+						className: s.progressBar,
+						// Pass a style OBJECT, not a string, to fix the bug.
+						style: { width: `${progress}%` },
+					}),
+				]),
+				div({ className: s.controls }, [
+					button(
+						{
+							id: 'play-pause-btn',
+							className: navigationService.isElementFocused('play-pause-btn')
+								? 'focused'
+								: '',
+							onclick: player.controls.togglePlay,
+						},
+						isPlaying ? 'Pause' : 'Play'
+					),
+					button(
+						{
+							id: 'mute-btn',
+							className: navigationService.isElementFocused('mute-btn')
+								? 'focused'
+								: '',
+							onclick: player.controls.toggleMute,
+						},
+						isMuted ? 'Unmute' : 'Mute'
+					),
+				]),
+				// A "subtitles" display that automatically updates
+				p(
+					{ className: s.subtitles },
+					`Time: ${currentTime}s. ${isMuted ? 'MUTED' : ''}`
 				),
-				button(
-					{
-						id: 'mute-btn',
-						className: navigationService.isElementFocused('mute-btn')
-							? 'focused'
-							: '',
-						onclick: player.controls.toggleMute,
-					},
-					isMuted ? 'Unmute' : 'Mute'
-				),
-			]),
-			// A "subtitles" display that automatically updates
-			p(
-				{ className: s.subtitles },
-				`Time: ${currentTime}s. ${isMuted ? 'MUTED' : ''}`
-			),
-		])
+			])
+		)
 	);
 }
 
