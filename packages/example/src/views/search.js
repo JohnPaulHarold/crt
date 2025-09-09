@@ -104,13 +104,12 @@ function getTemplate() {
 	return div(
 		{ className: 'view', id: this.id },
 		div({ className: s.searchInput, id: 'search-input' }, searchTerm),
-		div({ className: s.panels2 }, this.keyboard, resultsEl)
+		div({ className: s.panels2 }, Keyboard({ keyMap: keyMap }), resultsEl)
 	);
 }
 
 /**
  * @typedef {import('crt').BaseViewInstance & {
- *  keyboard: HTMLElement,
  *  searchTerm: import('crt').SignallerInstance,
  *  boundHandleClick?: (event: MouseEvent) => void,
  *  stopWatching?: () => void,
@@ -131,7 +130,6 @@ export function createSearchView(options) {
 	const searchView = {
 		...base,
 		searchTerm: createSignaller(''),
-		keyboard: Keyboard({ keyMap: keyMap }),
 		boundHandleClick: undefined,
 		stopWatching: undefined,
 
@@ -156,19 +154,15 @@ export function createSearchView(options) {
 					// It's the view's responsibility to manage the lifecycle of the
 					// results carousel.
 					if (this.viewEl) {
-						// 1. Before diffing, find the old carousel and unregister it.
+						// 1. Before diffing, find the old carousel and unregister it if it exists.
 						const oldCarousel = this.viewEl.querySelector(
 							'#search-results-list .carousel'
 						);
 
-						if (!(oldCarousel instanceof HTMLElement)) {
-							logr.error(
-								'[viewDidLoad] a scrollArea was an Element other than HTMLElement'
-							);
-							return;
-						}
-
-						if (oldCarousel && oldCarousel.dataset.deadseaId) {
+						if (
+							oldCarousel instanceof HTMLElement &&
+							oldCarousel.dataset.deadseaId
+						) {
 							deadSeaService.unregister(oldCarousel.dataset.deadseaId);
 						}
 
@@ -176,19 +170,12 @@ export function createSearchView(options) {
 						const vdom = getTemplate.call(this);
 						diff(vdom, this.viewEl);
 
-						// 3. After diffing, find the new carousel (if it exists) and register it.
+						// 3. After diffing, find the new carousel and register it if it exists.
 						const newCarousel = this.viewEl.querySelector(
 							'#search-results-list .carousel'
 						);
 
-						if (!(newCarousel instanceof HTMLElement)) {
-							logr.error(
-								'[viewDidLoad] newCarousel was an Element other than HTMLElement'
-							);
-							return;
-						}
-
-						if (newCarousel) {
+						if (newCarousel instanceof HTMLElement) {
 							deadSeaService.register(newCarousel);
 						}
 					}
