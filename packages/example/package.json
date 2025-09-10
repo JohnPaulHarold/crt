@@ -6,7 +6,7 @@
 	"type": "module",
 	"_comment": "TODO: Revisit using 'workspace:*' for the crt dependency once the environmental issue is resolved. The 'file:../crt' is a workaround.",
 	"scripts": {
-		"build": "rm -rf dist && rollup -c rollup.config.mjs",
+		"build": "rm -rf dist && tsc -p tsconfig.json && rollup -c rollup.config.mjs",
 		"dev": "rm -rf dist && rollup -c rollup.dev.mjs -w",
 		"serve": "cd dist && python -m SimpleHTTPServer 3500"
 	},

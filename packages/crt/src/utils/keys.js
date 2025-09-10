@@ -1,6 +1,6 @@
-import { AdditionalKeys } from '../models/AdditionalKeys';
-import { Direction } from '../models/Direction';
-import { Orientation } from '../models/Orientation';
+import { AdditionalKeys } from '../models/AdditionalKeys.js';
+import { Direction } from '../models/Direction.js';
+import { Orientation } from '../models/Orientation.js';
 
 const _left = Direction.LEFT;
 const _right = Direction.RIGHT;

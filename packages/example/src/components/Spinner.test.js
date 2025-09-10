@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, test } from 'vitest';
-import { Spinner } from './Spinner';
+import { Spinner } from './Spinner.js';
 
 describe('Spinner', () => {
 	test('construction', () => {

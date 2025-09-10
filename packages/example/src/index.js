@@ -81,6 +81,17 @@ function App() {
 	]);
 }
 
+/**
+ * A map of view names to their factory functions, used for SSR hydration.
+ * The index signature `[key: string]` tells TypeScript that we can access
+ * its properties using a string variable.
+ * @type {Record<string, (options: import('crt').ViewOptions) => import('crt').BaseViewInstance>}
+ */
+const viewFactories = {
+	player: createPlayerView,
+	// In the future, other views can be added here to support SSR
+};
+
 document.addEventListener('DOMContentLoaded', () => {
 	const root = document.getElementById('root');
 	if (!root) {
@@ -88,32 +99,49 @@ document.addEventListener('DOMContentLoaded', () => {
 		return;
 	}
 
-	const app = App();
-	root.appendChild(app);
+	const ssrViewName = root.dataset.ssrView;
+	const ssrViewElement = root.firstElementChild;
 
-	historyRouter.registerRoute(routes.HOME, (opts) =>
-		loadView(createHomeView, opts)
-	);
-	historyRouter.registerRoute(routes.SEARCH, (opts) =>
-		loadView(createSearchView, opts)
-	);
-	historyRouter.registerRoute(routes.SHOW, (opts) =>
-		loadView(createShowView, opts)
-	);
-	historyRouter.registerRoute(routes.DIFF, (opts) =>
-		loadView(createDiffView, opts)
-	);
-	historyRouter.registerRoute(routes.VLIST, (opts) =>
-		loadView(createVListView, opts)
-	);
-	historyRouter.registerRoute(routes.PLAYER, (opts) =>
-		loadView(createPlayerView, opts)
-	);
-	historyRouter.registerRoute(routes.REACTIVE_VLIST, (opts) =>
-		loadView(createReactiveVListView, opts)
-	);
+	if (ssrViewName && ssrViewElement && viewFactories[ssrViewName]) {
+		// --- HYDRATION MODE ---
+		logr.info(`Hydrating server-rendered view: ${ssrViewName}`);
 
-	historyRouter.config('/', 'hash');
+		const createView = viewFactories[ssrViewName];
+		const viewInstance = createView({ id: ssrViewElement.id });
 
-	navigationService.init();
+		viewInstance.hydrate(ssrViewElement);
+		navigationService.init();
+	} else {
+		// --- CLIENT-SIDE RENDERING MODE ---
+		logr.info('Starting in client-side rendering mode.');
+
+		const app = App();
+		root.appendChild(app);
+
+		historyRouter.registerRoute(routes.HOME, (opts) =>
+			loadView(createHomeView, opts)
+		);
+		historyRouter.registerRoute(routes.SEARCH, (opts) =>
+			loadView(createSearchView, opts)
+		);
+		historyRouter.registerRoute(routes.SHOW, (opts) =>
+			loadView(createShowView, opts)
+		);
+		historyRouter.registerRoute(routes.DIFF, (opts) =>
+			loadView(createDiffView, opts)
+		);
+		historyRouter.registerRoute(routes.VLIST, (opts) =>
+			loadView(createVListView, opts)
+		);
+		historyRouter.registerRoute(routes.PLAYER, (opts) =>
+			loadView(createPlayerView, opts)
+		);
+		historyRouter.registerRoute(routes.REACTIVE_VLIST, (opts) =>
+			loadView(createReactiveVListView, opts)
+		);
+
+		historyRouter.config('/', 'hash');
+
+		navigationService.init();
+	}
 });

@@ -51,6 +51,9 @@ function serializeNode(node) {
 		return node; // It's a text node.
 	}
 
+	// STRATEGIC LOG 3: What attributes are being serialized for this node?
+	console.log(`[serializeNode] Serializing <${node.tagName}> with attributes:`, node.attributes);
+
 	const { tagName, attributes, style, children } = node;
 
 	const attrsString = attributesObjectToString(attributes);
@@ -81,7 +84,14 @@ export function renderToString(viewInstance) {
 	try {
 		setPlatform(serverPlatform);
 		const vdom = viewInstance.render();
-		return serializeNode(/** @type {any} */ (vdom));
+		// STRATEGIC LOG 2: What does the complete VDOM tree look like?
+		console.log(
+			'[renderToString] Generated VDOM tree:',
+			JSON.stringify(vdom, null, 2)
+		);
+		// @ts-ignore - The vdom is an `Element` type, but in this context it's a `ServerNode`.
+		// We ignore the type checker here as we know the runtime type is correct.
+		return serializeNode(vdom);
 	} finally {
 		setPlatform(originalPlatform);
 	}

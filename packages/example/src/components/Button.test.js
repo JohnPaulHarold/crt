@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, test } from 'vitest';
-import { Button } from './Button';
+import { Button } from './Button.js';
 
 describe('Button', () => {
 	test('construction', () => {

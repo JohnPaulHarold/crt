@@ -1,4 +1,8 @@
 {
 	"files": [],
-	"references": [{ "path": "packages/crt" }, { "path": "packages/example" }]
+	"references": [
+		{ "path": "packages/crt" },
+		{ "path": "packages/example" },
+		{ "path": "tsconfig.server.json" }
+	]
 }

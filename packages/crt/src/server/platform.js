@@ -22,76 +22,66 @@ export const serverPlatform = {
 	isServer: true,
 
 	/** @returns {any} */
-	// We cast the return to `any` to satisfy the `Element` return type of the Platform interface.
-	createElement: (tagName) =>
-		/** @type {ServerNode} */ ({
+	createElement: (tagName) => {
+		// @ts-ignore - The return type is a ServerNode, not a DOM Element.
+		return {
 			tagName,
 			attributes: {},
 			style: {},
 			children: [],
-		}),
+		};
+	},
 
-	// We cast the return to `any` to satisfy the `Node` return type of the Platform interface.
-	createTextNode: (text) => /** @type {any} */ (String(text)),
+	// @ts-ignore - The return type is a string, not a DOM Node.
+	createTextNode: (text) => {
+		// @ts-ignore - The return type is a string, not a DOM Node.
+		return String(text);
+	},
 
 	appendChild: (parent, child) => {
-		// Double-cast via `any` to convert from DOM types to our ServerNode type.
-		/** @type {ServerNode} */ (/** @type {any} */ (parent)).children.push(
-			/** @type {ServerNode | string} */ (/** @type {any} */ (child))
-		);
+		// @ts-ignore - The Platform interface uses DOM types, but we know these are ServerNodes at runtime.
+		parent.children.push(child);
 	},
 
 	setAttribute: (el, name, value) => {
-		/** @type {ServerNode} */ (/** @type {any} */ (el)).attributes[name] =
-			String(value);
+		// @ts-ignore - el is a ServerNode at runtime.
+		el.attributes[name] = String(value);
 	},
 
 	removeAttribute: (el, name) => {
-		delete (
-			/** @type {ServerNode} */ (/** @type {any} */ (el)).attributes[name]
-		);
+		// @ts-ignore - el is a ServerNode at runtime.
+		delete el.attributes[name];
 	},
 
 	removeChild: (parent, child) => {
-		const serverParent = /** @type {ServerNode} */ (
-			/** @type {any} */ (parent)
-		);
-		const index = serverParent.children.indexOf(
-			/** @type {ServerNode | string} */ (/** @type {any} */ (child))
-		);
+		// @ts-ignore - parent is a ServerNode at runtime.
+		const index = parent.children.indexOf(child);
 		if (index > -1) {
-			serverParent.children.splice(index, 1);
+			// @ts-ignore - parent is a ServerNode at runtime.
+			parent.children.splice(index, 1);
 		}
 	},
 
 	replaceChild: (parent, newChild, oldChild) => {
-		const serverParent = /** @type {ServerNode} */ (
-			/** @type {any} */ (parent)
-		);
-		const index = serverParent.children.indexOf(
-			/** @type {ServerNode | string} */ (/** @type {any} */ (oldChild))
-		);
+		// @ts-ignore - parent is a ServerNode at runtime.
+		const index = parent.children.indexOf(oldChild);
 		if (index > -1) {
-			serverParent.children[index] = /** @type {ServerNode | string} */ (
-				/** @type {any} */ (newChild)
-			);
+			// @ts-ignore - parent is a ServerNode at runtime.
+			parent.children[index] = newChild;
 		}
 	},
 
 	setStyles: (el, styles) => {
-		Object.assign(
-			/** @type {ServerNode} */ (/** @type {any} */ (el)).style,
-			styles
-		);
+		// @ts-ignore - el is a ServerNode at runtime.
+		Object.assign(el.style, styles);
 	},
 
 	setData: (el, dataset) => {
 		Object.keys(dataset).forEach((key) => {
 			const value = dataset[key];
 			if (value != null) {
-				/** @type {ServerNode} */ (/** @type {any} */ (el)).attributes[
-					`data-${key}`
-				] = String(value);
+				// @ts-ignore - el is a ServerNode at runtime.
+				el.attributes[`data-${key}`] = String(value);
 			}
 		});
 	},
@@ -100,9 +90,8 @@ export const serverPlatform = {
 		Object.keys(aria).forEach((key) => {
 			const value = aria[key];
 			if (value != null) {
-				/** @type {ServerNode} */ (/** @type {any} */ (el)).attributes[
-					`aria-${key}`
-				] = String(value);
+				// @ts-ignore - el is a ServerNode at runtime.
+				el.attributes[`aria-${key}`] = String(value);
 			}
 		});
 	},

@@ -1,17 +1,16 @@
 {
 	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
-		"noEmit": true,
-		"composite": true
+		"emitDeclarationOnly": true,
+		"composite": true,
+		"declarationDir": "dist/types",
+		"rootDir": "src"
 	},
 	"include": ["src/**/*"],
 	"exclude": [
 		"node_modules",
 		"dist",
-		// Exclude the compiled output of the crt package to prevent
-		// type-checking of its generated JavaScript files. TypeScript will
-		// use the generated .d.ts files for type information instead.
-		"../crt/dist"
+		"../crt/dist" // This is now redundant due to project references but is harmless.
 	],
 	"references": [{ "path": "../crt" }]
 }
