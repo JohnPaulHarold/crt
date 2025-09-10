@@ -54,7 +54,7 @@ describe('NotificationsService', () => {
 
 		// Manually add to DOM and timers to test clearNotification in isolation
 		NotificationsService.outlet.appendChild(notificationEl);
-		const timerId = window.setTimeout(() => {}, 5000);
+		const timerId = setTimeout(() => {}, 5000);
 		NotificationsService.timers['a1'] = timerId;
 
 		expect(NotificationsService.outlet.contains(notificationEl)).toBe(true);
@@ -90,7 +90,7 @@ describe('NotificationsService', () => {
 
 	test('should handle clearing a notification that is not in the DOM', () => {
 		const clearTimeoutSpy = vi.spyOn(window, 'clearTimeout');
-		NotificationsService.timers['b2'] = window.setTimeout(() => {}, 1000);
+		NotificationsService.timers['b2'] = setTimeout(() => {}, 1000);
 
 		// The element with data-not-id="b2" is not in the DOM
 		expect(document.querySelector('[data-not-id="b2"]')).toBeNull();

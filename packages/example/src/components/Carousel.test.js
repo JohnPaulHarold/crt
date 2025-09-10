@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, test } from 'vitest';
-import { Carousel } from './Carousel';
+import { Carousel } from './Carousel.js';
 import { div } from '../html.js';
 
 describe('Carousel', () => {

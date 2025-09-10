@@ -52,11 +52,11 @@ function serializeNode(node) {
 	}
 
 	const { tagName, attributes, style, children } = node;
-
 	const attrsString = attributesObjectToString(attributes);
 	const styleString = styleObjectToString(style);
 
 	let finalAttrs = attrsString;
+
 	if (styleString) {
 		finalAttrs += `${finalAttrs ? ' ' : ''}style="${styleString}"`;
 	}
@@ -81,7 +81,9 @@ export function renderToString(viewInstance) {
 	try {
 		setPlatform(serverPlatform);
 		const vdom = viewInstance.render();
-		return serializeNode(/** @type {any} */ (vdom));
+		// @ts-ignore - The vdom is an `Element` type, but in this context it's a `ServerNode`.
+		// We ignore the type checker here as we know the runtime type is correct.
+		return serializeNode(vdom);
 	} finally {
 		setPlatform(originalPlatform);
 	}

@@ -54,7 +54,7 @@ export function createBatchedQueue(handleFull, batchInterval, size) {
 	let data = [];
 	const queueSize = size || defaultSize;
 	const onFull = handleFull || noop;
-	/** @type {number | null} */
+	/** @type {number | null | NodeJS.Timeout} */
 	let timer = null;
 	const interval = batchInterval || defaultBatchInterval;
 
@@ -91,7 +91,7 @@ export function createBatchedQueue(handleFull, batchInterval, size) {
 		},
 
 		sweep() {
-			timer = window.setTimeout(() => {
+			timer = setTimeout(() => {
 				const batch = data.map((d) => d.item);
 				if (batch.length > 0) {
 					onFull(batch);

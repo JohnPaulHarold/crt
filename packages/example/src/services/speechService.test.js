@@ -2,7 +2,6 @@
  * @vitest-environment jsdom
  */
 import { describe, expect, test, vi, beforeEach, afterEach } from 'vitest';
-import { speechService } from './speechService.js';
 
 describe('speechService', () => {
 	/** @type {{speak: import('vitest').Mock, cancel: import('vitest').Mock}} */
@@ -25,29 +24,44 @@ describe('speechService', () => {
 				this.text = text;
 			}
 		};
+		// Mock the console.warn to prevent test output pollution
 		vi.spyOn(console, 'warn').mockImplementation(() => {});
 	});
 
 	afterEach(() => {
-		// Restore original dependencies to the service after each test
-		if (speechService._setDependenciesForTesting) {
-			speechService._setDependenciesForTesting(
-				originalSpeechSynthesis,
-				originalSpeechSynthesisUtterance
-			);
-		}
+		// Restore original window properties
+		Object.defineProperty(window, 'speechSynthesis', {
+			value: originalSpeechSynthesis,
+			writable: true,
+		});
+		Object.defineProperty(window, 'SpeechSynthesisUtterance', {
+			value: originalSpeechSynthesisUtterance,
+			writable: true,
+		});
+		// Reset Vitest mocks and modules to ensure test isolation
 		vi.restoreAllMocks();
+		vi.resetModules();
 	});
 
 	describe('when SpeechSynthesis is supported', () => {
-		beforeEach(() => {
-			// Inject mocks before each test in this block
-			if (speechService._setDependenciesForTesting) {
-				speechService._setDependenciesForTesting(
-					/** @type {SpeechSynthesis} */ (/** @type {any} */ (mockSynthesis)),
-					MockUtterance
-				);
-			}
+		/** @type {import('./speechService.js').SpeechServiceInstance} */
+		let speechService;
+
+		beforeEach(async () => {
+			// Mock the browser APIs *before* importing the service
+			Object.defineProperty(window, 'speechSynthesis', {
+				value: mockSynthesis,
+				writable: true,
+			});
+			Object.defineProperty(window, 'SpeechSynthesisUtterance', {
+				value: MockUtterance,
+				writable: true,
+			});
+
+			// Dynamically import the service to get a fresh instance
+			// with the mocked environment.
+			const serviceModule = await import('./speechService.js');
+			speechService = serviceModule.speechService;
 		});
 
 		test('speak() should cancel previous speech and speak new text', () => {
@@ -74,12 +88,22 @@ describe('speechService', () => {
 	});
 
 	describe('when SpeechSynthesis is not supported', () => {
-		test('should not throw errors when methods are called', () => {
-			// Inject undefined dependencies to simulate a non-supporting environment.
-			if (speechService._setDependenciesForTesting) {
-				speechService._setDependenciesForTesting(undefined, undefined);
-			}
+		/** @type {import('./speechService.js').SpeechServiceInstance} */
+		let speechService;
 
+		beforeEach(async () => {
+			// Simulate an unsupported environment *before* importing
+			Object.defineProperty(window, 'speechSynthesis', {
+				value: undefined,
+				writable: true,
+			});
+
+			// Dynamically import the service
+			const serviceModule = await import('./speechService.js');
+			speechService = serviceModule.speechService;
+		});
+
+		test('should not throw errors when methods are called', () => {
 			// Verify that calling the methods does not cause a runtime error.
 			expect(() => speechService.speak('test')).not.toThrow();
 			expect(() => speechService.cancel()).not.toThrow();

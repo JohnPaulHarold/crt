@@ -32,7 +32,7 @@ export function createFakePlayer(options = {}) {
 		duration: duration,
 	};
 
-	const intervalId = window.setInterval(() => {
+	const intervalId = setInterval(() => {
 		if (state.isPlaying.getValue()) {
 			const newTime = (state.currentTime.getValue() + 1) % (duration + 1);
 			state.currentTime.setValue(newTime);

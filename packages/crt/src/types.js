@@ -23,6 +23,7 @@
  * @property {Element | null} viewEl
  * @property {(parentEl: Element) => void} attach
  * @property {() => void} detach
+ * @property {(element: Element) => void} hydrate
  * @property {() => Element} render
  * @property {() => void} [viewDidLoad]
  * @property {() => void} [destructor]

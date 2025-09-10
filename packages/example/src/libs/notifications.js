@@ -18,7 +18,7 @@ function handleNotification(notifications) {
  * @typedef {Object} NotificationsService
  * @property {HTMLElement} outlet
  * @property {number} count
- * @property {Record<string, number>} timers
+ * @property {Record<string, number | undefined | NodeJS.Timeout>} timers
  * @property {import('./BatchedQueue.js').BatchedQueueInstance<HTMLElement>} notificationsQueue
  * @property {(el: HTMLElement) => void} sendNotification
  * @property {(id: string) => void} clearNotification
@@ -46,7 +46,7 @@ export const NotificationsService = {
 
 		that.count++;
 
-		that.timers[hex] = window.setTimeout(() => {
+		that.timers[hex] = setTimeout(() => {
 			that.clearNotification(hex);
 		}, 3000);
 	},

@@ -89,8 +89,8 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
-
+# Build output from all packages
+/packages/*/dist
 # Gatsby files
 .cache/
 # Comment in the public line in if your project uses Gatsby and not Next.js
@@ -135,5 +135,5 @@ dist
 # generated documentation
 docs/
 
-# auto-generated types directory
+# generated types
 types/

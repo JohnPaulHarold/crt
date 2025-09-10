@@ -23,6 +23,16 @@ Key features demonstrated:
 - **Routing**: A simple but effective hash-based router (`historyRouter`) manages different views and URL states.
 - **Lifecycle Management**: Views demonstrate `viewDidLoad` and `destructor` lifecycle methods for setting up and tearing down event listeners and other resources.
 
+## Server-Side Rendering (SSR) Proof of Concept
+
+As part of the ongoing research into performance, a proof of concept for Server-Side Rendering has been implemented. This demonstrates the ability to render an initial view on the server, sending fully-formed HTML to the client for a faster initial paint. The client-side application then 'hydrates' this static HTML to make it fully interactive.
+
+To run the SSR server, use the following command:
+
+`npm run serve:ssr`
+
+This builds the monorepo and starts a minimal Express server at `http://localhost:3001`. The server renders the Player view and serves the client-side bundle for hydration.
+
 ## tech
 
 This repo is trying to be light with regards JavaScript, so with that in mind it's deliberatly old fashioned looking in places. The thinking is that if you're writing code for devices that are 8+ years old using browser tech that might be even older, perhaps also write in idioms contemporary to it. Until the hardware landscape changes and progresses, most of the code is written like it's ES5, with some occasional ES6 thrown in and a light Babel pass at the end. This is normally the point where most developers jump ship.

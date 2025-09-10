@@ -39,6 +39,10 @@ export const NavigationEvents = {
  * @property {() => void} [_resetForTesting] - Clears state for test isolation.
  */
 
+// Check for the browser environment once.
+const isBrowser =
+	typeof window !== 'undefined' && typeof document !== 'undefined';
+
 /**
  * Creates a singleton service to manage all spatial navigation logic.
  * @returns {NavigationServiceInstance} The navigation service instance.
@@ -503,5 +507,34 @@ function createNavigationService() {
 	return service;
 }
 
+/**
+ * A no-op "dummy" implementation of the navigation service for server-side execution.
+ * Its methods do nothing or return sensible defaults, preventing crashes.
+ * @returns {NavigationServiceInstance}
+ */
+function createDummyService() {
+	const dummyPubSub = {
+		on: () => {},
+		off: () => {},
+		emit: () => {},
+		_resetForTesting: () => {},
+	};
+
+	return {
+		init: () => {},
+		setScope: () => {},
+		getLastFocus: () => undefined,
+		registerCustomFocusHandler: () => () => {},
+		moveFocus: () => {},
+		focusInto: () => {},
+		isElementFocused: () => false,
+		getCurrentFocus: () => undefined,
+		getBus: () => /** @type {any} */ (dummyPubSub),
+		_resetForTesting: () => {},
+	};
+}
+
 /** @type {NavigationServiceInstance} */
-export const navigationService = createNavigationService();
+export const navigationService = isBrowser
+	? createNavigationService()
+	: createDummyService();

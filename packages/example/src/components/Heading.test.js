@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, test } from 'vitest';
-import { Heading } from './Heading';
+import { Heading } from './Heading.js';
 
 /**
  * @type {Array<1 | 2 | 3 | 4 | 5 | 6>}

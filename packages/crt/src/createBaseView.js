@@ -1,5 +1,6 @@
 import { loga } from './utils/loga/loga.js';
 import { getPlatform } from './platform.js';
+import { diff } from './differenceEngine.js';
 
 const logr = loga.create('BaseView');
 
@@ -64,6 +65,25 @@ export function createBaseView(options) {
 			}
 
 			this.viewEl = null;
+		},
+
+		/**
+		 * Hydrates the view by attaching its logic to an existing DOM element.
+		 * This is used on the client to take over server-rendered HTML.
+		 * @param {Element} element The existing DOM element to hydrate.
+		 */
+		hydrate(element) {
+			this.viewEl = element;
+			// Safely call viewDidLoad to attach event listeners and other logic.
+			if (this.viewDidLoad) {
+				setTimeout(this.viewDidLoad.bind(this), 0);
+			}
+
+			// Immediately run a diff against the server-rendered DOM.
+			// This is the core of "hydration": it doesn't re-create the DOM,
+			// but it walks the tree and attaches event listeners and other dynamic properties.
+			const vdom = this.render();
+			diff(vdom, this.viewEl);
 		},
 
 		/**
