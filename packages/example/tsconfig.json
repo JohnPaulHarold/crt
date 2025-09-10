@@ -4,9 +4,9 @@
 		"emitDeclarationOnly": true,
 		"composite": true,
 		"declarationDir": "dist/types",
-		"rootDir": "src"
+		"rootDir": "."
 	},
-	"include": ["src/**/*"],
+	"include": ["src/**/*", "loader.js", "server.js"],
 	"exclude": [
 		"node_modules",
 		"dist",

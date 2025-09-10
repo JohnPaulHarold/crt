@@ -52,7 +52,10 @@ function serializeNode(node) {
 	}
 
 	// STRATEGIC LOG 3: What attributes are being serialized for this node?
-	console.log(`[serializeNode] Serializing <${node.tagName}> with attributes:`, node.attributes);
+	console.log(
+		`[serializeNode] Serializing <${node.tagName}> with attributes:`,
+		node.attributes
+	);
 
 	const { tagName, attributes, style, children } = node;
 

@@ -40,7 +40,8 @@ export const NavigationEvents = {
  */
 
 // Check for the browser environment once.
-const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined';
+const isBrowser =
+	typeof window !== 'undefined' && typeof document !== 'undefined';
 
 /**
  * Creates a singleton service to manage all spatial navigation logic.

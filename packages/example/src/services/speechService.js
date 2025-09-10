@@ -61,7 +61,9 @@ const dummyService = {
  * the Web Speech API is available, otherwise it will be the dummy implementation.
  * @type {SpeechServiceInstance}
  */
-export const speechService = isSupported ? createBrowserService() : dummyService;
+export const speechService = isSupported
+	? createBrowserService()
+	: dummyService;
 
 if (!isSupported) {
 	logr.warn(

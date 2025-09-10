@@ -7,10 +7,10 @@ import fs from 'fs';
 import path from 'path';
 import { loga } from 'crt';
 import { renderToString } from 'crt/server';
-import { createPlayerView } from './views/player.js';
+import { createPlayerView } from './src/views/player.js';
 
 // --- Template Setup ---
-const templatePath = path.resolve(process.cwd(), 'packages/example/dist/index.html');
+const templatePath = path.resolve(process.cwd(), 'dist/index.html');
 const htmlTemplate = fs.readFileSync(templatePath, 'utf-8');
 
 const app = express();
@@ -38,7 +38,7 @@ app.get('/', (req, res) => {
 });
 
 // Serve the compiled client-side assets from the example package's dist folder.
-app.use(express.static('packages/example/dist'));
+app.use(express.static('dist'));
 
 app.listen(port, () => {
 	loga.log(`[SSR] Server listening at http://localhost:${port}`);
