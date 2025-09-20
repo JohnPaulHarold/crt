@@ -2,7 +2,17 @@
 export { loga, LogLevel } from './utils/loga/loga.js';
 
 // Core Types
-export * from './types.js';
+/**
+ * @typedef {import('./types.js').ComponentProps} ComponentProps
+ * @typedef {import('./types.js').ViewOptions} ViewOptions
+ * @typedef {import('./types.js').BaseViewInstance} BaseViewInstance
+ * @typedef {import('./types.js').SignallerInstance} SignallerInstance
+ * @typedef {import('./types.js').Platform} Platform
+ */
+export * from './types.js'; // This ensures any actual exports from types.js are passed through.
+
+// Platform
+export { setPlatform, getPlatform } from './platform.js';
 
 // Models
 export { AdditionalKeys } from './models/AdditionalKeys.js';

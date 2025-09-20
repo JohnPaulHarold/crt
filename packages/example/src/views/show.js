@@ -101,6 +101,10 @@ export function createShowView(options) {
 			}
 		},
 
+		/**
+		 * @param {KeyboardEvent} event
+		 * @param {(event: KeyboardEvent, scope?: HTMLElement) => void} defaultKeyDownHandler
+		 */
 		customHandleKeyDown: function (event, defaultKeyDownHandler) {
 			const elTarget = normaliseEventTarget(event);
 			const onNav =

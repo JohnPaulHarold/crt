@@ -134,6 +134,9 @@ export function createVListView(options) {
 				.on(NavigationEvents.MOVE, this.boundHandleMove);
 		},
 
+		/**
+		 * @param {MoveEventPayload} event
+		 */
 		handleMove: function (event) {
 			/** @type {MoveEventPayload} */
 			const moveEvent = event;
@@ -153,6 +156,9 @@ export function createVListView(options) {
 			}
 		},
 
+		/**
+		 * @param {VListItem} bd
+		 */
 		renderRow: function (bd) {
 			const indexOf = this.bigData.indexOf(bd);
 

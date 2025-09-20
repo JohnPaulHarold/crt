@@ -74,16 +74,19 @@ export function createBaseView(options) {
 		 */
 		hydrate(element) {
 			this.viewEl = element;
-			// Safely call viewDidLoad to attach event listeners and other logic.
-			if (this.viewDidLoad) {
-				setTimeout(this.viewDidLoad.bind(this), 0);
-			}
 
 			// Immediately run a diff against the server-rendered DOM.
 			// This is the core of "hydration": it doesn't re-create the DOM,
 			// but it walks the tree and attaches event listeners and other dynamic properties.
 			const vdom = this.render();
 			diff(vdom, this.viewEl);
+
+			// Safely call viewDidLoad AFTER the diffing process has completed.
+			// This ensures the view's logic runs on a fully hydrated DOM, making it
+			// consistent with the `attach` lifecycle.
+			if (this.viewDidLoad) {
+				this.viewDidLoad();
+			}
 		},
 
 		/**

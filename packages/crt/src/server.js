@@ -3,3 +3,4 @@
  */
 
 export { renderToString } from './server/renderToString.js';
+export { serverPlatform } from './server/platform.js';
