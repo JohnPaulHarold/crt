@@ -21,9 +21,10 @@ const logr = loga.create('example');
 
 /**
  * @typedef {import('crt').ViewOptions & {
- *  pattern: string;
- *  params: import('./routes.js').RouteParams;
- *  search: import('./routes.js').RouteSearch;
+ *  pattern?: string;
+ *  params?: import('./routes.js').RouteParams;
+ *  search?: import('./routes.js').RouteSearch;
+ *  initialData?: any;
  * }} AppViewOptions
  */
 
@@ -85,11 +86,12 @@ function App() {
  * A map of view names to their factory functions, used for SSR hydration.
  * The index signature `[key: string]` tells TypeScript that we can access
  * its properties using a string variable.
- * @type {Record<string, (options: import('crt').ViewOptions) => import('crt').BaseViewInstance>}
+ * @type {Record<string, (options: AppViewOptions) => import('crt').BaseViewInstance>}
  */
 const viewFactories = {
 	player: createPlayerView,
-	// In the future, other views can be added here to support SSR
+	home: createHomeView,
+	// In the future, other views can be added here to support SSR hydration
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -107,9 +109,17 @@ document.addEventListener('DOMContentLoaded', () => {
 		logr.info(`Hydrating server-rendered view: ${ssrViewName}`);
 
 		const createView = viewFactories[ssrViewName];
-		const viewInstance = createView({ id: ssrViewElement.id });
+		// Check for initial data embedded in the page by the server.
+		// @ts-ignore - __INITIAL_DATA__ is a global set by the server.
+		const initialData = window.__INITIAL_DATA__;
+
+		const viewInstance = createView({
+			id: ssrViewElement.id,
+			initialData: initialData,
+		});
 
 		viewInstance.hydrate(ssrViewElement);
+
 		navigationService.init();
 	} else {
 		// --- CLIENT-SIDE RENDERING MODE ---

@@ -1,5 +1,5 @@
 import { div, h2, section } from '../html.js';
-import { Orientation } from 'crt';
+import { Orientation, getPlatform } from 'crt';
 import { Button } from './Button.js';
 import { navigationService } from '../services/navigationService.js';
 import { deadSeaService } from '../libs/deadSea.js';
@@ -46,15 +46,27 @@ export function Carousel(props, children) {
 	const width = props.width ? props.width + 'px' : '100%';
 	const height = props.height ? props.height + 'px' : 'auto';
 
+	const platform = getPlatform();
+
 	// Apply margin directly to children to ensure it's part of the layout
 	// that deadSea.js can measure correctly.
 	if (itemMargin) {
 		for (var i = 0; i < children.length; i++) {
-			var child = children[i];
-			if (child instanceof HTMLElement && i < children.length - 1) {
+			let child = children[i];
+			// The `instanceof HTMLElement` check is only valid in the browser.
+			// On the server, our "elements" are just objects, so we check for truthiness.
+			const isElement = platform.isBrowser
+				? child instanceof HTMLElement
+				: !!child;
+
+			if (isElement && i < children.length - 1) {
 				var isHorizontal = orientation !== Orientation.VERTICAL;
-				child.style.marginRight = isHorizontal ? itemMargin + 'px' : '0';
-				child.style.marginBottom = isHorizontal ? '0' : itemMargin + 'px';
+				/** @type {HTMLElement} */ (child).style.marginRight = isHorizontal
+					? itemMargin + 'px'
+					: '0';
+				/** @type {HTMLElement} */ (child).style.marginBottom = isHorizontal
+					? '0'
+					: itemMargin + 'px';
 			}
 		}
 	}
@@ -94,20 +106,13 @@ export function Carousel(props, children) {
 		}
 	};
 
-	// This div acts as the positioning context for the arrows.
-	// It wraps the scrollArea and the arrows themselves.
-	const scrollAndArrowWrapper = div(
-		{
-			className: s.scrollAndArrowWrapper,
-		},
-		[scrollArea]
-	);
+	const wrapperChildren = [scrollArea];
 
 	if (showArrows) {
 		const isVertical = orientation === Orientation.VERTICAL;
 		const prevButton = Button(
 			{
-				className: `${s.arrow} ${s.prev} lrud-ignore`,
+				className: `prev ${s.arrow} ${s.prev} lrud-ignore`,
 				onclick: handlePrevClick,
 			},
 			isVertical ? '↑' : '←'
@@ -115,14 +120,23 @@ export function Carousel(props, children) {
 
 		const nextButton = Button(
 			{
-				className: `${s.arrow} ${s.next} lrud-ignore`,
+				className: `next ${s.arrow} ${s.next} lrud-ignore`,
 				onclick: handleNextClick,
 			},
 			isVertical ? '↓' : '→'
 		);
-		scrollAndArrowWrapper.appendChild(prevButton);
-		scrollAndArrowWrapper.appendChild(nextButton);
+		wrapperChildren.push(prevButton);
+		wrapperChildren.push(nextButton);
 	}
+
+	// This div acts as the positioning context for the arrows.
+	// It wraps the scrollArea and the arrows themselves.
+	const scrollAndArrowWrapper = div(
+		{
+			className: s.scrollAndArrowWrapper,
+		},
+		wrapperChildren
+	);
 
 	const orientationClass =
 		orientation === Orientation.VERTICAL ? s.vertical : s.horizontal;

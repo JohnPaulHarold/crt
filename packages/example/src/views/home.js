@@ -203,7 +203,8 @@ export function createHomeView(options) {
 	/** @type {HomeViewInstance} */
 	const homeView = {
 		...base,
-		pageData: createSignaller(null),
+		// If initialData is provided (e.g., from SSR), use it. Otherwise, start with null.
+		pageData: createSignaller(options.initialData || null),
 		stopWatching: undefined,
 
 		destructor: function () {
@@ -230,7 +231,7 @@ export function createHomeView(options) {
 					if (data) {
 						const scrollAreas =
 							this.viewEl.querySelectorAll('[data-deadsea-id]');
-						scrollAreas.forEach((el) => {
+						scrollAreas.forEach((/** @type {Element} */ el) => {
 							if (!(el instanceof HTMLElement)) {
 								logr.error(
 									'[viewDidLoad] a scrollArea was an Element other than HTMLElement'
@@ -250,6 +251,25 @@ export function createHomeView(options) {
 			};
 
 			this.stopWatching = watch([this.pageData], handler);
+
+			// If data is present on load (from SSR), the DOM is already rendered.
+			// We just need to register the carousels with deadSeaService so they become interactive.
+			const initialData = this.pageData.getValue();
+			if (initialData && this.viewEl) {
+				logr.info('Hydrating Home view: registering carousels...');
+				const scrollAreas = this.viewEl.querySelectorAll('[data-deadsea-id]');
+				scrollAreas.forEach((/** @type {Element} */ el) => {
+					if (!(el instanceof HTMLElement)) {
+						logr.error(
+							'[viewDidLoad] a scrollArea was an Element other than HTMLElement'
+						);
+						return;
+					}
+					deadSeaService.register(el);
+				});
+				// The initial focus is handled by navigationService.init() in index.js
+				// which is called right after hydration.
+			}
 		},
 
 		fetchData: function () {
@@ -264,7 +284,11 @@ export function createHomeView(options) {
 		},
 	};
 
-	homeView.fetchData();
+	// If no initial data was provided, we're in client-side rendering mode.
+	// Fetch the data as usual.
+	if (!options.initialData) {
+		homeView.fetchData();
+	}
 
 	return homeView;
 }

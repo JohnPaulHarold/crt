@@ -44,6 +44,9 @@ export function createMainNavView(options) {
 			this.updateActive();
 		},
 
+		/**
+		 * @param {boolean} listen
+		 */
 		listenToHashChange: function (listen) {
 			const method = listen ? 'addEventListener' : 'removeEventListener';
 			// Bind the method once to ensure the same function reference is used for add/remove
@@ -65,6 +68,9 @@ export function createMainNavView(options) {
 			}
 		},
 
+		/**
+		 * @param {boolean} listen
+		 */
 		listenForFocus: function (listen) {
 			if (!this.viewEl) return;
 			const method = listen ? 'addEventListener' : 'removeEventListener';
@@ -75,6 +81,9 @@ export function createMainNavView(options) {
 			);
 		},
 
+		/**
+		 * @param {'focusin' | 'focusout'} eventName
+		 */
 		updateMenu: function (eventName) {
 			if (!this.viewEl) return;
 			const method = eventName === 'focusin' ? 'add' : 'remove';

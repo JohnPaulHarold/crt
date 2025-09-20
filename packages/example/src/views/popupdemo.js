@@ -52,6 +52,9 @@ export function createPopupDemoView(options) {
 			this.popup = registerPopup(dialogEl, handler, appOutlets.popups);
 		},
 
+		/**
+		 * @param {string} id
+		 */
 		handlePopup: function (id) {
 			if (!this.viewEl || !(this.viewEl instanceof HTMLElement)) return;
 
