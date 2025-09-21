@@ -53,14 +53,14 @@ const fetchHomePageData = () => {
 };
 
 /**
- *sSanitizes the Express `req.query` object to match the application's `RouteSearch` type.
+ * Sanitises the Express `req.query` object to match the application's `RouteSearch` type.
  * Express's `req.query` can have values that are arrays or nested objects, and our
  * `RouteSearch` type is simpler (`Record<string, string | number | boolean>`).
  * This function ensures type compatibility.
  * @param {import('qs').ParsedQs} query
  * @returns {import('./src/routes.js').RouteSearch}
  */
-function sanitizeQuery(query) {
+function sanitiseQuery(query) {
 	/** @type {import('./src/routes.js').RouteSearch} */
 	const search = {};
 	for (const key in query) {
@@ -166,7 +166,7 @@ Object.keys(ssrRoutes).forEach((path) => {
 				id: routeConfig.viewName,
 				initialData: initialData,
 				params: req.params,
-				search: sanitizeQuery(req.query),
+				search: sanitiseQuery(req.query),
 			});
 
 			const viewHtml = renderToString(viewInstance);
