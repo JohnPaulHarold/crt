@@ -15,6 +15,7 @@ import {
 import { animations } from '../config/animations.js';
 import { deadSeaService } from '../libs/deadSea.js';
 import { pubSub } from '../state/PubSub.js';
+import { historyRouter } from '../libs/router/router.js';
 import { speechService } from './speechService.js';
 
 export const NavigationEvents = {
@@ -31,7 +32,7 @@ export const NavigationEvents = {
  * @property {(newScope?: HTMLElement) => void} setScope - Sets the current focus scope for LRUD navigation.
  * @property {() => {el: HTMLElement, id: string|null} | undefined} getLastFocus - Gets the last focused element.
  * @property {(customHandler: (event: KeyboardEvent, defaultHandler: (event: KeyboardEvent, scope?: HTMLElement) => void) => void) => () => void} registerCustomFocusHandler - Temporarily overrides the default keydown handler.
- * @property {(toEl: HTMLElement, fromEl?: HTMLElement) => void} moveFocus - Moves focus from one element to another.
+ * @property {(toEl: HTMLElement, fromEl?: HTMLElement, event?: KeyboardEvent) => void} moveFocus - Moves focus from one element to another.
  * @property {(scopeEl: HTMLElement) => void} focusInto - Finds and focuses the first focusable element within a scope.
  * @property {(id: string) => boolean} isElementFocused - Checks if an element with a given ID is currently focused.
  * @property {() => {el: Element, id: string|null} | undefined} getCurrentFocus - Gets the currently focused element.
@@ -200,25 +201,24 @@ function createNavigationService() {
 	function handleEnter(event) {
 		const elTarget = normaliseEventTarget(event);
 
-		if (elTarget && elTarget instanceof HTMLElement) {
-			// If it's an anchor, decide whether to navigate or to treat it as a click.
-			if (elTarget instanceof HTMLAnchorElement) {
-				// If it has a meaningful hash for routing, or is an external link, navigate.
-				if (
-					$dataGet(elTarget, 'external') ||
-					(elTarget.hash && elTarget.hash.length > 1)
-				) {
-					if ($dataGet(elTarget, 'external')) {
-						window.location.href = elTarget.href;
-					} else {
-						window.location.hash = elTarget.hash;
-					}
-					return; // Navigation handled, we're done.
-				}
+		// If the target is an anchor, handle it specially.
+		if (elTarget && elTarget instanceof HTMLAnchorElement) {
+			// If it's an external link, perform a full page navigation.
+			if ($dataGet(elTarget, 'external')) {
+				window.location.href = elTarget.href;
+				return;
 			}
 
-			// For all other elements (buttons, or anchors not used for navigation),
-			// dispatch a click event to unify keyboard and pointer interaction.
+			// For all internal links, prevent the default browser navigation
+			// and use the client-side router to navigate programmatically.
+			// This is the key to enabling SPA-style navigation.
+			historyRouter.navigate(elTarget.pathname);
+			return;
+		}
+
+		// For non-anchor elements (like buttons), dispatch a click event
+		// to trigger their `onclick` handlers.
+		if (elTarget && elTarget instanceof HTMLElement) {
 			elTarget.click();
 		}
 	}
@@ -265,11 +265,8 @@ function createNavigationService() {
 			}
 
 			if (nextFocus) {
-				if (_lastFocus) {
-					emitMoveEvent(event, _lastFocus, nextFocus);
-				}
 				// moveFocus will now handle blurring the last focused element and updating the state.
-				service.moveFocus(nextFocus);
+				service.moveFocus(nextFocus, _lastFocus, event);
 			}
 		}
 	}
@@ -382,9 +379,10 @@ function createNavigationService() {
 		/**
 		 * Moves focus from one element to another, handling blur/focus and scrolling.
 		 * @param {HTMLElement} toEl
-		 * @param {HTMLElement} [fromEl]
+		 * @param {HTMLElement=} fromEl
+		 * @param {KeyboardEvent=} event The original keydown event, used for event emission.
 		 */
-		moveFocus(toEl, fromEl) {
+		moveFocus(toEl, fromEl, event) {
 			const elementToBlur = fromEl || _lastFocus;
 
 			// 1. Handle blurring the old element
@@ -439,6 +437,11 @@ function createNavigationService() {
 			// 5. Trigger the scroll action
 			const useTransforms = animations.transforms;
 			deadSeaService.scrollAction(actualToEl, useTransforms);
+
+			// 6. Emit the move event AFTER the focus state has been updated.
+			if (elementToBlur && event) {
+				emitMoveEvent(event, elementToBlur, actualToEl);
+			}
 		},
 
 		/**

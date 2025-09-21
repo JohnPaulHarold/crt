@@ -40,14 +40,22 @@ function loadView(createView, options) {
 		currentView.detach();
 	}
 
-	currentView = createView({
-		id: options.pattern,
-		...options,
-	});
+	currentView = createView(
+		Object.assign(
+			{},
+			{
+				id: options.pattern,
+			},
+			options
+		)
+	);
 
 	if (appOutlets.main) {
 		currentView.attach(appOutlets.main);
 	}
+	// The `emit` function expects a payload. Since the `mainNav` listener
+	// for this event doesn't use the payload, we can safely pass `null`.
+	navigationService.getBus().emit('route:changed', null);
 }
 
 function App() {
@@ -91,6 +99,8 @@ function App() {
 const viewFactories = {
 	player: createPlayerView,
 	home: createHomeView,
+	search: createSearchView,
+	diff: createDiffView,
 	'reactive-vlist': createReactiveVListView,
 	// In the future, other views can be added here to support SSR hydration
 };

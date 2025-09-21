@@ -19,6 +19,7 @@ export function createBaseView(options) {
 	/** @type {import('./types').BaseViewInstance} */
 	const view = {
 		id: options.id,
+		preserveAttributes: options.preserveAttributes || [],
 		viewEl: null, // Initialize as null, not undefined
 
 		/**
@@ -79,7 +80,9 @@ export function createBaseView(options) {
 			// This is the core of "hydration": it doesn't re-create the DOM,
 			// but it walks the tree and attaches event listeners and other dynamic properties.
 			const vdom = this.render();
-			diff(vdom, this.viewEl);
+			diff(vdom, this.viewEl, {
+				preserveAttributes: this.preserveAttributes,
+			});
 
 			// Safely call viewDidLoad AFTER the diffing process has completed.
 			// This ensures the view's logic runs on a fully hydrated DOM, making it

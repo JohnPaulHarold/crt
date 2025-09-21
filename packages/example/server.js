@@ -18,6 +18,8 @@ import { createHomeView } from './src/views/home.js';
 import { createPlayerView } from './src/views/player.js';
 import { createReactiveVListView } from './src/views/reactiveVListView.js';
 import { pageData } from './src/stubData/pageData.js';
+import { createSearchView } from './src/views/search.js';
+import { createDiffView } from './src/views/diff.js';
 
 // --- Server Setup ---
 const __filename = fileURLToPath(import.meta.url);
@@ -127,6 +129,14 @@ const ssrRoutes = {
 		viewFactory: createHomeView,
 		viewName: 'home',
 		loadData: fetchHomePageData,
+	},
+	'/search': {
+		viewFactory: createSearchView,
+		viewName: 'search',
+	},
+	'/diff': {
+		viewFactory: createDiffView,
+		viewName: 'diff',
 	},
 	'/player': {
 		viewFactory: createPlayerView,

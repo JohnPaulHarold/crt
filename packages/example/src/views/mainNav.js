@@ -1,4 +1,5 @@
 import { collectionToArray, createBaseView } from 'crt';
+import { navigationService } from '../services/navigationService.js';
 import { Nav } from '../components/Nav.js';
 
 /**
@@ -13,7 +14,7 @@ import { Nav } from '../components/Nav.js';
  *  boundUpdateActive?: () => void,
  *  destructor: () => void,
  *  viewDidLoad: () => void,
- *  listenToHashChange: (listen: boolean) => void,
+ *  listenToNavigation: (listen: boolean) => void,
  *  updateActive: () => void,
  *  listenForFocus: (listen: boolean) => void,
  *  updateMenu: (eventName: 'focusin' | 'focusout') => void,
@@ -29,40 +30,50 @@ export function createMainNavView(options) {
 	const base = createBaseView(options);
 
 	/** @type {MainNavViewInstance} */
-	const mainNavView = {
-		...base,
+	const mainNavView = Object.assign({}, base, {
 		navItems: options.navItems,
 
+		/** @this {MainNavViewInstance} */
 		destructor: function () {
 			this.listenForFocus(false);
-			this.listenToHashChange(false);
+			this.listenToNavigation(false);
 		},
 
+		/** @this {MainNavViewInstance} */
 		viewDidLoad: function () {
 			this.listenForFocus(true);
-			this.listenToHashChange(true);
+			this.listenToNavigation(true);
 			this.updateActive();
 		},
 
 		/**
 		 * @param {boolean} listen
+		 * @this {MainNavViewInstance}
 		 */
-		listenToHashChange: function (listen) {
-			const method = listen ? 'addEventListener' : 'removeEventListener';
+		listenToNavigation: function (listen) {
 			// Bind the method once to ensure the same function reference is used for add/remove
 			this.boundUpdateActive =
 				this.boundUpdateActive || this.updateActive.bind(this);
-			window[method]('hashchange', this.boundUpdateActive);
+
+			const method = listen ? 'on' : 'off';
+			navigationService
+				.getBus()
+				[method]('route:changed', this.boundUpdateActive);
+			window[listen ? 'addEventListener' : 'removeEventListener'](
+				'popstate',
+				this.boundUpdateActive
+			);
 		},
 
+		/** @this {MainNavViewInstance} */
 		updateActive: function () {
 			if (!this.viewEl) return;
-			const hash = location.hash;
+			const path = location.pathname;
 			const els = this.viewEl.querySelectorAll('[href]');
 			collectionToArray(els).forEach((/** @type {Element} */ el) =>
 				el.classList.remove('active')
 			);
-			const elToFocus = this.viewEl.querySelector('[href="' + hash + '"]');
+			const elToFocus = this.viewEl.querySelector(`[href="${path}"]`);
 			if (elToFocus) {
 				elToFocus.classList.add('active');
 			}
@@ -70,6 +81,7 @@ export function createMainNavView(options) {
 
 		/**
 		 * @param {boolean} listen
+		 * @this {MainNavViewInstance}
 		 */
 		listenForFocus: function (listen) {
 			if (!this.viewEl) return;
@@ -83,6 +95,7 @@ export function createMainNavView(options) {
 
 		/**
 		 * @param {'focusin' | 'focusout'} eventName
+		 * @this {MainNavViewInstance}
 		 */
 		updateMenu: function (eventName) {
 			if (!this.viewEl) return;
@@ -90,6 +103,7 @@ export function createMainNavView(options) {
 			this.viewEl.classList[method]('collapsed');
 		},
 
+		/** @this {MainNavViewInstance} */
 		render: function () {
 			return Nav({
 				id: this.id,
@@ -98,7 +112,7 @@ export function createMainNavView(options) {
 				backStop: true,
 			});
 		},
-	};
+	});
 
 	return mainNavView;
 }

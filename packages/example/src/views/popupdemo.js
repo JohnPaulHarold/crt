@@ -33,16 +33,17 @@ export function createPopupDemoView(options) {
 	const base = createBaseView(options);
 
 	/** @type {PopupDemoViewInstance} */
-	const popupDemoView = {
-		...base,
+	const popupDemoView = Object.assign({}, base, {
 		popup: null,
 
+		/** @this {PopupDemoViewInstance} */
 		destructor: function () {
 			if (this.popup && this.popup.close) {
 				this.popup.close();
 			}
 		},
 
+		/** @this {PopupDemoViewInstance} */
 		viewDidLoad: function () {
 			if (!appOutlets.popups || !(appOutlets.popups instanceof HTMLElement))
 				return;
@@ -54,6 +55,7 @@ export function createPopupDemoView(options) {
 
 		/**
 		 * @param {string} id
+		 * @this {PopupDemoViewInstance}
 		 */
 		handlePopup: function (id) {
 			if (!this.viewEl || !(this.viewEl instanceof HTMLElement)) return;
@@ -76,10 +78,12 @@ export function createPopupDemoView(options) {
 			}
 		},
 
+		/** @this {PopupDemoViewInstance} */
 		openPopup: function () {
 			if (this.popup) this.popup.open();
 		},
 
+		/** @this {PopupDemoViewInstance} */
 		render: function () {
 			const buttonEl = Button(
 				{
@@ -92,7 +96,7 @@ export function createPopupDemoView(options) {
 				div({ className: 'view', id: this.id }, buttonEl)
 			);
 		},
-	};
+	});
 
 	return popupDemoView;
 }

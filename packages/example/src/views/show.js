@@ -52,8 +52,7 @@ export function createShowView(options) {
 	const base = createBaseView(options);
 
 	/** @type {ShowViewInstance} */
-	const showView = {
-		...base,
+	const showView = Object.assign({}, base, {
 		info: options.params,
 		search: options.search,
 		// whether we are focused on the bottom rails or not
@@ -65,12 +64,14 @@ export function createShowView(options) {
 		logoEl: null,
 		overlayEl: null,
 
+		/** @this {ShowViewInstance} */
 		destructor: function () {
 			if (this.customKeyDownHandlerCleanup) {
 				this.customKeyDownHandlerCleanup();
 			}
 		},
 
+		/** @this {ShowViewInstance} */
 		viewDidLoad: function () {
 			if (this.viewEl instanceof HTMLElement) {
 				checkImages(this.viewEl);
@@ -83,6 +84,7 @@ export function createShowView(options) {
 				);
 		},
 
+		/** @this {ShowViewInstance} */
 		animateFold: function () {
 			if (!this.belowFold) {
 				if (this.overlayEl instanceof HTMLElement) {
@@ -104,6 +106,7 @@ export function createShowView(options) {
 		/**
 		 * @param {KeyboardEvent} event
 		 * @param {(event: KeyboardEvent, scope?: HTMLElement) => void} defaultKeyDownHandler
+		 * @this {ShowViewInstance}
 		 */
 		customHandleKeyDown: function (event, defaultKeyDownHandler) {
 			const elTarget = normaliseEventTarget(event);
@@ -127,6 +130,7 @@ export function createShowView(options) {
 			}
 		},
 
+		/** @this {ShowViewInstance} */
 		render: function () {
 			if (
 				this.search &&
@@ -186,7 +190,7 @@ export function createShowView(options) {
 				)
 			);
 		},
-	};
+	});
 
 	return showView;
 }

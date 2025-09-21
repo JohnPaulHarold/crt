@@ -12,11 +12,11 @@
 	border-radius: fn.px-to-rem(3px);
 	font-size: 1.5rem;
 	padding: 0;
-}
 
-.keyboardKey:global(.focused) {
-	color: col.$charcoal;
-	background-color: col.$white;
+	&.focused {
+		color: col.$charcoal;
+		background-color: col.$white;
+	}
 }
 
 .w2 {

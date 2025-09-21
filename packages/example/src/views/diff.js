@@ -67,26 +67,14 @@ function getTemplate() {
 
 	const el = /** @type {HTMLElement} */ (
 		div(
-			{ className: 'diff', id: this.id },
+			{ className: 'view diff', id: this.id },
 			lyrics
 				.slice(0, count)
 				.map((lyric) => p({ className: 'lyric-line' }, lyric)),
-			count < lyrics.length &&
-				Button(
-					{
-						className: navigationService.isElementFocused('add-lyric')
-							? 'focused'
-							: '',
-						id: 'add-lyric',
-					},
-					'Add line'
-				),
+			count < lyrics.length && Button({ id: 'add-lyric' }, 'Add line'),
 			count > 0 &&
 				Button(
 					{
-						className: navigationService.isElementFocused('remove-lyric')
-							? 'focused'
-							: '',
 						id: 'remove-lyric',
 					},
 					'Remove line'
@@ -113,15 +101,17 @@ function getTemplate() {
  * @returns {DiffViewInstance}
  */
 export function createDiffView(options) {
-	const base = createBaseView(options);
+	const base = createBaseView(
+		Object.assign({}, options, { preserveAttributes: ['data-focus'] })
+	);
 
 	/** @type {DiffViewInstance} */
-	const diffView = {
-		...base,
+	const diffView = Object.assign({}, base, {
 		lyricCount: createSignaller(0),
 		boundHandleClick: undefined,
 		stopWatching: undefined,
 
+		/** @this {DiffViewInstance} */
 		destructor: function () {
 			if (this.viewEl && this.boundHandleClick) {
 				/** @type {HTMLElement} */ (this.viewEl).removeEventListener(
@@ -134,6 +124,7 @@ export function createDiffView(options) {
 			}
 		},
 
+		/** @this {DiffViewInstance} */
 		viewDidLoad: function () {
 			if (this.viewEl) {
 				this.boundHandleClick = handleClick.bind(this);
@@ -145,7 +136,9 @@ export function createDiffView(options) {
 				const handler = () => {
 					if (this.viewEl) {
 						const vdom = getTemplate.call(this);
-						diff(vdom, this.viewEl);
+						diff(vdom, this.viewEl, {
+							preserveAttributes: this.preserveAttributes,
+						});
 					}
 				};
 
@@ -153,10 +146,11 @@ export function createDiffView(options) {
 			}
 		},
 
+		/** @this {DiffViewInstance} */
 		render: function () {
 			return getTemplate.call(this);
 		},
-	};
+	});
 
 	return diffView;
 }

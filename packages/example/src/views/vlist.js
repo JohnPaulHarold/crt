@@ -100,8 +100,7 @@ export function createVListView(options) {
 	const base = createBaseView(options);
 
 	/** @type {VListViewInstance} */
-	const vListView = {
-		...base,
+	const vListView = Object.assign({}, base, {
 		bigData: buildBigData(600),
 		containerId: 'my-vlist',
 		vl: null,
@@ -115,6 +114,7 @@ export function createVListView(options) {
 			}
 		},
 
+		/** @this {VListViewInstance} */
 		viewDidLoad: function () {
 			const vlOpts = {
 				container: '#' + this.containerId,
@@ -136,6 +136,7 @@ export function createVListView(options) {
 
 		/**
 		 * @param {MoveEventPayload} event
+		 * @this {VListViewInstance}
 		 */
 		handleMove: function (event) {
 			/** @type {MoveEventPayload} */
@@ -176,13 +177,14 @@ export function createVListView(options) {
 			);
 		},
 
+		/** @this {VListViewInstance} */
 		render: function () {
 			return div(
 				{ className: 'view', id: this.id },
 				VirtualList({ id: 'my-vlist', className: 'my-vlist' })
 			);
 		},
-	};
+	});
 
 	return vListView;
 }
