@@ -15,12 +15,14 @@
 /**
  * @typedef {object} ViewOptions
  * @property {string} id
+ * @property {string[]} [preserveAttributes] - A list of attribute names to preserve on elements within the DOM tree during a diff.
  */
 
 /**
  * @typedef {object} BaseViewInstance
  * @property {string} id
  * @property {Element | null} viewEl
+ * @property {string[]} preserveAttributes
  * @property {(parentEl: Element) => void} attach
  * @property {() => void} detach
  * @property {(element: Element) => void} hydrate
