@@ -211,7 +211,6 @@ function createNavigationService() {
 
 			// For all internal links, prevent the default browser navigation
 			// and use the client-side router to navigate programmatically.
-			// This is the key to enabling SPA-style navigation.
 			historyRouter.navigate(elTarget.pathname);
 			return;
 		}

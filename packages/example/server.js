@@ -53,7 +53,7 @@ const fetchHomePageData = () => {
 };
 
 /**
- * Sanitizes the Express `req.query` object to match the application's `RouteSearch` type.
+ *sSanitizes the Express `req.query` object to match the application's `RouteSearch` type.
  * Express's `req.query` can have values that are arrays or nested objects, and our
  * `RouteSearch` type is simpler (`Record<string, string | number | boolean>`).
  * This function ensures type compatibility.
@@ -115,7 +115,7 @@ const renderFullPage = (viewHtml, viewName, initialData = null) => {
 // --- Route Handlers ---
 
 /**
- * @typedef {object} SsrRoute
+ * @typedef {object} SSRRoute
  * @property {(options: import('./src/index.js').AppViewOptions) => import('crt').BaseViewInstance} viewFactory
  * @property {string} viewName
  * @property {((req: import('express').Request) => Promise<any>)} [loadData]
@@ -123,7 +123,7 @@ const renderFullPage = (viewHtml, viewName, initialData = null) => {
 
 // A map of URL paths to their corresponding view factories and data loaders.
 // This makes the server-side routing declarative and easy to extend.
-/** @type {Record<string, SsrRoute>} */
+/** @type {Record<string, SSRRoute>} */
 const ssrRoutes = {
 	'/': {
 		viewFactory: createHomeView,
@@ -193,6 +193,7 @@ app.use(express.static(path.join(__dirname, 'dist')));
 // catch-all route that includes the root path is `/{*splat}`. This is more
 // declarative than using a regex and is the idiomatic way to handle this
 // for client-side deep links in modern Express.
+// see https://expressjs.com/en/guide/migrating-5.html
 app.get('/{*splat}', (req, res) => {
 	loga.info('Catch-all: Serving client-side shell.');
 	const emptyHtml = renderFullPage(
@@ -206,9 +207,9 @@ app.get('/{*splat}', (req, res) => {
 app.listen(port, () => {
 	loga.info(`[SSR] Server listening at http://localhost:${port}`);
 	loga.info(
-		'Visit http://localhost:3001/ to see the server-rendered Home view.'
+		`Visit http://localhost:${port}/ to see the server-rendered Home view.`
 	);
 	loga.info(
-		'Visit http://localhost:3001/player to see the server-rendered Player view.'
+		`Visit http://localhost:${port}/player to see the server-rendered Player view.`
 	);
 });

@@ -101,8 +101,6 @@ function getTemplate() {
 		resultsEl = span({ className: s.searchNoResults }, 'Found nothing...');
 	}
 
-	// Now that the keyboard keys have unique IDs, the focus-aware diff engine
-	// can correctly preserve focus, making an explicit container unnecessary.
 	return div(
 		{ className: 'view', id: this.id },
 		div({ className: s.searchInput, id: 'search-input' }, searchTerm),

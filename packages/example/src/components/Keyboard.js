@@ -37,7 +37,6 @@ const KeyButton = (props) => {
 	return Button(
 		{
 			className: buttonCx,
-			// Add a unique and stable ID for focus management by the diff engine.
 			id: `keyboard-key-${props.value.toLowerCase()}`,
 			dataset: {
 				keyValue: props.value,
