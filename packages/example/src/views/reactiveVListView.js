@@ -9,7 +9,7 @@ import { parseDecimal } from '../utils/math/parseDecimal.js';
 
 import s from './reactiveVListView.scss';
 
-// --- Data Generation (copied from imperative vlist view for comparison) ---
+// ::: Data Generation (copied from imperative vlist view for comparison)
 
 /**
  * @typedef {object} VListItem
@@ -51,7 +51,7 @@ function buildBigData(bigNumber) {
 	return bigData;
 }
 
-// --- View Implementation ---
+// ::: View Implementation
 
 /**
  * @returns {HTMLElement}
@@ -88,13 +88,13 @@ export function createReactiveVListView(options) {
 	const base = createBaseView(options);
 
 	/** @type {ReactiveVListViewInstance} */
-	const reactiveVListView = {
-		...base,
+	const reactiveVListView = Object.assign({}, base, {
 		dataSignaller: createSignaller(buildBigData(600)),
 		vl: null,
 		stopWatching: undefined,
 		boundHandleMove: undefined,
 
+		/** @this {ReactiveVListViewInstance} */
 		destructor: function () {
 			if (this.stopWatching) {
 				this.stopWatching();
@@ -119,6 +119,7 @@ export function createReactiveVListView(options) {
 			}
 		},
 
+		/** @this {ReactiveVListViewInstance} */
 		viewDidLoad: function () {
 			if (!(this.viewEl instanceof HTMLElement)) return;
 			/**
@@ -188,10 +189,11 @@ export function createReactiveVListView(options) {
 			navigationService.focusInto(this.viewEl);
 		},
 
+		/** @this {ReactiveVListViewInstance} */
 		render: function () {
 			return getTemplate.call(this);
 		},
-	};
+	});
 
 	return reactiveVListView;
 }

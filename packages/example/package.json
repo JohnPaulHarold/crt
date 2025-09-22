@@ -30,6 +30,8 @@
 	"dependencies": {
 		"@bbc/tv-lrud-spatial": "^0.0.16",
 		"crt": "file:../crt",
+		"crt-server": "file:../crt-server",
 		"dotenv": "^17.2.2"
+		"express": "^5.1.0"
 	}
 }

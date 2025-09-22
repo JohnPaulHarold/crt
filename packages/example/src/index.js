@@ -21,9 +21,10 @@ const logr = loga.create('example');
 
 /**
  * @typedef {import('crt').ViewOptions & {
- *  pattern: string;
- *  params: import('./routes.js').RouteParams;
- *  search: import('./routes.js').RouteSearch;
+ *  pattern?: string;
+ *  params?: import('./routes.js').RouteParams;
+ *  search?: import('./routes.js').RouteSearch;
+ *  initialData?: Record<string, any>;
  * }} AppViewOptions
  */
 
@@ -39,14 +40,22 @@ function loadView(createView, options) {
 		currentView.detach();
 	}
 
-	currentView = createView({
-		id: options.pattern,
-		...options,
-	});
+	currentView = createView(
+		Object.assign(
+			{},
+			{
+				id: options.pattern,
+			},
+			options
+		)
+	);
 
 	if (appOutlets.main) {
 		currentView.attach(appOutlets.main);
 	}
+	// The `emit` function expects a payload. Since the `mainNav` listener
+	// for this event doesn't use the payload, we can pass `null`.
+	navigationService.getBus().emit('route:changed', null);
 }
 
 function App() {
@@ -63,7 +72,7 @@ function App() {
 			return {
 				id: `nav-${key.toLowerCase()}`,
 				title: route.title,
-				href: `#${href}`,
+				href: href,
 			};
 		});
 
@@ -85,11 +94,15 @@ function App() {
  * A map of view names to their factory functions, used for SSR hydration.
  * The index signature `[key: string]` tells TypeScript that we can access
  * its properties using a string variable.
- * @type {Record<string, (options: import('crt').ViewOptions) => import('crt').BaseViewInstance>}
+ * @type {Record<string, (options: AppViewOptions) => import('crt').BaseViewInstance>}
  */
 const viewFactories = {
 	player: createPlayerView,
-	// In the future, other views can be added here to support SSR
+	home: createHomeView,
+	search: createSearchView,
+	diff: createDiffView,
+	'reactive-vlist': createReactiveVListView,
+	// In the future, other views can be added here to support SSR hydration
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -99,49 +112,67 @@ document.addEventListener('DOMContentLoaded', () => {
 		return;
 	}
 
+	// Step 1: Create the main application shell
+	// This runs in BOTH modes. It creates the nav and the main outlet.
+	const appShell = App();
+
 	const ssrViewName = root.dataset.ssrView;
 	const ssrViewElement = root.firstElementChild;
 
 	if (ssrViewName && ssrViewElement && viewFactories[ssrViewName]) {
-		// --- HYDRATION MODE ---
+		// ::: HYDRATION MODE
 		logr.info(`Hydrating server-rendered view: ${ssrViewName}`);
 
+		// Hydrate the server-rendered view
 		const createView = viewFactories[ssrViewName];
-		const viewInstance = createView({ id: ssrViewElement.id });
+		const initialData = /** @type {import('crt').GlobalWindow} */ (window)
+			.__INITIAL_DATA__;
 
+		const viewInstance = createView({
+			id: ssrViewElement.id,
+			initialData: initialData,
+		});
 		viewInstance.hydrate(ssrViewElement);
-		navigationService.init();
+		currentView = viewInstance; // Keep track of the current view
+
+		// Now, construct the final DOM by placing the hydrated view inside the app shell
+		if (appOutlets.main) {
+			appOutlets.main.appendChild(ssrViewElement);
+		}
+		// Replace the content of #root with the full app shell
+		root.innerHTML = '';
+		root.appendChild(appShell);
 	} else {
-		// --- CLIENT-SIDE RENDERING MODE ---
+		// ::: CLIENT-SIDE RENDERING MODE
 		logr.info('Starting in client-side rendering mode.');
-
-		const app = App();
-		root.appendChild(app);
-
-		historyRouter.registerRoute(routes.HOME, (opts) =>
-			loadView(createHomeView, opts)
-		);
-		historyRouter.registerRoute(routes.SEARCH, (opts) =>
-			loadView(createSearchView, opts)
-		);
-		historyRouter.registerRoute(routes.SHOW, (opts) =>
-			loadView(createShowView, opts)
-		);
-		historyRouter.registerRoute(routes.DIFF, (opts) =>
-			loadView(createDiffView, opts)
-		);
-		historyRouter.registerRoute(routes.VLIST, (opts) =>
-			loadView(createVListView, opts)
-		);
-		historyRouter.registerRoute(routes.PLAYER, (opts) =>
-			loadView(createPlayerView, opts)
-		);
-		historyRouter.registerRoute(routes.REACTIVE_VLIST, (opts) =>
-			loadView(createReactiveVListView, opts)
-		);
-
-		historyRouter.config('/', 'hash');
-
-		navigationService.init();
+		// Just append the shell, the router will load the first view.
+		root.appendChild(appShell);
 	}
+
+	// Step 2: Initialize router and navigation for BOTH modes
+	historyRouter.registerRoute(routes.HOME, (opts) =>
+		loadView(createHomeView, opts)
+	);
+	historyRouter.registerRoute(routes.SEARCH, (opts) =>
+		loadView(createSearchView, opts)
+	);
+	historyRouter.registerRoute(routes.SHOW, (opts) =>
+		loadView(createShowView, opts)
+	);
+	historyRouter.registerRoute(routes.DIFF, (opts) =>
+		loadView(createDiffView, opts)
+	);
+	historyRouter.registerRoute(routes.VLIST, (opts) =>
+		loadView(createVListView, opts)
+	);
+	historyRouter.registerRoute(routes.PLAYER, (opts) =>
+		loadView(createPlayerView, opts)
+	);
+	historyRouter.registerRoute(routes.REACTIVE_VLIST, (opts) =>
+		loadView(createReactiveVListView, opts)
+	);
+
+	historyRouter.config('/', 'history');
+
+	navigationService.init();
 });

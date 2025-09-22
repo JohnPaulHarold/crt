@@ -1,4 +1,4 @@
-import { createBaseView, watch, diff, noop, normaliseEventTarget } from 'crt';
+import { createBaseView, watch, diff, noop, loga } from 'crt';
 import { div, button, p } from '../html.js';
 import {
 	navigationService,
@@ -6,6 +6,8 @@ import {
 } from '../services/navigationService.js';
 import { createFakePlayer } from '../libs/createFakePlayer.js';
 import s from './player.scss';
+
+const logr = loga.create('player');
 
 // 1. Create an instance of our fake player. This encapsulates all state and logic.
 const player = createFakePlayer({ duration: 120 });
@@ -37,9 +39,6 @@ function getTemplate() {
 					button(
 						{
 							id: 'play-pause-btn',
-							className: navigationService.isElementFocused('play-pause-btn')
-								? 'focused'
-								: '',
 							onclick: player.controls.togglePlay,
 						},
 						isPlaying ? 'Pause' : 'Play'
@@ -47,9 +46,6 @@ function getTemplate() {
 					button(
 						{
 							id: 'mute-btn',
-							className: navigationService.isElementFocused('mute-btn')
-								? 'focused'
-								: '',
 							onclick: player.controls.toggleMute,
 						},
 						isMuted ? 'Unmute' : 'Mute'
@@ -77,14 +73,16 @@ function getTemplate() {
  * @returns {PlayerViewInstance}
  */
 export function createPlayerView(options) {
-	const base = createBaseView(options);
+	const base = createBaseView(
+		Object.assign({}, options, { preserveAttributes: ['data-focus'] })
+	);
 
 	/** @type {PlayerViewInstance} */
-	const playerView = {
-		...base,
+	const playerView = Object.assign({}, base, {
 		stopWatching: noop,
 		boundFocusHandler: null,
 
+		/** @this {PlayerViewInstance} */
 		viewDidLoad: function () {
 			if (this.viewEl) {
 				const self = this;
@@ -93,7 +91,9 @@ export function createPlayerView(options) {
 				const handler = () => {
 					if (self.viewEl) {
 						const newVdom = getTemplate.call(self);
-						diff(newVdom, self.viewEl);
+						diff(newVdom, self.viewEl, {
+							preserveAttributes: this.preserveAttributes,
+						});
 					}
 				};
 
@@ -105,29 +105,20 @@ export function createPlayerView(options) {
 					],
 					handler
 				);
-
-				// Also trigger a re-render on focus changes to update the '.focused' class
-				this.boundFocusHandler = handler;
-				navigationService
-					.getBus()
-					.on(NavigationEvents.MOVE, this.boundFocusHandler);
 			}
 		},
 
 		destructor: function () {
+			logr.info('Player view destructor called.');
 			this.stopWatching();
 			player.destroy();
-			if (this.boundFocusHandler) {
-				navigationService
-					.getBus()
-					.off(NavigationEvents.MOVE, this.boundFocusHandler);
-			}
 		},
 
+		/** @this {PlayerViewInstance} */
 		render: function () {
 			return getTemplate.call(this);
 		},
-	};
+	});
 
 	return playerView;
 }

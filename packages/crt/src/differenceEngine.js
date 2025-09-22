@@ -11,7 +11,7 @@ import { getPlatform } from './platform.js';
  * @param {HTMLElement} dom
  */
 function diffAttributes(vdom, dom) {
-	// --- Attributes ---
+	// ::: Attributes
 	const platform = getPlatform();
 	const vdomAttrs = vdom.attributes;
 	const domAttrs = dom.attributes;
@@ -30,7 +30,7 @@ function diffAttributes(vdom, dom) {
 		if (!vdom.hasAttribute(attr.name)) platform.removeAttribute(dom, attr.name);
 	}
 
-	// --- Properties ---
+	// ::: Properties
 	// This is a targeted fix for properties that don't reflect as attributes,
 	// like event handlers or the `value` of an input, which can become stale.
 	// A more comprehensive VDOM implementation would track props explicitly.
@@ -139,11 +139,17 @@ function removeScripts(elem) {
 }
 
 /**
+ * @typedef {object} DiffOptions
+ * @property {string[]} [preserveAttributes] - A list of attribute names to preserve on elements within the DOM tree during a diff.
+ */
+
+/**
  * Public diff function that wraps the core logic with focus management.
  * @param {Node} vdom
  * @param {Node} dom
+ * @param {DiffOptions} [options={}]
  */
-export function diff(vdom, dom) {
+export function diff(vdom, dom, options = {}) {
 	const platform = getPlatform();
 	// Sanitize VDOM by removing script tags before diffing.
 	if (vdom.nodeType === Node.ELEMENT_NODE) {
@@ -151,22 +157,66 @@ export function diff(vdom, dom) {
 		removeScripts(vdom);
 	}
 
-	// 1. Before diffing, check if the active element is inside the tree we're about to change.
-	let activeElementId = null;
+	// ::: State Preservation
+	// Before diffing, we need to "bookmark" any state that is imperatively
+	// managed by external libraries directly on the DOM, so we can restore it.
+
+	// 1a. Preserve visual focus state (`.focused` class).
+	// The `navigationService` uses the `.focused` class as the source of truth for visual focus.
+	let focusedElementId = null;
+	/** @type {Record<string, Record<string, string>>} */
+	const preservedAttributeState = {};
+	const attributesToPreserve = options.preserveAttributes || [];
+
 	if (platform.isBrowser) {
-		const activeElement = document.activeElement;
-		const wasFocused =
-			activeElement && dom.contains(activeElement) && activeElement.id;
-		if (wasFocused) activeElementId = activeElement.id;
+		const focusedElement = document.querySelector('.focused');
+		// Ensure the focused element is within the DOM tree being diffed.
+		if (focusedElement && dom.contains(focusedElement) && focusedElement.id) {
+			focusedElementId = focusedElement.id;
+		}
+
+		// 1b. Preserve any additional specified attributes.
+		if (dom instanceof Element) {
+			attributesToPreserve.forEach((attrName) => {
+				const elements = dom.querySelectorAll(`[${attrName}]`);
+				elements.forEach((el) => {
+					if (el.id) {
+						preservedAttributeState[el.id] =
+							preservedAttributeState[el.id] || {};
+						const value = el.getAttribute(attrName);
+						if (value !== null) {
+							preservedAttributeState[el.id][attrName] = value;
+						}
+					}
+				});
+			});
+		}
 	}
 
 	// 2. Perform the actual diffing.
 	_diff(vdom, dom);
 
-	// 3. After diffing, if an element was focused, find it by its ID and restore focus.
-	if (platform.isBrowser && activeElementId) {
-		const newElementToFocus = document.getElementById(activeElementId);
-		if (newElementToFocus) newElementToFocus.focus();
+	// ::: State Restoration
+	if (platform.isBrowser) {
+		// 3a. Restore visual focus state.
+		if (focusedElementId) {
+			const newElementToFocus = document.getElementById(focusedElementId);
+			if (newElementToFocus) {
+				newElementToFocus.classList.add('focused');
+				newElementToFocus.focus();
+			}
+		}
+
+		// 3b. Restore preserved attributes.
+		Object.keys(preservedAttributeState).forEach((elementId) => {
+			const el = document.getElementById(elementId);
+			if (el) {
+				const attrsToRestore = preservedAttributeState[elementId];
+				Object.keys(attrsToRestore).forEach((attrName) => {
+					el.setAttribute(attrName, attrsToRestore[attrName]);
+				});
+			}
+		});
 	}
 }
 

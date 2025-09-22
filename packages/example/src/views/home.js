@@ -198,14 +198,19 @@ function buildCarousels(data) {
  * @returns {HomeViewInstance}
  */
 export function createHomeView(options) {
-	const base = createBaseView(options);
+	const base = createBaseView(
+		Object.assign({}, options, {
+			preserveAttributes: ['data-focus'],
+		})
+	);
 
 	/** @type {HomeViewInstance} */
-	const homeView = {
-		...base,
-		pageData: createSignaller(null),
+	const homeView = Object.assign({}, base, {
+		// If initialData is provided (e.g., from SSR), use it. Otherwise, start with null.
+		pageData: createSignaller(options.initialData || null),
 		stopWatching: undefined,
 
+		/** @this {HomeViewInstance} */
 		destructor: function () {
 			listenForBack.call(this, false);
 			if (this.stopWatching) {
@@ -216,55 +221,82 @@ export function createHomeView(options) {
 			deadSeaService.unregisterAll();
 		},
 
+		/** @this {HomeViewInstance} */
 		viewDidLoad: function () {
 			listenForBack.call(this, true);
 
-			const handler = () => {
-				if (this.viewEl) {
-					const vdom = getTemplate.call(this);
-					diff(vdom, this.viewEl);
+			/**
+			 * This function contains the logic to run AFTER the view is rendered with data.
+			 * It registers the carousels with the deadSeaService and sets the initial focus.
+			 */
+			const setupViewWithData = () => {
+				if (!this.viewEl) return;
 
-					// After the DOM is updated, the view is responsible for finding
-					// all its carousels and registering them with the deadSeaService.
-					const data = this.pageData.getValue();
-					if (data) {
-						const scrollAreas =
-							this.viewEl.querySelectorAll('[data-deadsea-id]');
-						scrollAreas.forEach((el) => {
-							if (!(el instanceof HTMLElement)) {
-								logr.error(
-									'[viewDidLoad] a scrollArea was an Element other than HTMLElement'
-								);
-								return;
-							}
-							deadSeaService.register(el);
-						});
+				const data = this.pageData.getValue();
+				if (!data) return;
 
-						// Now that they are registered, we can focus the main container.
-						const carouselsEl = this.viewEl.querySelector('#' + data.id);
-						if (carouselsEl && carouselsEl instanceof HTMLElement) {
-							focusPage(carouselsEl);
-						}
+				const scrollAreas = this.viewEl.querySelectorAll('[data-deadsea-id]');
+				if (scrollAreas.length === 0) {
+					logr.warn(
+						'setupViewWithData: Could not find any scrollable areas to register.'
+					);
+				}
+				scrollAreas.forEach((/** @type {Element} */ el) => {
+					if (!(el instanceof HTMLElement)) {
+						logr.error(
+							'[viewDidLoad] a scrollArea was an Element other than HTMLElement'
+						);
+						return;
 					}
+					deadSeaService.register(el);
+				});
+
+				// Now that they are registered, we can focus the main container.
+				const carouselsEl = this.viewEl.querySelector('#' + data.id);
+				if (carouselsEl && carouselsEl instanceof HTMLElement) {
+					focusPage(carouselsEl);
 				}
 			};
 
-			this.stopWatching = watch([this.pageData], handler);
+			// This handler is for when the data CHANGES reactively on the client.
+			const reactiveUpdateHandler = () => {
+				if (this.viewEl) {
+					const vdom = getTemplate.call(this);
+					diff(vdom, this.viewEl, {
+						preserveAttributes: this.preserveAttributes,
+					});
+					setupViewWithData(); // Run setup after diffing.
+				}
+			};
+
+			this.stopWatching = watch([this.pageData], reactiveUpdateHandler);
+
+			// If we have initial data (from SSR or client-side fetch), run the setup logic.
+			if (this.pageData.getValue()) {
+				logr.info('Home view: running setup...');
+				setupViewWithData();
+			}
 		},
 
+		/** @this {HomeViewInstance} */
 		fetchData: function () {
 			setTimeout(() => {
 				this.pageData.setValue(pageData);
 			}, 500);
 		},
 
+		/** @this {HomeViewInstance} */
 		render: function () {
 			// The initial render will be based on the initial state (null data).
 			return getTemplate.call(this);
 		},
-	};
+	});
 
-	homeView.fetchData();
+	// If no initial data was provided, we're in client-side rendering mode.
+	// Fetch the data as usual.
+	if (!options.initialData) {
+		homeView.fetchData();
+	}
 
 	return homeView;
 }

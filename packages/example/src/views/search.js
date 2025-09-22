@@ -124,15 +124,17 @@ function getTemplate() {
  * @returns {SearchViewInstance}
  */
 export function createSearchView(options) {
-	const base = createBaseView(options);
+	const base = createBaseView(
+		Object.assign({}, options, { preserveAttributes: ['data-focus'] })
+	);
 
 	/** @type {SearchViewInstance} */
-	const searchView = {
-		...base,
+	const searchView = Object.assign({}, base, {
 		searchTerm: createSignaller(''),
 		boundHandleClick: undefined,
 		stopWatching: undefined,
 
+		/** @this {SearchViewInstance} */
 		destructor: function () {
 			if (this.viewEl && this.boundHandleClick) {
 				this.viewEl.removeEventListener(
@@ -145,8 +147,10 @@ export function createSearchView(options) {
 			}
 			// Reset state for when view is re-created
 			this.searchTerm.setValue('');
+			deadSeaService.unregister('search-results-list-carousel');
 		},
 
+		/** @this {SearchViewInstance} */
 		viewDidLoad: function () {
 			if (this.viewEl) {
 				this.boundHandleClick = handleClick.bind(this);
@@ -155,45 +159,40 @@ export function createSearchView(options) {
 					/** @type {EventListener} */ (this.boundHandleClick)
 				);
 
-				const handler = () => {
-					// This handler is called whenever the search term changes.
-					// It's the view's responsibility to manage the lifecycle of the
-					// results carousel.
+				const setupResultsCarousel = () => {
 					if (this.viewEl) {
-						// 1. Before diffing, find the old carousel and unregister it if it exists.
-						const oldCarousel = this.viewEl.querySelector(
+						const carouselEl = this.viewEl.querySelector(
 							'#search-results-list .carousel'
 						);
-
-						if (
-							oldCarousel instanceof HTMLElement &&
-							oldCarousel.dataset.deadseaId
-						) {
-							deadSeaService.unregister(oldCarousel.dataset.deadseaId);
-						}
-
-						// 2. Render the new VDOM and apply the diff.
-						const vdom = getTemplate.call(this);
-						diff(vdom, this.viewEl);
-
-						// 3. After diffing, find the new carousel and register it if it exists.
-						const newCarousel = this.viewEl.querySelector(
-							'#search-results-list .carousel'
-						);
-
-						if (newCarousel instanceof HTMLElement) {
-							deadSeaService.register(newCarousel);
+						if (carouselEl instanceof HTMLElement) {
+							deadSeaService.register(carouselEl);
 						}
 					}
 				};
-				this.stopWatching = watch([this.searchTerm], handler);
+
+				const reactiveUpdateHandler = () => {
+					if (this.viewEl) {
+						// Unregister the old carousel before diffing
+						deadSeaService.unregister('search-results-list-carousel');
+
+						const vdom = getTemplate.call(this);
+						diff(vdom, this.viewEl, {
+							preserveAttributes: this.preserveAttributes,
+						});
+
+						// Register the new one after diffing
+						setupResultsCarousel();
+					}
+				};
+				this.stopWatching = watch([this.searchTerm], reactiveUpdateHandler);
 			}
 		},
 
+		/** @this {SearchViewInstance} */
 		render: function () {
 			return getTemplate.call(this);
 		},
-	};
+	});
 
 	return searchView;
 }

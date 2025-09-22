@@ -1,5 +1,5 @@
 import { cx } from 'crt';
-import { div } from '../html.js';
+import { div, section } from '../html.js';
 import { Button } from './Button.js';
 
 import s from './Keyboard.scss';
@@ -37,6 +37,7 @@ const KeyButton = (props) => {
 	return Button(
 		{
 			className: buttonCx,
+			id: `keyboard-key-${props.value.toLowerCase()}`,
 			dataset: {
 				keyValue: props.value,
 			},
@@ -52,7 +53,7 @@ const KeyButton = (props) => {
  */
 export const Keyboard = (props) => {
 	return /** @type {HTMLElement} */ (
-		div(
+		section(
 			{ className: s.keyboard },
 			props.keyMap.map((row) =>
 				div(
