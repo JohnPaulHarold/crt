@@ -16,7 +16,7 @@ import { pageData } from './src/stubData/pageData.js';
 import { createSearchView } from './src/views/search.js';
 import { createDiffView } from './src/views/diff.js';
 
-// --- Server Setup ---
+// ::: Server Setup
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -25,7 +25,7 @@ const port = 3001;
 
 const distPath = path.join(__dirname, 'dist');
 
-// --- Fake Data Fetching ---
+// ::: Fake Data Fetching
 // A simple function to simulate an async API call.
 const fetchHomePageData = () => {
 	return new Promise((resolve) => {
@@ -35,7 +35,7 @@ const fetchHomePageData = () => {
 	});
 };
 
-// --- Route Handlers ---
+// ::: Route Handlers
 
 // A map of URL paths to their corresponding view factories and data loaders.
 // This makes the server-side routing declarative and easy to extend.

@@ -25,7 +25,7 @@ export function findAssets(distPath) {
 }
 
 /**
- * Sanitizes the Express `req.query` object to match a simpler key-value type.
+ * Sanitises the Express `req.query` object to match a simpler key-value type.
  * @param {import('qs').ParsedQs} query
  * @returns {Record<string, string | number | boolean>}
  */
@@ -46,8 +46,16 @@ function sanitiseQuery(query) {
 }
 
 /**
+ * @typedef {object} RenderPageTemplateOptions
+ * @property {string} viewHtml
+ * @property {string} viewName
+ * @property {Record<string, any> | null} initialData
+ * @property {{js: string | undefined, css: string | undefined}} assets
+ */
+
+/**
  * Renders the default HTML page template.
- * @param {{viewHtml: string, viewName: string, initialData: any, assets: {js: string | undefined, css: string | undefined}}} templateArgs
+ * @param {RenderPageTemplateOptions} templateArgs
  * @returns {string}
  */
 export function renderPageTemplate({
@@ -87,7 +95,7 @@ export function renderPageTemplate({
  *  pattern?: string;
  *  params?: Record<string, string>;
  *  search?: Record<string, string | number | boolean>;
- *  initialData?: any;
+ *  initialData?: Record<string, any>;
  * }} SsrViewOptions
  */
 

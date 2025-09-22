@@ -92,7 +92,7 @@ export function createImperativeVirtualList(options) {
 			this.sliderEl.style[transformProp] =
 				'translateY(' + -(position * this.elHeight) + 'rem)';
 
-			// --- SCROLLING DOWN ---
+			// ::: SCROLLING DOWN
 			if (
 				direction === Direction.DOWN &&
 				position > lowerBound + this.visibleEls + this.bufferAmount
@@ -137,7 +137,7 @@ export function createImperativeVirtualList(options) {
 				this.window[1] = this.window[1] + this.visibleEls;
 			}
 
-			// --- SCROLLING UP ---
+			// ::: SCROLLING UP
 			if (
 				direction === Direction.UP &&
 				position <= lowerBound + this.bufferAmount
