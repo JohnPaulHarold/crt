@@ -13,5 +13,8 @@
 	},
 	"peerDependencies": {
 		"express": "^5.1.0"
+	},
+	"devDependencies": {
+		"@types/qs": "^6.9.15"
 	}
 }
