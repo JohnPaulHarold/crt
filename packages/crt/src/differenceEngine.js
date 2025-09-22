@@ -11,7 +11,7 @@ import { getPlatform } from './platform.js';
  * @param {HTMLElement} dom
  */
 function diffAttributes(vdom, dom) {
-	// --- Attributes ---
+	// ::: Attributes
 	const platform = getPlatform();
 	const vdomAttrs = vdom.attributes;
 	const domAttrs = dom.attributes;
@@ -30,7 +30,7 @@ function diffAttributes(vdom, dom) {
 		if (!vdom.hasAttribute(attr.name)) platform.removeAttribute(dom, attr.name);
 	}
 
-	// --- Properties ---
+	// ::: Properties
 	// This is a targeted fix for properties that don't reflect as attributes,
 	// like event handlers or the `value` of an input, which can become stale.
 	// A more comprehensive VDOM implementation would track props explicitly.
@@ -157,7 +157,7 @@ export function diff(vdom, dom, options = {}) {
 		removeScripts(vdom);
 	}
 
-	// --- State Preservation ---
+	// ::: State Preservation
 	// Before diffing, we need to "bookmark" any state that is imperatively
 	// managed by external libraries directly on the DOM, so we can restore it.
 
@@ -196,7 +196,7 @@ export function diff(vdom, dom, options = {}) {
 	// 2. Perform the actual diffing.
 	_diff(vdom, dom);
 
-	// --- State Restoration ---
+	// ::: State Restoration
 	if (platform.isBrowser) {
 		// 3a. Restore visual focus state.
 		if (focusedElementId) {

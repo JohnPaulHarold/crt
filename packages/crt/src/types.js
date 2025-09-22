@@ -99,4 +99,10 @@
  * @property {SetAriaCallback} setAria
  */
 
+/**
+ * @typedef {window & {
+ *  __INITIAL_DATA__?: Record<string, any>;
+ * }} GlobalWindow
+ */
+
 export {};

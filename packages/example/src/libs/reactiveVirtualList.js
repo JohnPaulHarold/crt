@@ -87,7 +87,7 @@ export function createReactiveVirtualList(options) {
 
 		const visibleItems = data.slice(startIndex, endIndex);
 
-		// --- TranslateY Calculation ---
+		// ::: TranslateY Calculation
 		// We want to scroll to keep the focused item in view.
 		// A good target is to keep it near the center of the container.
 		const scrollOffset = focusedIndex * totalItemHeight;

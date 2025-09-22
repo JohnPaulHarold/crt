@@ -24,7 +24,7 @@ const logr = loga.create('example');
  *  pattern?: string;
  *  params?: import('./routes.js').RouteParams;
  *  search?: import('./routes.js').RouteSearch;
- *  initialData?: any;
+ *  initialData?: Record<string, any>;
  * }} AppViewOptions
  */
 
@@ -54,7 +54,7 @@ function loadView(createView, options) {
 		currentView.attach(appOutlets.main);
 	}
 	// The `emit` function expects a payload. Since the `mainNav` listener
-	// for this event doesn't use the payload, we can safely pass `null`.
+	// for this event doesn't use the payload, we can pass `null`.
 	navigationService.getBus().emit('route:changed', null);
 }
 
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		return;
 	}
 
-	// --- 1. Create the main application shell ---
+	// Step 1: Create the main application shell
 	// This runs in BOTH modes. It creates the nav and the main outlet.
 	const appShell = App();
 
@@ -120,13 +120,13 @@ document.addEventListener('DOMContentLoaded', () => {
 	const ssrViewElement = root.firstElementChild;
 
 	if (ssrViewName && ssrViewElement && viewFactories[ssrViewName]) {
-		// --- HYDRATION MODE ---
+		// ::: HYDRATION MODE
 		logr.info(`Hydrating server-rendered view: ${ssrViewName}`);
 
 		// Hydrate the server-rendered view
 		const createView = viewFactories[ssrViewName];
-		// @ts-ignore - __INITIAL_DATA__ is a global set by the server.
-		const initialData = window.__INITIAL_DATA__;
+		const initialData = /** @type {import('crt').GlobalWindow} */ (window)
+			.__INITIAL_DATA__;
 
 		const viewInstance = createView({
 			id: ssrViewElement.id,
@@ -143,13 +143,13 @@ document.addEventListener('DOMContentLoaded', () => {
 		root.innerHTML = '';
 		root.appendChild(appShell);
 	} else {
-		// --- CLIENT-SIDE RENDERING MODE ---
+		// ::: CLIENT-SIDE RENDERING MODE
 		logr.info('Starting in client-side rendering mode.');
 		// Just append the shell, the router will load the first view.
 		root.appendChild(appShell);
 	}
 
-	// --- 2. Initialize router and navigation for BOTH modes ---
+	// Step 2: Initialize router and navigation for BOTH modes
 	historyRouter.registerRoute(routes.HOME, (opts) =>
 		loadView(createHomeView, opts)
 	);

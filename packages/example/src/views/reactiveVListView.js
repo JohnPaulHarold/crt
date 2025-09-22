@@ -9,7 +9,7 @@ import { parseDecimal } from '../utils/math/parseDecimal.js';
 
 import s from './reactiveVListView.scss';
 
-// --- Data Generation (copied from imperative vlist view for comparison) ---
+// ::: Data Generation (copied from imperative vlist view for comparison)
 
 /**
  * @typedef {object} VListItem
@@ -51,7 +51,7 @@ function buildBigData(bigNumber) {
 	return bigData;
 }
 
-// --- View Implementation ---
+// ::: View Implementation
 
 /**
  * @returns {HTMLElement}
