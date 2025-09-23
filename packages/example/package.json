@@ -20,12 +20,12 @@
 		"@rollup/plugin-url": "^8.0.2",
 		"autoprefixer": "^10.4.21",
 		"postcss": "^8.5.4",
-		"rollup": "^4.48.1",
+		"rollup": "^4.52.0",
 		"rollup-plugin-bundle-worker": "github:JohnPaulHarold/rollup-plugin-bundle-worker",
 		"rollup-plugin-copy": "^3.5.0",
 		"rollup-plugin-postcss": "^4.0.2",
 		"rollup-plugin-serve": "^3.0.0",
-		"sass": "^1.89.2"
+		"sass": "^1.93.0"
 	},
 	"dependencies": {
 		"@bbc/tv-lrud-spatial": "^0.0.16",
