@@ -2,6 +2,9 @@
  * @file The public API for the crt-server package.
  */
 
+import type { ParsedQs } from 'qs';
+import type { ViewOptions, BaseViewInstance } from 'crt';
+
 import { Router } from 'express';
 import fs from 'fs';
 import { setPlatform } from 'crt';
@@ -9,10 +12,12 @@ import { serverPlatform, renderToString } from 'crt/server';
 
 /**
  * Finds the hashed JS and CSS bundle files in a distribution directory.
- * @param {string} distPath
- * @returns {{js: string | undefined, css: string | undefined}}
+ * @param distPath
  */
-export function findAssets(distPath) {
+export function findAssets(distPath: string): {
+	js: string | undefined;
+	css: string | undefined;
+} {
 	const distFiles = fs.readdirSync(distPath);
 	const js = distFiles.find(
 		(f) => f.startsWith('bundle.') && f.endsWith('.js')
@@ -25,12 +30,13 @@ export function findAssets(distPath) {
 
 /**
  * Sanitises the Express `req.query` object to match a simpler key-value type.
- * @param {import('qs').ParsedQs} query
- * @returns {Record<string, string | number | boolean>}
+ * @param query
  */
-function sanitiseQuery(query) {
+function sanitiseQuery(
+	query: ParsedQs
+): Record<string, string | number | boolean> {
 	/** @type {Record<string, string | number | boolean>} */
-	const search = {};
+	const search: Record<string, string | number | boolean> = {};
 	for (const key in query) {
 		const value = query[key];
 		if (typeof value === 'string') {
@@ -44,25 +50,23 @@ function sanitiseQuery(query) {
 	return search;
 }
 
-/**
- * @typedef {object} RenderPageTemplateOptions
- * @property {string} viewHtml
- * @property {string} viewName
- * @property {Record<string, any> | null} initialData
- * @property {{js: string | undefined, css: string | undefined}} assets
- */
+export interface RenderPageTemplateOptions {
+	viewHtml: string;
+	viewName: string;
+	initialData: Record<string, unknown> | null;
+	assets: { js: string | undefined; css: string | undefined };
+}
 
 /**
  * Renders the default HTML page template.
- * @param {RenderPageTemplateOptions} templateArgs
- * @returns {string}
+ * @param templateArgs
  */
 export function renderPageTemplate({
 	viewHtml,
 	viewName,
 	initialData,
 	assets,
-}) {
+}: RenderPageTemplateOptions): string {
 	const dataScript = initialData
 		? `<script>window.__INITIAL_DATA__ = ${JSON.stringify(
 				initialData
@@ -89,34 +93,29 @@ export function renderPageTemplate({
   `;
 }
 
-/**
- * @typedef {import('crt').ViewOptions & {
- *  pattern?: string;
- *  params?: Record<string, string>;
- *  search?: Record<string, string | number | boolean>;
- *  initialData?: Record<string, any>;
- * }} SsrViewOptions
- */
+export type SsrViewOptions = ViewOptions & {
+	pattern?: string;
+	params?: Record<string, string>;
+	search?: Record<string, string | number | boolean>;
+	initialData?: Record<string, unknown>;
+};
 
-/**
- * @typedef {object} SsrRoute
- * @property {string} viewName - A name for the view, used in `data-ssr-view`.
- * @property {(req: import('express').Request) => Promise<any>} [loadData] - Optional data loader.
- * @property {(options: SsrViewOptions) => import('crt').BaseViewInstance} viewFactory - The view factory.
- */
+export interface SsrRoute {
+	viewName: string;
+	loadData?: (req: import('express').Request) => Promise<unknown>;
+	viewFactory: (options: SsrViewOptions) => BaseViewInstance;
+}
 
-/**
- * @typedef {object} SsrRouterOptions
- * @property {string} distPath - Path to the 'dist' directory.
- * @property {Record<string, SsrRoute>} routes - Route definitions.
- */
+export interface SsrRouterOptions {
+	distPath: string;
+	routes: Record<string, SsrRoute>;
+}
 
 /**
  * Creates an Express Router with configured SSR routes.
- * @param {SsrRouterOptions} options
- * @returns {import('express').Router}
+ * @param options
  */
-export function createSsrRouter(options) {
+export function createSsrRouter(options: SsrRouterOptions): Router {
 	setPlatform(serverPlatform);
 	const router = Router();
 	const assets = findAssets(options.distPath);
@@ -130,13 +129,25 @@ export function createSsrRouter(options) {
 
 		router.get(path, async (req, res) => {
 			try {
-				const initialData = routeConfig.loadData
+				const loadedData = routeConfig.loadData
 					? await routeConfig.loadData(req)
 					: null;
 
+				// Ensure that the loaded data is an object that can be serialized.
+				const initialData =
+					typeof loadedData === 'object' && loadedData !== null
+						? (loadedData as Record<string, unknown>)
+						: null;
+
+				if (loadedData !== null && initialData === null) {
+					console.warn(
+						`[crt-server] loadData for route ${path} returned a non-object value, which will be ignored.`
+					);
+				}
+
 				const viewInstance = routeConfig.viewFactory({
 					id: routeConfig.viewName,
-					initialData: initialData,
+					initialData: initialData ?? undefined, // Pass undefined if initialData is null
 					params: req.params,
 					search: sanitiseQuery(req.query),
 				});

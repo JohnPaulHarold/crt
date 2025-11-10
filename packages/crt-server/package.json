@@ -2,19 +2,30 @@
 	"name": "crt-server",
 	"version": "1.0.0",
 	"private": true,
-	"description": "Server-side rendering utilities for the CRT framework",
+	"description": "Server-side rendering utilities for the CRT project.",
 	"type": "module",
-	"main": "src/index.js",
-	"scripts": {},
-	"author": "jp",
+	"main": "dist/index.js",
+	"types": "dist/types/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/types/index.d.ts"
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "rm -rf dist && tsc -p tsconfig.json && babel src --out-dir dist --extensions \".ts,.js\" --config-file ../../babel.config.json"
+	},
 	"license": "Apache-2.0",
 	"dependencies": {
 		"crt": "file:../crt"
 	},
-	"peerDependencies": {
-		"express": "^5.1.0"
-	},
 	"devDependencies": {
 		"@types/qs": "^6.9.15"
+	},
+	"peerDependencies": {
+		"express": "^5.1.0"
 	}
 }

@@ -31,36 +31,34 @@ function createMockMouseEvent(partialEvent: Partial<MouseEvent>): MouseEvent {
 		getModifierState: function (keyArg: string): boolean {
 			throw new Error('Function not implemented.');
 		},
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		initMouseEvent: function (
-			typeArg: string,
-			canBubbleArg: boolean,
-			cancelableArg: boolean,
-			viewArg: Window,
-			detailArg: number,
-			screenXArg: number,
-			screenYArg: number,
-			clientXArg: number,
-			clientYArg: number,
-			ctrlKeyArg: boolean,
-			altKeyArg: boolean,
-			shiftKeyArg: boolean,
-			metaKeyArg: boolean,
-			buttonArg: number,
-			relatedTargetArg: EventTarget | null
+			_typeArg: string,
+			_canBubbleArg: boolean,
+			_cancelableArg: boolean,
+			_viewArg: Window,
+			_detailArg: number,
+			_screenXArg: number,
+			_screenYArg: number,
+			_clientXArg: number,
+			_clientYArg: number,
+			_ctrlKeyArg: boolean,
+			_altKeyArg: boolean,
+			_shiftKeyArg: boolean,
+			_metaKeyArg: boolean,
+			_buttonArg: number,
+			_relatedTargetArg: EventTarget | null
 		): void {
 			throw new Error('Function not implemented.');
 		},
 		detail: 0,
 		view: null,
 		which: 0,
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		initUIEvent: function (
-			typeArg: string,
-			bubblesArg?: boolean | undefined,
-			cancelableArg?: boolean | undefined,
-			viewArg?: Window | null | undefined,
-			detailArg?: number | undefined
+			_typeArg: string,
+			_bubblesArg?: boolean | undefined,
+			_cancelableArg?: boolean | undefined,
+			_viewArg?: Window | null | undefined,
+			_detailArg?: number | undefined
 		): void {
 			throw new Error('Function not implemented.');
 		},
@@ -80,11 +78,10 @@ function createMockMouseEvent(partialEvent: Partial<MouseEvent>): MouseEvent {
 		composedPath: function (): EventTarget[] {
 			throw new Error('Function not implemented.');
 		},
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		initEvent: function (
-			type: string,
-			bubbles?: boolean | undefined,
-			cancelable?: boolean | undefined
+			_type: string,
+			_bubbles?: boolean | undefined,
+			_cancelable?: boolean | undefined
 		): void {
 			throw new Error('Function not implemented.');
 		},

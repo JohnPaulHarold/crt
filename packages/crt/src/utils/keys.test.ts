@@ -24,22 +24,20 @@ function createMockKeyboardEvent(
 		metaKey: false,
 		repeat: false,
 		shiftKey: false,
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		getModifierState: function (keyArg: string): boolean {
+		getModifierState: function (_keyArg: string): boolean {
 			throw new Error('Function not implemented.');
 		},
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		initKeyboardEvent: function (
-			typeArg: string,
-			bubblesArg?: boolean | undefined,
-			cancelableArg?: boolean | undefined,
-			viewArg?: Window | null | undefined,
-			keyArg?: string | undefined,
-			locationArg?: number | undefined,
-			ctrlKey?: boolean | undefined,
-			altKey?: boolean | undefined,
-			shiftKey?: boolean | undefined,
-			metaKey?: boolean | undefined
+			_typeArg: string,
+			_bubblesArg?: boolean | undefined,
+			_cancelableArg?: boolean | undefined,
+			_viewArg?: Window | null | undefined,
+			_keyArg?: string | undefined,
+			_locationArg?: number | undefined,
+			_ctrlKey?: boolean | undefined,
+			_altKey?: boolean | undefined,
+			_shiftKey?: boolean | undefined,
+			_metaKey?: boolean | undefined
 		): void {
 			throw new Error('Function not implemented.');
 		},
@@ -50,13 +48,12 @@ function createMockKeyboardEvent(
 		detail: 0,
 		view: null,
 		which: 0,
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		initUIEvent: function (
-			typeArg: string,
-			bubblesArg?: boolean | undefined,
-			cancelableArg?: boolean | undefined,
-			viewArg?: Window | null | undefined,
-			detailArg?: number | undefined
+			_typeArg: string,
+			_bubblesArg?: boolean | undefined,
+			_cancelableArg?: boolean | undefined,
+			_viewArg?: Window | null | undefined,
+			_detailArg?: number | undefined
 		): void {
 			throw new Error('Function not implemented.');
 		},
@@ -76,11 +73,10 @@ function createMockKeyboardEvent(
 		composedPath: function (): EventTarget[] {
 			throw new Error('Function not implemented.');
 		},
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		initEvent: function (
-			type: string,
-			bubbles?: boolean | undefined,
-			cancelable?: boolean | undefined
+			_type: string,
+			_bubbles?: boolean | undefined,
+			_cancelable?: boolean | undefined
 		): void {
 			throw new Error('Function not implemented.');
 		},
