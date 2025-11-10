@@ -3,8 +3,10 @@
 	"compilerOptions": {
 		"emitDeclarationOnly": true,
 		"composite": true,
-		"declarationDir": "dist/types",
-		"rootDir": "src"
+		"rootDir": "src",
+		"outDir": "dist/types",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext"
 	},
 	"include": ["src/**/*"],
 	"exclude": ["node_modules", "dist", "**/*.test.js"]

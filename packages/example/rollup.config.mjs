@@ -1,24 +1,35 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import babel from '@rollup/plugin-babel';
 import postcss from 'rollup-plugin-postcss';
 import copy from 'rollup-plugin-copy';
 import url from '@rollup/plugin-url';
+import terser from '@rollup/plugin-terser';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const isProduction = !process.env.ROLLUP_WATCH;
 
 const ts = new Date().getTime();
 const jsBundleName = `bundle.${ts}.js`;
 const cssBundleName = `bundle.${ts}.css`;
 
 export default {
-	input: 'src/index.js',
+	input: 'src/index.ts',
 	output: {
 		name: 'crtExample',
 		file: `dist/${jsBundleName}`,
 		format: 'iife',
-		sourcemap: true,
+		sourcemap: !isProduction,
 	},
 	plugins: [
-		resolve(),
+		resolve({
+			extensions: ['.js', '.ts', '.jsx', '.tsx'],
+			browser: true,
+		}),
 		commonjs(),
 		postcss({
 			extract: cssBundleName,
@@ -32,7 +43,9 @@ export default {
 		}),
 		babel({
 			babelHelpers: 'bundled',
-			exclude: 'node_modules/**',
+			extensions: ['.js', '.ts', '.jsx', '.tsx'],
+			exclude: /node_modules\/(?!crt)/, // Exclude all node_modules except 'crt'
+			configFile: path.resolve(__dirname, '../../babel.config.json'),
 		}),
 		copy({
 			targets: [
@@ -51,5 +64,6 @@ export default {
 			],
 			hook: 'buildStart', // Run copy before the bundle is generated
 		}),
+		isProduction && terser(),
 	],
 };

@@ -20,7 +20,7 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "rm -rf dist && npm run typecheck && babel src --out-dir dist --copy-files",
+		"build": "rm -rf dist && tsc -p tsconfig.json && babel src --out-dir dist --extensions \".ts,.js\" --config-file ../../babel.config.json",
 		"typecheck": "tsc -p tsconfig.json"
 	},
 	"license": "Apache-2.0"
