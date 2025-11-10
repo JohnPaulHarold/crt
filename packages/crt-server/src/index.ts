@@ -57,7 +57,6 @@ export interface RenderPageTemplateOptions {
 
 /**
  * Renders the default HTML page template.
- * @param templateArgs
  */
 export function renderPageTemplate({
 	viewHtml,
@@ -111,7 +110,6 @@ export interface SsrRouterOptions {
 
 /**
  * Creates an Express Router with configured SSR routes.
- * @param options
  */
 export function createSsrRouter(options: SsrRouterOptions): Router {
 	setPlatform(serverPlatform);
