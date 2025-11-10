@@ -1,4 +1,4 @@
-import { createBaseView, createSignaller, watch, diff, loga, scale } from 'crt';
+import { createBaseView, createSignaller, watch, diff } from 'crt';
 import { div, p, section, a } from '../html.js'; // Assuming div, p, section, a are still needed
 import { createReactiveVirtualList } from '../libs/reactiveVirtualList.js';
 import {
@@ -72,7 +72,7 @@ function getTemplate() {
 
 /**
  * @typedef {import('crt').BaseViewInstance & {
- *  dataSignaller: import('crt').SignallerInstance,
+ *  dataSignaller: import('crt').SignallerInstance<VListItem[]>,
  *  vl: import('../libs/reactiveVirtualList.js').ReactiveVirtualListInstance<VListItem> | null,
  *  stopWatching?: () => void,
  *  boundHandleMove?: (event: any) => void,
@@ -127,11 +127,11 @@ export function createReactiveVListView(options) {
 			 * placeholder to keep the element focusable by lrud-spatial without the
 			 * performance cost of rendering the full content. (This is now handled by the library)
 			 * @param {VListItem} item
-			 * @param {number} index
-			 * @param {boolean} isVisible (This parameter is now always true for rendered items)
+			 * @param {number} index,
+			 * @param {boolean} _isVisible (This parameter is now always true for rendered items)
 			 * @returns {HTMLElement}
 			 */
-			const renderRow = (item, index, isVisible) => {
+			const renderRow = (item, index, _isVisible) => {
 				const content = div({ className: s.vlistItemInner }, [
 					p({}, `Decimal: ${item.d}`),
 					p({}, `Binary: ${item.b}`),

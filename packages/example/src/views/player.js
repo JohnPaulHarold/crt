@@ -1,9 +1,5 @@
 import { createBaseView, watch, diff, noop, loga } from 'crt';
 import { div, button, p } from '../html.js';
-import {
-	navigationService,
-	NavigationEvents,
-} from '../services/navigationService.js';
 import { createFakePlayer } from '../libs/createFakePlayer.js';
 import s from './player.scss';
 
@@ -85,13 +81,11 @@ export function createPlayerView(options) {
 		/** @this {PlayerViewInstance} */
 		viewDidLoad: function () {
 			if (this.viewEl) {
-				const self = this;
-
 				// This handler will be called when any of the watched signals change.
 				const handler = () => {
-					if (self.viewEl) {
-						const newVdom = getTemplate.call(self);
-						diff(newVdom, self.viewEl, {
+					if (this.viewEl) {
+						const newVdom = getTemplate.call(this);
+						diff(newVdom, this.viewEl, {
 							preserveAttributes: this.preserveAttributes,
 						});
 					}

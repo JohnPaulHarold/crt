@@ -22,15 +22,15 @@
 		var constructor = this.constructor;
 		return this.then(
 			function (value) {
-				// @ts-ignore
+				// @ts-expect-error
 				return constructor.resolve(callback()).then(function () {
 					return value;
 				});
 			},
 			function (reason) {
-				// @ts-ignore
+				// @ts-expect-error
 				return constructor.resolve(callback()).then(function () {
-					// @ts-ignore
+					// @ts-expect-error
 					return constructor.reject(reason);
 				});
 			}
@@ -191,7 +191,7 @@
 	};
 
 	Promise.prototype.then = function (onFulfilled, onRejected) {
-		// @ts-ignore
+		// @ts-expect-error
 		var prom = new this.constructor(noop);
 
 		handle(this, new Handler(onFulfilled, onRejected, prom));
@@ -270,10 +270,10 @@
 
 	// Use polyfill for setImmediate for performance gains
 	Promise._immediateFn =
-		// @ts-ignore
+		// @ts-expect-error
 		(typeof setImmediate === 'function' &&
 			function (fn) {
-				// @ts-ignore
+				// @ts-expect-error
 				setImmediate(fn);
 			}) ||
 		function (fn) {

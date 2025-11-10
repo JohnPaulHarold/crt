@@ -1,4 +1,4 @@
-import { createBaseView, Direction } from 'crt';
+import { createBaseView } from 'crt';
 
 import { a, div, p, section } from '../html.js';
 import { createImperativeVirtualList } from '../libs/imperativeVirtualList.js';
@@ -65,7 +65,7 @@ function buildBigData(bigNumber) {
 
 /**
  * @typedef {object} MoveEventPayloadDetail
- * @property {Direction} direction
+ * @property {import('crt').DirectionType} direction
  * @property {HTMLElement} lastElement
  * @property {HTMLElement} nextElement
  * @property {HTMLElement} lastContainer

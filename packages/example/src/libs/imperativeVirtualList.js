@@ -32,7 +32,7 @@ import {
  * @property {number[]} window
  * @property {() => void} init
  * @property {(start: number, end: number) => T[]} getNextData
- * @property {(direction: Direction, position: number) => void} updateList
+ * @property {(direction: import('crt').DirectionType, position: number) => void} updateList
  */
 
 /**
@@ -83,14 +83,16 @@ export function createImperativeVirtualList(options) {
 
 		/**
 		 * @this {ImperativeVirtualListInstance<T>}
+		 * @param {import('crt').DirectionType} direction
+		 * @param {number} position
 		 */
 		updateList(direction, position) {
 			const lowerBound = this.window[0];
 			const upperBound = this.window[1];
 
-			// @ts-ignore
-			this.sliderEl.style[transformProp] =
+			const transformValue =
 				'translateY(' + -(position * this.elHeight) + 'rem)';
+			this.sliderEl.style.setProperty(transformProp, transformValue);
 
 			// ::: SCROLLING DOWN
 			if (

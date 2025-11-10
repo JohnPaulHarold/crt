@@ -11,6 +11,8 @@ const resetRouterState = () => {
 	historyRouter.basePath = '';
 	historyRouter.mode = 'history'; // Default mode
 	historyRouter.hashSymbol = '#';
+	historyRouter.notFoundHandler = null;
+	historyRouter.errorHandler = null;
 	// Note: Event listeners on `window` added by `setupListeners` are not easily removed
 	// without storing references, which the router doesn't do.
 	// For testing, re-initializing via `config` in `beforeEach` is usually sufficient
@@ -262,6 +264,74 @@ describe('historyRouter', () => {
 					search: { q: 'test', filter: 'active' },
 				})
 			);
+		});
+	});
+
+	describe('error and not found handling', () => {
+		test('should call notFoundHandler when no route matches', () => {
+			const notFoundCallback = vi.fn();
+			historyRouter.registerNotFoundHandler(notFoundCallback);
+
+			historyRouter.processPath('/non-existent-route');
+
+			expect(notFoundCallback).toHaveBeenCalledTimes(1);
+		});
+
+		test('should warn in console if no route matches and no notFoundHandler is registered', () => {
+			const consoleWarnSpy = vi
+				.spyOn(console, 'warn')
+				.mockImplementation(() => {});
+
+			historyRouter.processPath('/another-non-existent-route');
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				'[Router] No route matched for path: /another-non-existent-route'
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		test('should call errorHandler when a route callback throws an error', () => {
+			const error = new Error('Something went wrong!');
+			const routeCallback = () => {
+				throw error;
+			};
+			const errorCallback = vi.fn();
+			const pattern = '/error-route';
+
+			historyRouter.registerRoute({ pattern, id: 'error' }, routeCallback);
+			historyRouter.registerErrorHandler(errorCallback);
+
+			historyRouter.processPath(pattern);
+
+			expect(errorCallback).toHaveBeenCalledTimes(1);
+			expect(errorCallback).toHaveBeenCalledWith(
+				error,
+				expect.objectContaining({ pattern })
+			);
+		});
+
+		test('should error in console if a route callback throws and no errorHandler is registered', () => {
+			const error = new Error('Another error!');
+			const routeCallback = () => {
+				throw error;
+			};
+			const consoleErrorSpy = vi
+				.spyOn(console, 'error')
+				.mockImplementation(() => {});
+			const pattern = '/another-error-route';
+
+			historyRouter.registerRoute(
+				{ pattern, id: 'another-error' },
+				routeCallback
+			);
+
+			historyRouter.processPath(pattern);
+
+			expect(consoleErrorSpy).toHaveBeenCalledWith(
+				'[Router] Error processing route:',
+				error
+			);
+			consoleErrorSpy.mockRestore();
 		});
 	});
 });

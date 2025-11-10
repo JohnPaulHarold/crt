@@ -35,7 +35,9 @@ export const Grid = (props, children) => {
 			rowCount++;
 		}
 
-		rowEl && rowEl.appendChild(c);
+		if (rowEl) {
+			rowEl.appendChild(c);
+		}
 	});
 
 	return /** @type {HTMLElement} */ (

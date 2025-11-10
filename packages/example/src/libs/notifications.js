@@ -38,16 +38,15 @@ export const NotificationsService = {
 	 * @param {HTMLElement} el
 	 */
 	sendNotification: function (el) {
-		const that = this;
-		const hex = that.count.toString(16);
+		const hex = this.count.toString(16);
 		el.dataset.notId = hex;
 
-		that.notificationsQueue.enqueue(el);
+		this.notificationsQueue.enqueue(el);
 
-		that.count++;
+		this.count++;
 
-		that.timers[hex] = setTimeout(() => {
-			that.clearNotification(hex);
+		this.timers[hex] = setTimeout(() => {
+			this.clearNotification(hex);
 		}, 3000);
 	},
 

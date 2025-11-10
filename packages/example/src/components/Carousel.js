@@ -9,7 +9,7 @@ import s from './Carousel.scss';
  * @typedef {import('crt').ComponentProps & {
  *  heading?: string,
  *  childQuery?: string,
- *  orientation?: Orientation,
+ *  orientation?: import('crt').OrientationType,
  *  blockExit?: string,
  *  wrap?: boolean,
  *  showArrows?: boolean,

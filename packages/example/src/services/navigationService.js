@@ -2,10 +2,8 @@ import { getNextFocus } from '@bbc/tv-lrud-spatial';
 
 import {
 	$dataGet,
-	$dataSet,
 	assertKey,
 	getDirectionFromKeyCode,
-	createThrottle,
 	collectionToArray,
 	normaliseEventTarget,
 	AdditionalKeys,

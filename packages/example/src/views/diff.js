@@ -1,7 +1,5 @@
 import {
 	normaliseEventTarget,
-	AdditionalKeys,
-	assertKey,
 	diff,
 	createBaseView,
 	createSignaller,
@@ -11,8 +9,6 @@ import {
 import { div, p } from '../html.js';
 
 import { Button } from '../components/Button.js';
-
-import { navigationService } from '../services/navigationService.js';
 
 const lyrics = [
 	'All men have secrets and here is mine',
@@ -87,7 +83,7 @@ function getTemplate() {
 
 /**
  * @typedef {import('crt').BaseViewInstance & {
- *  lyricCount: import('crt').SignallerInstance,
+ *  lyricCount: import('crt').SignallerInstance<number>,
  *  boundHandleClick?: (event: MouseEvent) => void,
  *  stopWatching?: () => void,
  *  destructor: () => void,

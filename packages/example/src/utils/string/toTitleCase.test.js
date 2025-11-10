@@ -7,7 +7,7 @@ describe('toTitleCase', () => {
 	});
 
 	test('returns an empty string with no args', () => {
-		// @ts-expect-error
+		// @ts-expect-error - Intentionally testing with no arguments.
 		expect(toTitleCase()).toBe('');
 	});
 });

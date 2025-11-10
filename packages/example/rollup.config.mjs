@@ -4,6 +4,7 @@ import babel from '@rollup/plugin-babel';
 import postcss from 'rollup-plugin-postcss';
 import copy from 'rollup-plugin-copy';
 import url from '@rollup/plugin-url';
+import terser from '@rollup/plugin-terser';
 
 const ts = new Date().getTime();
 const jsBundleName = `bundle.${ts}.js`;
@@ -51,5 +52,6 @@ export default {
 			],
 			hook: 'buildStart', // Run copy before the bundle is generated
 		}),
+		terser(),
 	],
 };

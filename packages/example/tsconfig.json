@@ -1,16 +1,10 @@
 {
 	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
-		"emitDeclarationOnly": true,
-		"composite": true,
-		"declarationDir": "dist/types",
-		"rootDir": "."
+		"noEmit": true,
+		"composite": true
 	},
-	"include": ["src/**/*", "loader.js", "server.js"],
-	"exclude": [
-		"node_modules",
-		"dist",
-		"../crt/dist" // This is now redundant due to project references but is harmless.
-	],
+	"include": ["src/**/*", "loader.js", "server.js", "../crt/src/global.d.ts"],
+	"exclude": ["node_modules", "dist"],
 	"references": [{ "path": "../crt" }]
 }

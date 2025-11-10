@@ -40,7 +40,7 @@ vi.mock('../h.js', () => ({
 describe('reactiveVirtualList/createReactiveVirtualList', () => {
 	/** @type {{id: number, name: string}[]} */
 	let mockData;
-	/** @type {import('crt').SignallerInstance} */
+	/** @type {import('crt').SignallerInstance<{id: number, name: string}[]>} */
 	let dataSignaller;
 	/** @type {import('vitest').Mock} */
 	let renderRow;

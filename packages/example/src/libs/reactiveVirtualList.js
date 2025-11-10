@@ -7,7 +7,7 @@ import { createSignaller, h, scale } from 'crt';
 /**
  * @template T
  * @typedef {object} ReactiveVirtualListOptions
- * @property {import('crt').SignallerInstance} dataSignaller A signaller holding the full list of data.
+ * @property {import('crt').SignallerInstance<T[]>} dataSignaller A signaller holding the full list of data.
  * @property {number} containerHeight The fixed height of the scrollable container.
  * @property {(item: T, index: number, isVisible: boolean) => HTMLElement} renderRow - A function to render a single item. It receives an `isVisible` flag to allow for placeholder rendering.
  * @property {number} itemHeight The fixed height of each row in pixels.
@@ -23,8 +23,8 @@ import { createSignaller, h, scale } from 'crt';
  * @template T
  * @typedef {object} ReactiveVirtualListInstance
  * @property {() => HTMLElement} render Renders the current state of the virtual list into a VDOM tree.
- * @property {(index: number) => void} setFocusedIndex Updates the currently focused index.
- * @property {import('crt').SignallerInstance} focusedIndexSignaller The internal signaller for the focused index.
+ * @property {(index: number) => void} setFocusedIndex
+ * @property {import('crt').SignallerInstance<number>} focusedIndexSignaller The internal signaller for the focused index.
  */
 
 /**
@@ -110,8 +110,7 @@ export function createReactiveVirtualList(options) {
 		focusedIndexSignaller,
 
 		render() {
-			const { translateY, visibleItems, startIndex, endIndex } =
-				getRenderWindow();
+			const { translateY, visibleItems, startIndex } = getRenderWindow();
 
 			const totalHeight =
 				dataSignaller.getValue().length * (itemHeight + gap) - gap;

@@ -56,9 +56,8 @@ export function createMainNavView(options) {
 				this.boundUpdateActive || this.updateActive.bind(this);
 
 			const method = listen ? 'on' : 'off';
-			navigationService
-				.getBus()
-				[method]('route:changed', this.boundUpdateActive);
+			const bus = navigationService.getBus();
+			bus[method]('route:changed', this.boundUpdateActive);
 			window[listen ? 'addEventListener' : 'removeEventListener'](
 				'popstate',
 				this.boundUpdateActive

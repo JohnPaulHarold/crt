@@ -186,7 +186,7 @@ function buildCarousels(data) {
 
 /**
  * @typedef {import('crt').BaseViewInstance & {
- *  pageData: import('crt').SignallerInstance,
+ *  pageData: import('crt').SignallerInstance<PageData | null>,
  *  stopWatching?: () => void,
  *  destructor: () => void,
  *  fetchData: () => void,
@@ -207,7 +207,9 @@ export function createHomeView(options) {
 	/** @type {HomeViewInstance} */
 	const homeView = Object.assign({}, base, {
 		// If initialData is provided (e.g., from SSR), use it. Otherwise, start with null.
-		pageData: createSignaller(options.initialData || null),
+		pageData: createSignaller(
+			/** @type {PageData | null} */ (options.initialData || null)
+		),
 		stopWatching: undefined,
 
 		/** @this {HomeViewInstance} */

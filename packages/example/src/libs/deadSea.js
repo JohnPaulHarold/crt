@@ -76,7 +76,9 @@ function getScrollEl(el) {
  * @returns {CachedGeometry | null} The cached geometry or null if not found.
  */
 function getCachedGeometry(scrollEl) {
-	const scrollId = $dataGet(scrollEl, 'deadseaId');
+	const scrollId = /** @type {string | undefined} */ (
+		$dataGet(scrollEl, 'deadseaId')
+	);
 	if (!scrollId) {
 		logr.error(
 			'DeadSea element requires a "data-deadsea-id" attribute for caching.',
@@ -102,9 +104,15 @@ function getCachedGeometry(scrollEl) {
  */
 function buildGeometry(scrollEl) {
 	const orientation =
-		$dataGet(scrollEl, 'deadseaOrientation') || Orientation.HORIZONTAL;
-	const childQuery = $dataGet(scrollEl, 'deadseaChildQuery');
-	const startQs = $dataGet(scrollEl, 'deadseaScrollStartQuery');
+		/** @type {import('crt').OrientationType | undefined} */ (
+			$dataGet(scrollEl, 'deadseaOrientation')
+		) || Orientation.HORIZONTAL;
+	const childQuery = /** @type {string | undefined} */ (
+		$dataGet(scrollEl, 'deadseaChildQuery')
+	);
+	const startQs = /** @type {string | undefined} */ (
+		$dataGet(scrollEl, 'deadseaScrollStartQuery')
+	);
 	const offsetProp =
 		orientation === Orientation.HORIZONTAL ? 'offsetLeft' : 'offsetTop';
 	const dimensionProp =
@@ -195,7 +203,9 @@ function updateScrollPosition(scrollEl, useTransforms) {
 	}
 
 	const startPaddingItems = parseInt(
-		$dataGet(scrollEl, 'deadseaStartPaddingItems') || '0',
+		/** @type {string} */ (
+			$dataGet(scrollEl, 'deadseaStartPaddingItems') || '0'
+		),
 		10
 	);
 
@@ -276,7 +286,9 @@ export const deadSeaService = {
 	 * @param {HTMLElement} scrollEl The scrollable element (the one with `data-deadsea-id`).
 	 */
 	register(scrollEl) {
-		const scrollId = $dataGet(scrollEl, 'deadseaId');
+		const scrollId = /** @type {string | undefined} */ (
+			$dataGet(scrollEl, 'deadseaId')
+		);
 		if (!scrollId) {
 			logr.error(
 				'[deadSea.register] Cannot register an element without a "data-deadsea-id".',

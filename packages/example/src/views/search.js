@@ -6,7 +6,6 @@ import {
 	createSignaller,
 	watch,
 	diff,
-	loga,
 } from 'crt';
 
 import { a, div, span } from '../html.js';
@@ -20,8 +19,6 @@ import { Carousel } from '../components/Carousel.js';
 import { deadSeaService } from '../libs/deadSea.js';
 
 import s from './search.scss';
-
-const logr = loga.create('search');
 
 /**
  * @this {SearchViewInstance}
@@ -110,7 +107,7 @@ function getTemplate() {
 
 /**
  * @typedef {import('crt').BaseViewInstance & {
- *  searchTerm: import('crt').SignallerInstance,
+ *  searchTerm: import('crt').SignallerInstance<string>,
  *  boundHandleClick?: (event: MouseEvent) => void,
  *  stopWatching?: () => void,
  *  destructor: () => void,

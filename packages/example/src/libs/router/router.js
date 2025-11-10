@@ -36,6 +36,13 @@ export const historyRouter = {
 	handlers: {},
 	basePath: '',
 	mode: 'history', // 'history' or 'hash'
+	/** @type {(() => void) | null} */
+	notFoundHandler: null,
+	/**
+	 * @type
+	 * {((error: Error, route?: HandlerArgs) => void) | null}
+	 * */
+	errorHandler: null,
 	hashSymbol: '#',
 	/**
 	 * Configures the router.
@@ -76,6 +83,7 @@ export const historyRouter = {
 				hashChangeEvent = new HashChangeEvent('hashchange', {
 					newURL: location.href,
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			} catch (error) {
 				/** @type {CustomEvent} */
 				hashChangeEvent = new CustomEvent('hashchange', {
@@ -120,17 +128,32 @@ export const historyRouter = {
 	 * @param {object} [stateData={}] - Optional state data from history.
 	 */
 	processPath(fullPathOrUrl, stateData = {}) {
-		if (!fullPathOrUrl) return;
+		if (!fullPathOrUrl) {
+			return;
+		}
+
+		/** @type {HandlerArgs | undefined} */
+		let matchedRoute;
 
 		try {
-			const matchedRoute = this.matchRoute(fullPathOrUrl);
+			matchedRoute = this.matchRoute(fullPathOrUrl);
 			if (matchedRoute) {
 				this.handlers[matchedRoute.pattern].callback(
 					Object.assign({}, matchedRoute, { state: stateData })
 				);
+			} else {
+				if (this.notFoundHandler) {
+					this.notFoundHandler();
+				} else {
+					console.warn(`[Router] No route matched for path: ${fullPathOrUrl}`);
+				}
 			}
 		} catch (error) {
-			console.error('[Router] failed to load view component', error);
+			if (this.errorHandler) {
+				this.errorHandler(/** @type {Error} */ (error), matchedRoute);
+			} else {
+				console.error('[Router] Error processing route:', error);
+			}
 		}
 	},
 
@@ -266,6 +289,22 @@ export const historyRouter = {
 			// Pass the appPath (without basePath) and state.
 			this.processPath(appPath, state);
 		}
+	},
+
+	/**
+	 * Registers a handler to be called when no route matches the current path.
+	 * @param {() => void} handler The function to call for "not found" cases.
+	 */
+	registerNotFoundHandler(handler) {
+		this.notFoundHandler = handler;
+	},
+
+	/**
+	 * Registers a handler to be called when a route handler throws an error.
+	 * @param {(error: Error, route?: HandlerArgs) => void} handler The function to call on error.
+	 */
+	registerErrorHandler(handler) {
+		this.errorHandler = handler;
 	},
 
 	/**

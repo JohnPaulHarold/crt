@@ -24,7 +24,7 @@ const logr = loga.create('example');
  *  pattern?: string;
  *  params?: import('./routes.js').RouteParams;
  *  search?: import('./routes.js').RouteSearch;
- *  initialData?: Record<string, any>;
+ *  initialData?: Record<string, unknown>;
  * }} AppViewOptions
  */
 
@@ -125,8 +125,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		// Hydrate the server-rendered view
 		const createView = viewFactories[ssrViewName];
-		const initialData = /** @type {import('crt').GlobalWindow} */ (window)
-			.__INITIAL_DATA__;
+		// @ts-expect-error example app is unaware of `__INITIAL_DATA__` global declared in `crt`
+		const initialData = window.__INITIAL_DATA__;
 
 		const viewInstance = createView({
 			id: ssrViewElement.id,

@@ -26,22 +26,22 @@ const kebabToCamel = (s) => s.replace(/-./g, (x) => x[1].toUpperCase());
 /**
  *
  * @param {string} tag
- * @param {Record<string, any>} attributes
+ * @param {Record<string, unknown>} attributes
  * @param {*[]} children
- * @returns
+ * @returns {HTMLElement}
  */
 const createElement = (tag, attributes = {}, children = []) => {
 	const el = document.createElement(tag);
 	for (const key in attributes) {
 		if (key.startsWith('data-')) {
 			const datasetKey = kebabToCamel(key.substring(5));
-			el.dataset[datasetKey] = attributes[key];
+			el.dataset[datasetKey] = String(attributes[key]);
 		} else if (key === 'class') {
-			el.className = attributes[key];
+			el.className = String(attributes[key]);
 		} else if (key === 'style' && typeof attributes[key] === 'object') {
 			Object.assign(el.style, attributes[key]);
 		} else {
-			el.setAttribute(key, attributes[key]);
+			el.setAttribute(key, String(attributes[key]));
 		}
 	}
 	children.forEach((child) => el.appendChild(child));

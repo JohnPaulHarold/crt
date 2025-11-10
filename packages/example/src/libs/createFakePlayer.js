@@ -10,9 +10,9 @@ import { createSignaller } from 'crt';
  * @param {FakePlayerOptions} [options={}]
  * @returns {{
  *  state: {
- *      isPlaying: import('crt').SignallerInstance,
- *      isMuted: import('crt').SignallerInstance,
- *      currentTime: import('crt').SignallerInstance,
+ *      isPlaying: import('crt').SignallerInstance<boolean>,
+ *      isMuted: import('crt').SignallerInstance<boolean>,
+ *      currentTime: import('crt').SignallerInstance<number>,
  *      duration: number
  *  },
  *  controls: {
@@ -34,6 +34,7 @@ export function createFakePlayer(options = {}) {
 
 	const intervalId = setInterval(() => {
 		if (state.isPlaying.getValue()) {
+			// With a generic Signaller, getValue() is now type-safe and returns a number.
 			const newTime = (state.currentTime.getValue() + 1) % (duration + 1);
 			state.currentTime.setValue(newTime);
 		}
