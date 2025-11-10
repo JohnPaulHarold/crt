@@ -4,9 +4,7 @@
 	"private": true,
 	"description": "Example TV app using crt",
 	"type": "module",
-	"_comment": "TODO: Revisit using 'workspace:*' for the crt dependency once the environmental issue is resolved. The 'file:../crt' is a workaround.",
 	"scripts": {
-		"prebuild": "npm run build -w crt",
 		"build": "rm -rf dist && rollup -c rollup.config.mjs",
 		"dev": "rm -rf dist && rollup -c rollup.dev.mjs -w",
 		"serve": "cd dist && python -m SimpleHTTPServer 3500"
@@ -28,6 +26,7 @@
 		"rollup-plugin-serve": "^3.0.0",
 		"sass": "^1.89.2"
 	},
+	"_comment": "TODO: Revisit using 'workspace:*' for the crt dependency once the environmental issue is resolved. The 'file:../crt' is a workaround.",
 	"dependencies": {
 		"@bbc/tv-lrud-spatial": "^0.0.16",
 		"crt": "file:../crt",

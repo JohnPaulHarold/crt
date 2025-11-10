@@ -20,7 +20,7 @@
 		"lint:js": "eslint .",
 		"lint:prettier": "prettier --write .",
 		"typecheck": "tsc -b",
-		"validate": "npm run typecheck && npm run build && npm run test && npm run lint:js && npm run lint:prettier"
+		"validate": "npm run typecheck && npm run build && vitest run && npm run lint:js && npm run lint:prettier"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.24.7",
