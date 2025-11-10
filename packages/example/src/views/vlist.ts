@@ -44,9 +44,6 @@ function dec2hex(dec: number): string {
 	return (dec >>> 0).toString(16);
 }
 
-/**
- * @param bigNumber
- */
 function buildBigData(bigNumber: number): VListItem[] {
 	const bigData: VListItem[] = [];
 
@@ -86,9 +83,6 @@ export type VListViewInstance = BaseViewInstance & {
 	render: () => HTMLElement;
 };
 
-/**
- * @param options
- */
 export function createVListView(options: AppViewOptions): VListViewInstance {
 	const base = createBaseView(options);
 	const vListView: VListViewInstance = Object.assign({}, base, {

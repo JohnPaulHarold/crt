@@ -262,8 +262,6 @@ interface DeadSeaServiceInterface {
 	unregister: (scrollId: string) => void;
 	unregisterAll: () => void;
 	/**
-	 * @param scrollId
-	 * @param direction
 	 * @returns The element to focus, or undefined if none found.
 	 */
 	page: (

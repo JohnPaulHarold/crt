@@ -11,10 +11,6 @@ interface TileOptions {
 	props: TileProps;
 }
 
-/**
- *
- * @param props
- */
 export const Tile = (options: TileOptions): HTMLElement => {
 	return div({
 		props: { className: `tile ${s.tile}`, id: 'title-' + options.props.id },

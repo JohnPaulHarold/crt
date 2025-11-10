@@ -1,7 +1,3 @@
-/**
- * @template T
- * @param collection
- */
 export function collectionToArray<T>(
 	collection: HTMLCollection | NodeList | NamedNodeMap
 ): Array<T> {

@@ -102,10 +102,6 @@ export const loga: LogaInstance = {
 			_logWithStyle('error', STYLES.ERROR, '[ERROR]', args);
 	},
 
-	/**
-	 * @param componentPrefix
-	 * @returns {PrefixedLogaInstance}
-	 */
 	create: (componentPrefix: string): PrefixedLogaInstance => {
 		const createLoggerMethod = (
 			methodName: ConsoleMethodName,

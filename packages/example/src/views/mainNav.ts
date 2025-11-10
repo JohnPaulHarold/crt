@@ -21,9 +21,6 @@ type MainNavViewInstance = BaseViewInstance & {
 	render: () => HTMLElement;
 };
 
-/**
- * @param options
- */
 export function createMainNavView(
 	options: NavViewOptions
 ): MainNavViewInstance {
@@ -43,9 +40,6 @@ export function createMainNavView(
 			this.updateActive();
 		},
 
-		/**
-		 * @param listen
-		 */
 		listenToNavigation: function (this: MainNavViewInstance, listen: boolean) {
 			// Bind the method once to ensure the same function reference is used for add/remove
 			this.boundUpdateActive =
@@ -73,9 +67,6 @@ export function createMainNavView(
 			}
 		},
 
-		/**
-		 * @param listen
-		 */
 		listenForFocus: function (this: MainNavViewInstance, listen: boolean) {
 			if (!this.viewEl) return;
 

@@ -7,8 +7,6 @@ import { getPlatform } from './platform.js';
 
 /**
  * Diffs the attributes of two elements and updates the real DOM element.
- * @param vdom
- * @param dom
  */
 function diffAttributes(vdom: HTMLElement, dom: HTMLElement) {
 	// ::: Attributes
@@ -64,8 +62,6 @@ function diffAttributes(vdom: HTMLElement, dom: HTMLElement) {
 
 /**
  * Diffs the children of two elements and updates the real DOM element.
- * @param vdom
- * @param dom
  */
 function diffChildren(vdom: HTMLElement, dom: HTMLElement) {
 	const platform = getPlatform();
@@ -92,8 +88,6 @@ function diffChildren(vdom: HTMLElement, dom: HTMLElement) {
 
 /**
  * The internal diffing function that recursively compares two nodes.
- * @param vdom
- * @param dom
  */
 function _diff(vdom: Node, dom: Node) {
 	const platform = getPlatform();
@@ -121,7 +115,6 @@ function _diff(vdom: Node, dom: Node) {
 
 /**
  * Removes script tags from an element.
- * @param elem
  */
 function removeScripts(elem: HTMLElement) {
 	const platform = getPlatform();
@@ -139,9 +132,6 @@ interface DiffOptions {
 
 /**
  * Public diff function that wraps the core logic with focus management.
- * @param vdom
- * @param dom
- * @param options
  */
 export function diff(vdom: Node, dom: Node, options: DiffOptions = {}) {
 	const platform = getPlatform();
@@ -214,8 +204,6 @@ export function diff(vdom: Node, dom: Node, options: DiffOptions = {}) {
 
 /**
  * Converts an HTML string into a single DOM element.
- * @param html
- * @returns {Node | null}
  */
 export function stringToHTML(html: string): Node | null {
 	// This is a browser/DOM-only utility. It should not be used on the server.

@@ -49,10 +49,6 @@ const isNodeLike = (thing: unknown): thing is Element =>
 	'tagName' in thing &&
 	!Array.isArray(thing);
 
-/**
- * @param el
- * @param text
- */
 function appendText(el: Element, text: string) {
 	const platform = getPlatform();
 	const textNode = platform.createTextNode(text);
@@ -76,10 +72,6 @@ function appendArray(el: Element, children: readonly ChildInput[]) {
 	});
 }
 
-/**
- * @param el
- * @param styles
- */
 function setStyles(el: Element, styles: Record<string, string | number>) {
 	const platform = getPlatform();
 	// The platform implementation will handle the logic.
@@ -88,10 +80,6 @@ function setStyles(el: Element, styles: Record<string, string | number>) {
 	platform.setStyles(el, styles);
 }
 
-/**
- * @param el
- * @param dataset
- */
 function setData(el: Element, dataset: Record<string, string>) {
 	const platform = getPlatform();
 	platform.setData(el, dataset);
@@ -116,9 +104,9 @@ export interface HOptions {
 }
 
 /**
- * @template K
  * @param type
  * @param options - Optional object containing props and children.
+ * @description the link to the article that has influence this is kept, but the signature has changed a fair amount.
  * @see {@link https://david-gilbertson.medium.com/how-i-converted-my-react-app-to-vanillajs-and-whether-or-not-it-was-a-terrible-idea-4b14b1b2faff}
  *
  * @example h('div', { props: { id: 'foo' }, children: ['Hello', h('span', { children: 'World' })] })

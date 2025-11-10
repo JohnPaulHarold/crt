@@ -96,7 +96,6 @@ function createNavigationService(): NavigationServiceInstance {
 	/**
 	 * Focuses an element without causing the page to scroll.
 	 * @private
-	 * @param el
 	 * @see {@link https://stackoverflow.com/questions/4963053/focus-to-input-without-scrolling}
 	 */
 	const focusWithoutScrolling = function (el: HTMLElement) {
@@ -214,8 +213,6 @@ function createNavigationService(): NavigationServiceInstance {
 	/**
 	 * The default keydown handler for spatial navigation.
 	 * @private
-	 * @param event
-	 * @param scope
 	 */
 	function handleKeyDown(event: KeyboardEvent, scope?: HTMLElement) {
 		if (scope) {

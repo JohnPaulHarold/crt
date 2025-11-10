@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, test, vi, beforeEach, afterEach } from 'vitest'; // Adjusted path
-import { historyRouter } from './router.js'; // Assuming this is the exported router object
+import { historyRouter } from './router.js';
 
 // Helper to reset router state if needed, though re-config in beforeEach is often enough
 const resetRouterState = () => {

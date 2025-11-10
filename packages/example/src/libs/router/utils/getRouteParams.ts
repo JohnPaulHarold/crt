@@ -1,8 +1,3 @@
-/**
- *
- * @param routeUrl
- * @param pattern
- */
 export function getRouteParams(
 	routeUrl: string,
 	pattern: string

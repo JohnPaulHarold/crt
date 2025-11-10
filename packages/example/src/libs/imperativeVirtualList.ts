@@ -33,10 +33,6 @@ export interface ImperativeVirtualListInstance<T> {
 	updateList: (direction: DirectionType, position: number) => void;
 }
 
-/**
- * @template T
- * @param options
- */
 export function createImperativeVirtualList<T>(
 	options: ImperativeVirtualListOptions<T>
 ): ImperativeVirtualListInstance<T> {

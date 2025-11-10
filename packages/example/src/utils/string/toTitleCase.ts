@@ -1,7 +1,3 @@
-/**
- * toTitleCase
- * @param str
- */
 export function toTitleCase(str: string): string {
 	if (typeof str !== 'string') {
 		return '';

@@ -22,10 +22,6 @@ export interface RequestOptions {
 	body?: string;
 }
 
-/**
- * @template T
- * @param options
- */
 export function request<T>(options: RequestOptions): Promise<T> {
 	return new Promise((resolve, reject) => {
 		const xhr = new XMLHttpRequest();

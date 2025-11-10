@@ -24,9 +24,6 @@ import { deadSeaService } from '../libs/deadSea.js';
 
 import s from './search.scss';
 
-/**
- * @param event
- */
 function handleClick(
 	this: SearchViewInstance,
 	event: KeyboardEvent | MouseEvent

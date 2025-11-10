@@ -3,7 +3,6 @@ import type { SignallerInstance } from '../../types.js';
 /**
  * Creates a "signaller" object that holds a value and can notify
  * listeners when the value changes.
- * @param initialValue
  */
 export function createSignaller<T>(initialValue: T): SignallerInstance<T> {
 	let _value = initialValue;

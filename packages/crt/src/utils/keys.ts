@@ -31,17 +31,10 @@ const keyCodeMap: Record<number, DirectionType> = {
 	66: _blue,
 };
 
-/**
- * @param keyCode
- */
 export function getDirectionFromKeyCode(keyCode: number): DirectionType {
 	return keyCodeMap[keyCode];
 }
 
-/**
- *
- * @param direction
- */
 export function getOrientationFromDirection(direction: DirectionType) {
 	if ([Direction.LEFT, Direction.RIGHT].indexOf(direction) > -1) {
 		return Orientation.HORIZONTAL;
@@ -50,11 +43,6 @@ export function getOrientationFromDirection(direction: DirectionType) {
 	return Orientation.VERTICAL;
 }
 
-/**
- *
- * @param event
- * @param expectation
- */
 export function assertKey(
 	event: KeyboardEvent,
 	expectation: AdditionalKeysType | AdditionalKeysType[]
@@ -70,9 +58,6 @@ export function assertKey(
 	return false;
 }
 
-/**
- * @param keyCode
- */
 export function getOrientationFromKeyCode(keyCode: number): OrientationType {
 	const v = [_up, _down];
 	const dir = getDirectionFromKeyCode(keyCode);

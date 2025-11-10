@@ -8,9 +8,6 @@ export type SpinnerProps = ComponentProps & {
 	message?: string;
 };
 
-/**
- * @param props
- */
 interface SpinnerOptions {
 	props?: SpinnerProps;
 }

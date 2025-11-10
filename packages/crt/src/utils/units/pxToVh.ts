@@ -1,6 +1,5 @@
 /**
  * Converts a px value to vh
- * @param h
  */
 export function pxToVh(h: number): number {
 	// This is a browser-only utility. In a server environment, there is no viewport height.

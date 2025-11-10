@@ -1,8 +1,3 @@
-/**
- *
- * @param px
- * @param base - optional
- */
 export function scale(px: number, base?: number): number {
 	// This is a browser-only utility. In a server environment, there is no viewport.
 	// Return the original pixel value as a fallback.

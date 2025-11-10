@@ -4,24 +4,7 @@ export interface FakePlayerOptions {
 	duration?: number;
 }
 
-/**
- * Creates a fake player instance that simulates video playback.
- * @param options
- * @returns {{
- *  state: {
- *      isPlaying: SignallerInstance<boolean>,
- *      isMuted: SignallerInstance<boolean>,
- *      currentTime: SignallerInstance<number>,
- *      duration: number
- *  },
- *  controls: {
- *      togglePlay: () => void,
- *      toggleMute: () => void
- *  },
- *  destroy: () => void
- * }}
- */
-export function createFakePlayer(options: FakePlayerOptions = {}): {
+interface FakePlayerReturnInterface {
 	state: {
 		isPlaying: SignallerInstance<boolean>;
 		isMuted: SignallerInstance<boolean>;
@@ -33,7 +16,14 @@ export function createFakePlayer(options: FakePlayerOptions = {}): {
 		toggleMute: () => void;
 	};
 	destroy: () => void;
-} {
+}
+
+/**
+ * Creates a fake player instance that simulates video playback.
+ */
+export function createFakePlayer(
+	options: FakePlayerOptions = {}
+): FakePlayerReturnInterface {
 	const duration = options.duration || 100;
 
 	const state = {

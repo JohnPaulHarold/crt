@@ -26,7 +26,6 @@ export type CarouselProps = ComponentProps & {
  * A scrollable container for a list of items that can be navigated
  * spatially. Integrates with `deadSea.js` for smooth scrolling.
  *
- * @param options
  */
 interface CarouselOptions {
 	props: CarouselProps;

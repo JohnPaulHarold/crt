@@ -1,6 +1,3 @@
-/**
- * @param target
- */
 export function getElementChain(
 	target: Element | ParentNode
 ): Array<Element | ParentNode | Node> {

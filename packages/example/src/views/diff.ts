@@ -39,9 +39,6 @@ const lyrics = [
 	"And your prejudice won't keep you warm tonight",
 ];
 
-/**
- * @param event
- */
 function handleClick(this: DiffViewInstance, event: MouseEvent) {
 	const elTarget = normaliseEventTarget(event);
 

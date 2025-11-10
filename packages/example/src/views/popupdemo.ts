@@ -20,9 +20,6 @@ type PopupDemoViewInstance = BaseViewInstance & {
 	render: () => HTMLElement;
 };
 
-/**
- * @param options
- */
 export function createPopupDemoView(
 	options: AppViewOptions
 ): PopupDemoViewInstance {

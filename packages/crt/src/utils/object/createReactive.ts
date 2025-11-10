@@ -20,7 +20,7 @@ export function createReactive<T extends object>(
 	/**
 	 * The internal state store. We create a copy to avoid mutating the original object.
 	 */
-	const locals = { ...state };
+	const locals = Object.assign({}, state);
 
 	/**
 	 * The public-facing proxy object.

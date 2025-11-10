@@ -1,10 +1,5 @@
 import { collectionToArray } from 'crt';
 
-/**
- *
- * @param img
- * @param postBounds
- */
 function isImageInViewport(img: HTMLElement, postBounds?: number) {
 	const pb = postBounds || 0;
 	const bounds = img.getBoundingClientRect();
@@ -16,11 +11,6 @@ function isImageInViewport(img: HTMLElement, postBounds?: number) {
 	return false;
 }
 
-/**
- *
- * @param scope
- * @param postBounds
- */
 export function checkImages(scope: HTMLElement, postBounds?: number) {
 	// Be more specific with the query to ensure we only get image elements.
 	const qs = "img[data-loaded='false']";

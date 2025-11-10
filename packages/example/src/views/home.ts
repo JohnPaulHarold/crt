@@ -69,10 +69,6 @@ function getTemplate(this: HomeViewInstance): HTMLElement {
 	});
 }
 
-/**
- *
- * @param el
- */
 function findNextBackStop(el: HTMLElement | null): HTMLElement | undefined {
 	if (!el) {
 		return;
@@ -96,17 +92,11 @@ function findNextBackStop(el: HTMLElement | null): HTMLElement | undefined {
 	return findNextBackStop(el.parentElement);
 }
 
-/**
- * @param el
- */
 function focusPage(el: HTMLElement) {
 	if (!el) return;
 	navigationService.focusInto(el);
 }
 
-/**
- * @param flag
- */
 function listenForBack(this: HomeViewInstance, flag: boolean) {
 	if (!this.viewEl) return;
 
@@ -188,9 +178,6 @@ type HomeViewInstance = BaseViewInstance & {
 	fetchData: () => void;
 };
 
-/**
- * @param options
- */
 export function createHomeView(options: AppViewOptions): HomeViewInstance {
 	const base = createBaseView(
 		Object.assign({}, options, {

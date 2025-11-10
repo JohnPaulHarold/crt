@@ -7,8 +7,6 @@ export type HeadingProps = ComponentProps & {
 
 /**
  * A component that renders a heading element of a specified level.
- * @param props
- * @param children
  */
 interface HeadingOptions {
 	props?: HeadingProps;
@@ -16,7 +14,7 @@ interface HeadingOptions {
 }
 
 export const Heading = (options: HeadingOptions): HTMLHeadingElement => {
-	const { level = 1, ...rest } = options?.props || {};
+	const { level = 1, ...rest } = (options && options.props) || {};
 
 	/**
 	 * A function that creates a heading element. By giving it an explicit type,
@@ -45,5 +43,5 @@ export const Heading = (options: HeadingOptions): HTMLHeadingElement => {
 			break;
 	}
 
-	return el({ props: rest, children: options?.children });
+	return el({ props: rest, children: options && options.children });
 };

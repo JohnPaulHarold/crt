@@ -12,11 +12,6 @@ interface GridOptions {
 	children: HTMLElement[];
 }
 
-/**
- *
- * @param props
- * @param children
- */
 export const Grid = (options: GridOptions): HTMLElement => {
 	const gridRows: HTMLElement[] = [];
 

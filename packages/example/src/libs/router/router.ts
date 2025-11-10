@@ -76,11 +76,7 @@ export interface HistoryRouter {
 	registerErrorHandler(
 		handler: (error: Error, route?: HandlerArgs) => void
 	): void;
-	/**
-	 *
-	 * @param pathObject
-	 * @param handler
-	 */
+
 	registerRoute(
 		pathObject: string | Route,
 		handler: (handler: HandlerArgs) => void
@@ -344,9 +340,7 @@ export const historyRouter: HistoryRouter = {
 			this.init();
 		}
 	},
-	/**
-	 * @param path
-	 */
+
 	unregisterRoute(path: string) {
 		delete this.handlers[path];
 	},

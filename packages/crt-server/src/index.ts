@@ -12,7 +12,6 @@ import { serverPlatform, renderToString } from 'crt/server';
 
 /**
  * Finds the hashed JS and CSS bundle files in a distribution directory.
- * @param distPath
  */
 export function findAssets(distPath: string): {
 	js: string | undefined;
@@ -30,7 +29,6 @@ export function findAssets(distPath: string): {
 
 /**
  * Sanitises the Express `req.query` object to match a simpler key-value type.
- * @param query
  */
 function sanitiseQuery(
 	query: ParsedQs

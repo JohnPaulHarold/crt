@@ -1,6 +1,5 @@
 /**
  * Queries the document stylesheet and casts the font size in pixels as a number
- * @param el
  */
 export function getBaseFontSize(el?: HTMLElement): number {
 	// This is a browser-only utility. In a server environment, return a sensible default.

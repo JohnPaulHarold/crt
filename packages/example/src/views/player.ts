@@ -70,9 +70,6 @@ type PlayerViewInstance = BaseViewInstance & {
 	boundFocusHandler: (() => void) | null;
 };
 
-/**
- * @param options
- */
 export function createPlayerView(options: ViewOptions): PlayerViewInstance {
 	const base = createBaseView(
 		Object.assign({}, options, { preserveAttributes: ['data-focus'] })

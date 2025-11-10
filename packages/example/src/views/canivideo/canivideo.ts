@@ -45,16 +45,11 @@ export type CanIViewInstance = BaseViewInstance & {
 	updateRender: (this: CanIViewInstance, targetEl: HTMLElement) => void;
 };
 
-/**
- * @param options
- */
 export function createCanivideoView(options: ViewOptions): CanIViewInstance {
 	const base = createBaseView(options);
 
-	const canivideoView = {
-		...base,
+	const canivideoView: CanIViewInstance = Object.assign({}, base, {
 		data: {},
-
 		getData: function (this: CanIViewInstance) {
 			VideoTypes.forEach((type) => {
 				this.data[type] = {};
@@ -118,9 +113,6 @@ export function createCanivideoView(options: ViewOptions): CanIViewInstance {
 			});
 		},
 
-		/**
-		 * @param targetEl
-		 */
 		updateRender: function (this: CanIViewInstance, targetEl: HTMLElement) {
 			const target = targetEl || document.getElementById(this.id);
 
@@ -155,7 +147,7 @@ export function createCanivideoView(options: ViewOptions): CanIViewInstance {
 			}
 		},
 
-		render: function () {
+		render: function (this: CanIViewInstance) {
 			return div({
 				props: { className: 'view', id: this.id },
 				children: [
@@ -173,7 +165,7 @@ export function createCanivideoView(options: ViewOptions): CanIViewInstance {
 				],
 			});
 		},
-	};
+	});
 
 	canivideoView.getData();
 

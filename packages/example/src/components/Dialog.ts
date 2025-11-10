@@ -16,11 +16,6 @@ interface DialogOptions {
 	children: ChildInput | readonly ChildInput[];
 }
 
-/**
- *
- * @param props
- * @param children
- */
 export function Dialog(options: DialogOptions): HTMLElement {
 	return div({
 		props: { id: options.props.id, className: s.dialog },

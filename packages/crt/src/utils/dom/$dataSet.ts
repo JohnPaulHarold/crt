@@ -5,15 +5,10 @@ import { getPlatform } from '../../platform.js';
  * This is necessary because `dataset` properties are camelCase,
  * but their corresponding HTML attributes are kebab-case.
  * @param str The string to convert.
- * @returns {string}
  */
 const camelToKebab = (str: string): string =>
 	str.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
-/**
- * @param el
- * @param dataProp
- * @param value
- */
+
 export function $dataSet(
 	el: HTMLElement,
 	dataProp: string,
