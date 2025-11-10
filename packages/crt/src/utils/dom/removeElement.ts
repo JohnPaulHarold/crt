@@ -1,8 +1,7 @@
 import { getPlatform } from '../../platform.js';
 
 /**
- * @param {HTMLElement|Element} el
- * @returns {void}
+ * @param el
  */
 export function removeElement(el: HTMLElement | Element): void {
 	if (el.parentElement) {

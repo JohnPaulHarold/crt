@@ -39,10 +39,10 @@ type ConsoleMethodName = 'log' | 'info' | 'warn' | 'error';
 /**
  * Helper function to perform the actual logging with styling.
  * @private
- * @param {ConsoleMethodName} consoleMethodName - The name of the console method to use.
+ * @param consoleMethodName - The name of the console method to use.
  * @param style - The CSS style string to apply.
  * @param prefix - The prefix string for the log message (e.g., '[ERROR]').
- * @param {any[]} args - The arguments to log.
+ * @param args - The arguments to log.
  */
 const _logWithStyle = (
 	consoleMethodName: ConsoleMethodName,
@@ -114,9 +114,6 @@ export const loga: LogaInstance = {
 			messageLogLevel: number
 		) => {
 			const fullPrefix = `${basePrefix}[${componentPrefix}]`;
-			/**
-			 * @param {...any} args
-			 */
 			return (...args: unknown[]) => {
 				if (DEBUG_MODE && CURRENT_LOG_LEVEL >= messageLogLevel) {
 					_logWithStyle(methodName, style, fullPrefix, args);

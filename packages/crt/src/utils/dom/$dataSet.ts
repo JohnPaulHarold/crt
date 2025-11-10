@@ -12,7 +12,7 @@ const camelToKebab = (str: string): string =>
 /**
  * @param el
  * @param dataProp
- * @param {string|boolean|number|object} value
+ * @param value
  */
 export function $dataSet(
 	el: HTMLElement,

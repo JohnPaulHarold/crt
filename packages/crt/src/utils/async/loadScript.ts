@@ -18,9 +18,8 @@ interface LoadedScriptResponse {
 
 /**
  * @param src - url of the external resource
- * @param {ResourceType} type - either 'css' or 'js'
- * @param {LoadScriptOptions} [options] - additional options for script loading behaviours
- * @returns {Promise<LoadedScriptResponse>}
+ * @param type - either 'css' or 'js'
+ * @param options - additional options for script loading behaviours
  */
 export function loadScript(
 	src: string,
