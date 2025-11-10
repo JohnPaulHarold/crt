@@ -10,7 +10,12 @@ const logr = loga.create('h');
  * - A single Element.
  * - An array containing strings, Elements, or other nested arrays of the same (any[] for deeper nesting).
  */
-type ChildInput = string | Element | null | undefined | readonly ChildInput[];
+export type ChildInput =
+	| string
+	| Element
+	| null
+	| undefined
+	| readonly ChildInput[];
 
 /**
  * A whitelist of valid HTML/SVG attributes that are not direct properties on
@@ -105,59 +110,57 @@ function setAria(
 	platform.setAria(el, aria);
 }
 
+export interface HOptions {
+	props?: Record<string, unknown> | null;
+	children?: ChildInput | readonly ChildInput[];
+}
+
 /**
  * @template K
  * @param type
- * @param textOrPropsOrChild - Optional.
- *   Either an object of attributes/properties for the element,
- *   or the first child/collection of children (string, Element, or array of ChildInput).
- * @param otherChildren - Additional children to append. Each argument
- *   is treated as a child or a collection of children.
+ * @param options - Optional object containing props and children.
  * @see {@link https://david-gilbertson.medium.com/how-i-converted-my-react-app-to-vanillajs-and-whether-or-not-it-was-a-terrible-idea-4b14b1b2faff}
  *
- * @example h('div', { id: 'foo' }, 'Hello', h('span', 'World'))
+ * @example h('div', { props: { id: 'foo' }, children: ['Hello', h('span', { children: 'World' })] })
  */
 export function h<K extends keyof HTMLElementTagNameMap>(
 	type: K,
-	textOrPropsOrChild?: Record<string, unknown> | ChildInput | null,
-	...otherChildren: readonly ChildInput[]
+	options?: HOptions
 ): HTMLElementTagNameMap[K] {
 	const platform = getPlatform();
 	const el = platform.createElement(type);
+	const props = options?.props;
+	const children = options?.children;
 
-	if (Array.isArray(textOrPropsOrChild)) {
-		appendArray(el, textOrPropsOrChild);
-	} else if (isNodeLike(textOrPropsOrChild)) {
-		platform.appendChild(el, textOrPropsOrChild); // isNodeLike acts as a type guard
-	} else if (typeof textOrPropsOrChild === 'string') {
-		appendText(el, textOrPropsOrChild);
-	} else if (
-		typeof textOrPropsOrChild === 'object' &&
-		textOrPropsOrChild !== null
-	) {
-		const props = textOrPropsOrChild as Record<string, unknown>;
+	if (props && typeof props === 'object') {
 		Object.keys(props).forEach((propName) => {
 			const value = props[propName];
 
 			if (value == null) return; // Skip null and undefined values for cleaner output
 
 			if (propName === 'style') {
-				if (typeof value === 'object' && value !== null)
+				if (typeof value === 'object' && value !== null) {
 					setStyles(el, value as Record<string, string | number>);
-			} else if (propName === 'dataset') {
-				if (typeof value === 'object' && value !== null)
-					setData(el, value as Record<string, string>);
-			} else if (propName === 'aria') {
-				if (typeof value === 'object' && value !== null)
-					setAria(
-						el,
-						value as Record<string, string | number | boolean | undefined>
-					);
+				}
+			} else if (
+				propName === 'dataset' &&
+				typeof value === 'object' &&
+				value !== null
+			) {
+				setData(el, value as Record<string, string>);
+			} else if (
+				propName === 'aria' &&
+				typeof value === 'object' &&
+				value !== null
+			) {
+				setAria(
+					el,
+					value as Record<string, string | number | boolean | undefined>
+				);
 			} else if (platform.isBrowser) {
 				// Browser-specific logic
 				if (propName in el) {
 					// It's a known property on the element, so set it directly.
-					// We cast to a record to allow this dynamic property access in a type-safe way.
 					(el as Record<string, unknown>)[propName] = value;
 				} else if (attributeExceptions.includes(propName)) {
 					// It's a known attribute that needs `setAttribute`.
@@ -166,13 +169,10 @@ export function h<K extends keyof HTMLElementTagNameMap>(
 					logr.warn(`${propName} is not a valid property of a <${type}>`);
 				}
 			} else {
-				// Server-specific logic: treat everything else as an attribute,
-				// but ignore event handlers.
+				// Server-specific logic: treat everything else as an attribute, but ignore event handlers.
 				if (!propName.startsWith('on')) {
-					let attrName = propName;
-					if (propName === 'className') {
-						attrName = 'class';
-					}
+					// Ignore event handlers
+					const attrName = propName === 'className' ? 'class' : propName;
 					platform.setAttribute(el, attrName, String(value));
 				}
 			}
@@ -180,9 +180,13 @@ export function h<K extends keyof HTMLElementTagNameMap>(
 	}
 
 	// otherChildren is an array of ChildInput elements.
-	// appendArray expects a single array, so we pass otherChildren directly.
-	// It will iterate through each ChildInput in otherChildren.
-	if (otherChildren.length > 0) appendArray(el, otherChildren);
+	if (children) {
+		if (Array.isArray(children)) {
+			appendArray(el, children);
+		} else {
+			appendArray(el, [children]);
+		}
+	}
 
 	return el;
 }

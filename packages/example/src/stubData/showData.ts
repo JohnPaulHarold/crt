@@ -1,4 +1,4 @@
-type ShortShowType = { id: string; imageUrl: string; };
+type ShortShowType = { id: string; imageUrl: string };
 const data: Array<ShortShowType> = [];
 
 const width = 16 * 16;

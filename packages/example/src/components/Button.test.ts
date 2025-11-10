@@ -7,20 +7,20 @@ import { Button } from './Button.js';
 
 describe('Button', () => {
 	test('construction', () => {
-		const assert = Button({}, 'XYZ');
+		const assert = Button({ children: 'XYZ' });
 
 		expect(assert).toBeInstanceOf(HTMLButtonElement);
 	});
 
 	test('`className` prop should add custom className', () => {
 		const c = 'xyz';
-		const assert = Button({ className: c }, 'XYZ');
+		const assert = Button({ props: { className: c }, children: 'XYZ' });
 
 		expect(assert.className).toContain(c);
 	});
 
 	test('`ghost` prop should add "ghost" className', () => {
-		const assert = Button({ ghost: true }, 'XYZ');
+		const assert = Button({ props: { ghost: true }, children: 'XYZ' });
 
 		expect(assert.className).toContain('ghost');
 	});

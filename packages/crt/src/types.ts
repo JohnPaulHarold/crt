@@ -9,6 +9,8 @@ export interface ComponentProps {
 	onkeydown?: (event: KeyboardEvent) => void;
 	onkeyup?: (event: KeyboardEvent) => void;
 	onkeypress?: (event: KeyboardEvent) => void;
+	// Add an index signature to allow for any other string-keyed properties.
+	[key: string]: unknown;
 }
 
 export interface ViewOptions {

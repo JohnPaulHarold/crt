@@ -37,7 +37,9 @@ export interface ImperativeVirtualListInstance<T> {
  * @template T
  * @param options
  */
-export function createImperativeVirtualList<T>(options: ImperativeVirtualListOptions<T>): ImperativeVirtualListInstance<T> {
+export function createImperativeVirtualList<T>(
+	options: ImperativeVirtualListOptions<T>
+): ImperativeVirtualListInstance<T> {
 	const vl: ImperativeVirtualListInstance<T> = {
 		data: options.data,
 		visibleEls: options.visibleEls || 10,

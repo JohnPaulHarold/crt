@@ -7,15 +7,17 @@ export type TileProps = ComponentProps & {
 	title: string;
 };
 
+interface TileOptions {
+	props: TileProps;
+}
+
 /**
  *
  * @param props
  */
-export const Tile = (props: TileProps): HTMLElement => {
-	return (
-		div(
-			{ className: `tile ${s.tile}`, id: 'title-' + props.id },
-			span({}, props.title)
-		)
-	);
+export const Tile = (options: TileOptions): HTMLElement => {
+	return div({
+		props: { className: `tile ${s.tile}`, id: 'title-' + options.props.id },
+		children: span({ children: options.props.title }),
+	});
 };

@@ -7,13 +7,13 @@ import { Spinner } from './Spinner.js';
 
 describe('Spinner', () => {
 	test('construction', () => {
-		const assert = Spinner(undefined);
+		const assert = Spinner();
 
 		expect(assert).toBeInstanceOf(HTMLElement);
 	});
 
 	test('props', () => {
-		const assert = Spinner({ id: 'x', className: 'y' });
+		const assert = Spinner({ props: { id: 'x', className: 'y' } });
 		const idAttr = assert.getAttribute('id');
 		const classNameAttr = assert.getAttribute('class');
 		const textContent = assert.textContent;
@@ -25,7 +25,7 @@ describe('Spinner', () => {
 
 	test('message', () => {
 		const message = 'xyz';
-		const assert = Spinner({ message });
+		const assert = Spinner({ props: { message } });
 		const textContent = assert.textContent;
 
 		expect(textContent).toEqual(message);

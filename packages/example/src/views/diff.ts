@@ -1,4 +1,4 @@
-import type { BaseViewInstance, SignallerInstance } from 'crt';
+import type { BaseViewInstance, ChildInput, SignallerInstance } from 'crt';
 import type { AppViewOptions } from '../index.js';
 
 import {
@@ -56,25 +56,28 @@ function handleClick(this: DiffViewInstance, event: MouseEvent) {
 	}
 }
 
-function getTemplate(this: any): HTMLElement {
+function getTemplate(this: DiffViewInstance): HTMLElement {
 	const count = this.lyricCount.getValue();
 
-	const el = (
-		div(
-			{ className: 'view diff', id: this.id },
-			lyrics
-				.slice(0, count)
-				.map((lyric) => p({ className: 'lyric-line' }, lyric)),
-			count < lyrics.length && Button({ id: 'add-lyric' }, 'Add line'),
-			count > 0 &&
-				Button(
-					{
-						id: 'remove-lyric',
-					},
-					'Remove line'
-				)
-		)
-	);
+	const children: ChildInput[] = [];
+
+	children
+		.concat(lyrics)
+		.slice(0, count)
+		.map((lyric) => p({ props: { className: 'lyric-line' }, children: lyric }));
+
+	if (count < lyrics.length) {
+		children.push(Button({ props: { id: 'add-lyric' }, children: 'Add line' }));
+	}
+
+	if (count > 0) {
+		Button({ props: { id: 'remove-lyric' }, children: 'Remove line' });
+	}
+
+	const el = div({
+		props: { className: 'view diff', id: this.id },
+		children,
+	});
 
 	return el;
 }

@@ -12,23 +12,24 @@ import { createSignaller } from 'crt';
 vi.mock('../h.js', () => ({
 	h: (
 		tag: string,
-		props: Record<string, any>,
-		children: any[]
+		options?: { props?: Record<string, unknown>; children?: unknown[] }
 	) => {
 		const el = document.createElement(tag);
+		const props = options?.props;
+		const children = options?.children;
 		if (props) {
 			Object.keys(props).forEach((key) => {
 				if (key === 'style' && typeof props[key] === 'object') {
-					Object.assign(el.style, props[key]);
+					Object.assign(el.style, props[key] as CSSStyleDeclaration);
 				} else if (key === 'dataset' && typeof props[key] === 'object') {
-					Object.assign(el.dataset, props[key]);
+					Object.assign(el.dataset, props[key] as DOMStringMap);
 				} else {
-					el.setAttribute(key, props[key]);
+					el.setAttribute(key, String(props[key]));
 				}
 			});
 		}
 		if (children) {
-			children.forEach((child: any) => {
+			children.forEach((child: unknown) => {
 				if (typeof child === 'string') {
 					el.appendChild(document.createTextNode(child));
 				} else if (child instanceof Node) {
@@ -41,8 +42,8 @@ vi.mock('../h.js', () => ({
 }));
 
 describe('reactiveVirtualList/createReactiveVirtualList', () => {
-	let mockData: { id: number; name: string; }[];
-	let dataSignaller: SignallerInstance<{ id: number; name: string; }[]>;
+	let mockData: { id: number; name: string }[];
+	let dataSignaller: SignallerInstance<{ id: number; name: string }[]>;
 	let renderRow: Mock;
 
 	// Mock window.innerHeight to ensure scale() calculations are predictable.
@@ -80,9 +81,7 @@ describe('reactiveVirtualList/createReactiveVirtualList', () => {
 		const slider = vl.render();
 		// visible (10) + buffer (2*2) = 14 items
 		expect(slider.children.length).toBe(14);
-		expect((slider.children[0] as HTMLElement).style.top).toBe(
-			'0px'
-		);
+		expect((slider.children[0] as HTMLElement).style.top).toBe('0px');
 		expect(renderRow).toHaveBeenCalledWith(mockData[0], 0, true);
 		expect(renderRow).toHaveBeenCalledWith(mockData[13], 13, true);
 	});
@@ -140,9 +139,7 @@ describe('reactiveVirtualList/createReactiveVirtualList', () => {
 		// focusedIndex = 20, buffer = 5, windowSize = 20
 		// startIndex = max(0, 20 - floor(20/2)) = 10
 		const firstItem = slider.children[0];
-		expect((firstItem as HTMLElement).style.top).toBe(
-			`${10 * 50}px`
-		); // 500px
+		expect((firstItem as HTMLElement).style.top).toBe(`${10 * 50}px`); // 500px
 		expect(renderRow).toHaveBeenCalledWith(mockData[10], 10, true);
 		expect(renderRow).not.toHaveBeenCalledWith(mockData[9], 9, true);
 	});
@@ -169,9 +166,7 @@ describe('reactiveVirtualList/createReactiveVirtualList', () => {
 		const firstRenderedItem = slider.children[0];
 		// focusedIndex = 10, buffer = 5, windowSize = ceil(500/50) + 10 = 20
 		// startIndex = max(0, 10 - 10) = 0
-		expect((firstRenderedItem as HTMLElement).style.top).toBe(
-			`${0 * 60}px`
-		); // 0px
+		expect((firstRenderedItem as HTMLElement).style.top).toBe(`${0 * 60}px`); // 0px
 	});
 
 	test('should use custom tags and apply animation style', () => {

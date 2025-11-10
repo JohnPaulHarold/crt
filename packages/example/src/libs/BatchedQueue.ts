@@ -13,7 +13,14 @@ export interface BatchedQueueInstance<T> {
 	getLast: () => T | undefined;
 	dequeue: () => T | undefined;
 	clear: (len: number) => void;
-	_getInternalStateForTesting?: () => { data: { item: T; priority: number; }[]; size: number; batchInterval: number; handleFull: HandleFullCallback<T>; } | undefined;
+	_getInternalStateForTesting?: () =>
+		| {
+				data: { item: T; priority: number }[];
+				size: number;
+				batchInterval: number;
+				handleFull: HandleFullCallback<T>;
+		  }
+		| undefined;
 }
 
 /**
@@ -38,11 +45,15 @@ export interface BatchedQueueInstance<T> {
  * @param batchInterval The time in milliseconds to wait before automatically processing the queue.
  * @param size The maximum number of items the queue can hold before being processed.
  */
-export function createBatchedQueue<T>(handleFull: HandleFullCallback<T>, batchInterval?: number, size?: number): BatchedQueueInstance<T> {
+export function createBatchedQueue<T>(
+	handleFull: HandleFullCallback<T>,
+	batchInterval?: number,
+	size?: number
+): BatchedQueueInstance<T> {
 	const defaultSize = 10;
 	const defaultBatchInterval = 5e3;
 
-	let data: { item: T; priority: number; }[] = [];
+	let data: { item: T; priority: number }[] = [];
 	const queueSize = size || defaultSize;
 	const onFull = handleFull || noop;
 	let timer: number | null | NodeJS.Timeout = null;

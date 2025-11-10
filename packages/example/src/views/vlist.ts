@@ -1,6 +1,9 @@
 import type { BaseViewInstance, DirectionType } from 'crt';
 import type { AppViewOptions } from '../index.js';
-import type { ImperativeVirtualListInstance, ImperativeVirtualListOptions } from '../libs/imperativeVirtualList.js';
+import type {
+	ImperativeVirtualListInstance,
+	ImperativeVirtualListOptions,
+} from '../libs/imperativeVirtualList.js';
 
 import { createBaseView } from 'crt';
 import { a, div, p, section } from '../html.js';
@@ -19,10 +22,17 @@ export interface VListItem {
 	h: string;
 }
 
-function VirtualList(props: { id: string; className: string; }) {
+interface VirtualListOptions {
+	props: { id: string; className: string };
+}
+
+function VirtualList(options: VirtualListOptions) {
 	return section({
-		className: 'virtual-list' + ' ' + props.className,
-		id: props.id,
+		props: {
+			// Access props from options.props
+			className: 'virtual-list' + ' ' + options.props.className,
+			id: options.props.id,
+		},
 	});
 }
 
@@ -68,10 +78,10 @@ export type VListViewInstance = BaseViewInstance & {
 	bigData: VListItem[];
 	containerId: string;
 	vl: ImperativeVirtualListInstance<VListItem> | null;
-	boundHandleMove: ((event: any) => void) | null;
+	boundHandleMove: ((event: MoveEventPayload) => void) | null;
 	destructor: () => void;
 	viewDidLoad: () => void;
-	handleMove: (event: any) => void;
+	handleMove: (event: MoveEventPayload) => void;
 	renderRow: (bd: VListItem) => HTMLElement;
 	render: () => HTMLElement;
 };
@@ -111,12 +121,12 @@ export function createVListView(options: AppViewOptions): VListViewInstance {
 			this.boundHandleMove = this.handleMove.bind(this);
 			navigationService
 				.getBus()
-				.on(NavigationEvents.MOVE, this.boundHandleMove);
+				.on(
+					NavigationEvents.MOVE,
+					this.boundHandleMove as (...args: unknown[]) => void
+				); // Cast to match generic event bus signature
 		},
 
-		/**
-		 * @param event
-		 */
 		handleMove: function (this: VListViewInstance, event: MoveEventPayload) {
 			if (
 				this.vl &&
@@ -133,31 +143,31 @@ export function createVListView(options: AppViewOptions): VListViewInstance {
 			}
 		},
 
-		/**
-		 * @param bd
-		 */
 		renderRow: function (bd: VListItem) {
 			const indexOf = this.bigData.indexOf(bd);
 
-			return a(
-				{
+			return a({
+				props: {
 					className: s.data,
 					dataset: { vlIndex: indexOf },
 				},
-				div(
-					{},
-					p({}, 'Decimal: ' + bd.d),
-					p({}, 'Binary: ' + bd.b),
-					p({}, 'Hex: ' + bd.h)
-				)
-			);
+				children: div({
+					children: [
+						p({ children: 'Decimal: ' + bd.d }),
+						p({ children: 'Binary: ' + bd.b }),
+						p({ children: 'Hex: ' + bd.h }),
+					],
+				}),
+			});
 		},
 
 		render: function (this: VListViewInstance) {
-			return div(
-				{ className: 'view', id: this.id },
-				VirtualList({ id: 'my-vlist', className: 'my-vlist' })
-			);
+			return div({
+				props: { className: 'view', id: this.id },
+				children: VirtualList({
+					props: { id: 'my-vlist', className: 'my-vlist' },
+				}),
+			});
 		},
 	});
 

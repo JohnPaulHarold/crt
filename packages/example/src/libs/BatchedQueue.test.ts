@@ -1,7 +1,7 @@
 /**
  * @vitest-environment jsdom
  */
-import type { BatchedQueueInstance} from './BatchedQueue.js';
+import type { BatchedQueueInstance } from './BatchedQueue.js';
 
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
 import { createBatchedQueue } from './BatchedQueue.js';
@@ -10,7 +10,7 @@ import { createBatchedQueue } from './BatchedQueue.js';
  * A test helper to safely access the internal state of a BatchedQueue instance.
  * This encapsulates the check for the existence of the test-only method.
  */
-function getQueueState(queue: BatchedQueueInstance<any>) {
+function getQueueState<T>(queue: BatchedQueueInstance<T>) {
 	if (typeof queue._getInternalStateForTesting !== 'function') {
 		throw new Error(
 			'The _getInternalStateForTesting helper method is not available on this queue instance.'
@@ -54,8 +54,11 @@ describe('BatchedQueue', () => {
 	});
 
 	test('enqueue should add items to the queue', () => {
-		const queue: BatchedQueueInstance<number> =
-				createBatchedQueue(vi.fn(), 1000, 5);
+		const queue: BatchedQueueInstance<number> = createBatchedQueue(
+			vi.fn(),
+			1000,
+			5
+		);
 		queue.enqueue(1);
 		queue.enqueue(2);
 
@@ -65,8 +68,11 @@ describe('BatchedQueue', () => {
 
 	test('enqueue should trigger handleFull when queue reaches size limit', () => {
 		const handleFull = vi.fn();
-		const queue: BatchedQueueInstance<number> =
-				createBatchedQueue(handleFull, 1000, 3);
+		const queue: BatchedQueueInstance<number> = createBatchedQueue(
+			handleFull,
+			1000,
+			3
+		);
 
 		queue.enqueue(1);
 		queue.enqueue(2);
@@ -85,8 +91,11 @@ describe('BatchedQueue', () => {
 
 	test('sweep should trigger handleFull after batchInterval', () => {
 		const handleFull = vi.fn();
-		const queue: BatchedQueueInstance<number> =
-				createBatchedQueue(handleFull, 1000, 5);
+		const queue: BatchedQueueInstance<number> = createBatchedQueue(
+			handleFull,
+			1000,
+			5
+		);
 
 		queue.enqueue(1);
 		queue.enqueue(2);
@@ -106,8 +115,11 @@ describe('BatchedQueue', () => {
 
 	test('enqueue should reset the sweep timer', () => {
 		const handleFull = vi.fn();
-		const queue: BatchedQueueInstance<number> =
-				createBatchedQueue(handleFull, 1000, 5);
+		const queue: BatchedQueueInstance<number> = createBatchedQueue(
+			handleFull,
+			1000,
+			5
+		);
 
 		queue.enqueue(1); // Timer starts
 		vi.advanceTimersByTime(500);
@@ -127,8 +139,11 @@ describe('BatchedQueue', () => {
 
 	test('clearSweep should cancel the pending sweep', () => {
 		const handleFull = vi.fn();
-		const queue: BatchedQueueInstance<number> =
-				createBatchedQueue(handleFull, 1000, 5);
+		const queue: BatchedQueueInstance<number> = createBatchedQueue(
+			handleFull,
+			1000,
+			5
+		);
 
 		queue.enqueue(1);
 		queue.clearSweep();
@@ -140,8 +155,11 @@ describe('BatchedQueue', () => {
 	});
 
 	test('enqueue should order items by priority', () => {
-		const queue: BatchedQueueInstance<string> =
-				createBatchedQueue(vi.fn(), 1000, 10);
+		const queue: BatchedQueueInstance<string> = createBatchedQueue(
+			vi.fn(),
+			1000,
+			10
+		);
 
 		queue.enqueue('low_priority', 20);
 		queue.enqueue('high_priority', 1);
@@ -161,8 +179,11 @@ describe('BatchedQueue', () => {
 
 	test('flush should manually process the queue and clear it', () => {
 		const handleFull = vi.fn();
-		const queue: BatchedQueueInstance<number> =
-				createBatchedQueue(handleFull, 5000, 10);
+		const queue: BatchedQueueInstance<number> = createBatchedQueue(
+			handleFull,
+			5000,
+			10
+		);
 
 		queue.enqueue(1);
 		queue.enqueue(2);
@@ -186,8 +207,11 @@ describe('BatchedQueue', () => {
 	});
 
 	test('utility methods should work correctly', () => {
-		const queue: BatchedQueueInstance<string> =
-				createBatchedQueue(vi.fn(), 1000, 5);
+		const queue: BatchedQueueInstance<string> = createBatchedQueue(
+			vi.fn(),
+			1000,
+			5
+		);
 
 		expect(queue.isEmpty()).toBe(true);
 

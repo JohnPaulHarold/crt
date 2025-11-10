@@ -6,7 +6,11 @@ export interface RegisteredPopup {
 	close: () => void;
 }
 
-export function registerPopup(popupEl: HTMLElement, handler: (id: string) => void, outlet: HTMLElement): RegisteredPopup {
+export function registerPopup(
+	popupEl: HTMLElement,
+	handler: (id: string) => void,
+	outlet: HTMLElement
+): RegisteredPopup {
 	const handleClick = (event: MouseEvent) => {
 		const elTarget = normaliseEventTarget(event);
 

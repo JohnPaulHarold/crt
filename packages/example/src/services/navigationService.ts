@@ -25,12 +25,21 @@ export const NavigationEvents = {
 export interface NavigationServiceInstance {
 	init: () => void;
 	setScope: (newScope?: HTMLElement) => void;
-	getLastFocus: () => { el: HTMLElement; id: string | null; } | undefined;
-	registerCustomFocusHandler: (customHandler: (event: KeyboardEvent, defaultHandler: (event: KeyboardEvent, scope?: HTMLElement) => void) => void) => () => void;
-	moveFocus: (toEl: HTMLElement, fromEl?: HTMLElement, event?: KeyboardEvent) => void;
+	getLastFocus: () => { el: HTMLElement; id: string | null } | undefined;
+	registerCustomFocusHandler: (
+		customHandler: (
+			event: KeyboardEvent,
+			defaultHandler: (event: KeyboardEvent, scope?: HTMLElement) => void
+		) => void
+	) => () => void;
+	moveFocus: (
+		toEl: HTMLElement,
+		fromEl?: HTMLElement,
+		event?: KeyboardEvent
+	) => void;
 	focusInto: (scopeEl: HTMLElement) => void;
 	isElementFocused: (id: string) => boolean;
-	getCurrentFocus: () => { el: Element; id: string | null; } | undefined;
+	getCurrentFocus: () => { el: Element; id: string | null } | undefined;
 	getBus: () => PubSubInstance;
 	_resetForTesting?: () => void;
 }
@@ -52,7 +61,11 @@ function createNavigationService(): NavigationServiceInstance {
 	// The default key handler, which can be temporarily overridden.
 	let _handleKeyDown = handleKeyDown;
 
-	function emitMoveEvent(event: KeyboardEvent, last: HTMLElement, next: HTMLElement) {
+	function emitMoveEvent(
+		event: KeyboardEvent,
+		last: HTMLElement,
+		next: HTMLElement
+	) {
 		const direction = getDirectionFromKeyCode(event.keyCode);
 		const [lastC] = getElementContainer(last);
 		const [nextC] = getElementContainer(next);
@@ -153,7 +166,9 @@ function createNavigationService(): NavigationServiceInstance {
 	 * It prioritizes an element specified by a 'data-focus' attribute
 	 * and falls back to the first focusable element.
 	 */
-	function _getInitialFocusInContainer(containerEl: HTMLElement): HTMLElement | null {
+	function _getInitialFocusInContainer(
+		containerEl: HTMLElement
+	): HTMLElement | null {
 		const lastFocusedId = $dataGet(containerEl, 'focus');
 		if (lastFocusedId && typeof lastFocusedId === 'string') {
 			// Query within the container for the element with the stored ID.
@@ -300,8 +315,7 @@ function createNavigationService(): NavigationServiceInstance {
 			// This intermediate function ensures that we always call the *current*
 			// value of `_handleKeyDown`, which can be swapped out by the
 			// custom focus handler.
-			_globalKeyDownHandler = (event: KeyboardEvent) =>
-				_handleKeyDown(event);
+			_globalKeyDownHandler = (event: KeyboardEvent) => _handleKeyDown(event);
 			window.addEventListener('keydown', _globalKeyDownHandler);
 
 			const initialFocus = getNextFocus(null, -1);
@@ -322,7 +336,7 @@ function createNavigationService(): NavigationServiceInstance {
 		/**
 		 * Gets the last focused element.
 		 */
-		getLastFocus(): { el: HTMLElement; id: string | null; } | undefined {
+		getLastFocus(): { el: HTMLElement; id: string | null } | undefined {
 			if (!_lastFocus) return;
 			return {
 				el: _lastFocus,
@@ -333,7 +347,12 @@ function createNavigationService(): NavigationServiceInstance {
 		/**
 		 * Temporarily overrides the default keydown handler with a custom one.
 		 */
-		registerCustomFocusHandler(customHandler: (event: KeyboardEvent, defaultHandler: (event: KeyboardEvent, scope?: HTMLElement) => void) => void): () => void {
+		registerCustomFocusHandler(
+			customHandler: (
+				event: KeyboardEvent,
+				defaultHandler: (event: KeyboardEvent, scope?: HTMLElement) => void
+			) => void
+		): () => void {
 			_handleKeyDown = (event) => customHandler(event, handleKeyDown);
 			return () => {
 				_handleKeyDown = handleKeyDown;
@@ -346,7 +365,11 @@ function createNavigationService(): NavigationServiceInstance {
 		 * @param fromEl
 		 * @param event The original keydown event, used for event emission.
 		 */
-		moveFocus(toEl: HTMLElement, fromEl?: HTMLElement | undefined, event?: KeyboardEvent | undefined) {
+		moveFocus(
+			toEl: HTMLElement,
+			fromEl?: HTMLElement | undefined,
+			event?: KeyboardEvent | undefined
+		) {
 			const elementToBlur = fromEl || _lastFocus;
 
 			// 1. Handle blurring the old element
@@ -432,7 +455,7 @@ function createNavigationService(): NavigationServiceInstance {
 		/**
 		 * Gets the currently focused element in the document.
 		 */
-		getCurrentFocus(): { el: Element; id: string | null; } | undefined {
+		getCurrentFocus(): { el: Element; id: string | null } | undefined {
 			const focusableEl = document.querySelector('.focused');
 			if (focusableEl) {
 				return {

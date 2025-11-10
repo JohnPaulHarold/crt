@@ -17,7 +17,10 @@ import { isCodecSupported } from './isCodecSupported';
 
 import s from './canivideo.scss';
 
-export type ContainerType = 'video/mp4' | 'video/webm' | 'application/vnd.apple.mpegurl';
+export type ContainerType =
+	| 'video/mp4'
+	| 'video/webm'
+	| 'application/vnd.apple.mpegurl';
 
 type DrmSupport = {
 	drm: Promise<IDrm | void | undefined> | IDrm | void | undefined;
@@ -123,21 +126,29 @@ export function createCanivideoView(options: ViewOptions): CanIViewInstance {
 
 			if (target && this.data) {
 				target.innerHTML = '';
-				Object.keys(this.data).forEach((type) => {
-					const videoTypeEl = div(
-						{ className: s['type-wrapper'] },
-						div({ className: s.title }, type),
-						Object.keys(this.data[type]).map((codec) => {
-							return a({ href: '#', className: s.codec }, [
-								Codec({
-									data: this.data[type][codec],
-									codec,
-									type,
-									title: this.data[type][codec].title,
-								}),
-							]);
-						})
-					);
+				Object.keys(this.data).forEach((type: string) => {
+					// Explicitly type 'type' as string
+					const videoTypeEl = div({
+						props: { className: s['type-wrapper'] },
+						children: [
+							div({ props: { className: s.title }, children: type }),
+							...Object.keys(this.data[type]).map((codec) => {
+								return a({
+									props: { href: '#', className: s.codec },
+									children: [
+										Codec({
+											props: {
+												data: this.data[type][codec],
+												codec,
+												type,
+												title: this.data[type][codec].title,
+											},
+										}),
+									],
+								});
+							}),
+						],
+					});
 
 					target.appendChild(videoTypeEl);
 				});
@@ -145,20 +156,22 @@ export function createCanivideoView(options: ViewOptions): CanIViewInstance {
 		},
 
 		render: function () {
-			return div(
-				{ className: 'view', id: this.id },
-				Heading({ level: 1 }, 'CAN I VIDEO?'),
-				Carousel(
-					{
-						id: 'codecs-carousel',
-						orientation: Orientation.VERTICAL,
-						blockExit: 'right up down',
-						childQuery: `.${s.codec}`,
-						scrollStartQuery: `.${s.codec}`,
-					},
-					[]
-				)
-			);
+			return div({
+				props: { className: 'view', id: this.id },
+				children: [
+					Heading({ props: { level: 1 }, children: 'CAN I VIDEO?' }),
+					Carousel({
+						props: {
+							id: 'codecs-carousel',
+							orientation: Orientation.VERTICAL,
+							blockExit: 'right up down',
+							childQuery: `.${s.codec}`,
+							scrollStartQuery: `.${s.codec}`,
+						},
+						children: [],
+					}),
+				],
+			});
 		},
 	};
 

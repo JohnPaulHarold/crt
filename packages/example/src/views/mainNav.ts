@@ -1,4 +1,4 @@
-import type { BaseViewInstance, DirectionType, ViewOptions } from 'crt';
+import type { BaseViewInstance, ViewOptions } from 'crt';
 import type { NavItem } from '../components/Nav.js';
 
 import { collectionToArray, createBaseView } from 'crt';
@@ -24,7 +24,9 @@ type MainNavViewInstance = BaseViewInstance & {
 /**
  * @param options
  */
-export function createMainNavView(options: NavViewOptions): MainNavViewInstance {
+export function createMainNavView(
+	options: NavViewOptions
+): MainNavViewInstance {
 	const base = createBaseView(options);
 
 	const mainNavView: MainNavViewInstance = Object.assign({}, base, {
@@ -78,7 +80,7 @@ export function createMainNavView(options: NavViewOptions): MainNavViewInstance 
 			if (!this.viewEl) return;
 
 			const method = listen ? 'addEventListener' : 'removeEventListener';
-			
+
 			this.viewEl[method]('focusin', this.updateMenu.bind(this, 'focusin'));
 			this.viewEl[method](
 				'focusout',
@@ -86,20 +88,25 @@ export function createMainNavView(options: NavViewOptions): MainNavViewInstance 
 			);
 		},
 
-		updateMenu: function (this: MainNavViewInstance, eventName: 'focusin' | 'focusout') {
+		updateMenu: function (
+			this: MainNavViewInstance,
+			eventName: 'focusin' | 'focusout'
+		) {
 			if (!this.viewEl) return;
 
 			const method = eventName === 'focusin' ? 'add' : 'remove';
-			
+
 			this.viewEl.classList[method]('collapsed');
 		},
 
-		render: function (this: MainNavViewInstance, ) {
+		render: function (this: MainNavViewInstance) {
 			return Nav({
-				id: this.id,
-				navItems: this.navItems,
-				blockExit: 'up down left',
-				backStop: true,
+				props: {
+					id: this.id,
+					navItems: this.navItems,
+					blockExit: 'up down left',
+					backStop: true,
+				},
 			});
 		},
 	});

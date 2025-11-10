@@ -1,4 +1,9 @@
-import type { BaseViewInstance, OrientationType, SignallerInstance } from 'crt';
+import type {
+	BaseViewInstance,
+	ComponentProps,
+	OrientationType,
+	SignallerInstance,
+} from 'crt';
 import type { AppViewOptions } from '../index.js';
 
 import {
@@ -33,13 +38,15 @@ export interface PageData {
 	items: RailData[];
 }
 
-export interface RailItem {
+export interface RailItem extends ComponentProps {
+	// Extend ComponentProps
 	title: string;
 	id: string;
 	url: string;
 }
 
-export interface RailData {
+export interface RailData extends ComponentProps {
+	// Extend ComponentProps
 	title?: string;
 	id: string;
 	orientation?: OrientationType;
@@ -51,14 +58,15 @@ function getTemplate(this: HomeViewInstance): HTMLElement {
 	let content;
 
 	if (!data) {
-		content = Spinner({ message: 'Hold on!' });
+		content = Spinner({ props: { message: 'Hold on!' } });
 	} else {
 		content = buildCarousels(data);
 	}
 
-	return (
-		div({ className: 'view', id: this.id }, content)
-	);
+	return div({
+		props: { className: 'view', id: this.id },
+		children: content,
+	});
 }
 
 /**
@@ -110,7 +118,10 @@ function listenForBack(this: HomeViewInstance, flag: boolean) {
 }
 
 function handleBack(event: Event) {
-	if (event instanceof KeyboardEvent && assertKey(event, AdditionalKeys.BACKSPACE)) {
+	if (
+		event instanceof KeyboardEvent &&
+		assertKey(event, AdditionalKeys.BACKSPACE)
+	) {
 		const elTarget = normaliseEventTarget(event);
 
 		if (elTarget instanceof HTMLElement) {
@@ -131,8 +142,8 @@ function handleBack(event: Event) {
 }
 
 function buildCarousels(data: PageData): HTMLElement {
-	return Carousel(
-		{
+	return Carousel({
+		props: {
 			id: data.id,
 			orientation: Orientation.VERTICAL,
 			childQuery: `#${data.id} .home-carousel`,
@@ -142,33 +153,32 @@ function buildCarousels(data: PageData): HTMLElement {
 			width: 1670,
 			height: 1080,
 		},
-		data.items.map((rail) =>
-			Carousel(
-				{
+		children: data.items.map((rail) =>
+			Carousel({
+				props: {
 					id: rail.id,
 					showArrows: true,
-					heading: rail.title, // Use the restored 'heading' prop
+					heading: rail.title,
 					className: 'home-carousel',
 					orientation: Orientation.HORIZONTAL,
 					blockExit: 'right',
 					backStop: 'viewStart',
-					// Use itemMargin to create a gap between tiles
 					itemMargin: 24,
 					width: 1670,
 				},
-				rail.items.map((railItem) =>
-					a(
-						{
+				children: rail.items.map((railItem) =>
+					a({
+						props: {
 							dataset: { external: true },
 							href: railItem.url,
 							id: railItem.id,
 						},
-						Tile(railItem)
-					)
-				)
-			)
-		)
-	);
+						children: Tile({ props: railItem }),
+					})
+				),
+			})
+		),
+	});
 }
 
 type HomeViewInstance = BaseViewInstance & {
@@ -189,7 +199,7 @@ export function createHomeView(options: AppViewOptions): HomeViewInstance {
 	);
 
 	const homeView: HomeViewInstance = Object.assign({}, base, {
-		// If initialData is provided (e.g., from SSR), use it. 
+		// If initialData is provided (e.g., from SSR), use it.
 		// Otherwise, start with null.
 		pageData: createSignaller<PageData | null>(
 			(options.initialData as unknown as PageData) || null

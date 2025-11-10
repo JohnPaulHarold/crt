@@ -7,22 +7,25 @@ export type GridProps = ComponentProps & {
 	columns: number;
 };
 
+interface GridOptions {
+	props: GridProps;
+	children: HTMLElement[];
+}
+
 /**
  *
  * @param props
  * @param children
  */
-export const Grid = (props: GridProps, children: HTMLElement[]): HTMLElement => {
+export const Grid = (options: GridOptions): HTMLElement => {
 	const gridRows: HTMLElement[] = [];
 
 	let rowEl: HTMLElement;
 	let rowCount = 0;
 
-	children.forEach((c, i) => {
-		if (i % props.columns === 0) {
-			rowEl = (
-				div({ className: s.gridRow + ' row' + rowCount })
-			);
+	options.children.forEach((c, i) => {
+		if (i % options.props.columns === 0) {
+			rowEl = div({ props: { className: s.gridRow + ' row' + rowCount } });
 			gridRows.push(rowEl);
 			rowCount++;
 		}
@@ -32,7 +35,8 @@ export const Grid = (props: GridProps, children: HTMLElement[]): HTMLElement => 
 		}
 	});
 
-	return (
-		section({ className: 'grid ' + props.className || '' }, gridRows)
-	);
+	return section({
+		props: { className: 'grid ' + (options.props.className || '') },
+		children: gridRows,
+	});
 };

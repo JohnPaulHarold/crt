@@ -31,17 +31,22 @@ describe('renderToString', () => {
 	});
 
 	test('should render a simple element to a string', () => {
-		const view = createMockView(() => h('div', { id: 'test' }, 'Hello World'));
+		const view = createMockView(() =>
+			h('div', { props: { id: 'test' }, children: 'Hello World' })
+		);
 		const html = renderToString(view);
 		expect(html).toBe('<div id="test">Hello World</div>');
 	});
 
 	test('should render nested elements correctly', () => {
 		const view = createMockView(() =>
-			h('section', { className: 'container' }, [
-				h('h1', {}, 'Title'),
-				h('p', {}, 'Some text.'),
-			])
+			h('section', {
+				props: { className: 'container' },
+				children: [
+					h('h1', { children: 'Title' }),
+					h('p', { children: 'Some text.' }),
+				],
+			})
 		);
 		const html = renderToString(view);
 		expect(html).toBe(
@@ -51,7 +56,7 @@ describe('renderToString', () => {
 
 	test('should serialize style objects into inline styles', () => {
 		const view = createMockView(() =>
-			h('div', { style: { color: 'red', fontSize: '16px' } })
+			h('div', { props: { style: { color: 'red', fontSize: '16px' } } })
 		);
 		const html = renderToString(view);
 		expect(html).toBe('<div style="color:red;font-size:16px"></div>');
@@ -60,9 +65,11 @@ describe('renderToString', () => {
 	test('should handle attributes and styles together', () => {
 		const view = createMockView(() =>
 			h('a', {
-				href: '#',
-				className: 'link',
-				style: { textDecoration: 'none' },
+				props: {
+					href: '#',
+					className: 'link',
+					style: { textDecoration: 'none' },
+				},
 			})
 		);
 		const html = renderToString(view);
@@ -73,7 +80,7 @@ describe('renderToString', () => {
 
 	test('should correctly render self-closing tags', () => {
 		const view = createMockView(() =>
-			h('img', { src: 'test.png', alt: 'An image' })
+			h('img', { props: { src: 'test.png', alt: 'An image' } })
 		);
 		const html = renderToString(view);
 		expect(html).toBe('<img src="test.png" alt="An image">');
@@ -81,7 +88,7 @@ describe('renderToString', () => {
 
 	test('should escape double quotes in attribute values', () => {
 		const view = createMockView(() =>
-			h('div', { 'data-json': '{"key":"value"}' })
+			h('div', { props: { 'data-json': '{"key":"value"}' } })
 		);
 		const html = renderToString(view);
 		expect(html).toBe(

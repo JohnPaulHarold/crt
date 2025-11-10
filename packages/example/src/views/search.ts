@@ -27,7 +27,10 @@ import s from './search.scss';
 /**
  * @param event
  */
-function handleClick(this: SearchViewInstance, event: KeyboardEvent | MouseEvent) {
+function handleClick(
+	this: SearchViewInstance,
+	event: KeyboardEvent | MouseEvent
+) {
 	const elTarget = normaliseEventTarget(event);
 	if (elTarget instanceof HTMLElement) {
 		const value = $dataGet(elTarget, 'keyValue');
@@ -74,12 +77,14 @@ function getTemplate(this: SearchViewInstance): HTMLElement {
 
 	let resultsEl;
 	if (searchTerm === '') {
-		resultsEl = span({ className: s.searchNoResults }, "Let's search!");
+		resultsEl = span({
+			props: { className: s.searchNoResults },
+			children: "Let's search!",
+		});
 	} else if (filteredResults.length > 0) {
-		resultsEl = div(
-			{},
-			Carousel(
-				{
+		resultsEl = div({
+			children: Carousel({
+				props: {
 					id: 'search-results-list',
 					orientation: Orientation.VERTICAL,
 					showArrows: true,
@@ -87,23 +92,37 @@ function getTemplate(this: SearchViewInstance): HTMLElement {
 					width: 700,
 					height: 900,
 				},
-				filteredResults.map((res) =>
-					a(
-						{ href: res.url, id: res.id },
-						div({ className: s.searchResult }, span({}, res.title))
-					)
-				)
-			)
-		);
+				children: filteredResults.map((res) =>
+					a({
+						props: { href: res.url, id: res.id },
+						children: div({
+							props: { className: s.searchResult },
+							children: span({ children: res.title }),
+						}),
+					})
+				),
+			}),
+		});
 	} else {
-		resultsEl = span({ className: s.searchNoResults }, 'Found nothing...');
+		resultsEl = span({
+			props: { className: s.searchNoResults },
+			children: 'Found nothing...',
+		});
 	}
 
-	return div(
-		{ className: 'view', id: this.id },
-		div({ className: s.searchInput, id: 'search-input' }, searchTerm),
-		div({ className: s.panels2 }, Keyboard({ keyMap: keyMap }), resultsEl)
-	);
+	return div({
+		props: { className: 'view', id: this.id },
+		children: [
+			div({
+				props: { className: s.searchInput, id: 'search-input' },
+				children: searchTerm,
+			}),
+			div({
+				props: { className: s.panels2 },
+				children: [Keyboard({ props: { keyMap } }), resultsEl],
+			}),
+		],
+	});
 }
 
 type SearchViewInstance = BaseViewInstance & {
@@ -127,10 +146,7 @@ export function createSearchView(options: AppViewOptions): SearchViewInstance {
 
 		destructor: function (this: SearchViewInstance) {
 			if (this.viewEl instanceof HTMLElement && this.boundHandleClick) {
-				this.viewEl.removeEventListener(
-					'click',
-					this.boundHandleClick
-				);
+				this.viewEl.removeEventListener('click', this.boundHandleClick);
 			}
 			if (this.stopWatching) {
 				this.stopWatching();
@@ -143,10 +159,7 @@ export function createSearchView(options: AppViewOptions): SearchViewInstance {
 		viewDidLoad: function (this: SearchViewInstance) {
 			if (this.viewEl instanceof HTMLElement) {
 				this.boundHandleClick = handleClick.bind(this);
-				this.viewEl.addEventListener(
-					'click',
-					this.boundHandleClick
-				);
+				this.viewEl.addEventListener('click', this.boundHandleClick);
 
 				const setupResultsCarousel = () => {
 					if (this.viewEl) {

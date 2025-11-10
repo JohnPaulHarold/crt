@@ -16,7 +16,7 @@ export { Direction, type DirectionType } from './models/Direction.js';
 export { Orientation, type OrientationType } from './models/Orientation.js';
 
 // Hyperscript
-export { h, makeElement } from './h.js';
+export { h, makeElement, type HOptions, type ChildInput } from './h.js';
 
 // Views
 export { createBaseView } from './createBaseView.js';

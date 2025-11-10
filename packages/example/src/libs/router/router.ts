@@ -11,7 +11,7 @@ export interface Route {
 	exact?: boolean;
 	pattern: string;
 	title?: string;
-	composeFunction?: (arg0: any) => void;
+	composeFunction?: (arg0: unknown) => void;
 }
 
 export interface HandlerArgs {
@@ -39,7 +39,10 @@ export interface HistoryRouter {
 	 * @param event
 	 * @param stateData - Optional state data from history.
 	 */
-	processPathFromEvent(event: PopStateEvent | HashChangeEvent | CustomEvent | undefined, stateData?: object): void;
+	processPathFromEvent(
+		event: PopStateEvent | HashChangeEvent | CustomEvent | undefined,
+		stateData?: object
+	): void;
 	/**
 	 * Processes a given full path (URL or pathname + search) and triggers the matched route handler.
 	 * @param fullPathOrUrl - The full URL (for hash mode) or pathname + search (for history mode).
@@ -47,10 +50,12 @@ export interface HistoryRouter {
 	 */
 	processPath(fullPathOrUrl: string, stateData?: object): void;
 	/**
-	 * 
+	 *
 	 * @param fullPathOrUrl - The full URL (if hash mode) or the pathname + search (if history mode).
 	 */
-	matchRoute(fullPathOrUrl: string): { pattern: string; params: RouteParams; search: RouteSearch; } | undefined;
+	matchRoute(
+		fullPathOrUrl: string
+	): { pattern: string; params: RouteParams; search: RouteSearch } | undefined;
 	setupListeners(): void;
 	/**
 	 * Programmatically navigates to a new path.
@@ -67,14 +72,19 @@ export interface HistoryRouter {
 	/**
 	 * Registers a handler to be called when a route handler throws an error.
 	 * @param handler The function to call on error.
-	 */	
-	registerErrorHandler(handler: (error: Error, route?: HandlerArgs) => void): void;
+	 */
+	registerErrorHandler(
+		handler: (error: Error, route?: HandlerArgs) => void
+	): void;
 	/**
 	 *
 	 * @param pathObject
 	 * @param handler
-	 */	
-	registerRoute(pathObject: string | Route, handler: (handler: HandlerArgs) => void): void;
+	 */
+	registerRoute(
+		pathObject: string | Route,
+		handler: (handler: HandlerArgs) => void
+	): void;
 	unregisterRoute(path: string): void;
 }
 
@@ -85,7 +95,11 @@ export const historyRouter: HistoryRouter = {
 	notFoundHandler: null,
 	errorHandler: null,
 	hashSymbol: '#',
-	config(base: string = '/', mode: 'history' | 'hash' = 'history', hashSymbol: string = '#') {
+	config(
+		base: string = '/',
+		mode: 'history' | 'hash' = 'history',
+		hashSymbol: string = '#'
+	) {
 		this.basePath = base.endsWith('/') ? base : base + '/';
 		this.mode = mode;
 		this.hashSymbol = hashSymbol;
@@ -177,7 +191,9 @@ export const historyRouter: HistoryRouter = {
 			}
 		}
 	},
-	matchRoute(fullPathOrUrl: string): { pattern: string; params: RouteParams; search: RouteSearch; } | undefined {
+	matchRoute(
+		fullPathOrUrl: string
+	): { pattern: string; params: RouteParams; search: RouteSearch } | undefined {
 		let route;
 		if (this.mode === 'hash') {
 			// For hash mode, fullPathOrUrl is the full window.location.href
@@ -247,9 +263,7 @@ export const historyRouter: HistoryRouter = {
 			matched.search = parseSearchParams(paramsString);
 		}
 
-		return (
-			matched
-		);
+		return matched;
 	},
 	setupListeners() {
 		if (this.mode === 'hash') {
@@ -285,7 +299,10 @@ export const historyRouter: HistoryRouter = {
 	registerErrorHandler(handler: (error: Error, route?: HandlerArgs) => void) {
 		this.errorHandler = handler;
 	},
-	registerRoute(pathObject: string | Route, handler: (handler: HandlerArgs) => void) {
+	registerRoute(
+		pathObject: string | Route,
+		handler: (handler: HandlerArgs) => void
+	) {
 		let pattern = '';
 		let exact = false;
 

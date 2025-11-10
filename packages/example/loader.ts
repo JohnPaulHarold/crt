@@ -9,7 +9,11 @@
  * @param context Contextual information about the module.
  * @param nextLoad The next loader in the chain.
  */
-export function load(url: string, context: object, nextLoad: Function) {
+export function load(
+	url: string,
+	context: object,
+	nextLoad: (url: string, context: object) => void
+) {
 	if (url.endsWith('.scss')) {
 		// Return an empty module that exports a default empty object.
 		// This prevents the "unknown file extension" error.

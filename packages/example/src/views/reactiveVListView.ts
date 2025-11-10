@@ -1,6 +1,7 @@
 import type { BaseViewInstance, SignallerInstance } from 'crt';
 import type { ReactiveVirtualListInstance } from '../libs/reactiveVirtualList.js';
 import type { AppViewOptions } from '../index.js';
+import type { MoveEventPayload } from './vlist.js';
 
 import { createBaseView, createSignaller, watch, diff } from 'crt';
 import { div, p, section, a } from '../html.js';
@@ -47,24 +48,28 @@ function getTemplate(this: ReactiveVListViewInstance): HTMLElement {
 	// The initial render just creates the container.
 	// The virtual list will be diffed into it later.
 	return section({
-		className: `view ${s.virtualList} lrud-container`,
-		id: this.id,
-		style: {
-			height: '100%',
-			overflow: 'hidden',
-		}, // Hide overflow, scrolling is handled by transforms
+		props: {
+			className: `view ${s.virtualList} lrud-container`,
+			id: this.id,
+			style: {
+				height: '100%',
+				overflow: 'hidden',
+			},
+		},
 	});
 }
 
 type ReactiveVListViewInstance = BaseViewInstance & {
 	dataSignaller: SignallerInstance<VListItem[]>;
-	vl: ReactiveVirtualListInstance<VListItem> | null;
+	vl: ReactiveVirtualListInstance | null;
 	stopWatching?: () => void;
-	boundHandleMove?: (event: any) => void;
-	handleMove: (event: any) => void;
+	boundHandleMove?: (event: MoveEventPayload) => void;
+	handleMove: (event: MoveEventPayload) => void;
 };
 
-export function createReactiveVListView(options: AppViewOptions): ReactiveVListViewInstance {
+export function createReactiveVListView(
+	options: AppViewOptions
+): ReactiveVListViewInstance {
 	const base = createBaseView(options);
 
 	const reactiveVListView: ReactiveVListViewInstance = Object.assign({}, base, {
@@ -80,12 +85,16 @@ export function createReactiveVListView(options: AppViewOptions): ReactiveVListV
 			if (this.boundHandleMove) {
 				navigationService
 					.getBus()
+					// @ts-expect-error fix ths PubSub types
 					.off(NavigationEvents.MOVE, this.boundHandleMove);
 			}
 		},
 
-		handleMove: function (this: ReactiveVListViewInstance, event: any) {
-			if (this.vl && event.detail && event.detail.nextElement) {
+		handleMove: function (
+			this: ReactiveVListViewInstance,
+			event: MoveEventPayload
+		) {
+			if (this.vl && event.detail.nextElement) {
 				const index = parseDecimal(
 					event.detail.nextElement.dataset.index || '0'
 				);
@@ -95,21 +104,28 @@ export function createReactiveVListView(options: AppViewOptions): ReactiveVListV
 
 		viewDidLoad: function (this: ReactiveVListViewInstance) {
 			if (!(this.viewEl instanceof HTMLElement)) return;
-			
+
 			/**
 			 * Renders a single row. If the row is not visible, it renders a lightweight
 			 * placeholder to keep the element focusable by lrud-spatial without the
 			 * performance cost of rendering the full content. (This is now handled by the library)
 			 */
-			const renderRow = (item: VListItem, index: number, _isVisible: boolean): HTMLElement => {
-				const content = div({ className: s.vlistItemInner }, [
-					p({}, `Decimal: ${item.d}`),
-					p({}, `Binary: ${item.b}`),
-					p({}, `Hex: ${item.h}`),
-				]);
+			const renderRow = (
+				item: VListItem,
+				index: number,
+				_isVisible: boolean
+			): HTMLElement => {
+				const content = div({
+					props: { className: s.vlistItemInner },
+					children: [
+						p({ children: `Decimal: ${item.d}` }),
+						p({ children: `Binary: ${item.b}` }),
+						p({ children: `Hex: ${item.h}` }),
+					],
+				});
 
-				return a(
-					{
+				return a({
+					props: {
 						className: s.vlistItem,
 						href: '#',
 						id: `vlist-item-${index}`, // Add a unique ID to act as a key for the diff engine
@@ -118,8 +134,8 @@ export function createReactiveVListView(options: AppViewOptions): ReactiveVListV
 						},
 						onclick: (e: Event) => e.preventDefault(),
 					},
-					content
-				);
+					children: content,
+				});
 			};
 
 			this.vl = createReactiveVirtualList({
@@ -149,6 +165,7 @@ export function createReactiveVListView(options: AppViewOptions): ReactiveVListV
 			if (this.boundHandleMove) {
 				navigationService
 					.getBus()
+					// @ts-expect-error fix ths PubSub types
 					.on(NavigationEvents.MOVE, this.boundHandleMove);
 			}
 

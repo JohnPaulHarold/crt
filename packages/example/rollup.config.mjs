@@ -44,7 +44,7 @@ export default {
 		babel({
 			babelHelpers: 'bundled',
 			extensions: ['.js', '.ts', '.jsx', '.tsx'],
-			exclude: 'node_modules/**',
+			exclude: /node_modules\/(?!crt)/, // Exclude all node_modules except 'crt'
 			configFile: path.resolve(__dirname, '../../babel.config.json'),
 		}),
 		copy({

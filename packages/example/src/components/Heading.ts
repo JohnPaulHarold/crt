@@ -1,8 +1,8 @@
-import type { ComponentProps } from 'crt';
+import type { ComponentProps, ChildInput } from 'crt';
 import { h1, h2, h3, h4, h5, h6 } from '../html.js';
 
 export type HeadingProps = ComponentProps & {
-	level?: 1 | 2 | 3 | 4 | 5 | 6
+	level?: 1 | 2 | 3 | 4 | 5 | 6;
 };
 
 /**
@@ -10,14 +10,22 @@ export type HeadingProps = ComponentProps & {
  * @param props
  * @param children
  */
-export const Heading = (props: HeadingProps, children: any): HTMLHeadingElement => {
-	const { level = 1, ...rest } = props;
+interface HeadingOptions {
+	props?: HeadingProps;
+	children?: ChildInput | readonly ChildInput[];
+}
+
+export const Heading = (options: HeadingOptions): HTMLHeadingElement => {
+	const { level = 1, ...rest } = options?.props || {};
 
 	/**
 	 * A function that creates a heading element. By giving it an explicit type,
 	 * we create a "wider" type that can accept any of the h1-h6 factories.
 	 */
-	let el: (...args: any[]) => HTMLHeadingElement = h1;
+	let el: (options?: {
+		props?: Record<string, unknown>;
+		children?: ChildInput | readonly ChildInput[];
+	}) => HTMLHeadingElement = h1;
 
 	switch (level) {
 		case 2:
@@ -37,5 +45,5 @@ export const Heading = (props: HeadingProps, children: any): HTMLHeadingElement 
 			break;
 	}
 
-	return el(rest, children);
+	return el({ props: rest, children: options?.children });
 };

@@ -22,39 +22,45 @@ export interface KeyboardProps {
  *
  * @param props
  */
-const KeyButton = (props: KeyProps): HTMLElement => {
+interface KeyButtonOptions {
+	props: KeyProps;
+}
+
+const KeyButton = (options: KeyButtonOptions): HTMLElement => {
 	const buttonCx = cx(
 		'keyboard-key',
 		s.keyboardKey,
-		typeof props.width === 'number' && s['w' + props.width]
+		typeof options.props.width === 'number' && s['w' + options.props.width]
 	);
 
-	return Button(
-		{
+	return Button({
+		props: {
 			className: buttonCx,
-			id: `keyboard-key-${props.value.toLowerCase()}`,
+			id: `keyboard-key-${options.props.value.toLowerCase()}`,
 			dataset: {
-				keyValue: props.value,
+				keyValue: options.props.value,
 			},
 		},
-		props.display
-	);
+		children: options.props.display,
+	});
 };
+
+interface KeyboardOptions {
+	props: KeyboardProps;
+}
 
 /**
  *
  * @param props
  */
-export const Keyboard = (props: KeyboardProps): HTMLElement => {
-	return (
-		section(
-			{ className: s.keyboard },
-			props.keyMap.map((row) =>
-				div(
-					{ className: s.keyboardRow },
-					row.map((key) => KeyButton(key))
-				)
-			)
-		)
-	);
+export const Keyboard = (options: KeyboardOptions): HTMLElement => {
+	return section({
+		props: { className: s.keyboard },
+		children: options.props.keyMap.map((row) =>
+			div({
+				props: { className: s.keyboardRow },
+				children: row.map((key) => KeyButton({ props: key })),
+			})
+		),
+	});
 };

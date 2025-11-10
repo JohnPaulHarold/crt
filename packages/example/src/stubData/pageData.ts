@@ -1,4 +1,4 @@
-import type { PageData } from "../views/home";
+import type { PageData } from '../views/home';
 
 export const pageData: PageData = {
 	id: 'test',

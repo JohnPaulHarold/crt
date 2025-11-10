@@ -7,19 +7,23 @@ export type LazyImageProps = ComponentProps & {
 	src: string;
 };
 
-export const LazyImage = (props: LazyImageProps): HTMLElement => {
-	return (
-		img({
+interface LazyImageOptions {
+	props: LazyImageProps;
+}
+
+export const LazyImage = (options: LazyImageOptions): HTMLElement => {
+	return img({
+		props: {
 			dataset: {
-				src: props.src,
+				src: options.props.src,
 				fallback: '',
 				loaded: false,
 			},
 			className:
 				'lazy-image ' +
 				s.lazyImage +
-				(props.className ? ' ' + props.className : ''),
-			src: props.src,
-		})
-	);
+				(options.props.className ? ' ' + options.props.className : ''),
+			src: options.props.src,
+		},
+	});
 };

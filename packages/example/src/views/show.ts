@@ -28,8 +28,8 @@ import Logo from '../assets/Public_Domain_Mark_button.svg.png';
 import s from './show.scss';
 
 export type ShowViewInstance = BaseViewInstance & {
-	info: Record<string, any> | undefined;
-	search: Record<string, any> | undefined;
+	info: Record<string, unknown> | undefined;
+	search: Record<string, unknown> | undefined;
 	belowFold: boolean;
 	showName: string;
 	customKeyDownHandlerCleanup: (() => void) | null;
@@ -96,7 +96,11 @@ export function createShowView(options: AppViewOptions): ShowViewInstance {
 			}
 		},
 
-		customHandleKeyDown: function (this: ShowViewInstance, event: KeyboardEvent, defaultKeyDownHandler: (event: KeyboardEvent, scope?: HTMLElement) => void) {
+		customHandleKeyDown: function (
+			this: ShowViewInstance,
+			event: KeyboardEvent,
+			defaultKeyDownHandler: (event: KeyboardEvent, scope?: HTMLElement) => void
+		) {
 			const elTarget = normaliseEventTarget(event);
 			const onNav =
 				elTarget &&
@@ -128,54 +132,70 @@ export function createShowView(options: AppViewOptions): ShowViewInstance {
 			}
 
 			const bleedImage = LazyImage({
-				className: s.showBleedImage,
-				src:
-					'https://picsum.photos/seed/' +
-					this.showName.replace(' ', '') +
-					'/1280/720',
+				props: {
+					className: s.showBleedImage,
+					src:
+						'https://picsum.photos/seed/' +
+						this.showName.replace(' ', '') +
+						'/1280/720',
+				},
 			});
 
-			return div(
-				{ className: 'view', id: this.id },
-				// full bleed image
-				bleedImage,
-				LazyImage({ src: Logo, className: s.showLogo }),
-				Carousel(
-					{
-						id: 'showCarousel',
-						orientation: Orientation.VERTICAL,
-						childQuery: `.${s.showOverlay}, .${s.suggestions}`,
-						blockExit: 'up right down',
-					},
-					[
-						div(
-							{ className: s.showOverlay },
-							Heading(
-								{ level: 1, className: s.showTitle },
-								'Show ' + this.showName
-							),
-							p({ className: s.showDescription }, showData.description),
-							div(
-								{ className: s.buttonRow + ' lrud-container' },
-								Button({ id: 'play' }, 'PLAY'),
-								Button({ id: 'play-trailer' }, 'TRAILER')
-							)
-						),
-						Grid(
-							{ className: s.suggestions, columns: 4 },
-							showData.related.suggestions.map((suggestion) =>
-								a(
-									{ id: suggestion.id },
-									LazyImage({
-										id: suggestion.id,
-										src: suggestion.imageUrl,
+			return div({
+				props: { className: 'view', id: this.id },
+				children: [
+					// full bleed image
+					bleedImage,
+					LazyImage({ props: { src: Logo, className: s.showLogo } }),
+					Carousel({
+						props: {
+							id: 'showCarousel',
+							orientation: Orientation.VERTICAL,
+							childQuery: `.${s.showOverlay}, .${s.suggestions}`,
+							blockExit: 'up right down',
+						},
+						children: [
+							div({
+								props: { className: s.showOverlay },
+								children: [
+									Heading({
+										props: { level: 1, className: s.showTitle },
+										children: 'Show ' + this.showName,
+									}),
+									p({
+										props: { className: s.showDescription },
+										children: showData.description,
+									}),
+									div({
+										props: { className: s.buttonRow + ' lrud-container' },
+										children: [
+											Button({ props: { id: 'play' }, children: 'PLAY' }),
+											Button({
+												props: { id: 'play-trailer' },
+												children: 'TRAILER',
+											}),
+										],
+									}),
+								],
+							}),
+							Grid({
+								props: { className: s.suggestions, columns: 4 },
+								children: showData.related.suggestions.map((suggestion) =>
+									a({
+										props: { id: suggestion.id },
+										children: LazyImage({
+											props: {
+												id: suggestion.id,
+												src: suggestion.imageUrl,
+											},
+										}),
 									})
-								)
-							)
-						),
-					]
-				)
-			);
+								),
+							}),
+						],
+					}),
+				],
+			});
 		},
 	});
 

@@ -9,18 +9,15 @@ export type NotificationProps = ComponentProps & {
 	message: string;
 };
 
-/**
- * @param props
- */
-export function Notification(props: NotificationProps): HTMLElement {
-	const cxNotification = cx(s.notification, props.className || '');
+interface NotificationOptions {
+	props: NotificationProps;
+}
 
-	return (
-		div(
-			{
-				className: cxNotification,
-			},
-			props.message
-		)
-	);
+export function Notification(options: NotificationOptions): HTMLElement {
+	const cxNotification = cx(s.notification, options.props.className || '');
+
+	return div({
+		props: { className: cxNotification },
+		children: options.props.message,
+	});
 }

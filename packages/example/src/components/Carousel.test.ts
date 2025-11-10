@@ -29,25 +29,32 @@ describe('Carousel', () => {
 	});
 
 	test('construction', () => {
-		const assert = Carousel({ id: 'xyz', orientation: 'vertical' }, [
-			div({}, 'X'),
-			div({}, 'Y'),
-			div({}, 'Z'),
-		]);
+		const assert = Carousel({
+			props: { id: 'xyz', orientation: 'vertical' },
+			children: [
+				div({ children: 'X' }),
+				div({ children: 'Y' }),
+				div({ children: 'Z' }),
+			],
+		});
 
 		expect(assert).toBeInstanceOf(HTMLElement);
 	});
 
 	test('construction with no title', () => {
 		const c = 'xyz';
-		const assert = Carousel(
-			{
+		const assert = Carousel({
+			props: {
 				id: 'xyz',
 				orientation: 'horizontal',
 				className: c,
 			},
-			[div({}, 'X'), div({}, 'Y'), div({}, 'Z')]
-		);
+			children: [
+				div({ children: 'X' }),
+				div({ children: 'Y' }),
+				div({ children: 'Z' }),
+			],
+		});
 		const heading = assert.querySelector('h2');
 		expect(assert.className).toContain(c);
 		expect(heading).toBeFalsy();
@@ -55,14 +62,18 @@ describe('Carousel', () => {
 
 	test('construction with title', () => {
 		const title = 'EX WHY ZED';
-		const assert = Carousel(
-			{
+		const assert = Carousel({
+			props: {
 				id: 'xyz',
 				orientation: 'horizontal',
 				heading: title,
 			},
-			[div({}, 'X'), div({}, 'Y'), div({}, 'Z')]
-		);
+			children: [
+				div({ children: 'X' }),
+				div({ children: 'Y' }),
+				div({ children: 'Z' }),
+			],
+		});
 		const heading = assert.querySelector('h2');
 		expect(heading).toBeTruthy();
 		expect(heading?.textContent).toEqual(title);
@@ -71,57 +82,45 @@ describe('Carousel', () => {
 	test('applies itemMargin and handles arrow clicks when showArrows is true', () => {
 		const itemMargin = 24;
 		const children = [
-			div({ id: 'child-1' }, 'X'),
-			div({ id: 'child-2' }, 'Y'),
-			div({ id: 'child-3' }, 'Z'),
+			div({ props: { id: 'child-1' }, children: 'X' }),
+			div({ props: { id: 'child-2' }, children: 'Y' }),
+			div({ props: { id: 'child-3' }, children: 'Z' }),
 		];
-		const carouselEl = Carousel(
-			{
+		const carouselEl = Carousel({
+			props: {
 				id: 'arrow-carousel',
 				orientation: 'horizontal',
 				itemMargin: itemMargin,
 				showArrows: true,
 			},
-			children
-		);
+			children: children,
+		});
 
 		document.body.appendChild(carouselEl);
 
 		// 1. Verify itemMargin is applied correctly
-		const child1 = (
-			carouselEl.querySelector<HTMLElement>('#child-1')
-		);
-		const child2 = (
-			carouselEl.querySelector<HTMLElement>('#child-2')
-		);
-		const child3 = (
-			carouselEl.querySelector<HTMLElement>('#child-3')
-		); // This is the last child
+		const child1 = carouselEl.querySelector<HTMLElement>('#child-1');
+		const child2 = carouselEl.querySelector<HTMLElement>('#child-2');
+		const child3 = carouselEl.querySelector<HTMLElement>('#child-3'); // This is the last child
 
-		if (!child1 || !child2 || !child3) throw new Error('Child elements not found');
-
+		if (!child1 || !child2 || !child3)
+			throw new Error('Child elements not found');
 
 		expect(child1.style.marginRight).toBe(`${itemMargin}px`);
 		expect(child2.style.marginRight).toBe(`${itemMargin}px`);
 		expect(child3.style.marginRight).toBe(''); // The last child should not have a margin
 
 		// 2. Verify arrows are rendered
-		const prevArrow = (
-			carouselEl.querySelector<HTMLButtonElement>('.prev')
-		);
-		const nextArrow = (
-			carouselEl.querySelector<HTMLButtonElement>('.next')
-		);
+		const prevArrow = carouselEl.querySelector<HTMLButtonElement>('.prev');
+		const nextArrow = carouselEl.querySelector<HTMLButtonElement>('.next');
 		expect(prevArrow).toBeInstanceOf(HTMLButtonElement);
 		expect(nextArrow).toBeInstanceOf(HTMLButtonElement);
 
-		if (!prevArrow || !nextArrow) throw new Error('Arrow elements not found')
+		if (!prevArrow || !nextArrow) throw new Error('Arrow elements not found');
 
 		// 3. Simulate arrow clicks and verify service calls
 		const fakeNextElement = div({});
-		(deadSeaService.page as Mock).mockReturnValue(
-			fakeNextElement
-		);
+		(deadSeaService.page as Mock).mockReturnValue(fakeNextElement);
 
 		// Simulate clicking the "next" arrow
 		nextArrow.click();

@@ -18,7 +18,7 @@ vi.mock('crt', async () => {
 
 describe('imperativeVirtualList/createImperativeVirtualList', () => {
 	let container: HTMLDivElement;
-	let mockData: { id: number; name: string; }[];
+	let mockData: { id: number; name: string }[];
 	let renderRow: Mock;
 
 	beforeEach(() => {

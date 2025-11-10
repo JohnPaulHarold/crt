@@ -7,8 +7,8 @@ import type { SpeechServiceInstance } from './speechService.js';
 import { describe, expect, test, vi, beforeEach, afterEach } from 'vitest';
 
 describe('speechService', () => {
-	let mockSynthesis: { speak: Mock; cancel: Mock; };
-	let MockUtterance: any;
+	let mockSynthesis: { speak: Mock; cancel: Mock };
+	let MockUtterance: unknown;
 
 	// Store original dependencies
 	const originalSpeechSynthesis = window.speechSynthesis;
@@ -19,7 +19,7 @@ describe('speechService', () => {
 			speak: vi.fn(),
 			cancel: vi.fn(),
 		};
-		MockUtterance = class {
+		MockUtterance = class MockSpeechSynthesisUtterance {
 			text: string;
 			constructor(text: string) {
 				this.text = text;

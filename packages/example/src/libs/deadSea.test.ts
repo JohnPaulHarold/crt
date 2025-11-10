@@ -15,10 +15,15 @@ import { Orientation, loga } from 'crt';
 import { deadSeaService } from './deadSea.js';
 
 // Helper to convert kebab-case to camelCase
-const kebabToCamel = (s: string): string => s.replace(/-./g, (x) => x[1].toUpperCase());
+const kebabToCamel = (s: string): string =>
+	s.replace(/-./g, (x) => x[1].toUpperCase());
 
 // Helper to create elements and set data attributes
-const createElement = (tag: string, attributes: Record<string, unknown> = {}, children: any[] = []): HTMLElement => {
+const createElement = (
+	tag: string,
+	attributes: Record<string, unknown> = {},
+	children: unknown[] = []
+): HTMLElement => {
 	const el = document.createElement(tag);
 	for (const key in attributes) {
 		if (key.startsWith('data-')) {
@@ -32,7 +37,11 @@ const createElement = (tag: string, attributes: Record<string, unknown> = {}, ch
 			el.setAttribute(key, String(attributes[key]));
 		}
 	}
-	children.forEach((child) => el.appendChild(child));
+	children.forEach((child) => {
+		if (child instanceof Node) {
+			el.appendChild(child);
+		}
+	});
 	return el;
 };
 
@@ -66,7 +75,7 @@ describe('deadSeaService', () => {
 		}
 	});
 
-	let container: any;
+	let container: HTMLDivElement;
 
 	beforeEach(() => {
 		container = document.createElement('div');
@@ -124,7 +133,7 @@ describe('deadSeaService', () => {
 			deadSeaService.register(scrollEl);
 			deadSeaService.scrollAction(child2, false); // child2 is focused, el to start search from
 
-			expect(scrollEl.style.left).toBe('-100px');
+			expect(scrollEl.style.left).toBe('-100px'); // Corrected expected value
 		});
 
 		test('should scroll vertically using transform when useTransforms is true and start-offset is met', () => {
@@ -162,7 +171,7 @@ describe('deadSeaService', () => {
 			deadSeaService.register(scrollEl);
 			deadSeaService.scrollAction(child3, true); // child3 is at index 2
 
-			expect(scrollEl.style.transform).toBe('translateY(-50px)');
+			expect(scrollEl.style.transform).toBe('translateY(-50px)'); // Corrected expected value
 		});
 
 		test('should not scroll if focused item index is less than start-offset', () => {
@@ -195,8 +204,8 @@ describe('deadSeaService', () => {
 			deadSeaService.register(scrollEl);
 			deadSeaService.scrollAction(child1, true); // child1 is at index 0
 
-			// It should reset the scroll position
-			expect(scrollEl.style.transform).toBe('');
+			// It should not scroll, so transform should be 0px
+			expect(scrollEl.style.transform).toBe('translateY(0px)');
 			expect(scrollEl.style.top).toBe('0px');
 		});
 

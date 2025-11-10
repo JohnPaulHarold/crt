@@ -36,7 +36,10 @@ let currentView: BaseViewInstance | null = null;
  * @param createView - The view factory function.
  * @param options
  */
-function loadView(createView: (options: AppViewOptions) => BaseViewInstance, options: HandlerArgs) {
+function loadView(
+	createView: (options: AppViewOptions) => BaseViewInstance,
+	options: HandlerArgs
+) {
 	if (currentView) {
 		currentView.detach();
 	}
@@ -60,7 +63,7 @@ function loadView(createView: (options: AppViewOptions) => BaseViewInstance, opt
 }
 
 function App() {
-	appOutlets.main = main({ id: 'main-outlet' });
+	appOutlets.main = main({ props: { id: 'main-outlet' } });
 
 	const navItems = Object.keys(routes)
 		.filter((key) => routes[key].nav)
@@ -85,10 +88,10 @@ function App() {
 		mainNavView.attach(appOutlets.nav);
 	}
 
-	return div({ id: 'app-container', className: s.container }, [
-		appOutlets.nav,
-		appOutlets.main,
-	]);
+	return div({
+		props: { id: 'app-container', className: s.container },
+		children: [appOutlets.nav, appOutlets.main],
+	});
 }
 
 /**
@@ -96,7 +99,10 @@ function App() {
  * The index signature `[key: string]` tells TypeScript that we can access
  * its properties using a string variable.
  */
-const viewFactories: Record<string, (options: AppViewOptions) => BaseViewInstance> = {
+const viewFactories: Record<
+	string,
+	(options: AppViewOptions) => BaseViewInstance
+> = {
 	player: createPlayerView,
 	home: createHomeView,
 	search: createSearchView,

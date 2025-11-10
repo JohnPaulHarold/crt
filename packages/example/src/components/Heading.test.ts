@@ -9,7 +9,7 @@ const headings: Array<1 | 2 | 3 | 4 | 5 | 6> = [1, 2, 3, 4, 5, 6];
 
 describe('Button', () => {
 	test('construction', () => {
-		const assert = Heading({}, 'XYZ');
+		const assert = Heading({ children: 'XYZ' });
 
 		expect(assert).toBeInstanceOf(HTMLHeadingElement);
 	});
@@ -18,7 +18,7 @@ describe('Button', () => {
 		const nodeName = `h${level}`.toUpperCase();
 
 		test(`level prop of ${level} should create a ${nodeName} element type`, () => {
-			const assert = Heading({ level }, 'XYZ');
+			const assert = Heading({ props: { level }, children: 'XYZ' });
 
 			expect(assert.nodeName).toEqual(nodeName);
 		});

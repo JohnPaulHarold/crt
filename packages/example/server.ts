@@ -4,7 +4,6 @@
 
 import type { SsrRoute } from 'crt-server';
 
-
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';

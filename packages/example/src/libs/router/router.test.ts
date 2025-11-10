@@ -104,7 +104,7 @@ describe('historyRouter', () => {
 		test('programmatic navigation updates hash and triggers handler', () => {
 			// Test returns a Promise
 			const routeId = 'progNavHash';
-			let capturedArgs: any = null;
+			let capturedArgs: unknown = null;
 
 			// Create a promise that resolves when the callback is called
 			const callbackCalledPromise = new Promise((resolve) => {
@@ -143,7 +143,7 @@ describe('historyRouter', () => {
 	});
 
 	describe('history mode', () => {
-		let pushStateSpy: any;
+		let pushStateSpy: unknown;
 
 		beforeEach(() => {
 			pushStateSpy = vi.spyOn(window.history, 'pushState');

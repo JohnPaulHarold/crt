@@ -1,8 +1,7 @@
 import { loga } from 'crt';
-import { DrmLevels, type DrmLevelsType } from './DrmLevels';
+import { DrmLevels } from './DrmLevels';
 import { DrmType, type DrmTypeType } from './DrmType';
 import { KeySystem, type KeySystemType } from './KeySystem';
-
 
 const logr = loga.create('drm');
 
@@ -18,7 +17,11 @@ export interface IDrm {
 	securityLevels: SecurityLevel[];
 }
 
-function isKeySystemSupported(keySystem: KeySystemType, contentType: string, robustness: string = ''): Promise<boolean> {
+function isKeySystemSupported(
+	keySystem: KeySystemType,
+	contentType: string,
+	robustness: string = ''
+): Promise<boolean> {
 	if (!navigator.requestMediaKeySystemAccess) {
 		return Promise.reject(false);
 	}

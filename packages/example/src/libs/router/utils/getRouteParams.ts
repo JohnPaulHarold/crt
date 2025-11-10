@@ -3,7 +3,10 @@
  * @param routeUrl
  * @param pattern
  */
-export function getRouteParams(routeUrl: string, pattern: string): Record<string, string> | null {
+export function getRouteParams(
+	routeUrl: string,
+	pattern: string
+): Record<string, string> | null {
 	const routeMatcher = new RegExp(
 		'^' + pattern.replace(/({[^}]*(\w+)[^}]*})/g, '([\\w-]+)') + '$'
 	);
@@ -14,7 +17,7 @@ export function getRouteParams(routeUrl: string, pattern: string): Record<string
 
 	const variables = pattern.match(/({[^}]*(\w+)[^}]*})/g) || [];
 	const matchedVariables = match.slice(1);
-	const params: { [index: string]: string; } = {};
+	const params: { [index: string]: string } = {};
 
 	variables.forEach((variable, i) => {
 		// strip the brackets

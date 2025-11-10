@@ -2,7 +2,9 @@
  * A simple utility to parse a search string into an object.
  * It also attempts to convert values to numbers or booleans.
  */
-export function parseSearchParams(searchParams: string): Record<string, string | number | boolean> {
+export function parseSearchParams(
+	searchParams: string
+): Record<string, string | number | boolean> {
 	if (!searchParams) return {};
 	if (!searchParams) return {};
 
@@ -10,7 +12,8 @@ export function parseSearchParams(searchParams: string): Record<string, string |
 
 	searchParams.split('&').forEach((param) => {
 		if (!param) return;
-		let [key, value] = param.split('=');
+
+		const [key, value] = param.split('=');
 		// Use `value || ''` to handle valueless keys like `?foo&bar`
 		const decodedValue = decodeURIComponent(value || '');
 

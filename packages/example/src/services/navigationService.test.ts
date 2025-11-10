@@ -62,9 +62,7 @@ describe('navigationService', () => {
 			if (!initialEl) {
 				throw new Error('Test setup failed: #nav-home not found');
 			}
-			(getNextFocus as Mock).mockReturnValue(
-				initialEl
-			);
+			(getNextFocus as Mock).mockReturnValue(initialEl);
 
 			const addEventListenerSpy = vi.spyOn(window, 'addEventListener');
 
@@ -118,9 +116,7 @@ describe('navigationService', () => {
 			if (!firstElInScope) {
 				throw new Error('Test setup failed: #btn-1 not found');
 			}
-			(getNextFocus as Mock).mockReturnValue(
-				firstElInScope
-			);
+			(getNextFocus as Mock).mockReturnValue(firstElInScope);
 
 			if (!container) {
 				throw new Error('Test setup failed: container not found');
@@ -160,9 +156,7 @@ describe('navigationService', () => {
 			if (!nextEl) {
 				throw new Error('Test setup failed: #nav-search not found');
 			}
-			(getNextFocus as Mock).mockReturnValue(
-				nextEl
-			);
+			(getNextFocus as Mock).mockReturnValue(nextEl);
 
 			window.dispatchEvent(event);
 

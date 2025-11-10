@@ -3,9 +3,6 @@ import { createSignaller, h, scale } from 'crt';
 
 export type ScrollAlignment = 'start' | 'center';
 
-/**
- * @template T
- */
 export interface ReactiveVirtualListOptions<T> {
 	dataSignaller: SignallerInstance<T[]>;
 	containerHeight: number;
@@ -19,10 +16,7 @@ export interface ReactiveVirtualListOptions<T> {
 	scrollAlign?: ScrollAlignment;
 }
 
-/**
- * @template T
- */
-export interface ReactiveVirtualListInstance<T> {
+export interface ReactiveVirtualListInstance {
 	render: () => HTMLElement;
 	setFocusedIndex: (index: number) => void;
 	focusedIndexSignaller: SignallerInstance<number>;
@@ -35,7 +29,9 @@ export interface ReactiveVirtualListInstance<T> {
  * and to apply the rendered VDOM using a diffing engine.
  *
  */
-export function createReactiveVirtualList<T>(options: ReactiveVirtualListOptions<T>): ReactiveVirtualListInstance<T> {
+export function createReactiveVirtualList<T>(
+	options: ReactiveVirtualListOptions<T>
+): ReactiveVirtualListInstance {
 	const {
 		dataSignaller,
 		renderRow,
@@ -101,7 +97,7 @@ export function createReactiveVirtualList<T>(options: ReactiveVirtualListOptions
 		return { translateY, visibleItems, startIndex, endIndex };
 	};
 
-	const instance: ReactiveVirtualListInstance<T> = {
+	const instance: ReactiveVirtualListInstance = {
 		focusedIndexSignaller,
 
 		render() {
@@ -110,39 +106,35 @@ export function createReactiveVirtualList<T>(options: ReactiveVirtualListOptions
 			const totalHeight =
 				dataSignaller.getValue().length * (itemHeight + gap) - gap;
 
-			return (
-				h(
-					containerTag,
-					{
-						className: 'reactive-vlist-slider',
-						style: {
-							// The slider has the height of the entire list and is moved with transform. All values are scaled.
-							position: 'relative',
-							height: `${scale(totalHeight)}px`,
-							transform: `translateY(-${scale(translateY)}px)`,
-							transition: animate ? 'transform 0.2s ease-out' : 'none',
-						},
+			return h(containerTag, {
+				props: {
+					className: 'reactive-vlist-slider',
+					style: {
+						// The slider has the height of the entire list and is moved with transform. All values are scaled.
+						position: 'relative',
+						height: `${scale(totalHeight)}px`,
+						transform: `translateY(-${scale(translateY)}px)`,
+						transition: animate ? 'transform 0.2s ease-out' : 'none',
 					},
-					// The actual rendered items
-					visibleItems.map((item, i) => {
-						const itemIndex = startIndex + i;
-						// The library now creates the positioned and sized wrapper.
-						return h(
-							itemWrapperTag,
-							{
-								style: {
-									position: 'absolute',
-									top: `${scale(itemIndex * (itemHeight + gap))}px`,
-									left: '0',
-									right: '0',
-									height: `${scale(itemHeight)}px`, // Explicitly set height
-								},
+				},
+				// The actual rendered items
+				children: visibleItems.map((item, i) => {
+					const itemIndex = startIndex + i;
+					// The library now creates the positioned and sized wrapper.
+					return h(itemWrapperTag, {
+						props: {
+							style: {
+								position: 'absolute',
+								top: `${scale(itemIndex * (itemHeight + gap))}px`,
+								left: '0',
+								right: '0',
+								height: `${scale(itemHeight)}px`, // Explicitly set height
 							},
-							renderRow(item, itemIndex, true) // All items in visibleItems are visible
-						);
-					})
-				)
-			);
+						},
+						children: renderRow(item, itemIndex, true),
+					});
+				}),
+			});
 		},
 
 		setFocusedIndex(newIndex) {

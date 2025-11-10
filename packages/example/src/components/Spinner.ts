@@ -11,19 +11,25 @@ export type SpinnerProps = ComponentProps & {
 /**
  * @param props
  */
-export const Spinner = (props: SpinnerProps | undefined): HTMLElement => {
-	const spinnerCx = cx(s.spinnerContainer, (props && props.className) || '');
+interface SpinnerOptions {
+	props?: SpinnerProps;
+}
 
-	return (
-		div(
-			{
-				className: spinnerCx,
-				id: (props && props.id) || '',
-			},
-			div(
-				{ className: s.spinnerInner },
-				span(props && props.message ? props.message : 'Loading...')
-			)
-		)
-	);
+export const Spinner = (options?: SpinnerOptions): HTMLElement => {
+	const spinnerCx = cx(s.spinnerContainer, options?.props?.className || '');
+
+	return div({
+		props: {
+			className: spinnerCx,
+			id: options?.props?.id || '',
+		},
+		children: div({
+			props: { className: s.spinnerInner },
+			children: span({
+				children: options?.props?.message
+					? options.props.message
+					: 'Loading...',
+			}),
+		}),
+	});
 };

@@ -23,7 +23,9 @@ type PopupDemoViewInstance = BaseViewInstance & {
 /**
  * @param options
  */
-export function createPopupDemoView(options: AppViewOptions): PopupDemoViewInstance {
+export function createPopupDemoView(
+	options: AppViewOptions
+): PopupDemoViewInstance {
 	const base = createBaseView(options);
 
 	const popupDemoView: PopupDemoViewInstance = Object.assign({}, base, {
@@ -70,34 +72,33 @@ export function createPopupDemoView(options: AppViewOptions): PopupDemoViewInsta
 		},
 
 		render: function (this: PopupDemoViewInstance) {
-			const buttonEl = Button(
-				{
+			const buttonEl = Button({
+				props: {
 					id: 'btn-show-popup',
 					onclick: this.openPopup.bind(this),
 				},
-				'Show Popup'
-			);
-			return (
-				div({ className: 'view', id: this.id }, buttonEl)
-			);
+				children: 'Show Popup',
+			});
+			return div({
+				props: { className: 'view', id: this.id },
+				children: buttonEl,
+			});
 		},
 	});
 
 	return popupDemoView;
 }
-
+// Helper function to create the dialog element
 function createDialog() {
-	return Dialog(
-		{
+	return Dialog({
+		props: {
 			title: 'My Title',
 			id: 'my-title',
 		},
-		[
-			(
-				p({}, 'Hey, I have something to tell you...')
-			),
-			Button({ id: 'btn-ok' }, 'OK'),
-			Button({ id: 'btn-cancel' }, 'Cancel'),
-		]
-	);
+		children: [
+			p({ children: 'Hey, I have something to tell you...' }),
+			Button({ props: { id: 'btn-ok' }, children: 'OK' }),
+			Button({ props: { id: 'btn-cancel' }, children: 'Cancel' }),
+		],
+	});
 }

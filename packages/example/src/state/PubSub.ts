@@ -1,19 +1,23 @@
 import { loga } from 'crt';
 
 export interface PubSubInstance {
-	broadcast: (payload: any) => void;
+	broadcast: (payload: unknown) => void;
 	_resetForTesting?: () => void;
-	emit: (id: string, payload: any) => void;
-	on: (id: string, callback: (...args: any[]) => void, once?: boolean) => void;
-	once: (id: string, callback: (...args: any[]) => void) => void;
-	off: (id: string, callback?: (...args: any[]) => void) => void;
+	emit: (id: string, payload: unknown) => void;
+	on: (
+		id: string,
+		callback: (...args: unknown[]) => void,
+		once?: boolean
+	) => void;
+	once: (id: string, callback: (...args: unknown[]) => void) => void;
+	off: (id: string, callback?: (...args: unknown[]) => void) => void;
 }
 
 /**
  * Creates a new PubSub instance.
  */
 function createPubSub(): PubSubInstance {
-	let listeners: Record<string, ((...args: any[]) => void)[]> = {};
+	let listeners: Record<string, ((...args: unknown[]) => void)[]> = {};
 	const logr = loga.create('PubSub');
 
 	const instance: PubSubInstance = {
@@ -42,7 +46,7 @@ function createPubSub(): PubSubInstance {
 			listeners[id] = listeners[id] || [];
 
 			if (once) {
-				const onceWrapper = (...args: any[]) => {
+				const onceWrapper = (...args: unknown[]) => {
 					// Remove this specific listener before executing the callback.
 					instance.off(id, onceWrapper);
 					callback(...args);
