@@ -52,4 +52,4 @@ export { noop } from './utils/function/noop.js';
 export { diff, stringToHTML } from './differenceEngine.js';
 
 // async
-export { request as httpRequest } from './utils/async/request.js';
+export { httpRequest } from './utils/async/httpRequest.js';
