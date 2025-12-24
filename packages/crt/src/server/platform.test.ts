@@ -72,7 +72,7 @@ describe('serverPlatform', () => {
 
 	test('setData should add data attributes', () => {
 		const el = serverPlatform.createElement('div');
-		// Note: The $dataSet utility handles camelCase to kebab-case conversion.
+		// Note: The dataSet utility handles camelCase to kebab-case conversion.
 		// The platform's setData method expects the final attribute names.
 		serverPlatform.setData(el, { userId: '123', theme: 'dark' });
 		expect(el.attributes).toEqual({

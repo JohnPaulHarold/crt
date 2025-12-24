@@ -10,7 +10,7 @@
  * @param event The event object.
  * @returns The normalized event target.
  */
-export function normaliseEventTarget(
+export function normalizeEventTarget(
 	event: KeyboardEvent | MouseEvent
 ): EventTarget | Element | null {
 	// This is a browser-only utility. In a server environment, return null.

@@ -7,7 +7,7 @@
  * @returns A new throttled function.
  * @example
  * // Create a throttled function to handle rapid key presses.
- * const handleKeyDown = createThrottle((event) => {
+ * const handleKeyDown = throttle((event) => {
  *   console.log('Key pressed:', event.key);
  * }, 100);
  *
@@ -16,7 +16,7 @@
  * // fast the user presses keys.
  * window.addEventListener('keydown', handleKeyDown);
  */
-export function createThrottle<T extends (...args: unknown[]) => unknown>(
+export function throttle<T extends (...args: unknown[]) => unknown>(
 	callback: T,
 	time: number
 ): (...args: Parameters<T>) => void {

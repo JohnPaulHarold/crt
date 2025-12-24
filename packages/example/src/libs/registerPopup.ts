@@ -1,4 +1,4 @@
-import { normaliseEventTarget } from 'crt';
+import { normalizeEventTarget } from 'crt';
 import { navigationService } from '../services/navigationService.js';
 
 export interface RegisteredPopup {
@@ -12,7 +12,7 @@ export function registerPopup(
 	outlet: HTMLElement
 ): RegisteredPopup {
 	const handleClick = (event: MouseEvent) => {
-		const elTarget = normaliseEventTarget(event);
+		const elTarget = normalizeEventTarget(event);
 
 		if (elTarget instanceof HTMLElement) {
 			handler(elTarget.id);

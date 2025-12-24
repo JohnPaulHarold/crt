@@ -22,7 +22,7 @@ export interface RequestOptions {
 	body?: string;
 }
 
-export function request<T>(options: RequestOptions): Promise<T> {
+export function httpRequest<T>(options: RequestOptions): Promise<T> {
 	return new Promise((resolve, reject) => {
 		const xhr = new XMLHttpRequest();
 

@@ -1,13 +1,13 @@
-import type { BaseViewInstance, SignallerInstance } from 'crt';
+import type { BaseViewInstance, SignalerInstance } from 'crt';
 import type { AppViewOptions } from '../index.js';
 import type { RailItem } from './home.js';
 
 import {
-	$dataGet,
+	dataGet,
 	createBaseView,
 	Orientation,
-	normaliseEventTarget,
-	createSignaller,
+	normalizeEventTarget,
+	createSignaler,
 	watch,
 	diff,
 } from 'crt';
@@ -28,9 +28,9 @@ function handleClick(
 	this: SearchViewInstance,
 	event: KeyboardEvent | MouseEvent
 ) {
-	const elTarget = normaliseEventTarget(event);
+	const elTarget = normalizeEventTarget(event);
 	if (elTarget instanceof HTMLElement) {
-		const value = $dataGet(elTarget, 'keyValue');
+		const value = dataGet(elTarget, 'keyValue');
 		if (typeof value !== 'string') return;
 
 		// The navigationService now handles translating 'Enter' keydowns into clicks,
@@ -123,7 +123,7 @@ function getTemplate(this: SearchViewInstance): HTMLElement {
 }
 
 type SearchViewInstance = BaseViewInstance & {
-	searchTerm: SignallerInstance<string>;
+	searchTerm: SignalerInstance<string>;
 	boundHandleClick?: (event: MouseEvent) => void;
 	stopWatching?: () => void;
 	destructor: () => void;
@@ -137,7 +137,7 @@ export function createSearchView(options: AppViewOptions): SearchViewInstance {
 	);
 
 	const searchView: SearchViewInstance = Object.assign({}, base, {
-		searchTerm: createSignaller(''),
+		searchTerm: createSignaler(''),
 		boundHandleClick: undefined,
 		stopWatching: undefined,
 

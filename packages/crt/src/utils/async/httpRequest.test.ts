@@ -10,7 +10,7 @@ import {
 	afterEach,
 	type Mock,
 } from 'vitest';
-import { request } from './request.js';
+import { httpRequest } from './httpRequest.js';
 
 interface MockXHR {
 	open: Mock;
@@ -24,7 +24,7 @@ interface MockXHR {
 	responseType: string;
 }
 
-describe('request', () => {
+describe('httpRequest', () => {
 	let mockXHR: MockXHR;
 
 	beforeEach(() => {
@@ -64,7 +64,7 @@ describe('request', () => {
 			mockXHR.onreadystatechange(); // Trigger the handler
 		});
 
-		const data = await request({ url: '/api/data', type: 'json' });
+		const data = await httpRequest({ url: '/api/data', type: 'json' });
 
 		expect(mockXHR.open).toHaveBeenCalledWith('GET', '/api/data', true);
 		expect(mockXHR.send).toHaveBeenCalled();
@@ -81,7 +81,7 @@ describe('request', () => {
 			mockXHR.onreadystatechange();
 		});
 
-		const data = await request({ url: '/api/xml', type: 'text' });
+		const data = await httpRequest({ url: '/api/xml', type: 'text' });
 		expect(data).toBe(mockResponseText);
 	});
 
@@ -93,7 +93,7 @@ describe('request', () => {
 			mockXHR.onreadystatechange();
 		});
 
-		await expect(request({ url: '/api/not-found' })).rejects.toEqual({
+		await expect(httpRequest({ url: '/api/not-found' })).rejects.toEqual({
 			status: 404,
 			statusText: 'Not Found',
 		});
@@ -103,7 +103,7 @@ describe('request', () => {
 		const headers = { 'Content-Type': 'application/json' };
 
 		// We don't need to await the result, just check if the setup is correct
-		request({
+		httpRequest({
 			url: '/api/data',
 			method: 'POST',
 			headers: headers,

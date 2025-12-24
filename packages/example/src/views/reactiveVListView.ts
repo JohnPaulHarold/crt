@@ -1,9 +1,9 @@
-import type { BaseViewInstance, SignallerInstance } from 'crt';
+import type { BaseViewInstance, SignalerInstance } from 'crt';
 import type { ReactiveVirtualListInstance } from '../libs/reactiveVirtualList.js';
 import type { AppViewOptions } from '../index.js';
 import type { MoveEventPayload } from './vlist.js';
 
-import { createBaseView, createSignaller, watch, diff } from 'crt';
+import { createBaseView, createSignaler, watch, diff } from 'crt';
 import { div, p, section, a } from '../html.js';
 import { createReactiveVirtualList } from '../libs/reactiveVirtualList.js';
 import {
@@ -60,7 +60,7 @@ function getTemplate(this: ReactiveVListViewInstance): HTMLElement {
 }
 
 type ReactiveVListViewInstance = BaseViewInstance & {
-	dataSignaller: SignallerInstance<VListItem[]>;
+	dataSignaller: SignalerInstance<VListItem[]>;
 	vl: ReactiveVirtualListInstance | null;
 	stopWatching?: () => void;
 	boundHandleMove?: (event: MoveEventPayload) => void;
@@ -73,7 +73,7 @@ export function createReactiveVListView(
 	const base = createBaseView(options);
 
 	const reactiveVListView: ReactiveVListViewInstance = Object.assign({}, base, {
-		dataSignaller: createSignaller(buildBigData(600)),
+		dataSignaller: createSignaler(buildBigData(600)),
 		vl: null,
 		stopWatching: undefined,
 		boundHandleMove: undefined,

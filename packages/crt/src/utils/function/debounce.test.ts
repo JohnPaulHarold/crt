@@ -2,9 +2,9 @@
  * @vitest-environment jsdom
  */
 import { describe, expect, test, vi, beforeEach, afterEach } from 'vitest';
-import { createDebounce } from './debounce.js';
+import { debounce } from './debounce.js';
 
-describe('createDebounce', () => {
+describe('debounce', () => {
 	beforeEach(() => {
 		vi.useFakeTimers();
 	});
@@ -15,7 +15,7 @@ describe('createDebounce', () => {
 
 	test('should call the callback after the specified delay', () => {
 		const callback = vi.fn();
-		const debouncedFn = createDebounce(callback, 200);
+		const debouncedFn = debounce(callback, 200);
 		debouncedFn();
 
 		// Immediately, the callback should not have been called
@@ -30,7 +30,7 @@ describe('createDebounce', () => {
 
 	test('should reset the timer if called again before the delay has passed', () => {
 		const callback = vi.fn();
-		const debouncedFn = createDebounce(callback, 200);
+		const debouncedFn = debounce(callback, 200);
 
 		// First call
 		debouncedFn();
@@ -53,7 +53,7 @@ describe('createDebounce', () => {
 
 	test('should only execute the final call when called multiple times rapidly', () => {
 		const callback = vi.fn();
-		const debouncedFn = createDebounce(callback, 100);
+		const debouncedFn = debounce(callback, 100);
 
 		debouncedFn();
 		debouncedFn();
@@ -67,8 +67,8 @@ describe('createDebounce', () => {
 		const callback1 = vi.fn();
 		const callback2 = vi.fn();
 
-		const debouncedFn1 = createDebounce(callback1, 100);
-		const debouncedFn2 = createDebounce(callback2, 100);
+		const debouncedFn1 = debounce(callback1, 100);
+		const debouncedFn2 = debounce(callback2, 100);
 
 		debouncedFn1();
 		debouncedFn2(); // This should NOT cancel the timer for callback1

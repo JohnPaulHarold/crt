@@ -8,7 +8,7 @@
  * @returns A new debounced function.
  * @example
  * // Create a debounced function to handle window resizing.
- * const handleResize = createDebounce(() => {
+ * const handleResize = debounce(() => {
  *   console.log('Window resized to:', window.innerWidth);
  * }, 250);
  *
@@ -16,7 +16,7 @@
  * // The console.log will only fire 250ms after the user stops resizing.
  * window.addEventListener('resize', handleResize);
  */
-export function createDebounce<T extends (...args: unknown[]) => unknown>(
+export function debounce<T extends (...args: unknown[]) => unknown>(
 	callback: T,
 	time: number
 ): (...args: Parameters<T>) => void {

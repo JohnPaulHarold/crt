@@ -2,18 +2,18 @@ import type {
 	BaseViewInstance,
 	ComponentProps,
 	OrientationType,
-	SignallerInstance,
+	SignalerInstance,
 } from 'crt';
 import type { AppViewOptions } from '../index.js';
 
 import {
-	normaliseEventTarget,
+	normalizeEventTarget,
 	AdditionalKeys,
 	Orientation,
-	$dataGet,
+	dataGet,
 	assertKey,
 	createBaseView,
-	createSignaller,
+	createSignaler,
 	watch,
 	diff,
 	loga,
@@ -74,7 +74,7 @@ function findNextBackStop(el: HTMLElement | null): HTMLElement | undefined {
 		return;
 	}
 
-	if ($dataGet(el, 'backStop')) {
+	if (dataGet(el, 'backStop')) {
 		const firstChild = el.children[0];
 
 		// if you're already focused on the back-stop of the container
@@ -112,7 +112,7 @@ function handleBack(event: Event) {
 		event instanceof KeyboardEvent &&
 		assertKey(event, AdditionalKeys.BACKSPACE)
 	) {
-		const elTarget = normaliseEventTarget(event);
+		const elTarget = normalizeEventTarget(event);
 
 		if (elTarget instanceof HTMLElement) {
 			const nextBack = findNextBackStop(elTarget);
@@ -172,7 +172,7 @@ function buildCarousels(data: PageData): HTMLElement {
 }
 
 type HomeViewInstance = BaseViewInstance & {
-	pageData: SignallerInstance<PageData | null>;
+	pageData: SignalerInstance<PageData | null>;
 	stopWatching?: () => void;
 	destructor: () => void;
 	fetchData: () => void;
@@ -188,7 +188,7 @@ export function createHomeView(options: AppViewOptions): HomeViewInstance {
 	const homeView: HomeViewInstance = Object.assign({}, base, {
 		// If initialData is provided (e.g., from SSR), use it.
 		// Otherwise, start with null.
-		pageData: createSignaller<PageData | null>(
+		pageData: createSignaler<PageData | null>(
 			(options.initialData as unknown as PageData) || null
 		),
 		stopWatching: undefined,

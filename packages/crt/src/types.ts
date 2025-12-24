@@ -30,12 +30,12 @@ export interface BaseViewInstance {
 	destructor?: () => void;
 }
 
-export interface ReadonlySignaller<T> {
+export interface ReadonlySignaler<T> {
 	getValue: () => T;
-	wait: (callback: (instance: ReadonlySignaller<T>) => void) => void;
-	unwait: (callback: (instance: ReadonlySignaller<T>) => void) => void;
+	wait: (callback: (instance: ReadonlySignaler<T>) => void) => void;
+	unwait: (callback: (instance: ReadonlySignaler<T>) => void) => void;
 }
-export interface SignallerInstance<T> extends ReadonlySignaller<T> {
+export interface SignalerInstance<T> extends ReadonlySignaler<T> {
 	setValue: (newValue: T) => void;
 }
 

@@ -1,11 +1,11 @@
-import type { BaseViewInstance, ChildInput, SignallerInstance } from 'crt';
+import type { BaseViewInstance, ChildInput, SignalerInstance } from 'crt';
 import type { AppViewOptions } from '../index.js';
 
 import {
-	normaliseEventTarget,
+	normalizeEventTarget,
 	diff,
 	createBaseView,
-	createSignaller,
+	createSignaler,
 	watch,
 } from 'crt';
 
@@ -40,7 +40,7 @@ const lyrics = [
 ];
 
 function handleClick(this: DiffViewInstance, event: MouseEvent) {
-	const elTarget = normaliseEventTarget(event);
+	const elTarget = normalizeEventTarget(event);
 
 	if (elTarget instanceof HTMLElement) {
 		// The navigationService now handles translating 'Enter' keydowns into clicks,
@@ -80,7 +80,7 @@ function getTemplate(this: DiffViewInstance): HTMLElement {
 }
 
 type DiffViewInstance = BaseViewInstance & {
-	lyricCount: SignallerInstance<number>;
+	lyricCount: SignalerInstance<number>;
 	boundHandleClick?: (event: MouseEvent) => void;
 	stopWatching?: () => void;
 	destructor: () => void;
@@ -94,7 +94,7 @@ export function createDiffView(options: AppViewOptions): DiffViewInstance {
 	);
 
 	const diffView: DiffViewInstance = Object.assign({}, base, {
-		lyricCount: createSignaller(0),
+		lyricCount: createSignaler(0),
 		boundHandleClick: undefined,
 		stopWatching: undefined,
 

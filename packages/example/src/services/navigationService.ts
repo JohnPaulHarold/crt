@@ -3,11 +3,11 @@ import type { PubSubInstance } from '../state/PubSub.js';
 import { getNextFocus } from '@bbc/tv-lrud-spatial';
 
 import {
-	$dataGet,
+	dataGet,
 	assertKey,
 	getDirectionFromKeyCode,
 	collectionToArray,
-	normaliseEventTarget,
+	normalizeEventTarget,
 	AdditionalKeys,
 	Direction,
 } from 'crt';
@@ -168,7 +168,7 @@ function createNavigationService(): NavigationServiceInstance {
 	function _getInitialFocusInContainer(
 		containerEl: HTMLElement
 	): HTMLElement | null {
-		const lastFocusedId = $dataGet(containerEl, 'focus');
+		const lastFocusedId = dataGet(containerEl, 'focus');
 		if (lastFocusedId && typeof lastFocusedId === 'string') {
 			// Query within the container for the element with the stored ID.
 			const lastFocusedEl = containerEl.querySelector('#' + lastFocusedId);
@@ -187,12 +187,12 @@ function createNavigationService(): NavigationServiceInstance {
 	 * @private
 	 */
 	function handleEnter(event: KeyboardEvent) {
-		const elTarget = normaliseEventTarget(event);
+		const elTarget = normalizeEventTarget(event);
 
 		// If the target is an anchor, handle it specially.
 		if (elTarget && elTarget instanceof HTMLAnchorElement) {
 			// If it's an external link, perform a full page navigation.
-			if ($dataGet(elTarget, 'external')) {
+			if (dataGet(elTarget, 'external')) {
 				window.location.href = elTarget.href;
 				return;
 			}
@@ -238,7 +238,7 @@ function createNavigationService(): NavigationServiceInstance {
 			event.preventDefault();
 
 			let nextFocus;
-			const elTarget = normaliseEventTarget(event);
+			const elTarget = normalizeEventTarget(event);
 
 			if (elTarget === document.body && _lastFocus instanceof HTMLElement) {
 				focus(_lastFocus);

@@ -1,10 +1,10 @@
-import type { SignallerInstance } from 'crt';
-import { createSignaller, h, scale } from 'crt';
+import type { SignalerInstance } from 'crt';
+import { createSignaler, h, scale } from 'crt';
 
 export type ScrollAlignment = 'start' | 'center';
 
 export interface ReactiveVirtualListOptions<T> {
-	dataSignaller: SignallerInstance<T[]>;
+	dataSignaller: SignalerInstance<T[]>;
 	containerHeight: number;
 	renderRow: (item: T, index: number, isVisible: boolean) => HTMLElement;
 	itemHeight: number;
@@ -19,7 +19,7 @@ export interface ReactiveVirtualListOptions<T> {
 export interface ReactiveVirtualListInstance {
 	render: () => HTMLElement;
 	setFocusedIndex: (index: number) => void;
-	focusedIndexSignaller: SignallerInstance<number>;
+	focusedIndexSignaller: SignalerInstance<number>;
 }
 
 /**
@@ -46,7 +46,7 @@ export function createReactiveVirtualList<T>(
 	} = options;
 
 	// Internal state managed by a signaller
-	const focusedIndexSignaller = createSignaller(0);
+	const focusedIndexSignaller = createSignaler(0);
 
 	/**
 	 * A pure function that calculates the visible window of items based on current state.
