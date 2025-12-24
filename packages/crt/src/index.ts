@@ -53,3 +53,4 @@ export { diff, stringToHTML } from './differenceEngine.js';
 
 // async
 export { httpRequest } from './utils/async/httpRequest.js';
+export { loadScript } from './utils/async/loadScript.js';
