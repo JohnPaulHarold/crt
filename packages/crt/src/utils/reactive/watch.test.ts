@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import { describe, expect, test, vi, beforeEach, afterEach } from 'vitest';
-import { createSignaller } from './createSignaller.js';
+import { createSignaler } from './createSignaler.js';
 import { watch } from './watch.js';
 
 describe('watch', () => {
@@ -15,7 +15,7 @@ describe('watch', () => {
 	});
 
 	test('should call the handler when a signaller changes', () => {
-		const s1 = createSignaller('a');
+		const s1 = createSignaler('a');
 		const handler = vi.fn();
 
 		watch([s1], handler);
@@ -28,8 +28,8 @@ describe('watch', () => {
 	});
 
 	test('should batch multiple changes into a single handler call', () => {
-		const s1 = createSignaller('a');
-		const s2 = createSignaller(1);
+		const s1 = createSignaler('a');
+		const s2 = createSignaler(1);
 		const handler = vi.fn();
 
 		watch([s1, s2], handler);
@@ -46,7 +46,7 @@ describe('watch', () => {
 	});
 
 	test('stop function should unregister the watcher', () => {
-		const s1 = createSignaller('a');
+		const s1 = createSignaler('a');
 		const handler = vi.fn();
 
 		const stop = watch([s1], handler);
@@ -59,9 +59,9 @@ describe('watch', () => {
 	});
 
 	test('handler should receive an array of only the changed signallers', () => {
-		const s1 = createSignaller('a');
-		const s2 = createSignaller(1); // This one won't change
-		const s3 = createSignaller(true);
+		const s1 = createSignaler('a');
+		const s2 = createSignaler(1); // This one won't change
+		const s3 = createSignaler(true);
 		const handler = vi.fn();
 
 		watch([s1, s2, s3], handler);

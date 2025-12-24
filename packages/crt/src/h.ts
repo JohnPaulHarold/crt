@@ -24,8 +24,6 @@ export type ChildInput =
  * (which corresponds to the `htmlFor` property).
  */
 const attributeExceptions = [
-	// 'role' was previously here, but it's a direct property on HTMLElement,
-	// so it's correctly handled by the `propName in el` check.
 	'd',
 	'r',
 	'cx',
@@ -178,6 +176,3 @@ export function h<K extends keyof HTMLElementTagNameMap>(
 
 	return el;
 }
-
-// Kept for compatibility
-export const makeElement = h;

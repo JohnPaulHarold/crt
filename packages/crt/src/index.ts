@@ -2,7 +2,7 @@
 export { loga, LogLevel } from './utils/loga/loga.js';
 
 // Core Types
-export * from './types.js'; // This ensures any actual exports from types.js are passed through.
+export * from './types.js';
 
 // Platform
 export { setPlatform, getPlatform } from './platform.js';
@@ -16,20 +16,20 @@ export { Direction, type DirectionType } from './models/Direction.js';
 export { Orientation, type OrientationType } from './models/Orientation.js';
 
 // Hyperscript
-export { h, makeElement, type HOptions, type ChildInput } from './h.js';
+export { h, type HOptions, type ChildInput } from './h.js';
 
 // Views
 export { createBaseView } from './createBaseView.js';
 
 // Reactive
 export { createReactive } from './utils/object/createReactive.js';
-export { createSignaller } from './utils/reactive/createSignaller.js';
+export { createSignaler as createSignaler } from './utils/reactive/createSignaler.js';
 export { watch } from './utils/reactive/watch.js';
 
 // Utils - DOM
-export { $dataGet } from './utils/dom/$dataGet.js';
-export { $dataSet } from './utils/dom/$dataSet.js';
-export { normaliseEventTarget } from './utils/dom/normaliseEventTarget.js';
+export { dataGet } from './utils/dom/dataGet.js';
+export { dataSet } from './utils/dom/dataSet.js';
+export { normalizeEventTarget } from './utils/dom/normalizeEventTarget.js';
 export { removeElement } from './utils/dom/removeElement.js';
 export { cx } from './utils/dom/cx.js';
 
@@ -44,12 +44,12 @@ export { transformProp } from './utils/style/prefix.js';
 
 export { collectionToArray } from './utils/dom/collectionToArray.js';
 
-export { createThrottle } from './utils/function/throttle.js';
-export { createDebounce } from './utils/function/debounce.js';
+export { createThrottle as throttle } from './utils/function/throttle.js';
+export { createDebounce as debounce } from './utils/function/debounce.js';
 export { noop } from './utils/function/noop.js';
 
 // VDOM
 export { diff, stringToHTML } from './differenceEngine.js';
 
 // async
-export { request } from './utils/async/request.js';
+export { request as httpRequest } from './utils/async/request.js';

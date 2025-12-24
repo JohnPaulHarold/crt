@@ -15,7 +15,7 @@ The `packages/example` application is a functional single-page app that serves a
 
 Key features demonstrated:
 
-- **Reactive UI Pattern**: The **Player**, **Search**, and **Diff** views are built using the new declarative reactive pattern (`createSignaller`, `watch`, `diff`), showing how to build dynamic UIs that automatically update when state changes.
+- **Reactive UI Pattern**: The **Player**, **Search**, and **Diff** views are built using the new declarative reactive pattern (`createSignaler`, `watch`, `diff`), showing how to build dynamic UIs that automatically update when state changes.
 - **Spatial Navigation**: A robust `navigationService` that wraps `@bbc/tv-lrud-spatial` to provide keyboard-based 2D navigation, a core requirement for TV applications.
 - **Component-Based Architecture**: Reusable components like `Carousel`, `Tile`, `Keyboard`, and `Dialog` are used to build complex views.
 - **DOM Diffing**: The **Diff** view provides a clear example of the VDOM diffing engine in action, efficiently updating the DOM to reflect state changes.

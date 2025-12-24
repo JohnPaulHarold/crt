@@ -1,4 +1,4 @@
-import { type SignallerInstance, createSignaller } from 'crt';
+import { type SignalerInstance, createSignaler } from 'crt';
 
 export interface FakePlayerOptions {
 	duration?: number;
@@ -6,9 +6,9 @@ export interface FakePlayerOptions {
 
 interface FakePlayerReturnInterface {
 	state: {
-		isPlaying: SignallerInstance<boolean>;
-		isMuted: SignallerInstance<boolean>;
-		currentTime: SignallerInstance<number>;
+		isPlaying: SignalerInstance<boolean>;
+		isMuted: SignalerInstance<boolean>;
+		currentTime: SignalerInstance<number>;
 		duration: number;
 	};
 	controls: {
@@ -27,9 +27,9 @@ export function createFakePlayer(
 	const duration = options.duration || 100;
 
 	const state = {
-		isPlaying: createSignaller(false),
-		isMuted: createSignaller(false),
-		currentTime: createSignaller(0),
+		isPlaying: createSignaler(false),
+		isMuted: createSignaler(false),
+		currentTime: createSignaler(0),
 		duration: duration,
 	};
 

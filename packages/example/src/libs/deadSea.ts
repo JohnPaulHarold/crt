@@ -32,7 +32,7 @@
 import {
 	Orientation,
 	collectionToArray,
-	$dataGet,
+	dataGet,
 	transformProp,
 	loga,
 	OrientationType,
@@ -74,7 +74,7 @@ interface CachedGeometry {
  * @returns The cached geometry or null if not found.
  */
 function getCachedGeometry(scrollEl: HTMLElement): CachedGeometry | null {
-	const scrollId = $dataGet(scrollEl, 'deadseaId');
+	const scrollId = dataGet(scrollEl, 'deadseaId');
 	if (!scrollId || typeof scrollId !== 'string') {
 		logr.error(
 			'DeadSea element requires a "data-deadsea-id" attribute for caching.',
@@ -98,9 +98,9 @@ function getCachedGeometry(scrollEl: HTMLElement): CachedGeometry | null {
  */
 function buildGeometry(scrollEl: HTMLElement): CachedGeometry | null {
 	const orientation =
-		$dataGet(scrollEl, 'deadseaOrientation') || Orientation.HORIZONTAL;
-	const childQuery = $dataGet(scrollEl, 'deadseaChildQuery');
-	const startQs = $dataGet(scrollEl, 'deadseaScrollStartQuery');
+		dataGet(scrollEl, 'deadseaOrientation') || Orientation.HORIZONTAL;
+	const childQuery = dataGet(scrollEl, 'deadseaChildQuery');
+	const startQs = dataGet(scrollEl, 'deadseaScrollStartQuery');
 	const offsetProp =
 		orientation === Orientation.HORIZONTAL ? 'offsetLeft' : 'offsetTop';
 	const dimensionProp =
@@ -171,8 +171,8 @@ function updateScrollPosition(scrollEl: HTMLElement, useTransforms: boolean) {
 	const { offsets, scrollables, totalContentSize } = geometry;
 	const focusedEl = document.querySelector(focusedQuery);
 
-	const orientation = $dataGet(scrollEl, 'deadseaOrientation')
-		? ($dataGet(scrollEl, 'deadseaOrientation') as OrientationType)
+	const orientation = dataGet(scrollEl, 'deadseaOrientation')
+		? (dataGet(scrollEl, 'deadseaOrientation') as OrientationType)
 		: Orientation.HORIZONTAL;
 
 	const containerSize =
@@ -187,7 +187,7 @@ function updateScrollPosition(scrollEl: HTMLElement, useTransforms: boolean) {
 		return;
 	}
 
-	const deadseaStartPaddingItems = $dataGet(
+	const deadseaStartPaddingItems = dataGet(
 		scrollEl,
 		'deadseaStartPaddingItems'
 	);
@@ -284,7 +284,7 @@ export const deadSeaService: DeadSeaServiceInterface = {
 	},
 
 	register(scrollEl) {
-		const scrollId = $dataGet(scrollEl, 'deadseaId');
+		const scrollId = dataGet(scrollEl, 'deadseaId');
 		if (!scrollId || typeof scrollId !== 'string') {
 			logr.error(
 				'[deadSea.register] Cannot register an element without a "data-deadsea-id".',
@@ -325,7 +325,7 @@ export const deadSeaService: DeadSeaServiceInterface = {
 
 		const { scrollables: items } = geometry;
 		const orientation =
-			$dataGet(scrollEl, 'deadseaOrientation') || Orientation.HORIZONTAL;
+			dataGet(scrollEl, 'deadseaOrientation') || Orientation.HORIZONTAL;
 		const isHorizontal = orientation === Orientation.HORIZONTAL;
 
 		// The `items` are now retrieved from the cache.

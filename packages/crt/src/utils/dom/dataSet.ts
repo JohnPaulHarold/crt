@@ -9,7 +9,7 @@ import { getPlatform } from '../../platform.js';
 const camelToKebab = (str: string): string =>
 	str.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
 
-export function $dataSet(
+export function dataSet(
 	el: HTMLElement,
 	dataProp: string,
 	value: string | boolean | number | object

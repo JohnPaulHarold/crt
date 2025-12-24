@@ -3,7 +3,7 @@ import type { AppViewOptions } from '../index.js';
 
 import {
 	assertKey,
-	normaliseEventTarget,
+	normalizeEventTarget,
 	Orientation,
 	Direction,
 	createBaseView,
@@ -101,7 +101,7 @@ export function createShowView(options: AppViewOptions): ShowViewInstance {
 			event: KeyboardEvent,
 			defaultKeyDownHandler: (event: KeyboardEvent, scope?: HTMLElement) => void
 		) {
-			const elTarget = normaliseEventTarget(event);
+			const elTarget = normalizeEventTarget(event);
 			const onNav =
 				elTarget &&
 				elTarget instanceof HTMLElement &&

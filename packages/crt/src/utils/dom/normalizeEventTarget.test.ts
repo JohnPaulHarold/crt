@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import { describe, expect, test, afterEach } from 'vitest';
-import { normaliseEventTarget } from './normaliseEventTarget.js';
+import { normalizeEventTarget } from './normalizeEventTarget.js';
 
 function createMockMouseEvent(partialEvent: Partial<MouseEvent>): MouseEvent {
 	return {
@@ -102,7 +102,7 @@ function createMockMouseEvent(partialEvent: Partial<MouseEvent>): MouseEvent {
 	};
 }
 
-describe('normaliseEventTarget', () => {
+describe('normalizeEventTarget', () => {
 	afterEach(() => {
 		// Clean up the DOM after each test
 		document.body.innerHTML = '';
@@ -111,7 +111,7 @@ describe('normaliseEventTarget', () => {
 	test('should return event.target if it is a valid element', () => {
 		const button = document.createElement('button');
 		const event = createMockMouseEvent({ target: button });
-		const result = normaliseEventTarget(event);
+		const result = normalizeEventTarget(event);
 		expect(result).toBe(button);
 	});
 
@@ -125,7 +125,7 @@ describe('normaliseEventTarget', () => {
 
 		// Simulate an event where the target is the window
 		const event = createMockMouseEvent({ target: window });
-		const result = normaliseEventTarget(event);
+		const result = normalizeEventTarget(event);
 
 		// Expect the fallback to the active element
 		expect(result).toBe(input);
@@ -143,7 +143,7 @@ describe('normaliseEventTarget', () => {
 
 		// Simulate an event where the target is null
 		const event = createMockMouseEvent({ target: null });
-		const result = normaliseEventTarget(event);
+		const result = normalizeEventTarget(event);
 
 		// Expect the fallback to the active element
 		expect(result).toBe(link);

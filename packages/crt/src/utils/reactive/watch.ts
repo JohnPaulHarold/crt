@@ -1,4 +1,4 @@
-import type { ReadonlySignaller } from '../../types.js';
+import type { ReadonlySignaler } from '../../types.js';
 
 /**
  * Watches an array of signallers and calls a handler when any of them change.
@@ -7,7 +7,7 @@ import type { ReadonlySignaller } from '../../types.js';
  * @param handler
  * @returns A function to stop watching.
  */
-export function watch<T extends readonly ReadonlySignaller<unknown>[]>(
+export function watch<T extends readonly ReadonlySignaler<unknown>[]>(
 	signallers: [...T],
 	handler: (changedSignallers: Array<T[number]>) => void
 ): () => void {
@@ -37,8 +37,8 @@ export function watch<T extends readonly ReadonlySignaller<unknown>[]>(
 	signallers.forEach((s) => {
 		// higher-order functions on heterogeneous arrays (unions of function types).
 		// The `wait` method on each signaller expects a callback specific to its own type
-		// (e.g., `(instance: ReadonlySignaller<string>) => void`), but our `callback` is a
-		// more generic `(instance: ReadonlySignaller<string> | ReadonlySignaller<number>) => void`.
+		// (e.g., `(instance: ReadonlySignaler<string>) => void`), but our `callback` is a
+		// more generic `(instance: ReadonlySignaler<string> | ReadonlySignaler<number>) => void`.
 		// This is safe because the callback only uses properties common to all signallers.
 		s.wait(callback);
 	});

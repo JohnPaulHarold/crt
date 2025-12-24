@@ -1,16 +1,16 @@
-import type { SignallerInstance } from '../../types.js';
+import type { SignalerInstance } from '../../types.js';
 
 /**
  * Creates a "signaller" object that holds a value and can notify
  * listeners when the value changes.
  */
-export function createSignaller<T>(initialValue: T): SignallerInstance<T> {
+export function createSignaler<T>(initialValue: T): SignalerInstance<T> {
 	let _value = initialValue;
 	const _waiting: ((
-		instance: SignallerInstance<T> | Readonly<SignallerInstance<T>>
+		instance: SignalerInstance<T> | Readonly<SignalerInstance<T>>
 	) => void)[] = [];
 
-	const signaller: SignallerInstance<T> = {
+	const signaller: SignalerInstance<T> = {
 		getValue: () => _value,
 		setValue: (newValue) => {
 			if (_value !== newValue) {

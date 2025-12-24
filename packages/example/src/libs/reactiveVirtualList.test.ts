@@ -2,11 +2,11 @@
  * @vitest-environment jsdom
  */
 import type { Mock } from 'vitest';
-import type { SignallerInstance } from 'crt';
+import type { SignalerInstance } from 'crt';
 
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
 import { createReactiveVirtualList } from './reactiveVirtualList.js';
-import { createSignaller } from 'crt';
+import { createSignaler } from 'crt';
 
 // Mock the h function to just create simple divs with attributes for easier inspection
 vi.mock('../h.js', () => ({
@@ -43,7 +43,7 @@ vi.mock('../h.js', () => ({
 
 describe('reactiveVirtualList/createReactiveVirtualList', () => {
 	let mockData: { id: number; name: string }[];
-	let dataSignaller: SignallerInstance<{ id: number; name: string }[]>;
+	let dataSignaller: SignalerInstance<{ id: number; name: string }[]>;
 	let renderRow: Mock;
 
 	// Mock window.innerHeight to ensure scale() calculations are predictable.
@@ -61,7 +61,7 @@ describe('reactiveVirtualList/createReactiveVirtualList', () => {
 			id: i,
 			name: `Item ${i}`,
 		}));
-		dataSignaller = createSignaller(mockData);
+		dataSignaller = createSignaler(mockData);
 		renderRow = vi.fn((item) => {
 			const el = document.createElement('div');
 			el.textContent = item.name;

@@ -7,7 +7,7 @@
 		"packages/*"
 	],
 	"scripts": {
-		"dev": "npm run build -w crt && npm run dev -w example",
+		"dev": "npm run build -w @johnpaulharold/crt && npm run dev -w example",
 		"docs:generate": "typedoc",
 		"docs:view": "npm run docs:generate && open docs/index.html",
 		"build": "npm run build --workspaces --if-present",
@@ -20,7 +20,8 @@
 		"lint:js": "eslint .",
 		"lint:prettier": "prettier --write .",
 		"typecheck": "tsc -b",
-		"validate": "npm run typecheck && npm run build && vitest run && npm run lint:js && npm run lint:prettier"
+		"validate": "npm run typecheck && npm run build && vitest run && npm run lint:js && npm run lint:prettier",
+		"publish:crt": "npm run build -w @johnpaulharold/crt && npm publish -w @johnpaulharold/crt"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.24.7",
