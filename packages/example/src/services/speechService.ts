@@ -4,6 +4,7 @@
  * and a no-op implementation for the server.
  */
 import { loga } from 'crt';
+import { noop } from 'crt-utils';
 
 const logr = loga.create('SpeechService');
 
@@ -11,9 +12,6 @@ export interface SpeechServiceInstance {
 	speak: (text: string) => void;
 	cancel: () => void;
 }
-
-// A "no-operation" function that does nothing.
-const noop = () => {};
 
 // Check for the browser environment and API support once.
 const isSupported =

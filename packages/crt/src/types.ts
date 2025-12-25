@@ -30,15 +30,6 @@ export interface BaseViewInstance {
 	destructor?: () => void;
 }
 
-export interface ReadonlySignaler<T> {
-	getValue: () => T;
-	wait: (callback: (instance: ReadonlySignaler<T>) => void) => void;
-	unwait: (callback: (instance: ReadonlySignaler<T>) => void) => void;
-}
-export interface SignalerInstance<T> extends ReadonlySignaler<T> {
-	setValue: (newValue: T) => void;
-}
-
 export type keydownCallback = (event: KeyboardEvent | MouseEvent) => void;
 export type CreateTextNodeCallback = (text: string) => Node;
 export type CreateAppendChildCallback = (parent: Node, child: Node) => void;

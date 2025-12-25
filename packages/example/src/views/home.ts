@@ -1,23 +1,7 @@
-import type {
-	BaseViewInstance,
-	ComponentProps,
-	OrientationType,
-	SignalerInstance,
-} from 'crt';
+import type { BaseViewInstance, ComponentProps } from 'crt';
 import type { AppViewOptions } from '../index.js';
 
-import {
-	normalizeEventTarget,
-	AdditionalKeys,
-	Orientation,
-	dataGet,
-	assertKey,
-	createBaseView,
-	createSignaler,
-	watch,
-	diff,
-	loga,
-} from 'crt';
+import { dataGet, createBaseView, loga, diff } from 'crt';
 
 import { a, div } from '../html.js';
 
@@ -29,6 +13,15 @@ import { Spinner } from '../components/Spinner.js';
 import { navigationService } from '../services/navigationService.js';
 import { deadSeaService } from '../libs/deadSea.js';
 import { appOutlets } from '../outlets.js';
+import {
+	assertKey,
+	AdditionalKeys,
+	normalizeEventTarget,
+	Orientation,
+	createSignaler,
+	watch,
+	SignalerInstance,
+} from 'crt-utils';
 
 const logr = loga.create('home');
 

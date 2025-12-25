@@ -1,0 +1,32 @@
+{
+	"name": "@johnpaulharold/crt-utils",
+	"version": "0.1.0",
+	"description": "A package of optional utilities for use with crt",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/johnpaulharold/crt.git",
+		"directory": "packages/crt-utils"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"type": "module",
+	"main": "dist/index.js",
+	"module": "dist/index.js",
+	"types": "dist/types/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/types/index.d.ts"
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"sideEffects": false,
+	"scripts": {
+		"build": "rm -rf dist && tsc -p tsconfig.json && babel src --out-dir dist --extensions \".ts,.js\" --config-file ../../babel.config.json",
+		"typecheck": "tsc -p tsconfig.json"
+	},
+	"license": "Apache-2.0"
+}

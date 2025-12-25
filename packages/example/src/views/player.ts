@@ -1,10 +1,11 @@
 import type { BaseViewInstance, ViewOptions } from 'crt';
 
-import { createBaseView, watch, diff, noop, loga } from 'crt';
+import { createBaseView, diff, loga } from 'crt';
 import { div, button, p } from '../html.js';
 import { createFakePlayer } from '../libs/createFakePlayer.js';
 
 import s from './player.scss';
+import { noop, watch } from 'crt-utils';
 
 const logr = loga.create('player');
 

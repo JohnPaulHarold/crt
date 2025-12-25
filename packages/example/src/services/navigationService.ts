@@ -2,15 +2,15 @@ import type { PubSubInstance } from '../state/PubSub.js';
 
 import { getNextFocus } from '@bbc/tv-lrud-spatial';
 
+import { dataGet } from 'crt';
 import {
-	dataGet,
-	assertKey,
-	getDirectionFromKeyCode,
-	collectionToArray,
-	normalizeEventTarget,
 	AdditionalKeys,
 	Direction,
-} from 'crt';
+	assertKey,
+	collectionToArray,
+	getDirectionFromKeyCode,
+	normalizeEventTarget,
+} from 'crt-utils';
 
 import { animations } from '../config/animations.js';
 import { deadSeaService } from '../libs/deadSea.js';

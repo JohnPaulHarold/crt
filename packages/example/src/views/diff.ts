@@ -1,17 +1,17 @@
-import type { BaseViewInstance, ChildInput, SignalerInstance } from 'crt';
+import type { BaseViewInstance, ChildInput } from 'crt';
 import type { AppViewOptions } from '../index.js';
 
-import {
-	normalizeEventTarget,
-	diff,
-	createBaseView,
-	createSignaler,
-	watch,
-} from 'crt';
+import { createBaseView, diff } from 'crt';
 
 import { div, p } from '../html.js';
 
 import { Button } from '../components/Button.js';
+import {
+	SignalerInstance,
+	createSignaler,
+	normalizeEventTarget,
+	watch,
+} from 'crt-utils';
 
 const lyrics = [
 	'All men have secrets and here is mine',

@@ -1,9 +1,9 @@
 import {
 	AdditionalKeys,
 	type AdditionalKeysType,
-} from '../models/AdditionalKeys.js';
-import { Direction, type DirectionType } from '../models/Direction.js';
-import { Orientation, type OrientationType } from '../models/Orientation.js';
+} from './AdditionalKeys.js';
+import { Direction, type DirectionType } from './Direction.js';
+import { Orientation, type OrientationType } from './Orientation.js';
 
 const _left = Direction.LEFT;
 const _right = Direction.RIGHT;
@@ -17,7 +17,7 @@ const _yellow = AdditionalKeys.YELLOW;
 const _green = AdditionalKeys.GREEN;
 const _blue = AdditionalKeys.BLUE;
 
-const keyCodeMap: Record<number, DirectionType> = {
+const keyCodeMap: Record<number, DirectionType | AdditionalKeysType> = {
 	37: _left,
 	38: _up,
 	39: _right,

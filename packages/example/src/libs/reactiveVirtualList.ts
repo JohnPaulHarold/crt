@@ -1,5 +1,6 @@
-import type { SignalerInstance } from 'crt';
-import { createSignaler, h, scale } from 'crt';
+import type { SignalerInstance } from 'crt-utils';
+import { h } from 'crt';
+import { createSignaler, scale } from 'crt-utils';
 
 export type ScrollAlignment = 'start' | 'center';
 

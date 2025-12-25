@@ -1,12 +1,11 @@
-import type { DirectionType } from 'crt';
-
+import { removeElement } from 'crt';
 import {
 	Direction,
-	getBaseFontSize,
-	removeElement,
+	type DirectionType,
 	transformProp,
+	getBaseFontSize,
 	pxToRem,
-} from 'crt';
+} from 'crt-utils';
 
 export interface ImperativeVirtualListOptions<T> {
 	data: T[];

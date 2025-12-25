@@ -1,4 +1,4 @@
-import { collectionToArray } from 'crt';
+import { collectionToArray } from 'crt-utils';
 
 function isImageInViewport(img: HTMLElement, postBounds?: number) {
 	const pb = postBounds || 0;

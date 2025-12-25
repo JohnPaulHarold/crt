@@ -1,6 +1,6 @@
 /**
  * @readonly
- * @enum {string}
+ * @enum {AdditionalKeysType}
  */
 export const AdditionalKeys = {
 	ENTER: 'enter',

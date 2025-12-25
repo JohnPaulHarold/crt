@@ -1,10 +1,12 @@
-import type { OrientationType, ComponentProps } from 'crt';
+import type { ComponentProps } from 'crt';
+
+import { getPlatform } from 'crt';
+import { Orientation, type OrientationType } from 'crt-utils';
 
 import { div, h2, section } from '../html.js';
-import { Orientation, getPlatform } from 'crt';
-import { Button } from './Button.js';
 import { navigationService } from '../services/navigationService.js';
 import { deadSeaService } from '../libs/deadSea.js';
+import { Button } from './Button.js';
 
 import s from './Carousel.scss';
 

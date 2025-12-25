@@ -1,4 +1,4 @@
-import { loga } from './utils/loga/loga.js';
+import { loga } from './utils/loga.js';
 import { getPlatform } from './platform.js';
 import { diff } from './differenceEngine.js';
 import type { BaseViewInstance, ViewOptions } from './types.js';

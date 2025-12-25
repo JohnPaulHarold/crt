@@ -1,4 +1,8 @@
-import type { ReadonlySignaler } from '../../types.js';
+export interface ReadonlySignaler<T> {
+	getValue: () => T;
+	wait: (callback: (instance: ReadonlySignaler<T>) => void) => void;
+	unwait: (callback: (instance: ReadonlySignaler<T>) => void) => void;
+}
 
 /**
  * Watches an array of signallers and calls a handler when any of them change.

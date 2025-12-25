@@ -11,7 +11,8 @@ import {
 	beforeAll,
 	afterAll,
 } from 'vitest';
-import { Orientation, loga } from 'crt';
+import { loga } from 'crt';
+import { Orientation } from 'crt-utils';
 import { deadSeaService } from './deadSea.js';
 
 // Helper to convert kebab-case to camelCase

@@ -1,4 +1,4 @@
-import type { BaseViewInstance, DirectionType } from 'crt';
+import type { BaseViewInstance } from 'crt';
 import type { AppViewOptions } from '../index.js';
 import type {
 	ImperativeVirtualListInstance,
@@ -15,6 +15,7 @@ import {
 import { parseDecimal } from '../utils/math/parseDecimal.js';
 
 import s from './vlist.scss';
+import { DirectionType } from 'crt-utils';
 
 export interface VListItem {
 	d: number;

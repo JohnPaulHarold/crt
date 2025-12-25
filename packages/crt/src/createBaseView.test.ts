@@ -5,11 +5,11 @@ import type { BaseViewInstance } from './types.js';
 
 import { describe, expect, test, vi, beforeEach, afterEach } from 'vitest';
 import { createBaseView } from './createBaseView.js';
-import { type PrefixedLogaInstance, loga } from './utils/loga/loga.js';
+import { type PrefixedLogaInstance, loga } from './utils/loga.js';
 
 // Mock the logger to spy on its methods
-vi.mock('./utils/loga/loga', async (importOriginal) => {
-	const actual = await importOriginal<typeof import('./utils/loga/loga.js')>();
+vi.mock('./utils/loga', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('./utils/loga.js')>();
 	const logrMock = {
 		error: vi.fn(),
 		warn: vi.fn(),

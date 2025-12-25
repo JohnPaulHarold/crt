@@ -1,4 +1,4 @@
-import { cx } from 'crt';
+import { cx } from 'crt-utils';
 import { div, section } from '../html.js';
 import { Button } from './Button.js';
 

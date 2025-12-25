@@ -1,4 +1,4 @@
-import { noop } from 'crt';
+import { noop } from 'crt-utils';
 
 export type HandleFullCallback<T> = (data: T[]) => void;
 
