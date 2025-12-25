@@ -6,11 +6,11 @@ export { debounce } from './debounce.js';
 export { getBaseFontSize } from './getBaseFontSize.js';
 export { getElementChain } from './getElementChain.js';
 export { httpRequest } from './httpRequest.js';
-export { 
-  getDirectionFromKeyCode, 
-  getOrientationFromDirection, 
-  getOrientationFromKeyCode,
-  assertKey
+export {
+	getDirectionFromKeyCode,
+	getOrientationFromDirection,
+	getOrientationFromKeyCode,
+	assertKey,
 } from './keys.js';
 export { loadScript } from './loadScript.js';
 export { noop } from './noop.js';

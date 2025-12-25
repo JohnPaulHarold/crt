@@ -1,7 +1,4 @@
-import {
-	AdditionalKeys,
-	type AdditionalKeysType,
-} from './AdditionalKeys.js';
+import { AdditionalKeys, type AdditionalKeysType } from './AdditionalKeys.js';
 import { Direction, type DirectionType } from './Direction.js';
 import { Orientation, type OrientationType } from './Orientation.js';
 
