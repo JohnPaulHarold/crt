@@ -33,6 +33,6 @@
 		"crt-server": "file:../crt-server",
 		"crt-utils": "file:../crt-utils",
 		"dotenv": "^17.2.2",
-		"express": "^5.1.0"
+		"express": "^5.2.1"
 	}
 }
