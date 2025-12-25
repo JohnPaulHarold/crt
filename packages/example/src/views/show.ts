@@ -1,13 +1,7 @@
 import type { BaseViewInstance } from 'crt';
 import type { AppViewOptions } from '../index.js';
 
-import {
-	assertKey,
-	normalizeEventTarget,
-	Orientation,
-	Direction,
-	createBaseView,
-} from 'crt';
+import { createBaseView } from 'crt';
 import { checkImages } from '../libs/indolence.js';
 
 import { a, div, p } from '../html.js';
@@ -26,6 +20,12 @@ import { showData } from '../stubData/showData.js';
 import Logo from '../assets/Public_Domain_Mark_button.svg.png';
 
 import s from './show.scss';
+import {
+	Direction,
+	Orientation,
+	assertKey,
+	normalizeEventTarget,
+} from 'crt-utils';
 
 export type ShowViewInstance = BaseViewInstance & {
 	info: Record<string, unknown> | undefined;

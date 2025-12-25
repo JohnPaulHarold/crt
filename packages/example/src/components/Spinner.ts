@@ -1,5 +1,5 @@
 import type { ComponentProps } from 'crt';
-import { cx } from 'crt';
+import { cx } from 'crt-utils';
 import { div, span } from '../html.js';
 
 import s from './Spinner.scss';

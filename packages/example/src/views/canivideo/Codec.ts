@@ -1,4 +1,4 @@
-import { cx } from 'crt';
+import { cx } from 'crt-utils';
 
 import type { CodecSupportInfo } from './canivideo';
 import type { IDrm } from './drm';

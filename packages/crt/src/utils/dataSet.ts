@@ -1,4 +1,4 @@
-import { getPlatform } from '../../platform.js';
+import { getPlatform } from '../platform.js';
 
 /**
  * Converts a camelCase string to kebab-case.

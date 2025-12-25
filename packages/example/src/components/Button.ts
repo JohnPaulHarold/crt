@@ -1,6 +1,6 @@
 import type { ComponentProps, ChildInput } from 'crt'; // ChildInput is not used here, but kept for consistency
 
-import { cx } from 'crt';
+import { cx } from 'crt-utils';
 import { button } from '../html.js';
 
 import s from './Button.scss';

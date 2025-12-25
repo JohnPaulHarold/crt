@@ -1,4 +1,4 @@
-import { getPlatform } from '../../platform.js';
+import { getPlatform } from '../platform.js';
 
 export function removeElement(el: HTMLElement | Element): void {
 	if (el.parentElement) {

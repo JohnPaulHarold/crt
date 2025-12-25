@@ -1,6 +1,7 @@
-import { ComponentProps, cx } from 'crt';
+import { ComponentProps } from 'crt';
 import { a, li, nav, ul } from '../html.js';
 import s from './Nav.scss';
+import { cx } from 'crt-utils';
 
 export interface NavItem {
 	id: string;

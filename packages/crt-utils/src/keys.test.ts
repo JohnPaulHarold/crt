@@ -5,9 +5,9 @@ import {
 	assertKey,
 	getOrientationFromKeyCode,
 } from './keys.js';
-import { Direction } from '../models/Direction.js';
-import { Orientation } from '../models/Orientation.js';
-import { AdditionalKeys } from '../models/AdditionalKeys.js';
+import { Direction } from './Direction.js';
+import { Orientation } from './Orientation.js';
+import { AdditionalKeys } from './AdditionalKeys.js';
 
 function createMockKeyboardEvent(
 	partialEvent: Partial<KeyboardEvent>

@@ -29,14 +29,10 @@
  *   padding. The container will only start scrolling once the focused item's
  *   index is greater than this value.
  */
-import {
-	Orientation,
-	collectionToArray,
-	dataGet,
-	transformProp,
-	loga,
-	OrientationType,
-} from 'crt';
+import { dataGet, loga } from 'crt';
+
+import { Orientation, collectionToArray, transformProp } from 'crt-utils';
+import type { OrientationType } from 'crt-utils';
 
 const logr = loga.create('deadsea');
 
@@ -173,7 +169,7 @@ function updateScrollPosition(scrollEl: HTMLElement, useTransforms: boolean) {
 
 	const orientation = dataGet(scrollEl, 'deadseaOrientation')
 		? (dataGet(scrollEl, 'deadseaOrientation') as OrientationType)
-		: Orientation.HORIZONTAL;
+		: (Orientation.HORIZONTAL as OrientationType);
 
 	const containerSize =
 		orientation === Orientation.HORIZONTAL

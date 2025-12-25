@@ -1,7 +1,7 @@
 import type { BaseViewInstance, ViewOptions } from 'crt';
 import type { IDrm } from './drm';
 
-import { createBaseView, Orientation } from 'crt';
+import { createBaseView } from 'crt';
 
 import { div, a } from '../../html';
 
@@ -16,6 +16,7 @@ import { Codecs } from './Codecs';
 import { isCodecSupported } from './isCodecSupported';
 
 import s from './canivideo.scss';
+import { Orientation } from 'crt-utils';
 
 export type ContainerType =
 	| 'video/mp4'

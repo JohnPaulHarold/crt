@@ -1,6 +1,6 @@
 import type { ComponentProps } from 'crt';
 
-import { cx } from 'crt';
+import { cx } from 'crt-utils';
 import { div } from '../html.js';
 
 import s from './Notification.scss';

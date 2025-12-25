@@ -1,4 +1,4 @@
-import { type SignalerInstance, createSignaler } from 'crt';
+import { createSignaler, type SignalerInstance } from 'crt-utils';
 
 export interface FakePlayerOptions {
 	duration?: number;

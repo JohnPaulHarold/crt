@@ -5,11 +5,11 @@ import type { Mock } from 'vitest';
 
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
 import { createImperativeVirtualList } from './imperativeVirtualList.js';
-import { Direction } from 'crt';
+import { Direction } from 'crt-utils';
 
 // Mock the 'crt' module to control getBaseFontSize for predictable rem calculation
-vi.mock('crt', async () => {
-	const actual = await vi.importActual('crt');
+vi.mock('crt-utils', async () => {
+	const actual = await vi.importActual('crt-utils');
 	return {
 		...actual,
 		getBaseFontSize: vi.fn(() => 10), // Mock to return a predictable 10px

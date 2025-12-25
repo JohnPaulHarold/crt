@@ -2,11 +2,11 @@
  * @vitest-environment jsdom
  */
 import type { Mock } from 'vitest';
-import type { SignalerInstance } from 'crt';
+import type { SignalerInstance } from 'crt-utils';
 
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
 import { createReactiveVirtualList } from './reactiveVirtualList.js';
-import { createSignaler } from 'crt';
+import { createSignaler } from 'crt-utils';
 
 // Mock the h function to just create simple divs with attributes for easier inspection
 vi.mock('../h.js', () => ({

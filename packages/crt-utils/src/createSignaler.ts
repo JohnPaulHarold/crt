@@ -1,4 +1,8 @@
-import type { SignalerInstance } from '../../types.js';
+import { ReadonlySignaler } from './watch.js';
+
+export interface SignalerInstance<T> extends ReadonlySignaler<T> {
+	setValue: (newValue: T) => void;
+}
 
 /**
  * Creates a "signaller" object that holds a value and can notify

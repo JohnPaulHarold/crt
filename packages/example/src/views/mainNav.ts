@@ -1,9 +1,10 @@
 import type { BaseViewInstance, ViewOptions } from 'crt';
 import type { NavItem } from '../components/Nav.js';
 
-import { collectionToArray, createBaseView } from 'crt';
+import { createBaseView } from 'crt';
 import { navigationService } from '../services/navigationService.js';
 import { Nav } from '../components/Nav.js';
+import { collectionToArray } from 'crt-utils';
 
 type NavViewOptions = ViewOptions & {
 	navItems: NavItem[];

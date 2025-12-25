@@ -1,9 +1,9 @@
-import type { BaseViewInstance, SignalerInstance } from 'crt';
+import type { BaseViewInstance } from 'crt';
 import type { ReactiveVirtualListInstance } from '../libs/reactiveVirtualList.js';
 import type { AppViewOptions } from '../index.js';
 import type { MoveEventPayload } from './vlist.js';
 
-import { createBaseView, createSignaler, watch, diff } from 'crt';
+import { createBaseView, diff } from 'crt';
 import { div, p, section, a } from '../html.js';
 import { createReactiveVirtualList } from '../libs/reactiveVirtualList.js';
 import {
@@ -13,6 +13,7 @@ import {
 import { parseDecimal } from '../utils/math/parseDecimal.js';
 
 import s from './reactiveVListView.scss';
+import { SignalerInstance, createSignaler, watch } from 'crt-utils';
 
 // ::: Data Generation (copied from imperative vlist view for comparison)
 

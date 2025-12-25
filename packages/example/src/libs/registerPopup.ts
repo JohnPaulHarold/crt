@@ -1,4 +1,4 @@
-import { normalizeEventTarget } from 'crt';
+import { normalizeEventTarget } from 'crt-utils';
 import { navigationService } from '../services/navigationService.js';
 
 export interface RegisteredPopup {

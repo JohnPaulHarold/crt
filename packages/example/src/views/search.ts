@@ -1,16 +1,9 @@
-import type { BaseViewInstance, SignalerInstance } from 'crt';
+import type { BaseViewInstance } from 'crt';
 import type { AppViewOptions } from '../index.js';
 import type { RailItem } from './home.js';
+import type { SignalerInstance } from 'crt-utils';
 
-import {
-	dataGet,
-	createBaseView,
-	Orientation,
-	normalizeEventTarget,
-	createSignaler,
-	watch,
-	diff,
-} from 'crt';
+import { dataGet, createBaseView, diff } from 'crt';
 
 import { a, div, span } from '../html.js';
 
@@ -23,6 +16,12 @@ import { Carousel } from '../components/Carousel.js';
 import { deadSeaService } from '../libs/deadSea.js';
 
 import s from './search.scss';
+import {
+	Orientation,
+	createSignaler,
+	normalizeEventTarget,
+	watch,
+} from 'crt-utils';
 
 function handleClick(
 	this: SearchViewInstance,
