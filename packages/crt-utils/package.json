@@ -11,12 +11,13 @@
 		"access": "public"
 	},
 	"type": "module",
-	"main": "dist/index.js",
+	"main": "dist/index.cjs",
 	"module": "dist/index.js",
 	"types": "dist/types/index.d.ts",
 	"exports": {
 		".": {
 			"import": "./dist/index.js",
+			"require": "./dist/index.cjs",
 			"types": "./dist/types/index.d.ts"
 		}
 	},
@@ -25,7 +26,7 @@
 	],
 	"sideEffects": false,
 	"scripts": {
-		"build": "rm -rf dist && tsc -p tsconfig.json && babel src --out-dir dist --extensions \".ts,.js\" --config-file ../../babel.config.json",
+		"build": "rm -rf dist && tsc -p tsconfig.json --emitDeclarationOnly && rollup -c",
 		"typecheck": "tsc -p tsconfig.json"
 	},
 	"license": "Apache-2.0"
