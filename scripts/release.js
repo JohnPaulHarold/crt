@@ -19,11 +19,23 @@ if (!pkgDir || !['patch', 'minor', 'major'].includes(bumpType)) {
 // Check npm auth
 console.log('👤 Checking npm auth...');
 try {
-	const username = execSync('npm whoami', { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+	const username = execSync('npm whoami', { encoding: 'utf8', stdio: 'pipe' }).trim();
 	console.log(`   Logged in as ${username}`);
 } catch (e) {
-	console.log('⚠️  Authentication check failed. Please log in:');
+	console.log('⚠️  Authentication check failed.');
+	if (e.stderr) {
+		console.log(`   Error: ${e.stderr.toString().trim()}`);
+	}
+	console.log('   Please log in:');
 	execSync('npm login', { stdio: 'inherit' });
+
+	try {
+		const username = execSync('npm whoami', { encoding: 'utf8', stdio: 'pipe' }).trim();
+		console.log(`   Logged in as ${username}`);
+	} catch (e) {
+		console.error('❌ Login failed. Aborting.');
+		process.exit(1);
+	}
 }
 
 const packagePath = join(__dirname, '../packages', pkgDir, 'package.json');
@@ -55,6 +67,16 @@ const bumpVersion = (version, type) => {
 
 const newVersion = bumpVersion(currentVersion, bumpType);
 
+// Check if tag exists
+const tagName = `${pkgDir}-v${newVersion}`;
+try {
+	execSync(`git rev-parse ${tagName}`, { stdio: 'ignore' });
+	console.error(`❌ Tag ${tagName} already exists. Aborting.`);
+	process.exit(1);
+} catch (e) {
+	// Tag doesn't exist, proceed
+}
+
 console.log(`\n🚀 Releasing ${pkgName}`);
 console.log(`   ${currentVersion} -> ${newVersion}\n`);
 
@@ -69,7 +91,6 @@ try {
 	execSync(`npm run build -w ${pkgName}`, { stdio: 'inherit' });
 
 	// 3. Git Commit & Tag
-	const tagName = `${pkgDir}-v${newVersion}`;
 	console.log(`📦 Committing and Tagging (${tagName})...`);
 	execSync(`git add packages/${pkgDir}/package.json`, { stdio: 'inherit' });
 	execSync(`git commit -m "chore(release): ${pkgName} v${newVersion}"`, {
