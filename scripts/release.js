@@ -16,6 +16,16 @@ if (!pkgDir || !['patch', 'minor', 'major'].includes(bumpType)) {
 	process.exit(1);
 }
 
+// Check npm auth
+console.log('👤 Checking npm auth...');
+try {
+	const username = execSync('npm whoami', { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+	console.log(`   Logged in as ${username}`);
+} catch (e) {
+	console.log('⚠️  Authentication check failed. Please log in:');
+	execSync('npm login', { stdio: 'inherit' });
+}
+
 const packagePath = join(__dirname, '../packages', pkgDir, 'package.json');
 
 if (!existsSync(packagePath)) {
