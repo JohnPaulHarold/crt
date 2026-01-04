@@ -90,7 +90,12 @@ try {
 	console.log('🛠  Building...');
 	execSync(`npm run build -w ${pkgName}`, { stdio: 'inherit' });
 
-	// 3. Git Commit & Tag
+	// 3. Publish
+	console.log('🚀 Publishing to npm...');
+	// Note: --access public is required for scoped packages (@johnpaulharold/...) initially
+	execSync(`npm publish -w ${pkgName} --access public`, { stdio: 'inherit' });
+
+	// 4. Git Commit & Tag
 	console.log(`📦 Committing and Tagging (${tagName})...`);
 	execSync(`git add packages/${pkgDir}/package.json`, { stdio: 'inherit' });
 	execSync(`git commit -m "chore(release): ${pkgName} v${newVersion}"`, {
@@ -99,11 +104,6 @@ try {
 	execSync(`git tag -a ${tagName} -m "Release ${pkgName} v${newVersion}"`, {
 		stdio: 'inherit',
 	});
-
-	// 4. Publish
-	console.log('🚀 Publishing to npm...');
-	// Note: --access public is required for scoped packages (@johnpaulharold/...) initially
-	execSync(`npm publish -w ${pkgName} --access public`, { stdio: 'inherit' });
 
 	console.log(`\n✨ Successfully released ${pkgName}@${newVersion}\n`);
 	console.log("Don't forget to push your tags:");
